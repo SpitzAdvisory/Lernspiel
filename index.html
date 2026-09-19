@@ -162,8 +162,8 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
 const T={
 de:{appTitle:'Lernspiel',whoPlays:'Wer spielt?',noPlayers:'Noch keine Spieler. Lege sie im Verwaltungsbereich an.',admin:'Verwaltung',back:'Zurück',
 hello:'Hallo {name}',level:'Stufe {n}',xpToNext:'Noch {n} Punkte bis Stufe {m}',chooseGame:'Spiel wählen',noGames:'Noch keine Spiele. Erstelle eines im Verwaltungsbereich.',
-questions:'{n} Fragen',mastered:'{p} % sicher',mode:'Spielart',m_classic:'Klassisch',md_classic:'Bis zu 10 Fragen in Ruhe',m_timed:'Zeitrennen',md_timed:'So viele wie möglich gegen die Uhr',
-m_survival:'Überleben',md_survival:'Drei Leben – wie weit kommst du?',m_duel:'Duell',md_duel:'Zwei Spieler, abwechselnd je 5 Fragen',difficulty:'Schwierigkeit',
+questions:'{n} Fragen',mastered:'{p} % sicher',mode:'Spielart',m_classic:'Klassisch',md_classic:'Mindestens 25 Fragen – Fehler geben Zusatzfragen',m_timed:'Zeitrennen',md_timed:'So viele wie möglich gegen die Uhr',
+m_survival:'Überleben',md_survival:'Drei Leben – wie weit kommst du?',m_duel:'Duell',md_duel:'Zwei Spieler, abwechselnd je 13 Fragen',difficulty:'Schwierigkeit',
 d_easy:'Leicht',d_medium:'Mittel',d_hard:'Schwer',dd_easy:'Weniger Auswahl, einfachere Fragen',dd_medium:'Alle Fragen',dd_hard:'Schwerere Fragen, weniger Zeit',
 lock_medium:'Frei ab 70 % in Leicht',lock_hard:'Frei ab 80 % in Mittel',adjust:'Anpassung',adaptive:'Adaptiv',ad_adaptive:'Übt Schwächen öfter, Niveau passt sich an',
 fixed:'Fest',ad_fixed:'Gleiches Niveau, zufällige Reihenfolge',opponent:'Gegner',needOpponent:'Für ein Duell braucht es einen zweiten Spieler.',start:'Los geht\'s',quit:'Beenden',
@@ -193,7 +193,7 @@ setPwNote:'Hält Kinder aus der Verwaltung fern, ist aber keine echte Sicherheit
 reconnectText:'Chrome braucht deine Erlaubnis, um auf «{name}» zuzugreifen.',reconnect:'Verbinden',otherFolder:'Anderen Ordner wählen',updated:'Aktualisiert',
 t_single:'Eine Antwort',t_multi:'Mehrfach',t_order:'Reihenfolge',t_input:'Eingabe',t_spot:'Bildpunkt',t_map:'Karte',
 hint_map_tap:'Tippe auf der Karte auf die richtige Stelle. Mit zwei Fingern oder + / − zoomen.',hint_map_choose:'Was ist auf der Karte markiert?',
-hint_map_name:'Wie heisst das Markierte? Genaue Schreibweise.',hint_map_label:'Die Nummern auf der Karte werden jedes Mal neu verteilt.',hint_map_number:'Welche Nummer auf der Karte ist es?',mapLabelQ:'Was ist mit der Nummer {nr} markiert?',numbered:'Nummeriert',tabMaps:'Karten',mapsIntro:'Kartenpakete sind eigenständige Bausteine, die jedes Spiel verwenden kann. Sie liegen im Datenordner unter «maps».',
+hint_map_name:'Wie heisst das Markierte? Genaue Schreibweise.',hint_map_label:'Die Nummern auf der Karte werden jedes Mal neu verteilt.',hint_map_number:'Welche Nummer auf der Karte ist es?',mapLabelQ:'Was ist mit der Nummer {nr} markiert?',numbered:'Nummeriert',tryAgain:'Noch ein Versuch – jetzt gibt es halbe Punkte.',secondOk:'(2. Versuch, halbe Punkte)',jokeTag:'😄 Scherzfrage!',ptsPlus:'+{n} Punkte',ptsMinus:'−{n} Punkte',t_joke:'Scherzfrage',tabMaps:'Karten',mapsIntro:'Kartenpakete sind eigenständige Bausteine, die jedes Spiel verwenden kann. Sie liegen im Datenordner unter «maps».',
 importMaps:'Kartenpakete importieren',mapsImported:'{n} Kartenpaket(e) importiert',noMaps:'Noch keine Kartenpakete. Importiere die Datei mit den Kartenpaketen.',
 mapMissing:'Kartenpaket «{id}» fehlt – bitte in der Verwaltung unter «Karten» importieren.',mapsForGame:'Kartenpakete für dieses Spiel',objects:'{n} Objekte',
 layers:'Ebenen',tapToName:'Tippe auf ein Objekt, um den Namen zu sehen.',mapPick:'Tippe auf das richtige Objekt, um das Ziel zu ändern.',mapBtn:'Karte',
@@ -213,8 +213,8 @@ pending:'Noch nicht hochgeladene Läufe: {n}',savedOffline:'Keine Verbindung –
 folderHint:'Für den Abgleich mit dem iPad den Ordner «Dropbox (Privat)\\Apps\\Lernspiel-Spitz» wählen.'},
 en:{appTitle:'Learning game',whoPlays:'Who is playing?',noPlayers:'No players yet. Add them in the admin area.',admin:'Admin',back:'Back',
 hello:'Hi {name}',level:'Level {n}',xpToNext:'{n} points to level {m}',chooseGame:'Choose a game',noGames:'No games yet. Create one in the admin area.',
-questions:'{n} questions',mastered:'{p} % mastered',mode:'Mode',m_classic:'Classic',md_classic:'Up to 10 questions at your own pace',m_timed:'Time race',md_timed:'As many as you can against the clock',
-m_survival:'Survival',md_survival:'Three lives – how far can you get?',m_duel:'Duel',md_duel:'Two players, 5 questions each, taking turns',difficulty:'Difficulty',
+questions:'{n} questions',mastered:'{p} % mastered',mode:'Mode',m_classic:'Classic',md_classic:'At least 25 questions – mistakes add extra questions',m_timed:'Time race',md_timed:'As many as you can against the clock',
+m_survival:'Survival',md_survival:'Three lives – how far can you get?',m_duel:'Duel',md_duel:'Two players, 13 questions each, taking turns',difficulty:'Difficulty',
 d_easy:'Easy',d_medium:'Medium',d_hard:'Hard',dd_easy:'Fewer choices, easier questions',dd_medium:'All questions',dd_hard:'Harder questions, less time',
 lock_medium:'Unlocks at 70 % on Easy',lock_hard:'Unlocks at 80 % on Medium',adjust:'Adjustment',adaptive:'Adaptive',ad_adaptive:'Practises weak spots more, level adjusts',
 fixed:'Fixed',ad_fixed:'Same level, random order',opponent:'Opponent',needOpponent:'A duel needs a second player.',start:'Start',quit:'Quit',
@@ -244,7 +244,7 @@ setPwNote:'Keeps children out of the admin area; it is not real security.',finis
 reconnectText:'Chrome needs your permission to access "{name}".',reconnect:'Connect',otherFolder:'Choose another folder',updated:'Updated',
 t_single:'Single',t_multi:'Multiple',t_order:'Order',t_input:'Input',t_spot:'Tap spot',t_map:'Map',
 hint_map_tap:'Tap the right place on the map. Zoom with two fingers or + / −.',hint_map_choose:'What is marked on the map?',
-hint_map_name:'What is the marked place called? Exact spelling.',hint_map_label:'The numbers on the map are shuffled every time.',hint_map_number:'Which number on the map is it?',mapLabelQ:'What is marked with number {nr}?',numbered:'Numbered',tabMaps:'Maps',mapsIntro:'Map packs are separate building blocks that any game can use. They live in the data folder under "maps".',
+hint_map_name:'What is the marked place called? Exact spelling.',hint_map_label:'The numbers on the map are shuffled every time.',hint_map_number:'Which number on the map is it?',mapLabelQ:'What is marked with number {nr}?',numbered:'Numbered',tryAgain:'One more try – now for half the points.',secondOk:'(2nd try, half points)',jokeTag:'😄 Joke question!',ptsPlus:'+{n} points',ptsMinus:'−{n} points',t_joke:'Joke',tabMaps:'Maps',mapsIntro:'Map packs are separate building blocks that any game can use. They live in the data folder under "maps".',
 importMaps:'Import map packs',mapsImported:'{n} map pack(s) imported',noMaps:'No map packs yet. Import the map pack file.',
 mapMissing:'Map pack "{id}" is missing – import it in the admin area under "Maps".',mapsForGame:'Map packs for this game',objects:'{n} objects',
 layers:'Layers',tapToName:'Tap an object to see its name.',mapPick:'Tap the right object to change the target.',mapBtn:'Map',
@@ -269,6 +269,27 @@ const PLAY_ONLY=location.protocol==='https:'&&/\.github\.io$/.test(location.host
 const AVATARS=['🦊','🐼','🐸','🦁','🐙','🦉','🐢','🐬','🦄','🐝','🐧','🦖','🐱','🐶','🐯','🦋','🐞','🚀','⚽','🎸','🌻','🍀','🌈','⭐'];
 const BADGES={first_run:'🎉',perfect:'💯',streak10:'🔥',answers100:'📚',survivor20:'🛡️',speed15:'⚡',duel_win:'🏆',hard_clear:'🎓',master_game:'👑'};
 const DIFFS=['easy','medium','hard'];
+const JOKES={de:[
+ ['Wie nennt man einen Bumerang, der nicht zurückkommt?',['Einen Stock','Einen Adler','Einen Frisbee'],'Ohne Rückkehr ist er einfach ein Stock.'],
+ ['Welches Tier kann höher springen als ein Haus?',['Jedes – Häuser können gar nicht springen','Nur das Känguru','Kein Tier'],'Häuser springen nun mal nicht.'],
+ ['Was ist grün und klopft an die Tür?',['Ein Klopfsalat','Ein Frosch mit Termin','Der Gärtner'],'Klopf-Salat statt Kopfsalat.'],
+ ['Was sagt der grosse Stift zum kleinen Stift?',['Wachs mal, Stift!','Spitz dich an!','Mal ruhig weiter!'],'Wachs-mal-Stift – so wird er grösser.'],
+ ['Warum können Seeräuber keinen Kreis zeichnen?',['Weil sie Pi raten','Weil das Schiff wackelt','Weil sie nur Augenklappen haben'],'Pi-raten eben.'],
+ ['Was macht ein Pirat am Computer?',['Er drückt die Enter-Taste','Er sucht nach Schatzdateien','Er segelt im Internet'],'Entern ist sein Beruf.'],
+ ['Wohin gehen Kühe am Samstagabend?',['Ins Muh-seum','Ins Kino','In die Milchbar'],'Muh!'],
+ ['Was wird nasser, je mehr es trocknet?',['Ein Handtuch','Ein Fisch','Die Wüste'],'Das Handtuch trocknet dich – und wird dabei nass.'],
+ ['Wie heisst ein schlafender Dinosaurier?',['Ein Dino-schnarch','Ein T-Rex-Pause','Ein Stegosaurus Rex'],'Schnarch… schnarch…'],
+ ['Welcher Kontinent ist der beste zum Chillen?',['Die Antarktis – dort ist es immer cool','Afrika – dort ist es warm','Europa – dort gibt es Ferien'],'Coolness garantiert, minus 50 Grad inklusive.']],
+en:[
+ ['What do you call a boomerang that won\u2019t come back?',['A stick','An eagle','A frisbee'],'Without coming back, it is just a stick.'],
+ ['Which animal can jump higher than a house?',['Any animal – houses can\u2019t jump','Only the kangaroo','None'],'Houses don\u2019t jump.'],
+ ['What is the capital of France?',['F','Lyon','Baguette'],'The capital letter of France is F.'],
+ ['What has hands but can\u2019t clap?',['A clock','A shy monkey','A glove'],'Tick, tock.'],
+ ['Where do cows go on Saturday night?',['To the moo-vies','To the milk bar','To bed'],'Moo!'],
+ ['What gets wetter the more it dries?',['A towel','A fish','The desert'],'It dries you and gets wet.'],
+ ['What do you call a sleeping dinosaur?',['A dino-snore','A T-Rest','A stegosnoozus'],'Zzz\u2026'],
+ ['Which continent is the best for chilling?',['Antarctica – it\u2019s always cool','Africa – it\u2019s warm','Europe – it has holidays'],'Guaranteed cool, minus 50 degrees included.']]};
+function builtinJokes(){return(JOKES[S.lang]||JOKES.de).map((j,k)=>({id:'joke:'+S.lang+k,type:'single',joke:true,difficulty:1,prompt:j[0],options:j[1],correct:[0],explanation:j[2]}));}
 const DIFF_LEVEL={easy:1,medium:2,hard:3};
 
 const S={store:null,cfg:null,profiles:[],games:[],lang:'de',admin:false,run:null,onEnter:null};
@@ -359,8 +380,8 @@ function applyLog(state,l){
   const prof=S.profiles.find(p=>p.id===pl.id);if(prof&&prof.resetAt&&String(l.started)<prof.resetAt)continue;
   const r={newBadges:[],unlocked:[],levelBefore:levelOf(s.xp)};
   const gm=(s.mastery[l.game.id]=s.mastery[l.game.id]||{});
-  for(const a of l.answers||[]){if(a.player!==pl.id)continue;const m=gm[a.itemId]||{box:0,seen:0,right:0};m.seen++;
-   if(a.correct){m.right++;m.box=Math.min(5,m.box+1);}else m.box=Math.max(0,m.box-2);gm[a.itemId]=m;}
+  for(const a of l.answers||[]){if(a.player!==pl.id||a.joke)continue;const m=gm[a.itemId]||{box:0,seen:0,right:0};m.seen++;
+   if(a.correct&&!a.second){m.right++;m.box=Math.min(5,m.box+1);}else if(!a.correct)m.box=Math.max(0,m.box-2);gm[a.itemId]=m;}
   s.xp+=pl.score||0;s.answers+=pl.answered||0;s.correct+=pl.correct||0;s.runs++;
   const acc=pl.answered?pl.correct/pl.answered:0;
   const give=id=>{if(!s.badges.includes(id)){s.badges.push(id);r.newBadges.push(id);}};
@@ -563,11 +584,12 @@ function poolFor(g,d){const allow={easy:[1,2],medium:[1,2,3],hard:[2,3]}[d];cons
 async function startRun(o){
  const masteries={};for(const p of o.players)masteries[p.id]=JSON.parse(JSON.stringify(st(p.id).mastery));
  for(const pk of new Set(o.game.items.filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack)))await loadPack(pk).catch(e=>toast(e.message,true));
- const okItem=i=>i.type!=='map'||(i.map&&PACKS[i.map.pack]&&PACKS[i.map.pack].byId[i.map.target]);
+ const okItem=i=>!i.joke&&(i.type!=='map'||(i.map&&PACKS[i.map.pack]&&PACKS[i.map.pack].byId[i.map.target]));
  const pool=poolFor(Object.assign({},o.game,{items:o.game.items.filter(okItem)}),o.diff);if(!pool.length)return toast(t('noItems'),true);
  const R={id:uid(),players:o.players,game:o.game,mode:o.mode,diff:o.diff,adaptive:o.adaptive,sel:o.sel,started:new Date(),pool,used:new Set(),answers:[],
   score:o.players.map(()=>0),streak:o.players.map(()=>0),best:o.players.map(()=>0),lives:3,level:DIFF_LEVEL[o.diff],up:0,down:0,q:0,masteries,timer:null,ended:false};
- R.target=o.mode==='classic'?Math.min(10,pool.length):o.mode==='duel'?10:Infinity;
+ R.target=o.mode==='classic'?25:o.mode==='duel'?26:Infinity;R.retry=[];R.extra=0;
+ const own=o.game.items.filter(i=>i.joke&&i.type==='single');R.jokes=shuffle(own.concat(builtinJokes()));R.jokeAt=o.mode==='duel'?Infinity:5+Math.floor(Math.random()*4);
  if(o.mode==='timed'){R.deadline=Date.now()+({easy:90,medium:60,hard:45}[o.diff])*1000;R.timer=setInterval(()=>tick(R),250);}
  S.run=R;nextQuestion(R);
 }
@@ -671,7 +693,7 @@ function mapHits(P,layerId,x,y,ppu,diff){const L=P.layers.find(l=>l.id===layerId
 function mapView(P,o){o=o||{};const show=new Set(o.show||[]),hl=new Set(o.highlight||[]),lab=new Set((o.labels||[]).map(l=>l.id));
  const wrap=h('div',{class:'mapwrap'+(o.faint?' showfaint':'')});const svg=sv('svg',{viewBox:`0 0 ${P.w} ${P.h}`,class:'map',preserveAspectRatio:'xMidYMid meet'});
  svg.style.aspectRatio=P.w+'/'+P.h;svg.style.background=P.id==='ch'?'#ece6d6':'#cfe3f3';const root=sv('g');svg.append(root);const els={};
- const always=L=>L.kind==='bg'||(L.kind!=='point'&&!['landscapes','continents','seas'].includes(L.id));
+ const always=L=>L.kind==='bg'||(L.kind!=='point'&&!['landscapes','continents','seas','regions'].includes(L.id));
  for(const L of P.layers){const need=always(L)||show.has(L.id)||L.f.some(f=>hl.has(f.id)||lab.has(f.id));if(!need)continue;const lg=sv('g');root.append(lg);
   for(const f of L.f){let el;
    if(L.kind==='point'){if(!show.has(L.id)&&!hl.has(f.id)&&!lab.has(f.id))continue;el=sv('circle',{cx:f.x,cy:f.y,r:3,class:'m-pt'});}
@@ -692,7 +714,9 @@ function mapView(P,o){o=o||{};const show=new Set(o.show||[]),hl=new Set(o.highli
  const toSvg=(ex,ey)=>{const r=svg.getBoundingClientRect();return{x:vb.x+(ex-r.left)/r.width*vb.w,y:vb.y+(ey-r.top)/r.height*vb.h};};
  const api={el:wrap,svg,els,onTap:null,
   ppu:()=>(svg.clientWidth||P.w)/vb.w,
-  mark:(id,cls)=>{const e=els[id];if(e){e.classList.remove('hl');e.classList.add(cls);if(e.parentNode)e.parentNode.append(e);}apply();},
+  mark:(id,cls)=>{let e=els[id];if(!e){const f=P.byId[id];if(!f)return;if(f.x!=null)return api.addPoint(f,cls);const L=P.layers.find(l=>l.id===f.layer);
+    e=sv('path',{d:f.d,class:'m-'+(L?L.style:'land')+(f.kind==='line'?' line':'')});e.dataset.id=id;marks.append(e);els[id]=e;}
+   e.classList.remove('hl');e.classList.add(cls);if(e.parentNode)e.parentNode.append(e);apply();},
   addPoint:(f,cls)=>{if(els[f.id])return api.mark(f.id,cls);const c=sv('circle',{cx:f.x,cy:f.y,r:3,class:cls});marks.append(c);els[f.id]=c;apply();},
   dot:(x,y,ok)=>{marks.append(sv('circle',{cx:x,cy:y,r:3,class:'tapdot',fill:ok?'#2E7D4F':'#C8322B'}));apply();},
   zoomTo:(b,pad)=>{const w=Math.max(b[2]-b[0],(b[3]-b[1])*P.w/P.h,minW)*(pad||4);vb.w=w;vb.h=w*P.h/P.w;vb.x=(b[0]+b[2])/2-vb.w/2;vb.y=(b[1]+b[3])/2-vb.h/2;clamp();apply();},
@@ -726,7 +750,12 @@ function mapPicker(P,item,onPick){const dlg=$('#dlg');const tg=P.byId[item.map.t
    if(item.map.task==='name'){const f=P.byId[sel];item.answer=f.n.de;item.accept=[f.n.en].filter(Boolean);}await onPick();}}},t('apply')),
   h('button',{class:'btn ghost',onclick:()=>dlg.close()},t('cancel')))));dlg.showModal();if(tg)setTimeout(()=>mv.zoomTo(geo(tg).b,6),50);}
 function nextQuestion(R){
- if(R.ended)return;const item=pickItem(R);R.used.add(item.id);const Q=prepare(item,R.diff);Q.t0=performance.now();renderQuestion(R,Q);
+ if(R.ended)return;let item=null,retry=0,joke=false;const pi=curIdx(R);
+ const k=R.retry.findIndex(r=>r.due<=R.q&&(R.mode!=='duel'||r.player===pi));
+ if(k>=0){const r=R.retry.splice(k,1)[0];item=r.item;retry=r.count;}
+ else if(R.q>=R.jokeAt&&R.jokes.length){item=R.jokes.shift();joke=true;R.jokeAt=R.q+6+Math.floor(Math.random()*5);if(R.target!==Infinity)R.target++;}
+ else{item=pickItem(R);R.used.add(item.id);}
+ const Q=prepare(item,R.diff);Q.retry=retry;Q.joke=joke;Q.t0=performance.now();renderQuestion(R,Q);
 }
 function hud(R){
  const i=curIdx(R);const p=R.players[i];
@@ -741,10 +770,14 @@ function hud(R){
 }
 function renderQuestion(R,Q){
  const it=Q.item;const area=h('div',{});const fb=h('div',{});let done=false;
- const submit=(given,correct,mark)=>{if(done||R.ended)return;done=true;mark&&mark();area.querySelectorAll('button,input').forEach(b=>b.disabled=true);onAnswer(R,Q,given,correct,fb);};
+ const submit=(given,correct,mark)=>{if(done||R.ended)return;done=true;retryMsg.textContent='';mark&&mark();area.querySelectorAll('button,input').forEach(b=>b.disabled=true);onAnswer(R,Q,given,correct,fb);};
+ const retryMsg=h('p',{class:'hand',style:'color:var(--red);font-size:1.15rem;margin:10px 0 0','aria-live':'polite'});
+ const attempt=(given,ok,nOpts,markWrong,markFinal)=>{if(done||R.ended)return;
+  if(!ok&&!it.joke&&nOpts>2&&!Q.tried){Q.tried=true;Q.second=true;Q.firstGiven=given;markWrong&&markWrong();retryMsg.textContent=t('tryAgain');return;}
+  submit(given,ok,markFinal);};
  if(it.type==='single'){
-  area.append(h('div',{class:'opts'},Q.opts.map(o=>{const b=h('button',{class:'opt',onclick:()=>submit(o.text,o.ok,()=>{b.classList.add(o.ok?'ok':'bad');
-   if(!o.ok)area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.opts[k].ok)x.classList.add('ok');});})},o.text);return b;})));
+  area.append(h('div',{class:'opts'},Q.opts.map(o=>{const b=h('button',{class:'opt',onclick:()=>attempt(o.text,o.ok,Q.opts.length,()=>{b.classList.add('bad');b.disabled=true;},()=>{b.classList.add(o.ok?'ok':'bad');
+   area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.opts[k].ok)x.classList.add('ok');});})},o.text);return b;})));
  }else if(it.type==='multi'){
   const chosen=new Set();const btns=Q.opts.map((o,k)=>{const b=h('button',{class:'opt','aria-pressed':'false',onclick:()=>{chosen.has(k)?chosen.delete(k):chosen.add(k);b.setAttribute('aria-pressed',String(chosen.has(k)));}},o.text);return b;});
   const go=()=>{if(!chosen.size)return;const ok=Q.opts.every((o,k)=>o.ok===chosen.has(k));
@@ -763,21 +796,22 @@ function renderQuestion(R,Q){
  }
  let figEl=null;
  if(it.type==='map'){const P=PACKS[it.map.pack];const tg=P.byId[it.map.target];const task=it.map.task;
-  const showL=task==='tap'?((tg.kind==='point'&&R.diff!=='hard')||(['landscapes','continents'].includes(tg.layer)&&R.diff==='easy')?[tg.layer]:[]):[];
+  const showL=task==='tap'?((tg.kind==='point'&&R.diff!=='hard')||(['landscapes','continents','regions'].includes(tg.layer)&&R.diff==='easy')?[tg.layer]:[]):[];
   const numbered=task==='label'||task==='number';
   const mv=mapView(P,{show:showL,highlight:(task==='tap'||numbered)?[]:[tg.id],faint:true,labels:numbered?Object.keys(Q.num).map(id=>({id,text:String(Q.num[id])})):[]});figEl=mv.el;
   if(task!=='tap'&&!numbered){const g=geo(tg);const sm=(g.b[2]-g.b[0])<P.w*0.08&&(g.b[3]-g.b[1])<P.h*0.08;if(sm)setTimeout(()=>mv.zoomTo(g.b,tg.kind==='point'?60:8),30);}
   const reveal=(ok,hit)=>{if(tg.kind==='point')mv.addPoint(tg,'ok');else mv.mark(tg.id,'ok');if(!ok&&hit&&hit!==tg.id){const hf=P.byId[hit];if(hf.kind==='point')mv.addPoint(hf,'bad');else mv.mark(hit,'bad');}};
-  if(task==='tap'){mv.onTap=(x,y,ppu)=>{if(done||R.ended)return;const hs=mapHits(P,tg.layer,x,y,ppu,R.diff);const ok=hs.includes(tg.id);
-    submit(hs.length?fname(P.byId[hs[0]]):'—',ok,()=>{mv.dot(x,y,ok);reveal(ok,hs[0]);});};}
+  if(task==='tap'){mv.onTap=(x,y,ppu)=>{if(done||R.ended)return;const hs=mapHits(P,tg.layer,x,y,ppu,R.diff);let ok=hs.includes(tg.id);
+    if(!ok&&tg.also&&tg.also.length){const ch=mapHits(P,'countries',x,y,ppu,R.diff);if(ch.some(c=>tg.also.includes(c)))ok=true;}
+    attempt(hs.length?fname(P.byId[hs[0]]):'—',ok,99,()=>{mv.dot(x,y,false);},()=>{mv.dot(x,y,ok);reveal(ok,hs[0]);});};}
   else if(task==='number'){area.append(h('div',{class:'row'},Q.nopts.map(n=>{const b=h('button',{class:'opt',style:'min-width:64px;text-align:center;font-weight:700',onclick:()=>{const ok=n===Q.num[tg.id];
-    submit(String(n),ok,()=>{b.classList.add(ok?'ok':'bad');area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.nopts[k]===Q.num[tg.id])x.classList.add('ok');});reveal(ok,null);});}},String(n));return b;})));}
+    attempt(String(n),ok,Q.nopts.length,()=>{b.classList.add('bad');b.disabled=true;},()=>{b.classList.add(ok?'ok':'bad');area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.nopts[k]===Q.num[tg.id])x.classList.add('ok');});reveal(ok,null);});}},String(n));return b;})));}
   else if(task==='label'&&R.diff==='hard'){const inp=h('input',{type:'text',class:'answerbox',autocomplete:'off',autocapitalize:'off',autocorrect:'off',spellcheck:'false','aria-label':t('hint_map_name')});
    const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[tg.n.de,tg.n.en].concat(it.accept||[]).filter(Boolean).some(a=>String(a).trim()===v);
     submit(v,ok,()=>{inp.style.borderColor=ok?'var(--green)':'var(--red)';reveal(ok,null);});};
    area.append(inp,h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;setTimeout(()=>inp.focus(),30);}
   else if(task==='choose'||task==='label'){area.append(h('div',{class:'opts'},Q.mopts.map(id=>{const b=h('button',{class:'opt',onclick:()=>{const ok=id===tg.id;
-    submit(fname(P.byId[id]),ok,()=>{b.classList.add(ok?'ok':'bad');area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.mopts[k]===tg.id)x.classList.add('ok');});reveal(ok,id);});}},fname(P.byId[id]));return b;})));}
+    attempt(fname(P.byId[id]),ok,Q.mopts.length,()=>{b.classList.add('bad');b.disabled=true;},()=>{b.classList.add(ok?'ok':'bad');area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.mopts[k]===tg.id)x.classList.add('ok');});reveal(ok,id);});}},fname(P.byId[id]));return b;})));}
   else{const inp=h('input',{type:'text',class:'answerbox',autocomplete:'off',autocapitalize:'off',autocorrect:'off',spellcheck:'false','aria-label':t('hint_map_name')});
    const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[it.answer,tg.n.de,tg.n.en].concat(it.accept||[]).filter(Boolean).some(a=>String(a).trim()===v);
     submit(v,ok,()=>{inp.style.borderColor=ok?'var(--green)':'var(--red)';reveal(ok,null);});};
@@ -790,33 +824,41 @@ function renderQuestion(R,Q){
      h('div',{class:'spotmark '+(ok?'ok':'bad'),style:`left:${x*100}%;top:${y*100}%`}));});});}}
  const turn=R.mode==='duel'?h('p',{class:'hand',style:'font-size:1.3rem;color:var(--ink)'},t('turnOf',{name:R.players[curIdx(R)].name})):null;
  const keepEnter=S.onEnter;
- screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},Q.prompt||it.prompt),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,fb)));
+ screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},Q.prompt||it.prompt),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,retryMsg,fb)));
  S.onEnter=keepEnter;
 }
 function onAnswer(R,Q,given,correct,fb){
- const i=curIdx(R);const p=R.players[i];const it=Q.item;const ms=Math.round(performance.now()-Q.t0);let pts=0;
- if(correct){R.streak[i]++;R.best[i]=Math.max(R.best[i],R.streak[i]);pts=10*it.difficulty+Math.min(R.streak[i]-1,5)*2+(R.mode==='timed'&&ms<5000?5:0);R.score[i]+=pts;R.up++;R.down=0;}
- else{R.streak[i]=0;R.down++;R.up=0;if(R.mode==='survival')R.lives--;}
- if(R.adaptive){if(R.up>=3&&R.level<3){R.level++;R.up=0;}if(R.down>=2&&R.level>1){R.level--;R.down=0;}}
- const gm=(R.masteries[p.id][R.game.id]=R.masteries[p.id][R.game.id]||{});const st=gm[it.id]||{box:0,seen:0,right:0};
- st.seen++;if(correct){st.right++;st.box=Math.min(5,st.box+1);}else st.box=Math.max(0,st.box-2);st.last=new Date().toISOString();gm[it.id]=st;
- R.answers.push({itemId:it.id,type:it.type,prompt:Q.prompt||it.prompt,expected:answerText(it),given,correct,ms,points:pts,player:p.id});
+ const i=curIdx(R);const p=R.players[i];const it=Q.item;const ms=Math.round(performance.now()-Q.t0);let pts=0;const joke=!!(Q.joke||it.joke);
+ if(joke){if(correct){pts=5;R.score[i]+=pts;}}
+ else if(correct){if(!Q.second){R.streak[i]++;R.best[i]=Math.max(R.best[i],R.streak[i]);}
+  pts=10*it.difficulty+(Q.second?0:Math.min(R.streak[i]-1,5)*2)+(R.mode==='timed'&&ms<5000?5:0);if(Q.second)pts=Math.floor(pts/2);R.score[i]+=pts;
+  if(!Q.second){R.up++;R.down=0;}}
+ else{R.streak[i]=0;R.down++;R.up=0;if(R.mode==='survival')R.lives--;const pen=5*(it.difficulty||1);const old=R.score[i];R.score[i]=Math.max(0,old-pen);pts=R.score[i]-old;
+  if((Q.retry||0)<2)R.retry.push({item:it,due:R.q+4,count:(Q.retry||0)+1,player:i});
+  if(R.mode==='classic'&&R.extra<15){R.target++;R.extra++;}}
+ if(R.adaptive&&!joke){if(R.up>=3&&R.level<3){R.level++;R.up=0;}if(R.down>=2&&R.level>1){R.level--;R.down=0;}}
+ if(!joke){const gm=(R.masteries[p.id][R.game.id]=R.masteries[p.id][R.game.id]||{});const ms2=gm[it.id]||{box:0,seen:0,right:0};
+  ms2.seen++;if(correct&&!Q.second){ms2.right++;ms2.box=Math.min(5,ms2.box+1);}else if(!correct)ms2.box=Math.max(0,ms2.box-2);ms2.last=new Date().toISOString();gm[it.id]=ms2;}
+ R.answers.push({itemId:it.id,type:it.type,prompt:Q.prompt||it.prompt,expected:answerText(it),given,correct,ms,points:pts,player:p.id,
+  second:Q.second?Q.firstGiven:undefined,joke:joke||undefined,retry:Q.retry||undefined});
  R.q++;
  const over=()=>(R.mode==='classic'||R.mode==='duel')?R.q>=R.target:R.mode==='survival'?R.lives<=0:(R.mode==='timed'&&Date.now()>=R.deadline);
  const proceed=()=>{if(R.ended)return;if(over())finishRun(R,false);else nextQuestion(R);};
  fb.className='feedback';
- fb.append(...[h('div',{class:'stamp hand '+(correct?'ok':'bad')},correct?'✓ '+t('correct'):'✗ '+t('wrong')),
-  !correct?h('p',{},h('b',{},t('rightAnswer',{a:answerText(it)}))):null,
+ const stampTxt=joke?t('jokeTag'):correct?'✓ '+t('correct')+(Q.second?' '+t('secondOk'):''):'✗ '+t('wrong');
+ fb.append(...[h('div',{class:'stamp hand '+(correct||joke?'ok':'bad')},stampTxt),
+  (!correct||joke)?h('p',{},h('b',{},t('rightAnswer',{a:answerText(it)}))):(it.type==='map'?h('p',{},h('b',{},answerText(it))):null),
   !correct&&(it.type==='input'||it.type==='order'||(it.type==='map'&&it.map.task==='name'))?h('p',{class:'muted'},t('yourAnswer',{a:given})):null,
-  R.mode!=='timed'&&it.explanation?h('p',{class:'muted'},it.explanation):null].filter(Boolean));
+  pts?h('p',{class:'hand',style:'font-size:1.2rem;color:'+(pts>0?'var(--green)':'var(--red)')},pts>0?t('ptsPlus',{n:pts}):t('ptsMinus',{n:-pts})):null,
+  (R.mode!=='timed'||joke)&&it.explanation?h('p',{class:'muted'},it.explanation):null].filter(Boolean));
  const hudEl=$('.hud');if(hudEl)hudEl.replaceWith(hud(R));
- if(R.mode==='timed'){S.onEnter=null;setTimeout(proceed,correct?550:1400);}
+ if(R.mode==='timed'){S.onEnter=null;setTimeout(proceed,correct?550:(joke?1800:1400));}
  else{const nb=h('button',{class:'btn'},t('next'));nb.addEventListener('click',proceed);fb.append(nb);S.onEnter=proceed;setTimeout(()=>nb.focus(),30);}
 }
 async function finishRun(R,aborted){
  if(R.ended)return;R.ended=true;clearInterval(R.timer);S.onEnter=null;
  if(!R.answers.length)return viewRunSetup(R.players[0],R.game,R.sel);
- const results=R.players.map((p,i)=>{const a=R.answers.filter(x=>x.player===p.id);const c=a.filter(x=>x.correct).length;const lv=levelOf(st(p.id).xp);
+ const results=R.players.map((p,i)=>{const a=R.answers.filter(x=>x.player===p.id&&!x.joke);const c=a.filter(x=>x.correct).length;const lv=levelOf(st(p.id).xp);
   return{p,i,answered:a.length,correct:c,acc:a.length?c/a.length:0,score:R.score[i],best:R.best[i],newBadges:[],unlocked:[],levelBefore:lv,levelAfter:lv};});
  let winner=null,draw=false;if(R.mode==='duel'){if(R.score[0]===R.score[1])draw=true;else winner=R.score[0]>R.score[1]?0:1;}
  const ended=new Date();
@@ -935,7 +977,7 @@ function validItem(it){
 }
 function itemRow(it,opts){
  return h('div',{class:'item',style:'align-items:flex-start'},opts.check||null,opts.thumb||null,
-  h('div',{class:'grow'},h('div',{class:'row',style:'gap:6px;margin-bottom:4px'},h('span',{class:'tag'},t('t_'+it.type)+(it.type==='map'?' · '+it.map.pack+' · '+it.map.task:'')),h('span',{class:'tag'},t('diff')+' '+it.difficulty)),
+  h('div',{class:'grow'},h('div',{class:'row',style:'gap:6px;margin-bottom:4px'},h('span',{class:'tag'},(it.joke?'😄 '+t('t_joke'):t('t_'+it.type))+(it.type==='map'?' · '+it.map.pack+' · '+it.map.task:'')),h('span',{class:'tag'},t('diff')+' '+it.difficulty)),
    h('div',{},it.prompt),h('div',{class:'small',style:'color:var(--green)'},'✓ '+answerText(it)),
    (it.type==='single'||it.type==='multi')?h('div',{class:'small muted'},it.options.join(' · ')):null,
    (it.type==='map'&&it.map.labels&&PACKS[it.map.pack])?h('div',{class:'small muted'},t('numbered')+': '+it.map.labels.map(id=>fname(PACKS[it.map.pack].byId[id])).join(' · ')):null),
@@ -1008,16 +1050,18 @@ Each item has: "type" (one of "single","multi","order","input","map"), "prompt",
   The game assigns new random numbers every time, so never use or mention the numbers from the material. The prompt must never contain the answer of choose/name/label tasks. Use only ids from the list.
 If the material contains a map (for example a numbered or labelled map), recreate it with map questions (label, number, tap, choose, name) for exactly those places. Never create a question that needs the material's map or pictures.
 When map packs are listed, use "map" questions for everything about places: countries, cantons, continents, capitals, cities, rivers, lakes, seas and oceans, mountains, passes, landscapes, monuments and historic sites. Use the other types for facts that do not need a map (e.g. "Welcher Kontinent ist der grösste?").
+Country groups (Skandinavien, Nordische Länder, Baltikum, Benelux, Britische Inseln, Iberische Halbinsel) are in the "regions" layer of the world and europe packs.
+Jokes: add one extra item per about 10 questions with "joke": true, type "single": a funny, kind, age-appropriate fake question about the topic whose correct option (put it first, the game shuffles) is the joking answer; "explanation" is the punchline. Never make fun of people, countries or groups.
 Rules: use only facts contained in the material and never invent content. Wrong options must be plausible but clearly wrong. For vocabulary, ask in both directions and use input questions for spelling. Write the questions in the language of the material unless the notes say otherwise. Skip anything unreadable.`;
 const QUIZ_TOOL={name:'save_questions',description:'Save the quiz questions created from the learning material.',
  input_schema:{type:'object',required:['items'],properties:{items:{type:'array',items:{type:'object',required:['type','prompt','difficulty'],properties:{
   type:{type:'string',enum:['single','multi','order','input','map']},prompt:{type:'string'},difficulty:{type:'integer',enum:[1,2,3]},explanation:{type:'string'},
   options:{type:'array',items:{type:'string'}},correct:{type:'array',items:{type:'integer'}},order:{type:'array',items:{type:'string'}},
-  answer:{type:'string'},accept:{type:'array',items:{type:'string'}},
+  answer:{type:'string'},accept:{type:'array',items:{type:'string'}},joke:{type:'boolean'},
   map:{type:'object',properties:{pack:{type:'string'},task:{type:'string',enum:['tap','choose','name','label','number']},target:{type:'string'},
    options:{type:'array',items:{type:'string'}},labels:{type:'array',items:{type:'string'}}}}}}}}}};
 const DOCREF=/(\bNummer\s*\d|\bNr\.?\s*\d|\bnumber\s*\d|\bauf der Karte\b|\bin der Karte\b|\bon the map\b|\bAbbildung|\bAbb\.|\bfigure\b|\bArbeitsblatt|\bworksheet|\bLernziel|\blearning goal|\bim Bild\b|\bin the picture\b|\bim Text\b|\bin the text\b|\bSeite\s*\d|\bpage\s*\d)/i;
-function docRef(it){if(!it||it.type==='map')return false;const txt=[it.prompt].concat(it.options||[],it.order||[]).join(' ');return DOCREF.test(txt);}
+function docRef(it){if(!it||it.type==='map'||it.joke)return false;const txt=[it.prompt].concat(it.options||[],it.order||[]).join(' ');return DOCREF.test(txt);}
 function attachFig(it,imgIdx){
  if(it.figure&&Array.isArray(it.figure.box)&&it.figure.box.length===4){const gi=imgIdx[(parseInt(it.figure.photo,10)||1)-1];
   if(gi!==undefined){const fig={photo:gi,box:normBox(it.figure.box.map(v=>(+v||0)/1000)),covers:[],spot:null};
@@ -1063,7 +1107,7 @@ async function viewGenerate(g){
      status.textContent=t('working',{n:out.length,t:total});
      const n=Math.min(25,want-got);const avoid=existing.concat(out.map(i=>i.prompt)).slice(-150);
      const req=blocks.concat([{type:'text',text:`Images in this request: ${imgIdx.length}. Material type: ${kind.value}. Create about ${n} questions. Notes: ${instr.value.trim()||'none'}.`+(catalog?`\n\nAvailable map packs (object ids for map questions):\n${catalog}`:'')+(avoid.length?`\nDo not repeat these existing questions:\n- `+avoid.join('\n- '):'')}]);
-     const items=await callClaude(req);let valid=0;for(const it of items){delete it.figure;delete it.spot;if(docRef(it)){dropped++;continue;}if(validItem(it)){it.id=uid();out.push(it);valid++;}else dropped++;}
+     const items=await callClaude(req);for(const pk of new Set(items.filter(x=>x&&x.type==='map'&&x.map&&avail.includes(x.map.pack)).map(x=>x.map.pack)))await loadPack(pk).catch(()=>{});let valid=0;for(const it of items){delete it.figure;delete it.spot;if(docRef(it)){dropped++;continue;}if(validItem(it)){it.id=uid();out.push(it);valid++;}else dropped++;}
      got+=valid;if(!valid)break;}}}
   catch(e){btn.disabled=false;status.textContent='';return toast(t('genErr',{e:e.message}),true);}
   const sources=photos.map(ph=>{let pr=null;return()=>pr||(pr=loadImgEl(ph.url));});
