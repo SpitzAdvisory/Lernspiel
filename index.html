@@ -139,12 +139,17 @@ dialog.wide{max-width:1000px}
 .m-water{fill:#9cc7e8;stroke:#6aa0cc;stroke-width:.5;vector-effect:non-scaling-stroke}
 .m-river{fill:none;stroke:#5b9bd5;stroke-width:1.3;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
 .m-pt{fill:#2f3437;stroke:#fff;stroke-width:1.2;vector-effect:non-scaling-stroke}
-svg.map .hl{fill:#f6c343;fill-opacity:.9;stroke:#c8322b;stroke-width:2.2;vector-effect:non-scaling-stroke}
-svg.map .m-river.hl,svg.map path.hl.line{fill:none;stroke:#c8322b;stroke-width:4.5}
-svg.map .ok{fill:#57b27a;fill-opacity:.85;stroke:#1d6b3e;stroke-width:2.2;vector-effect:non-scaling-stroke}
-svg.map .bad{fill:#e2766f;fill-opacity:.85;stroke:#8f1f19;stroke-width:2.2;vector-effect:non-scaling-stroke}
-svg.map .m-river.ok,svg.map path.ok.line{fill:none;stroke:#1d6b3e;stroke-width:4.5}
-svg.map .m-river.bad,svg.map path.bad.line{fill:none;stroke:#8f1f19;stroke-width:4.5}
+.m-landbase{fill:#efe9dc;stroke:none}
+.m-chbase{fill:#e2dccd;stroke:#b3a88f;stroke-width:.6;vector-effect:non-scaling-stroke}
+.m-hist{stroke:#6b6255;stroke-width:.7;vector-effect:non-scaling-stroke}
+.mapcap{position:absolute;left:8px;top:8px;background:rgba(255,255,255,.92);border:1px solid var(--grid);border-radius:8px;padding:3px 9px;font-weight:700;font-size:.9rem;color:var(--ink);pointer-events:none;line-height:1.3}
+.maphead{margin:18px 0 8px;color:var(--muted);font-weight:700;font-size:.9rem;text-transform:uppercase;letter-spacing:.04em}
+svg.map .hl{fill:#f6c343!important;fill-opacity:.9;stroke:#c8322b;stroke-width:2.2;vector-effect:non-scaling-stroke}
+svg.map .m-river.hl,svg.map path.hl.line{fill:none!important;stroke:#c8322b;stroke-width:4.5}
+svg.map .ok{fill:#57b27a!important;fill-opacity:.85;stroke:#1d6b3e;stroke-width:2.2;vector-effect:non-scaling-stroke}
+svg.map .bad{fill:#e2766f!important;fill-opacity:.85;stroke:#8f1f19;stroke-width:2.2;vector-effect:non-scaling-stroke}
+svg.map .m-river.ok,svg.map path.ok.line{fill:none!important;stroke:#1d6b3e;stroke-width:4.5}
+svg.map .m-river.bad,svg.map path.bad.line{fill:none!important;stroke:#8f1f19;stroke-width:4.5}
 svg.map circle.hl{fill:#f6c343;stroke:#c8322b;stroke-width:2.5}
 svg.map circle.badge{fill:#1F3A93;stroke:#fff;stroke-width:2;vector-effect:non-scaling-stroke}
 svg.map text.badge{fill:#fff;font-weight:700;font-family:"Atkinson Hyperlegible",system-ui,sans-serif;pointer-events:none}
@@ -263,6 +268,9 @@ disconnect:'Disconnect Dropbox',confirmDisconnect:'Disconnect Dropbox on this de
 pending:'Runs waiting for upload: {n}',savedOffline:'No connection – the run will be uploaded later.',loading:'Loading data …',
 folderHint:'For syncing with the iPad, choose the folder "Dropbox (Privat)\\Apps\\Lernspiel-Spitz".'}
 };
+T.fr={"appTitle": "Jeu d’apprentissage", "whoPlays": "Qui joue ?", "noPlayers": "Pas encore de joueurs. Ajoute-les dans l’administration.", "admin": "Administration", "back": "Retour", "hello": "Salut {name}", "level": "Niveau {n}", "xpToNext": "Encore {n} points jusqu’au niveau {m}", "chooseGame": "Choisir un jeu", "noGames": "Pas encore de jeux. Crée-en un dans l’administration.", "questions": "{n} questions", "mastered": "{p} % maîtrisé", "mode": "Mode de jeu", "m_classic": "Classique", "md_classic": "Au moins 25 questions – les erreurs ajoutent des questions", "m_timed": "Course contre la montre", "md_timed": "Le plus possible contre la montre", "m_survival": "Survie", "md_survival": "Trois vies – jusqu’où iras-tu ?", "m_duel": "Duel", "md_duel": "Deux joueurs, 13 questions chacun, à tour de rôle", "difficulty": "Difficulté", "d_easy": "Facile", "d_medium": "Moyen", "d_hard": "Difficile", "dd_easy": "Moins de choix, questions plus faciles", "dd_medium": "Toutes les questions", "dd_hard": "Questions plus difficiles, moins de temps", "lock_medium": "Débloqué à 70 % en Facile", "lock_hard": "Débloqué à 80 % en Moyen", "adjust": "Adaptation", "adaptive": "Adaptatif", "ad_adaptive": "Entraîne davantage les points faibles, le niveau s’adapte", "fixed": "Fixe", "ad_fixed": "Même niveau, ordre aléatoire", "opponent": "Adversaire", "needOpponent": "Un duel nécessite un deuxième joueur.", "start": "C’est parti", "quit": "Terminer", "hint_single": "Choisis une réponse", "hint_multi": "Choisis toutes les bonnes réponses", "hint_order": "Touche les éléments dans le bon ordre. Touche encore pour en retirer un.", "hint_input": "Tape la réponse – orthographe exacte, majuscules comprises", "check": "Vérifier", "next": "Suivant", "correct": "Juste !", "wrong": "Dommage, c’est faux", "rightAnswer": "La bonne réponse : {a}", "yourAnswer": "Ta réponse : {a}", "turnOf": "C’est au tour de {name}", "points": "Points", "accuracy": "Réussite", "bestStreak": "Meilleure série", "streak": "Série", "newBadges": "Nouveaux badges", "levelUp": "Nouveau niveau atteint : {n}", "unlocked": "Nouveau débloqué : {d}", "winner": "{name} gagne le duel", "draw": "Égalité", "again": "Rejouer", "otherGame": "Autre jeu", "changePlayer": "Changer de joueur", "resultTitle": "Résultats", "timeUp": "Temps écoulé", "noItems": "Ce jeu n’a pas encore de questions.", "b_first_run": "Première partie", "b_perfect": "Sans faute", "b_streak10": "Série de 10", "b_answers100": "100 réponses", "b_survivor20": "Coriace", "b_speed15": "Éclair", "b_duel_win": "Vainqueur du duel", "b_hard_clear": "Pro", "b_master_game": "Sujet maîtrisé", "pwTitle": "Déverrouiller l’administration", "password": "Mot de passe", "unlock": "Déverrouiller", "pwWrong": "Mot de passe incorrect.", "tabPlayers": "Joueurs", "tabGames": "Jeux", "tabLogs": "Journal", "tabSettings": "Réglages", "lockAdmin": "Fermer l’administration", "addPlayer": "Ajouter un joueur", "editPlayer": "Modifier le joueur", "name": "Nom", "avatar": "Personnage", "unlockAll": "Toutes les difficultés débloquées", "save": "Enregistrer", "cancel": "Annuler", "edit": "Modifier", "del": "Supprimer", "confirmDelPlayer": "Supprimer le joueur « {name} » et sa progression ? Le journal est conservé.", "resetProgress": "Réinitialiser la progression", "confirmReset": "Réinitialiser les points, badges, déblocages et l’état d’apprentissage de « {name} » ?", "newGame": "Nouveau jeu", "importGame": "Importer un jeu", "exportGame": "Exporter", "addMaterial": "Ajouter du matériel", "viewQuestions": "Questions", "confirmDelGame": "Supprimer le jeu « {t} » ? Le journal est conservé.", "gameTitle": "Titre du jeu", "kind": "Type de matériel", "k_vocab": "Vocabulaire", "k_science": "Connaissances", "k_other": "Autre", "instructions": "Remarques pour les questions (facultatif)", "instrPh": "p. ex. allemand–français, dans les deux sens ; niveau 5e année", "count": "Nombre de questions (environ)", "files": "Photos ou PDF", "generate": "Créer les questions", "needKey": "Enregistre d’abord une clé API dans les réglages.", "needFiles": "Choisis au moins une photo ou un PDF.", "needTitle": "Saisis un titre.", "working": "Création des questions … {n} sur environ {t}", "genDone": "{n} questions créées, {d} inutilisables écartées. Vérifie avant d’enregistrer.", "genErr": "La création a échoué : {e}", "review": "Vérifier les questions", "keep": "garder", "saveToGame": "Enregistrer les questions choisies", "saved": "Enregistré", "dupSkipped": "{n} questions en double ignorées", "editJson": "Modifier en JSON", "jsonInvalid": "Invalide – vérifie le format.", "logsEmpty": "Pas encore d’entrées.", "date": "Date", "player": "Joueur", "game": "Jeu", "details": "Détails", "mistakes": "Erreurs de cette partie", "noMistakes": "Aucune erreur.", "aborted": "interrompu", "dataFolder": "Dossier de données", "browserStorage": "Stockage du navigateur (pas de dossier)", "chooseFolder": "Choisir un dossier", "folderMoved": "Les données ont été copiées dans le nouveau dossier.", "folderExisting": "Le dossier choisi contient déjà des données de jeu ; elles sont utilisées désormais.", "apiKey": "Clé API Anthropic", "apiKeyNote": "Enregistrée seulement dans ce navigateur, jamais dans le dossier de données.", "model": "Modèle", "modelNote": "Vérifie le nom du modèle dans la documentation actuelle d’Anthropic.", "changePw": "Changer le mot de passe", "newPw": "Nouveau mot de passe", "pwShort": "Au moins 4 caractères.", "language": "Langue", "setupTitle": "Configuration", "setupFolder": "Où enregistrer les jeux, les joueurs et le journal ?", "useBrowser": "Enregistrer seulement dans le navigateur", "noFsApi": "Ce navigateur ne peut pas relier de dossier. Utilise Chrome sur un ordinateur.", "setPw": "Définir le mot de passe de l’administration", "setPwNote": "Tient les enfants à l’écart de l’administration, mais ce n’est pas une vraie sécurité.", "finish": "Terminer la configuration", "reconnectTitle": "Reconnecter le dossier de données", "reconnectText": "Chrome a besoin de ton autorisation pour accéder à « {name} ».", "reconnect": "Connecter", "otherFolder": "Choisir un autre dossier", "updated": "Mis à jour", "t_single": "Une réponse", "t_multi": "Plusieurs", "t_order": "Ordre", "t_input": "Saisie", "t_spot": "Point sur l’image", "t_map": "Carte", "hint_map_tap": "Touche le bon endroit sur la carte. Zoome avec deux doigts ou + / −.", "hint_map_choose": "Qu’est-ce qui est marqué sur la carte ?", "hint_map_name": "Comment s’appelle ce qui est marqué ? Orthographe exacte.", "hint_map_label": "Les numéros sur la carte sont redistribués à chaque fois.", "hint_map_number": "Quel numéro sur la carte ?", "mapLabelQ": "Qu’est-ce qui est marqué du numéro {nr} ?", "numbered": "Numérotés", "tryAgain": "Encore un essai – maintenant pour la moitié des points.", "secondOk": "(2e essai, moitié des points)", "jokeTag": "😄 Question pour rire !", "ptsPlus": "+{n} points", "ptsMinus": "−{n} points", "t_joke": "Pour rire", "tabMaps": "Cartes", "mapsIntro": "Les paquets de cartes sont des modules indépendants que chaque jeu peut utiliser. Ils se trouvent dans le dossier de données sous « maps ».", "importMaps": "Importer des paquets de cartes", "mapsImported": "{n} paquet(s) de cartes importé(s)", "noMaps": "Pas encore de paquets de cartes. Importe le fichier des paquets de cartes.", "mapMissing": "Le paquet de cartes « {id} » manque – importe-le dans l’administration sous « Cartes ».", "mapsForGame": "Paquets de cartes pour ce jeu", "objects": "{n} objets", "layers": "Couches", "tapToName": "Touche un objet pour voir son nom.", "mapPick": "Touche le bon objet pour changer la cible.", "mapBtn": "Carte", "zoomIn": "Agrandir", "zoomOut": "Réduire", "zoomReset": "Carte entière", "hint_spot": "Touche le bon endroit dans l’image", "spotAnswer": "l’endroit marqué en vert", "imgEdit": "Image", "imgAdd": "+ Image", "modeCrop": "Recadrer", "modeCover": "Masquer", "modeSpot": "Cible", "wholePhoto": "Photo entière", "clearCovers": "Retirer les masques", "nextPhoto": "Autre photo", "apply": "Appliquer", "removeImg": "Retirer l’image", "help_crop": "Trace un cadre autour de la partie de l’image qui correspond à la question.", "help_cover": "Trace des rectangles sur les légendes qui révèlent la réponse. Touche un rectangle pour le supprimer.", "help_spot": "Touche l’endroit qui compte comme bonne réponse. Il doit se trouver dans le cadre.", "savingImgs": "Enregistrement des images … {i} sur {n}", "spotSkipped": "{n} questions à point sans cible valable ignorées", "imgErr": "L’image n’a pas pu être chargée", "confirmDelSpot": "Une question à point a besoin d’une image. Supprimer la question ?", "importDone": "« {t} » importé", "importInvalid": "Le fichier n’est pas un jeu valable.", "err": "Erreur : {e}", "lives": "Vies", "mode_": "Mode", "score": "Points", "answered": "Réponses", "current": "Actuel", "materialNote": "Les photos sont réduites, envoyées à Claude et non enregistrées. Les photos d’iPhone (HEIC) sont converties automatiquement en JPEG ; il faut une connexion Internet.", "questionsOf": "Questions de « {t} »", "noQuestions": "Aucune question.", "diff": "Niveau", "saving": "Enregistrement …", "pwSet": "Mot de passe changé", "keySaved": "Enregistré", "noPlayersPlay": "Pas encore de joueurs. Ajoute-les dans l’administration sur l’ordinateur.", "sync": "Actualiser", "connectTitle": "Se connecter à Dropbox", "connectText": "Relie cet appareil une seule fois à ta Dropbox. La page ne voit que son propre dossier « Apps/Lernspiel-Spitz ».", "connectBtn": "Se connecter à Dropbox", "connectErr": "La connexion a échoué : {e}", "homeTip": "Astuce pour l’iPad : dans Safari, choisis « Partager » → « Sur l’écran d’accueil ». La connexion et les données ont alors plus de chances d’être conservées.", "disconnect": "Déconnecter Dropbox", "confirmDisconnect": "Déconnecter Dropbox sur cet appareil ? Les parties pas encore envoyées sont conservées.", "pending": "Parties en attente d’envoi : {n}", "savedOffline": "Pas de connexion – la partie sera envoyée plus tard.", "loading": "Chargement des données …", "folderHint": "Pour synchroniser avec l’iPad, choisis le dossier « Dropbox (Privat)\\Apps\\Lernspiel-Spitz ».", "tr_btn": "Traduire", "tr_working": "Traduction … {n} sur {t}", "tr_done": "{n} questions traduites", "tr_none": "Toutes les questions existent déjà en allemand, en anglais et en français.", "tr_count": "{n} sans traduction complète", "tr_fail": "{n} questions n’ont pas pu être traduites", "g_geo": "Géographie", "g_hist": "Histoire", "langs": "Langues"};
+Object.assign(T.de,{"tr_btn": "Übersetzen", "tr_working": "Übersetze … {n} von {t}", "tr_done": "{n} Fragen übersetzt", "tr_none": "Alle Fragen sind bereits auf Deutsch, Englisch und Französisch vorhanden.", "tr_count": "{n} ohne vollständige Übersetzung", "tr_fail": "{n} Fragen konnten nicht übersetzt werden", "g_geo": "Geografie", "g_hist": "Geschichte", "langs": "Sprachen"});Object.assign(T.en,{"tr_btn": "Translate", "tr_working": "Translating … {n} of {t}", "tr_done": "{n} questions translated", "tr_none": "All questions already exist in German, English and French.", "tr_count": "{n} without full translation", "tr_fail": "{n} questions could not be translated", "g_geo": "Geography", "g_hist": "History", "langs": "Languages"});
+const LANGS=['de','en','fr'];
 const DEFAULT_MODEL='claude-sonnet-5';
 const DBX_KEY='ktui04lktkyz4hn';
 const PLAY_ONLY=location.protocol==='https:'&&/\.github\.io$/.test(location.hostname);
@@ -288,7 +296,16 @@ en:[
  ['Where do cows go on Saturday night?',['To the moo-vies','To the milk bar','To bed'],'Moo!'],
  ['What gets wetter the more it dries?',['A towel','A fish','The desert'],'It dries you and gets wet.'],
  ['What do you call a sleeping dinosaur?',['A dino-snore','A T-Rest','A stegosnoozus'],'Zzz\u2026'],
- ['Which continent is the best for chilling?',['Antarctica – it\u2019s always cool','Africa – it\u2019s warm','Europe – it has holidays'],'Guaranteed cool, minus 50 degrees included.']]};
+ ['Which continent is the best for chilling?',['Antarctica – it\u2019s always cool','Africa – it\u2019s warm','Europe – it has holidays'],'Guaranteed cool, minus 50 degrees included.']],
+fr:[
+ ['Comment appelle-t-on un boomerang qui ne revient pas ?',['Un bâton','Un aigle','Un frisbee'],'Sans retour, ce n\u2019est qu\u2019un bâton.'],
+ ['Quel animal saute plus haut qu\u2019une maison ?',['Tous – les maisons ne sautent pas','Seulement le kangourou','Aucun'],'Les maisons ne sautent jamais.'],
+ ['Qu\u2019est-ce qui est jaune et qui attend ?',['Jonathan','Un taxi','Une banane pressée'],'Jaune et attend : Jonathan !'],
+ ['Quel est le comble pour un électricien ?',['Ne pas être au courant','Avoir peur du noir','Porter des baskets'],'Le courant, c\u2019est son métier.'],
+ ['Pourquoi les poissons n\u2019aiment-ils pas jouer au tennis ?',['Ils ont peur du filet','Ils n\u2019ont pas de raquette','L\u2019eau est trop mouillée'],'Le filet, très peu pour eux.'],
+ ['Que dit un zéro à un huit ?',['Jolie ceinture !','Salut, le bonhomme de neige !','Tu as grossi !'],'Le huit, c\u2019est un zéro avec une ceinture.'],
+ ['Qu\u2019est-ce qui a des dents mais ne mange jamais ?',['Un peigne','Un requin au régime','Une fourchette'],'Des dents, mais aucun appétit.'],
+ ['Quel continent est le meilleur pour se détendre ?',['L\u2019Antarctique – c\u2019est toujours cool','L\u2019Afrique – il fait chaud','L\u2019Europe – il y a des vacances'],'Cool garanti, moins 50 degrés compris.']]};
 function builtinJokes(){return(JOKES[S.lang]||JOKES.de).map((j,k)=>({id:'joke:'+S.lang+k,type:'single',joke:true,difficulty:1,prompt:j[0],options:j[1],correct:[0],explanation:j[2]}));}
 const DIFF_LEVEL={easy:1,medium:2,hard:3};
 
@@ -308,7 +325,7 @@ function slug(s){return String(s).replace(/ä/g,'ae').replace(/ö/g,'oe').replac
 function pad(n){return String(n).padStart(2,'0');}
 function ymd(d){return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());}
 function hms(d){return pad(d.getHours())+pad(d.getMinutes())+pad(d.getSeconds());}
-function fmtDate(iso){const d=new Date(iso);return d.toLocaleDateString(S.lang==='de'?'de-CH':'en-GB')+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
+function fmtDate(iso){const d=new Date(iso);return d.toLocaleDateString({de:'de-CH',en:'en-GB',fr:'fr-CH'}[S.lang]||'de-CH')+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
 function toast(msg,err){const el=h('div',{class:'toast'+(err?' err':''),role:'status'},msg);document.body.append(el);setTimeout(()=>el.remove(),err?6000:2600);}
 async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
 function levelOf(xp){return Math.floor(Math.sqrt((xp||0)/50))+1;}
@@ -465,7 +482,7 @@ async function saveGame(g){g.updatedAt=new Date().toISOString();await S.store.wr
 /* ================= boot ================= */
 async function init(){
  try{await IDB.open();}catch(e){screen(h('div',{class:'page'},h('p',{},t('err',{e:e.message}))));return;}
- S.lang=(await IDB.get('kv','lang'))||((navigator.language||'de').startsWith('de')?'de':'en');applyLang();
+ S.lang=(await IDB.get('kv','lang'))||(LANGS.find(l=>(navigator.language||'de').startsWith(l))||'en');applyLang();
  if(PLAY_ONLY)return initPlay();
  const mode=await IDB.get('kv','storeMode');
  if(mode==='folder'){const hd=await IDB.get('kv','dirHandle');
@@ -479,7 +496,7 @@ async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{
 function applyLang(){document.documentElement.lang=S.lang;document.title=t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
- ['de','en'].map(l=>h('button',{'aria-pressed':String(S.lang===l),onclick:async()=>{await setLang(l);rerender();}},l.toUpperCase())));}
+ LANGS.map(l=>h('button',{'aria-pressed':String(S.lang===l),onclick:async()=>{await setLang(l);rerender();}},l.toUpperCase())));}
 function topbar(title,opts={}){return h('header',{class:'top'},
  opts.back?h('button',{class:'btn ghost small',onclick:opts.back},'‹ '+t('back')):null,
  h('h1',{},title),opts.extra||null,opts.rerender?langToggle(opts.rerender):null);}
@@ -603,8 +620,13 @@ function pickItem(R){
  const w=cand.map(i=>{const b=(gm[i.id]&&gm[i.id].box)||0;const dd=Math.abs(i.difficulty-R.level);return(1/(b+1))*(dd===0?2.5:dd===1?1:0.4);});
  let r=Math.random()*w.reduce((a,b)=>a+b,0);for(let k=0;k<cand.length;k++){r-=w[k];if(r<=0)return cand[k];}return cand[cand.length-1];
 }
+function loc(it,lang){const tr=it&&it.tr&&it.tr[lang||S.lang];if(!tr)return it;const o=Object.assign({},it);
+ for(const k of['prompt','explanation','answer'])if(typeof tr[k]==='string'&&tr[k].trim())o[k]=tr[k];if(Array.isArray(tr.accept))o.accept=tr.accept;
+ if(Array.isArray(tr.options)&&Array.isArray(it.options)&&tr.options.length===it.options.length)o.options=tr.options;
+ if(Array.isArray(tr.order)&&Array.isArray(it.order)&&tr.order.length===it.order.length)o.order=tr.order;return o;}
+function trMissing(it){return LANGS.filter(l=>!(it.tr&&it.tr[l]));}
 function prepare(item,diff){
- const Q={item,type:item.type};
+ item=loc(item);const Q={item,type:item.type};
  if(item.type==='single'||item.type==='multi'){let opts=item.options.map((text,i)=>({text,ok:item.correct.includes(i)}));
   if(item.type==='single'&&diff==='easy'&&opts.length>3){const right=opts.filter(o=>o.ok);opts=right.concat(shuffle(opts.filter(o=>!o.ok)).slice(0,3-right.length));}
   Q.opts=shuffle(opts);}
@@ -669,8 +691,12 @@ function figEditor(o){
 }
 /* ================= map toolbox ================= */
 const PACKS={};const SVGNS='http://www.w3.org/2000/svg';
+const HPAL=['#F2C4A0','#BFD8B8','#C9D4F0','#F0D59A','#E3B9D6','#B8DDE0','#E8C3B0','#D6D2A5','#C7C0E6','#F2B8B8'];
+const isHistPack=id=>/^h\d\d-/.test(id);
 function sv(tag,attrs){const e=document.createElementNS(SVGNS,tag);for(const k in attrs||{})e.setAttribute(k,attrs[k]);return e;}
-function fname(f){return f?(f.n[S.lang]||f.n.de||f.n.en||f.id):'';}
+function perText(p){if(S.lang==='de')return p;const fr=S.lang==='fr';return p.replace(/v\. Chr\./g,fr?'av. J.-C.':'BC').replace(/n\. Chr\./g,fr?'apr. J.-C.':'AD');}
+function fname(f){if(!f)return'';const n=f.n||{};if(n[S.lang])return n[S.lang];
+ if(S.lang==='fr'){const a=n.en||'',b=n.de||'';return a&&b&&a!==b?a+' / '+b:(a||b||f.id);}return n.de||n.en||f.id;}
 async function listPacks(){try{return(await S.store.list('maps')).filter(n=>/\.json$/.test(n)&&n!=='index.json').map(n=>n.replace(/\.json$/,''));}catch(e){return[];}}
 async function loadPack(id){if(PACKS[id])return PACKS[id];const P=await S.store.read('maps/'+id+'.json');if(!P||!P.layers)throw new Error(t('mapMissing',{id}));
  P.byId={};for(const L of P.layers)for(const f of L.f){f.layer=L.id;f.kind=L.kind;P.byId[f.id]=f;}return(PACKS[id]=P);}
@@ -693,11 +719,11 @@ function mapHits(P,layerId,x,y,ppu,diff){const L=P.layers.find(l=>l.id===layerId
 function mapView(P,o){o=o||{};const show=new Set(o.show||[]),hl=new Set(o.highlight||[]),lab=new Set((o.labels||[]).map(l=>l.id));
  const wrap=h('div',{class:'mapwrap'+(o.faint?' showfaint':'')});const svg=sv('svg',{viewBox:`0 0 ${P.w} ${P.h}`,class:'map',preserveAspectRatio:'xMidYMid meet'});
  svg.style.aspectRatio=P.w+'/'+P.h;svg.style.background=P.id==='ch'?'#ece6d6':'#cfe3f3';const root=sv('g');svg.append(root);const els={};
- const always=L=>L.kind==='bg'||(L.kind!=='point'&&!['landscapes','continents','seas','regions'].includes(L.id));
+ const always=L=>L.kind==='bg'||(L.kind!=='point'&&!L.opt&&!['landscapes','continents','seas','regions'].includes(L.id));
  for(const L of P.layers){const need=always(L)||show.has(L.id)||L.f.some(f=>hl.has(f.id)||lab.has(f.id));if(!need)continue;const lg=sv('g');root.append(lg);
   for(const f of L.f){let el;
    if(L.kind==='point'){if(!show.has(L.id)&&!hl.has(f.id)&&!lab.has(f.id))continue;el=sv('circle',{cx:f.x,cy:f.y,r:3,class:'m-pt'});}
-   else el=sv('path',{d:f.d,class:'m-'+L.style+(f.bg?' m-bg':'')+(L.kind==='line'?' line':'')});
+   else{el=sv('path',{d:f.d,class:'m-'+L.style+(f.bg?' m-bg':'')+(L.kind==='line'?' line':'')});if(L.style==='hist')el.style.fill=HPAL[(f.k||0)%HPAL.length];}
    el.dataset.id=f.id;if(hl.has(f.id))el.classList.add('hl');lg.append(el);els[f.id]=el;}}
  const marks=sv('g');root.append(marks);const badges=sv('g');
  for(const l of o.labels||[]){const f=P.byId[l.id];if(!f)continue;const pt=f.x!=null?[f.x,f.y]:(f.c||[0,0]);
@@ -734,13 +760,13 @@ function mapView(P,o){o=o||{};const show=new Set(o.show||[]),hl=new Set(o.highli
  svg.addEventListener('wheel',e=>{e.preventDefault();const p=toSvg(e.clientX,e.clientY);zoomAt(p.x,p.y,e.deltaY<0?1.25:0.8);},{passive:false});
  const ctl=h('div',{class:'mapctl'},h('button',{type:'button','aria-label':t('zoomIn'),onclick:()=>zoomAt(vb.x+vb.w/2,vb.y+vb.h/2,1.5)},'+'),
   h('button',{type:'button','aria-label':t('zoomOut'),onclick:()=>zoomAt(vb.x+vb.w/2,vb.y+vb.h/2,1/1.5)},'−'),h('button',{type:'button','aria-label':t('zoomReset'),onclick:()=>api.reset()},'⟲'));
- wrap.append(svg,ctl,h('div',{class:'mapattr'},P.attribution||''));
+ wrap.append(svg,ctl,h('div',{class:'mapattr'},P.attribution||''),...(o.caption?[h('div',{class:'mapcap'},o.caption)]:[]));
  new ResizeObserver(()=>apply()).observe(svg);setTimeout(apply,0);
  return api;}
 function packCatalog(P){return`[map pack "${P.id}": ${P.name.en}]\n`+P.layers.filter(L=>L.kind!=='bg').map(L=>{const fs=L.f.filter(f=>!f.bg);if(!fs.length)return'';
  return`${L.id} (${L.label.en}): `+fs.map(f=>f.id+'='+f.n.de+(f.n.en&&f.n.en!==f.n.de?'/'+f.n.en:'')+(f.cat&&L.kind==='point'?' ['+f.cat+']':'')).join('; ');}).filter(Boolean).join('\n');}
 function mapPicker(P,item,onPick){const dlg=$('#dlg');const tg=P.byId[item.map.target];const info=h('p',{class:'muted'},t('mapPick'));
- const mv=mapView(P,{show:tg&&tg.kind==='point'?[tg.layer]:(tg?[tg.layer]:[]),highlight:tg?[tg.id]:[],faint:true});let sel=tg?tg.id:null;
+ const TLp=tg&&P.layers.find(l=>l.id===tg.layer);const mv=mapView(P,{caption:TLp&&TLp.opt?(TLp.label[S.lang]||TLp.label.de):'',show:tg?[tg.layer]:[],highlight:tg?[tg.id]:[],faint:true});let sel=tg?tg.id:null;
  mv.onTap=(x,y,ppu)=>{const hs=mapHits(P,tg?tg.layer:'',x,y,ppu,'easy');if(!hs.length)return;if(sel&&mv.els[sel])mv.els[sel].classList.remove('hl');sel=hs[0];
   if(mv.els[sel])mv.els[sel].classList.add('hl');info.textContent=fname(P.byId[sel]);};
  dlg.classList.add('wide');dlg.addEventListener('close',()=>dlg.classList.remove('wide'),{once:true});
@@ -796,9 +822,10 @@ function renderQuestion(R,Q){
  }
  let figEl=null;
  if(it.type==='map'){const P=PACKS[it.map.pack];const tg=P.byId[it.map.target];const task=it.map.task;
-  const showL=task==='tap'?((tg.kind==='point'&&R.diff!=='hard')||(['landscapes','continents','regions'].includes(tg.layer)&&R.diff==='easy')?[tg.layer]:[]):[];
+  const TL=P.layers.find(l=>l.id===tg.layer);
+  const showL=TL&&TL.opt?[tg.layer]:(task==='tap'?((tg.kind==='point'&&R.diff!=='hard')||(['landscapes','continents','regions'].includes(tg.layer)&&R.diff==='easy')?[tg.layer]:[]):[]);
   const numbered=task==='label'||task==='number';
-  const mv=mapView(P,{show:showL,highlight:(task==='tap'||numbered)?[]:[tg.id],faint:true,labels:numbered?Object.keys(Q.num).map(id=>({id,text:String(Q.num[id])})):[]});figEl=mv.el;
+  const mv=mapView(P,{caption:TL&&TL.opt?(TL.label[S.lang]||TL.label.de):'',show:showL,highlight:(task==='tap'||numbered)?[]:[tg.id],faint:true,labels:numbered?Object.keys(Q.num).map(id=>({id,text:String(Q.num[id])})):[]});figEl=mv.el;
   if(task!=='tap'&&!numbered){const g=geo(tg);const sm=(g.b[2]-g.b[0])<P.w*0.08&&(g.b[3]-g.b[1])<P.h*0.08;if(sm)setTimeout(()=>mv.zoomTo(g.b,tg.kind==='point'?60:8),30);}
   const reveal=(ok,hit)=>{if(tg.kind==='point')mv.addPoint(tg,'ok');else mv.mark(tg.id,'ok');if(!ok&&hit&&hit!==tg.id){const hf=P.byId[hit];if(hf.kind==='point')mv.addPoint(hf,'bad');else mv.mark(hit,'bad');}};
   if(task==='tap'){mv.onTap=(x,y,ppu)=>{if(done||R.ended)return;const hs=mapHits(P,tg.layer,x,y,ppu,R.diff);let ok=hs.includes(tg.id);
@@ -807,13 +834,13 @@ function renderQuestion(R,Q){
   else if(task==='number'){area.append(h('div',{class:'row'},Q.nopts.map(n=>{const b=h('button',{class:'opt',style:'min-width:64px;text-align:center;font-weight:700',onclick:()=>{const ok=n===Q.num[tg.id];
     attempt(String(n),ok,Q.nopts.length,()=>{b.classList.add('bad');b.disabled=true;},()=>{b.classList.add(ok?'ok':'bad');area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.nopts[k]===Q.num[tg.id])x.classList.add('ok');});reveal(ok,null);});}},String(n));return b;})));}
   else if(task==='label'&&R.diff==='hard'){const inp=h('input',{type:'text',class:'answerbox',autocomplete:'off',autocapitalize:'off',autocorrect:'off',spellcheck:'false','aria-label':t('hint_map_name')});
-   const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[tg.n.de,tg.n.en].concat(it.accept||[]).filter(Boolean).some(a=>String(a).trim()===v);
+   const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[tg.n.de,tg.n.en,tg.n.fr].concat(it.accept||[]).filter(Boolean).some(a=>String(a).trim()===v);
     submit(v,ok,()=>{inp.style.borderColor=ok?'var(--green)':'var(--red)';reveal(ok,null);});};
    area.append(inp,h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;setTimeout(()=>inp.focus(),30);}
   else if(task==='choose'||task==='label'){area.append(h('div',{class:'opts'},Q.mopts.map(id=>{const b=h('button',{class:'opt',onclick:()=>{const ok=id===tg.id;
     attempt(fname(P.byId[id]),ok,Q.mopts.length,()=>{b.classList.add('bad');b.disabled=true;},()=>{b.classList.add(ok?'ok':'bad');area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.mopts[k]===tg.id)x.classList.add('ok');});reveal(ok,id);});}},fname(P.byId[id]));return b;})));}
   else{const inp=h('input',{type:'text',class:'answerbox',autocomplete:'off',autocapitalize:'off',autocorrect:'off',spellcheck:'false','aria-label':t('hint_map_name')});
-   const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[it.answer,tg.n.de,tg.n.en].concat(it.accept||[]).filter(Boolean).some(a=>String(a).trim()===v);
+   const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[it.answer,tg.n.de,tg.n.en,tg.n.fr].concat(it.accept||[]).filter(Boolean).some(a=>String(a).trim()===v);
     submit(v,ok,()=>{inp.style.borderColor=ok?'var(--green)':'var(--red)';reveal(ok,null);});};
    area.append(inp,h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;setTimeout(()=>inp.focus(),30);}}
  if(it.image&&it.image.path){const im=lazyImg(it.image.path,{draggable:'false'});figEl=h('div',{class:'figwrap'},im);
@@ -941,15 +968,25 @@ function adminGames(body){
  body.append(h('div',{class:'row',style:'margin-bottom:14px'},h('button',{class:'btn',onclick:()=>viewGenerate(null)},'+ '+t('newGame')),
   h('button',{class:'btn ghost',onclick:()=>imp.click()},t('importGame')),imp),
   h('div',{class:'list'},S.games.map(g=>h('div',{class:'item',style:'flex-wrap:wrap'},h('div',{class:'grow'},h('b',{},g.title),
-   h('div',{class:'small muted'},t('questions',{n:g.items.length})+' · '+t('k_'+(g.kind||'other'))+(g.updatedAt?' · '+t('updated')+' '+fmtDate(g.updatedAt):''))),
+   h('div',{class:'small muted'},t('questions',{n:g.items.length})+' · '+t('k_'+(g.kind||'other'))+((m=>m?' · '+t('tr_count',{n:m}):'')(g.items.filter(i=>trMissing(i).length).length))+(g.updatedAt?' · '+t('updated')+' '+fmtDate(g.updatedAt):''))),
    h('button',{class:'btn small',onclick:()=>viewGenerate(g)},'+ '+t('addMaterial')),
    h('button',{class:'btn ghost small',onclick:()=>viewItems(g)},t('viewQuestions')),
+   h('button',{class:'btn ghost small',onclick:()=>translateGame(g)},'🌐 '+t('tr_btn')),
    h('button',{class:'btn ghost small',onclick:()=>{const b=new Blob([JSON.stringify(g,null,2)],{type:'application/json'});const a=h('a',{href:URL.createObjectURL(b),download:ymd(new Date())+'_'+slug(g.title)+'.json'});
     document.body.append(a);a.click();a.remove();}},t('exportGame')),
    h('button',{class:'btn danger small',onclick:async()=>{if(!confirm(t('confirmDelGame',{t:g.title})))return;await S.store.remove('games/'+g.id+'.json');if(S.store.removeDir)await S.store.removeDir('games/'+g.id);S.games=await loadGames();viewAdmin('games');}},t('del'))))));
 }
+function normTr(it){const tr=it.tr;if(!tr||typeof tr!=='object'){delete it.tr;return;}const o={};
+ for(const l of LANGS){const x=tr[l];if(!x||typeof x!=='object'||typeof x.prompt!=='string'||!x.prompt.trim())continue;const y={prompt:x.prompt.trim()};
+  if(typeof x.explanation==='string'&&x.explanation.trim())y.explanation=x.explanation.trim();
+  if(Array.isArray(it.options)){if(!(Array.isArray(x.options)&&x.options.length===it.options.length&&x.options.every(v=>typeof v==='string'&&v.trim())))continue;y.options=x.options;}
+  if(Array.isArray(it.order)){if(!(Array.isArray(x.order)&&x.order.length===it.order.length&&x.order.every(v=>typeof v==='string'&&v.trim())))continue;y.order=x.order;}
+  if(typeof x.answer==='string'&&x.answer.trim())y.answer=x.answer.trim();if(Array.isArray(x.accept))y.accept=x.accept.filter(v=>typeof v==='string'&&v.trim());
+  o[l]=y;}
+ if(Object.keys(o).length)it.tr=o;else delete it.tr;}
 function validItem(it){
  if(!it||typeof it.prompt!=='string'||!it.prompt.trim())return false;
+ normTr(it);
  it.difficulty=[1,2,3].includes(+it.difficulty)?+it.difficulty:2;
  if(Array.isArray(it.correct))it.correct=it.correct.map(Number);
  const opt=Array.isArray(it.options)&&it.options.length>=2&&it.options.every(o=>typeof o==='string');
@@ -970,14 +1007,16 @@ function validItem(it){
     if(o.length<3){const pool=P.layers.find(l=>l.id===f.layer).f.filter(x=>!x.bg&&!o.includes(x.id));while(o.length<4&&pool.length)o.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0].id);}
     m.labels=o.slice(0,12);if(!m.labels.includes(f.id))m.labels[0]=f.id;
     if(m.task==='label'&&!/\{nr\}/.test(it.prompt))it.prompt=t('mapLabelQ');
-    if(m.task==='number')it.prompt=it.prompt.replace(/\{nr\}/g,'');}
+    if(m.task==='number')it.prompt=it.prompt.replace(/\{nr\}/g,'');
+    if(it.tr)for(const l in it.tr){const x=it.tr[l];if(m.task==='label'&&!/\{nr\}/.test(x.prompt))x.prompt=(T[l]||T.en).mapLabelQ;if(m.task==='number')x.prompt=x.prompt.replace(/\{nr\}/g,'');}}
    delete it.figure;delete it._fig;return true;}
   case'spot':return!!((it._fig&&it._fig.spot)||(it.image&&it.image.path&&it.spot&&isFinite(it.spot.x)&&isFinite(it.spot.y)));
   default:return false;}
 }
-function itemRow(it,opts){
+function itemRow(it0,opts){
+ const it=loc(it0);const ml=trMissing(it0);
  return h('div',{class:'item',style:'align-items:flex-start'},opts.check||null,opts.thumb||null,
-  h('div',{class:'grow'},h('div',{class:'row',style:'gap:6px;margin-bottom:4px'},h('span',{class:'tag'},(it.joke?'😄 '+t('t_joke'):t('t_'+it.type))+(it.type==='map'?' · '+it.map.pack+' · '+it.map.task:'')),h('span',{class:'tag'},t('diff')+' '+it.difficulty)),
+  h('div',{class:'grow'},h('div',{class:'row',style:'gap:6px;margin-bottom:4px'},h('span',{class:'tag'},(it.joke?'😄 '+t('t_joke'):t('t_'+it.type))+(it.type==='map'?' · '+it.map.pack+' · '+it.map.task:'')),h('span',{class:'tag'},t('diff')+' '+it.difficulty),h('span',{class:'tag',style:ml.length?'color:var(--red)':'',title:t('langs')},LANGS.map(l=>ml.includes(l)?'–':l.toUpperCase()).join(' '))),
    h('div',{},it.prompt),h('div',{class:'small',style:'color:var(--green)'},'✓ '+answerText(it)),
    (it.type==='single'||it.type==='multi')?h('div',{class:'small muted'},it.options.join(' · ')):null,
    (it.type==='map'&&it.map.labels&&PACKS[it.map.pack])?h('div',{class:'small muted'},t('numbered')+': '+it.map.labels.map(id=>fname(PACKS[it.map.pack].byId[id])).join(' · ')):null),
@@ -1050,18 +1089,20 @@ Each item has: "type" (one of "single","multi","order","input","map"), "prompt",
   The game assigns new random numbers every time, so never use or mention the numbers from the material. The prompt must never contain the answer of choose/name/label tasks. Use only ids from the list.
 If the material contains a map (for example a numbered or labelled map), recreate it with map questions (label, number, tap, choose, name) for exactly those places. Never create a question that needs the material's map or pictures.
 When map packs are listed, use "map" questions for everything about places: countries, cantons, continents, capitals, cities, rivers, lakes, seas and oceans, mountains, passes, landscapes, monuments and historic sites. Use the other types for facts that do not need a map (e.g. "Welcher Kontinent ist der grösste?").
+History map packs (ids starting with "h", e.g. "h07-revolutionen-napoleon") contain one political map per year; their layer ids look like "y1815" or "ym500" (m = BC), object ids like "y1815:austrian-empire". Pick the year layer that matches the time in the material (the nearest available year) and say the year in the prompt, e.g. "Tippe auf das Kaisertum Österreich (1815)". Borders in these maps are simplified and approximate. Their "places" layer holds cities, battles and historic sites.
 Country groups (Skandinavien, Nordische Länder, Baltikum, Benelux, Britische Inseln, Iberische Halbinsel) are in the "regions" layer of the world and europe packs.
 Jokes: add one extra item per about 10 questions with "joke": true, type "single": a funny, kind, age-appropriate fake question about the topic whose correct option (put it first, the game shuffles) is the joking answer; "explanation" is the punchline. Never make fun of people, countries or groups.
-Rules: use only facts contained in the material and never invent content. Wrong options must be plausible but clearly wrong. For vocabulary, ask in both directions and use input questions for spelling. Write the questions in the language of the material unless the notes say otherwise. Skip anything unreadable.`;
+Languages: every item also has \"tr\" with the keys \"de\", \"en\" and \"fr\". Each holds the complete question in that language: \"prompt\", \"explanation\" and, depending on the type, \"options\" (same number and same order as the item's options, so the correct indices stay valid), \"order\" (same order), \"answer\" and \"accept\". The top-level fields hold the version in the language of the material. Translate naturally for children and keep the difficulty. German is written the Swiss way, without \"ß\" (use \"ss\"). For vocabulary questions translate only the instruction: the words being asked about and the expected answers stay in the language that is being tested (example: de \"Was heisst 'Haus' auf Französisch?\", en \"What is 'Haus' in French?\", fr \"Comment dit-on « Haus » en français ?\"; the answer is \"maison\" in all three). Map questions: keep the placeholder {nr}; for name tasks give \"answer\" as the place name in that language. Jokes: translate the joke, or if the pun does not work, write an equally kind joke on the same topic whose joking answer stays the first option.\nRules: use only facts contained in the material and never invent content. Wrong options must be plausible but clearly wrong. For vocabulary, ask in both directions and use input questions for spelling. Write the questions in the language of the material unless the notes say otherwise. Skip anything unreadable.`;
+const TR_SCHEMA={type:'object',required:['de','en','fr'],properties:{de:{type:'object',properties:{prompt:{type:'string'},explanation:{type:'string'},options:{type:'array',items:{type:'string'}},order:{type:'array',items:{type:'string'}},answer:{type:'string'},accept:{type:'array',items:{type:'string'}}}},en:{type:'object',properties:{prompt:{type:'string'},explanation:{type:'string'},options:{type:'array',items:{type:'string'}},order:{type:'array',items:{type:'string'}},answer:{type:'string'},accept:{type:'array',items:{type:'string'}}}},fr:{type:'object',properties:{prompt:{type:'string'},explanation:{type:'string'},options:{type:'array',items:{type:'string'}},order:{type:'array',items:{type:'string'}},answer:{type:'string'},accept:{type:'array',items:{type:'string'}}}}}};
 const QUIZ_TOOL={name:'save_questions',description:'Save the quiz questions created from the learning material.',
- input_schema:{type:'object',required:['items'],properties:{items:{type:'array',items:{type:'object',required:['type','prompt','difficulty'],properties:{
-  type:{type:'string',enum:['single','multi','order','input','map']},prompt:{type:'string'},difficulty:{type:'integer',enum:[1,2,3]},explanation:{type:'string'},
+ input_schema:{type:'object',required:['items'],properties:{items:{type:'array',items:{type:'object',required:['type','prompt','difficulty','tr'],properties:{
+  tr:TR_SCHEMA,type:{type:'string',enum:['single','multi','order','input','map']},prompt:{type:'string'},difficulty:{type:'integer',enum:[1,2,3]},explanation:{type:'string'},
   options:{type:'array',items:{type:'string'}},correct:{type:'array',items:{type:'integer'}},order:{type:'array',items:{type:'string'}},
   answer:{type:'string'},accept:{type:'array',items:{type:'string'}},joke:{type:'boolean'},
   map:{type:'object',properties:{pack:{type:'string'},task:{type:'string',enum:['tap','choose','name','label','number']},target:{type:'string'},
    options:{type:'array',items:{type:'string'}},labels:{type:'array',items:{type:'string'}}}}}}}}}};
-const DOCREF=/(\bNummer\s*\d|\bNr\.?\s*\d|\bnumber\s*\d|\bauf der Karte\b|\bin der Karte\b|\bon the map\b|\bAbbildung|\bAbb\.|\bfigure\b|\bArbeitsblatt|\bworksheet|\bLernziel|\blearning goal|\bim Bild\b|\bin the picture\b|\bim Text\b|\bin the text\b|\bSeite\s*\d|\bpage\s*\d)/i;
-function docRef(it){if(!it||it.type==='map'||it.joke)return false;const txt=[it.prompt].concat(it.options||[],it.order||[]).join(' ');return DOCREF.test(txt);}
+const DOCREF=/(\bNummer\s*\d|\bNr\.?\s*\d|\bnumber\s*\d|\bauf der Karte\b|\bin der Karte\b|\bon the map\b|\bAbbildung|\bAbb\.|\bfigure\b|\bArbeitsblatt|\bworksheet|\bLernziel|\blearning goal|\bim Bild\b|\bin the picture\b|\bim Text\b|\bin the text\b|\bSeite\s*\d|\bpage\s*\d|\bsur la carte\b|\bfiche\b|objectif d.apprentissage|\bsur l.image\b|\bdans le texte\b|\bnuméro\s*\d)/i;
+function docRef(it){if(!it||it.type==='map'||it.joke)return false;const txt=[it.prompt].concat(it.options||[],it.order||[],...Object.values(it.tr||{}).map(x=>[x&&x.prompt].concat((x&&x.options)||[]))).join(' ');return DOCREF.test(txt);}
 function attachFig(it,imgIdx){
  if(it.figure&&Array.isArray(it.figure.box)&&it.figure.box.length===4){const gi=imgIdx[(parseInt(it.figure.photo,10)||1)-1];
   if(gi!==undefined){const fig={photo:gi,box:normBox(it.figure.box.map(v=>(+v||0)/1000)),covers:[],spot:null};
@@ -1069,10 +1110,10 @@ function attachFig(it,imgIdx){
     fig.box=[Math.min(fig.box[0],fig.spot.x-m),Math.min(fig.box[1],fig.spot.y-m),Math.max(fig.box[2],fig.spot.x+m),Math.max(fig.box[3],fig.spot.y+m)].map(clamp01);}
    it._fig=fig;}}
  delete it.figure;delete it.spot;}
-async function callClaude(content){
+async function callClaude(content,sys,tool){sys=sys||GEN_SYSTEM;tool=tool||QUIZ_TOOL;
  const key=await IDB.get('kv','apiKey');const model=(await IDB.get('kv','model'))||DEFAULT_MODEL;
  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-  body:JSON.stringify({model,max_tokens:16000,system:GEN_SYSTEM,tools:[QUIZ_TOOL],tool_choice:{type:'tool',name:'save_questions'},messages:[{role:'user',content}]})});
+  body:JSON.stringify({model,max_tokens:16000,system:sys,tools:[tool],tool_choice:{type:'tool',name:tool.name},messages:[{role:'user',content}]})});
  const data=await r.json().catch(()=>null);
  if(!r.ok)throw new Error((data&&data.error&&data.error.message)||('HTTP '+r.status));
  const tu=(data.content||[]).find(b=>b.type==='tool_use'&&b.input&&Array.isArray(b.input.items));
@@ -1082,9 +1123,33 @@ async function callClaude(content){
  const a=txt.indexOf('{'),b=txt.lastIndexOf('}');if(a<0||b<a)throw new Error('no questions in response'+(data.stop_reason==='max_tokens'?' (answer too long)':''));
  const obj=JSON.parse(txt.slice(a,b+1));return Array.isArray(obj.items)?obj.items:[];
 }
+const TR_SYSTEM=`You translate quiz questions of a children's learning game so that every question exists in German ("de"), English ("en") and French ("fr"). Call the save_translations tool once with one entry per question, using the same "id".
+For each language give "prompt", "explanation" (if the question has one) and, depending on the question, "options" (same number and same order, so the correct indices stay valid), "order" (same order), "answer" and "accept". The language the question is already written in is copied unchanged.
+Keep meaning and difficulty. German is written the Swiss way, without "ß" (use "ss").
+Vocabulary questions: translate only the instruction; the words being asked about and the expected answers stay in the language that is being tested (example: de "Was heisst 'Haus' auf Französisch?", en "What is 'Haus' in French?", fr "Comment dit-on « Haus » en français ?"; the answer is "maison" in all three).
+Map questions: keep the placeholder {nr} unchanged; if the question expects a typed place name, give "answer" as the place name in that language.
+Jokes ("joke": true): translate the joke, or if the pun does not work in a language, write an equally kind joke on the same topic whose joking answer stays the first option. Never add or remove options.`;
+const TR_TOOL={name:'save_translations',description:'Save the translated questions.',input_schema:{type:'object',required:['items'],properties:{items:{type:'array',items:{type:'object',required:['id','tr'],properties:{id:{type:'string'},tr:TR_SCHEMA}}}}}};
+function trPayload(it){const o={id:it.id,type:it.type,prompt:it.prompt};for(const k of['explanation','options','order','answer','accept','joke'])if(it[k]!=null)o[k]=it[k];
+ if(it.type==='map'&&it.map)o.mapTask=it.map.task;if(it.tr)o.existing=it.tr;return o;}
+async function translateGame(g){
+ if(!await IDB.get('kv','apiKey'))return toast(t('needKey'),true);
+ for(const pk of new Set(g.items.filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack)))await loadPack(pk).catch(()=>{});
+ const todo=g.items.filter(i=>trMissing(i).length);if(!todo.length)return toast(t('tr_none'));
+ const dlg=$('#dlg');const st=h('p',{'aria-live':'polite'},t('tr_working',{n:0,t:todo.length}));dlg.replaceChildren(h('div',{class:'stack'},h('h2',{},'🌐 '+t('tr_btn')+': '+g.title),st));dlg.showModal();
+ let done=0,fail=0;
+ try{for(let k=0;k<todo.length;k+=12){const batch=todo.slice(k,k+12);
+   const res=await callClaude([{type:'text',text:'Questions (JSON):\n'+JSON.stringify(batch.map(trPayload))}],TR_SYSTEM,TR_TOOL);
+   const by={};for(const r of res||[])if(r&&r.id)by[r.id]=r.tr;
+   for(const it of batch){const nt=by[it.id];if(!nt){fail++;continue;}const keep=it.tr||{};const cand=Object.assign({},it,{tr:Object.assign({},nt,keep)});normTr(cand);
+    if(cand.tr&&LANGS.every(l=>cand.tr[l])){it.tr=cand.tr;done++;}else{if(cand.tr)it.tr=cand.tr;fail++;}}
+   st.textContent=t('tr_working',{n:Math.min(k+12,todo.length),t:todo.length});
+   await saveGame(g);}}
+ catch(e){dlg.close();toast(t('err',{e:e.message}),true);viewAdmin('games');return;}
+ dlg.close();toast(t('tr_done',{n:done})+(fail?' · '+t('tr_fail',{n:fail}):''),!!fail);viewAdmin('games');}
 async function viewGenerate(g){
  const avail=await listPacks();const used=new Set(((g&&g.items)||[]).filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack).concat((g&&g.mapPacks)||[]));
- const pchk=avail.map(id=>{const c=h('input',{type:'checkbox',value:id});c.checked=used.size?used.has(id):true;return h('label',{style:'display:inline-flex;gap:6px;align-items:center;margin-right:16px'},c,id);});
+ const pchk=avail.sort().map(id=>{const c=h('input',{type:'checkbox',value:id});c.checked=used.size?used.has(id):!isHistPack(id);return h('label',{style:'display:inline-flex;gap:6px;align-items:center;margin-right:16px'},c,id);});
  const f={title:g?g.title:'',kind:g?(g.kind||'other'):'vocab',instr:g?(g.instructions||''):'',count:20,files:[]};
  const title=h('input',{type:'text',id:'gt',value:f.title});const kind=h('select',{id:'gk'},['vocab','science','other'].map(k=>h('option',{value:k},t('k_'+k))));kind.value=f.kind;
  const instr=h('textarea',{id:'gi',placeholder:t('instrPh')});instr.value=f.instr;const cnt=h('input',{type:'number',id:'gc',min:'5',max:'80',value:'20'});
@@ -1105,7 +1170,7 @@ async function viewGenerate(g){
     const want=Math.max(3,Math.round(total*batches[b].length/f.files.length));let got=0;
     for(let round=0;got<want&&round<5;round++){
      status.textContent=t('working',{n:out.length,t:total});
-     const n=Math.min(25,want-got);const avoid=existing.concat(out.map(i=>i.prompt)).slice(-150);
+     const n=Math.min(12,want-got);const avoid=existing.concat(out.map(i=>i.prompt)).slice(-150);
      const req=blocks.concat([{type:'text',text:`Images in this request: ${imgIdx.length}. Material type: ${kind.value}. Create about ${n} questions. Notes: ${instr.value.trim()||'none'}.`+(catalog?`\n\nAvailable map packs (object ids for map questions):\n${catalog}`:'')+(avoid.length?`\nDo not repeat these existing questions:\n- `+avoid.join('\n- '):'')}]);
      const items=await callClaude(req);for(const pk of new Set(items.filter(x=>x&&x.type==='map'&&x.map&&avail.includes(x.map.pack)).map(x=>x.map.pack)))await loadPack(pk).catch(()=>{});let valid=0;for(const it of items){delete it.figure;delete it.spot;if(docRef(it)){dropped++;continue;}if(validItem(it)){it.id=uid();out.push(it);valid++;}else dropped++;}
      got+=valid;if(!valid)break;}}}
@@ -1156,9 +1221,9 @@ async function adminMaps(body){
  const ids=await listPacks();const viewer=h('div',{});
  body.append(h('p',{class:'muted'},t('mapsIntro')),h('div',{class:'row',style:'margin-bottom:14px'},h('button',{class:'btn',onclick:()=>imp.click()},t('importMaps')),imp));
  if(!ids.length)return body.append(h('p',{class:'muted'},t('noMaps')));
- const cards=h('div',{class:'maplist'});body.append(cards,viewer);
- for(const id of ids){let P;try{P=await loadPack(id);}catch(e){continue;}const n=P.layers.reduce((a,L)=>a+L.f.filter(f=>!f.bg&&L.kind!=='bg').length,0);
-  cards.append(h('button',{class:'item',onclick:()=>showPack(P)},h('div',{class:'grow'},h('b',{},fname({n:P.name})),h('div',{class:'small muted'},id+' · '+t('objects',{n}))),'›'));}
+ const geoC=h('div',{class:'maplist'}),histC=h('div',{class:'maplist'});body.append(h('div',{class:'maphead'},t('g_geo')),geoC,h('div',{class:'maphead'},t('g_hist')),histC,viewer);
+ for(const id of ids.sort()){const cards=isHistPack(id)?histC:geoC;let P;try{P=await loadPack(id);}catch(e){continue;}const n=P.layers.reduce((a,L)=>a+L.f.filter(f=>!f.bg&&L.kind!=='bg').length,0);
+  cards.append(h('button',{class:'item',onclick:()=>showPack(P)},h('div',{class:'grow'},h('b',{},fname({n:P.name})),h('div',{class:'small muted'},(P.period?perText(P.period)+' · ':'')+t('objects',{n}))),'›'));}
  function showPack(P){const shown=new Set();const box=h('div',{});const tip=h('div',{class:'maptip'},t('tapToName'));
   const draw=()=>{const mv=mapView(P,{show:[...shown],faint:shown.has('landscapes')||shown.has('continents')});mv.el.append(tip);
    mv.onTap=(x,y,ppu)=>{const order=[...shown].concat(P.layers.filter(L=>L.kind!=='bg'&&L.kind!=='point'&&!['landscapes','continents','seas'].includes(L.id)&&!shown.has(L.id)).map(L=>L.id).reverse());let hit=null;
@@ -1166,7 +1231,7 @@ async function adminMaps(body){
     tip.textContent=hit?fname(P.byId[hit])+' ('+(P.layers.find(l=>l.id===P.byId[hit].layer).label[S.lang]||'')+')':t('tapToName');
     Object.values(mv.els).forEach(e=>e.classList.remove('hl'));if(hit&&mv.els[hit])mv.els[hit].classList.add('hl');};
    box.replaceChildren(mv.el);};
-  const toggles=h('div',{class:'row',style:'gap:14px;margin:10px 0'},P.layers.filter(L=>L.kind==='point'||['landscapes','continents'].includes(L.id)).map(L=>{
+  const toggles=h('div',{class:'row',style:'gap:14px;margin:10px 0'},P.layers.filter(L=>L.kind==='point'||L.opt||['landscapes','continents','regions'].includes(L.id)).map(L=>{
    const c=h('input',{type:'checkbox',onchange:e=>{e.target.checked?shown.add(L.id):shown.delete(L.id);draw();}});return h('label',{style:'display:inline-flex;gap:6px;align-items:center'},c,L.label[S.lang]||L.id);}));
   viewer.replaceChildren(h('h3',{},fname({n:P.name})),h('div',{class:'small muted'},t('layers')+':'),toggles,box);draw();}
 }
