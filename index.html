@@ -108,6 +108,46 @@ dialog{border:2px solid var(--ink);border-radius:14px;max-width:680px;width:92vw
 dialog::backdrop{background:rgba(31,58,147,.25)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--graphite);color:var(--white);padding:10px 18px;border-radius:10px;z-index:50;max-width:90vw}
 .toast.err{background:var(--red)}
+.figwrap{position:relative;display:inline-block;max-width:100%;margin:4px 0 14px;line-height:0}
+.figwrap img{display:block;max-width:100%;max-height:48vh;border-radius:10px;border:2px solid var(--grid);background:#fff;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.figwrap.spotable img{cursor:crosshair;touch-action:manipulation}
+.spotmark{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--graphite)}
+.spotmark.ok{background:var(--green)}.spotmark.bad{background:var(--red)}
+.spottarget{position:absolute;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:3px solid var(--green);background:rgba(46,125,79,.18);pointer-events:none}
+.thumb{width:110px;height:82px;object-fit:contain;border:1px solid var(--grid);border-radius:8px;background:#fff;flex:none}
+dialog.wide{max-width:1000px}
+.stage{position:relative;display:inline-block;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;line-height:0;max-width:100%}
+.stage img{display:block;max-width:100%;max-height:62vh;pointer-events:none}
+.stage .crop{position:absolute;border:2px dashed #fff;box-shadow:0 0 0 9999px rgba(0,0,0,.45)}
+.stage .cover{position:absolute;background:#D9DDE3;border:1px solid #9AA3AF}
+.stage .temp{opacity:.7}
+.stage .spotdot{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;border:3px solid var(--red);background:rgba(255,255,255,.7)}
+.mapwrap{position:relative;width:100%;margin:4px 0 14px;border:2px solid var(--grid);border-radius:12px;overflow:hidden;background:#cfe3f3}
+.mapwrap svg.map{display:block;width:100%;height:auto;max-height:62vh;touch-action:none;-webkit-user-select:none;user-select:none;cursor:crosshair}
+.mapctl{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px;z-index:2}
+.mapctl button{width:38px;height:38px;border-radius:8px;border:2px solid var(--ink);background:#fff;font-weight:700;font-size:1.1rem;color:var(--ink);line-height:1}
+.mapattr{position:absolute;left:6px;bottom:4px;font-size:.62rem;color:#56606c;background:rgba(255,255,255,.7);padding:1px 5px;border-radius:4px;line-height:1.3}
+.maptip{position:absolute;left:8px;top:8px;background:rgba(255,255,255,.92);border:1px solid var(--grid);border-radius:8px;padding:4px 8px;font-size:.85rem;line-height:1.3;max-width:70%;pointer-events:none}
+.m-ocean{fill:#cfe3f3;stroke:#9ab3c8;stroke-width:.6;vector-effect:non-scaling-stroke}
+.m-sea{fill:transparent;stroke:none}
+.m-land{fill:#f3efe4;stroke:#9a8f7a;stroke-width:.6;vector-effect:non-scaling-stroke}
+.m-land.m-bg{fill:#ece6d6}
+.m-canton{fill:#f8f4ea;stroke:#7d725d;stroke-width:.8;vector-effect:non-scaling-stroke}
+.m-continent{fill:transparent;stroke:none}
+.m-landscape{fill:transparent;stroke:none}
+.showfaint .m-landscape,.showfaint .m-continent{fill:#c9a86a;fill-opacity:.18;stroke:#a88f60;stroke-width:.6;vector-effect:non-scaling-stroke}
+.m-water{fill:#9cc7e8;stroke:#6aa0cc;stroke-width:.5;vector-effect:non-scaling-stroke}
+.m-river{fill:none;stroke:#5b9bd5;stroke-width:1.3;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.m-pt{fill:#2f3437;stroke:#fff;stroke-width:1.2;vector-effect:non-scaling-stroke}
+svg.map .hl{fill:#f6c343;fill-opacity:.9;stroke:#c8322b;stroke-width:2.2;vector-effect:non-scaling-stroke}
+svg.map .m-river.hl,svg.map path.hl.line{fill:none;stroke:#c8322b;stroke-width:4.5}
+svg.map .ok{fill:#57b27a;fill-opacity:.85;stroke:#1d6b3e;stroke-width:2.2;vector-effect:non-scaling-stroke}
+svg.map .bad{fill:#e2766f;fill-opacity:.85;stroke:#8f1f19;stroke-width:2.2;vector-effect:non-scaling-stroke}
+svg.map .m-river.ok,svg.map path.ok.line{fill:none;stroke:#1d6b3e;stroke-width:4.5}
+svg.map .m-river.bad,svg.map path.bad.line{fill:none;stroke:#8f1f19;stroke-width:4.5}
+svg.map circle.hl{fill:#f6c343;stroke:#c8322b;stroke-width:2.5}
+svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-stroke}
+.maplist{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
 @media (max-width:560px){.page{padding-left:24px}.prompt{font-size:1.25rem}}
 </style>
 </head>
@@ -138,7 +178,7 @@ confirmReset:'Punkte, Abzeichen, Freischaltungen und Lernstand von «{name}» zu
 addMaterial:'Material hinzufügen',viewQuestions:'Fragen',confirmDelGame:'Spiel «{t}» löschen? Protokolle bleiben erhalten.',gameTitle:'Titel des Spiels',kind:'Art des Materials',
 k_vocab:'Vokabeln',k_science:'Sachwissen',k_other:'Anderes',instructions:'Hinweise für die Fragen (optional)',instrPh:'z. B. Deutsch–Französisch, beide Richtungen; Stoff für die 5. Klasse',
 count:'Anzahl Fragen (ungefähr)',files:'Fotos oder PDFs',generate:'Fragen erstellen',needKey:'Zuerst unter Einstellungen einen API-Schlüssel hinterlegen.',
-needFiles:'Bitte mindestens ein Foto oder PDF wählen.',needTitle:'Bitte einen Titel eingeben.',working:'Erstelle Fragen … Teil {i} von {n}',
+needFiles:'Bitte mindestens ein Foto oder PDF wählen.',needTitle:'Bitte einen Titel eingeben.',working:'Erstelle Fragen … {n} von ca. {t}',
 genDone:'{n} Fragen erstellt, {d} unbrauchbare verworfen. Bitte prüfen, bevor du speicherst.',genErr:'Erstellung fehlgeschlagen: {e}',review:'Fragen prüfen',keep:'behalten',
 saveToGame:'Ausgewählte Fragen speichern',saved:'Gespeichert',dupSkipped:'{n} doppelte Fragen übersprungen',editJson:'Als JSON bearbeiten',jsonInvalid:'Ungültig – bitte Format prüfen.',
 logsEmpty:'Noch keine Protokolle.',date:'Datum',player:'Spieler',game:'Spiel',details:'Details',mistakes:'Fehler in diesem Lauf',noMistakes:'Keine Fehler.',aborted:'abgebrochen',
@@ -149,8 +189,19 @@ language:'Sprache',setupTitle:'Einrichtung',setupFolder:'Wo sollen Spiele, Spiel
 noFsApi:'Dieser Browser kann keine Ordner verbinden. Bitte Chrome auf einem Desktop-Computer verwenden.',setPw:'Passwort für die Verwaltung festlegen',
 setPwNote:'Hält Kinder aus der Verwaltung fern, ist aber keine echte Sicherheit.',finish:'Einrichtung abschliessen',reconnectTitle:'Datenordner wieder verbinden',
 reconnectText:'Chrome braucht deine Erlaubnis, um auf «{name}» zuzugreifen.',reconnect:'Verbinden',otherFolder:'Anderen Ordner wählen',updated:'Aktualisiert',
-t_single:'Eine Antwort',t_multi:'Mehrfach',t_order:'Reihenfolge',t_input:'Eingabe',importDone:'«{t}» importiert',importInvalid:'Die Datei ist kein gültiges Spiel.',
-err:'Fehler: {e}',lives:'Leben',mode_:'Modus',score:'Punkte',answered:'Antworten',current:'Aktuell',materialNote:'Fotos werden verkleinert an Claude geschickt und nicht gespeichert. iPhone-Fotos im HEIC-Format kann Chrome oft nicht lesen – dann als JPEG exportieren.',
+t_single:'Eine Antwort',t_multi:'Mehrfach',t_order:'Reihenfolge',t_input:'Eingabe',t_spot:'Bildpunkt',t_map:'Karte',
+hint_map_tap:'Tippe auf der Karte auf die richtige Stelle. Mit zwei Fingern oder + / − zoomen.',hint_map_choose:'Was ist auf der Karte markiert?',
+hint_map_name:'Wie heisst das Markierte? Genaue Schreibweise.',tabMaps:'Karten',mapsIntro:'Kartenpakete sind eigenständige Bausteine, die jedes Spiel verwenden kann. Sie liegen im Datenordner unter «maps».',
+importMaps:'Kartenpakete importieren',mapsImported:'{n} Kartenpaket(e) importiert',noMaps:'Noch keine Kartenpakete. Importiere die Datei mit den Kartenpaketen.',
+mapMissing:'Kartenpaket «{id}» fehlt – bitte in der Verwaltung unter «Karten» importieren.',mapsForGame:'Kartenpakete für dieses Spiel',objects:'{n} Objekte',
+layers:'Ebenen',tapToName:'Tippe auf ein Objekt, um den Namen zu sehen.',mapPick:'Tippe auf das richtige Objekt, um das Ziel zu ändern.',mapBtn:'Karte',
+zoomIn:'Vergrössern',zoomOut:'Verkleinern',zoomReset:'Ganze Karte',hint_spot:'Tippe auf die richtige Stelle im Bild',spotAnswer:'die grün markierte Stelle',
+imgEdit:'Bild',imgAdd:'+ Bild',modeCrop:'Ausschnitt',modeCover:'Abdecken',modeSpot:'Zielpunkt',wholePhoto:'Ganzes Foto',clearCovers:'Abdeckungen entfernen',
+nextPhoto:'Anderes Foto',apply:'Übernehmen',removeImg:'Bild entfernen',help_crop:'Ziehe einen Rahmen um den Bildteil, der zur Frage gehört.',
+help_cover:'Ziehe Kästchen über Beschriftungen, die die Antwort verraten. Ein Tipp auf ein Kästchen löscht es.',help_spot:'Tippe auf die Stelle, die als richtige Antwort gilt. Sie muss im Ausschnitt liegen.',
+savingImgs:'Speichere Bilder … {i} von {n}',spotSkipped:'{n} Bildpunkt-Fragen ohne gültigen Zielpunkt übersprungen',imgErr:'Bild konnte nicht geladen werden',
+confirmDelSpot:'Eine Bildpunkt-Frage braucht ein Bild. Frage löschen?',importDone:'«{t}» importiert',importInvalid:'Die Datei ist kein gültiges Spiel.',
+err:'Fehler: {e}',lives:'Leben',mode_:'Modus',score:'Punkte',answered:'Antworten',current:'Aktuell',materialNote:'Fotos werden verkleinert an Claude geschickt und nicht gespeichert. iPhone-Fotos (HEIC) werden automatisch in JPEG umgewandelt; dafür braucht es eine Internetverbindung.',
 questionsOf:'Fragen in «{t}»',noQuestions:'Keine Fragen.',diff:'Stufe',saving:'Speichere …',pwSet:'Passwort geändert',keySaved:'Gespeichert',
 noPlayersPlay:'Noch keine Spieler. Lege sie am Computer in der Verwaltung an.',sync:'Aktualisieren',connectTitle:'Mit Dropbox verbinden',
 connectText:'Dieses Gerät einmalig mit deiner Dropbox verbinden. Die Seite sieht dabei nur ihren eigenen Ordner «Apps/Lernspiel-Spitz».',connectBtn:'Mit Dropbox verbinden',
@@ -178,7 +229,7 @@ confirmReset:'Reset points, badges, unlocks and learning state of "{name}"?',new
 addMaterial:'Add material',viewQuestions:'Questions',confirmDelGame:'Delete game "{t}"? Logs are kept.',gameTitle:'Game title',kind:'Material type',
 k_vocab:'Vocabulary',k_science:'Subject knowledge',k_other:'Other',instructions:'Notes for the questions (optional)',instrPh:'e.g. German–French, both directions; year 5 level',
 count:'Number of questions (approx.)',files:'Photos or PDFs',generate:'Create questions',needKey:'Add an API key under Settings first.',
-needFiles:'Choose at least one photo or PDF.',needTitle:'Enter a title.',working:'Creating questions … part {i} of {n}',
+needFiles:'Choose at least one photo or PDF.',needTitle:'Enter a title.',working:'Creating questions … {n} of approx. {t}',
 genDone:'{n} questions created, {d} unusable ones dropped. Please review before saving.',genErr:'Creation failed: {e}',review:'Review questions',keep:'keep',
 saveToGame:'Save selected questions',saved:'Saved',dupSkipped:'{n} duplicate questions skipped',editJson:'Edit as JSON',jsonInvalid:'Invalid – check the format.',
 logsEmpty:'No logs yet.',date:'Date',player:'Player',game:'Game',details:'Details',mistakes:'Mistakes in this run',noMistakes:'No mistakes.',aborted:'aborted',
@@ -189,8 +240,19 @@ language:'Language',setupTitle:'Setup',setupFolder:'Where should games, players 
 noFsApi:'This browser cannot connect folders. Use Chrome on a desktop computer.',setPw:'Set the admin password',
 setPwNote:'Keeps children out of the admin area; it is not real security.',finish:'Finish setup',reconnectTitle:'Reconnect data folder',
 reconnectText:'Chrome needs your permission to access "{name}".',reconnect:'Connect',otherFolder:'Choose another folder',updated:'Updated',
-t_single:'Single',t_multi:'Multiple',t_order:'Order',t_input:'Input',importDone:'Imported "{t}"',importInvalid:'The file is not a valid game.',
-err:'Error: {e}',lives:'Lives',mode_:'Mode',score:'Points',answered:'Answers',current:'Current',materialNote:'Photos are downscaled, sent to Claude and not stored. Chrome often cannot read iPhone HEIC photos – export them as JPEG.',
+t_single:'Single',t_multi:'Multiple',t_order:'Order',t_input:'Input',t_spot:'Tap spot',t_map:'Map',
+hint_map_tap:'Tap the right place on the map. Zoom with two fingers or + / −.',hint_map_choose:'What is marked on the map?',
+hint_map_name:'What is the marked place called? Exact spelling.',tabMaps:'Maps',mapsIntro:'Map packs are separate building blocks that any game can use. They live in the data folder under "maps".',
+importMaps:'Import map packs',mapsImported:'{n} map pack(s) imported',noMaps:'No map packs yet. Import the map pack file.',
+mapMissing:'Map pack "{id}" is missing – import it in the admin area under "Maps".',mapsForGame:'Map packs for this game',objects:'{n} objects',
+layers:'Layers',tapToName:'Tap an object to see its name.',mapPick:'Tap the right object to change the target.',mapBtn:'Map',
+zoomIn:'Zoom in',zoomOut:'Zoom out',zoomReset:'Whole map',hint_spot:'Tap the right place in the image',spotAnswer:'the place marked in green',
+imgEdit:'Image',imgAdd:'+ Image',modeCrop:'Crop',modeCover:'Cover',modeSpot:'Target',wholePhoto:'Whole photo',clearCovers:'Remove covers',
+nextPhoto:'Other photo',apply:'Apply',removeImg:'Remove image',help_crop:'Drag a frame around the part of the image that belongs to the question.',
+help_cover:'Drag boxes over labels that give the answer away. Tap a box to delete it.',help_spot:'Tap the place that counts as the correct answer. It must lie inside the crop.',
+savingImgs:'Saving images … {i} of {n}',spotSkipped:'{n} tap-spot questions without a valid target skipped',imgErr:'Image could not be loaded',
+confirmDelSpot:'A tap-spot question needs an image. Delete the question?',importDone:'Imported "{t}"',importInvalid:'The file is not a valid game.',
+err:'Error: {e}',lives:'Lives',mode_:'Mode',score:'Points',answered:'Answers',current:'Current',materialNote:'Photos are downscaled, sent to Claude and not stored. iPhone photos (HEIC) are converted to JPEG automatically; this needs an internet connection.',
 questionsOf:'Questions in "{t}"',noQuestions:'No questions.',diff:'Level',saving:'Saving …',pwSet:'Password changed',keySaved:'Saved',
 noPlayersPlay:'No players yet. Add them in the admin area on the computer.',sync:'Refresh',connectTitle:'Connect to Dropbox',
 connectText:'Connect this device to your Dropbox once. The page only sees its own folder "Apps/Lernspiel-Spitz".',connectBtn:'Connect to Dropbox',
@@ -241,7 +303,10 @@ class IdbStore{constructor(){this.kind='browser';this.name=t('browserStorage');}
  async read(p){const v=await IDB.get('files',p);return v===undefined?null:JSON.parse(v);}
  async write(p,o){await IDB.set('files',p,JSON.stringify(o,null,2));}
  async list(dir){const ks=await IDB.keys('files');const pre=dir.replace(/\/?$/,'/');return ks.filter(k=>k.startsWith(pre)&&!k.slice(pre.length).includes('/')).map(k=>k.slice(pre.length));}
- async remove(p){await IDB.del('files',p);}}
+ async remove(p){await IDB.del('files',p);}
+ async readBlob(p){const v=await IDB.get('files',p);return v instanceof Blob?v:null;}
+ async writeBlob(p,b){await IDB.set('files',p,b);}
+ async removeDir(p){const pre=p.replace(/\/?$/,'/');for(const k of await IDB.keys('files'))if(k.startsWith(pre))await IDB.del('files',k);}}
 class FolderStore{constructor(hd){this.root=hd;this.kind='folder';this.name=hd.name;}
  async dir(parts,create){let d=this.root;for(const p of parts)d=await d.getDirectoryHandle(p,{create});return d;}
  split(p){const parts=p.split('/');const f=parts.pop();return[parts,f];}
@@ -250,9 +315,14 @@ class FolderStore{constructor(hd){this.root=hd;this.kind='folder';this.name=hd.n
  async write(p,o){const[ps,f]=this.split(p);const d=await this.dir(ps,true);const fh=await d.getFileHandle(f,{create:true});const w=await fh.createWritable();await w.write(JSON.stringify(o,null,2));await w.close();}
  async list(dir){try{const d=await this.dir(dir.split('/').filter(Boolean),false);const out=[];for await(const[n,hd]of d.entries()){if(hd.kind==='file')out.push(n);}return out;}
   catch(e){if(e.name==='NotFoundError')return[];throw e;}}
- async remove(p){const[ps,f]=this.split(p);const d=await this.dir(ps,false);await d.removeEntry(f);}}
+ async remove(p){const[ps,f]=this.split(p);const d=await this.dir(ps,false);await d.removeEntry(f);}
+ async readBlob(p){try{const[ps,f]=this.split(p);const d=await this.dir(ps,false);return await(await d.getFileHandle(f)).getFile();}catch(e){if(e.name==='NotFoundError'||e.name==='TypeMismatchError')return null;throw e;}}
+ async writeBlob(p,b){const[ps,f]=this.split(p);const d=await this.dir(ps,true);const fh=await d.getFileHandle(f,{create:true});const w=await fh.createWritable();await w.write(b);await w.close();}
+ async removeDir(p){try{const parts=p.split('/');const n=parts.pop();const d=await this.dir(parts,false);await d.removeEntry(n,{recursive:true});}catch(e){}}}
 async function copyAll(a,b){for(const f of['config.json','profiles.json']){const v=await a.read(f);if(v)await b.write(f,v);}
- for(const d of['games','mastery','logs'])for(const n of await a.list(d)){const v=await a.read(d+'/'+n);if(v)await b.write(d+'/'+n,v);}}
+ for(const d of['games','mastery','logs'])for(const n of await a.list(d)){const v=await a.read(d+'/'+n);if(v)await b.write(d+'/'+n,v);}
+ if(a.readBlob&&b.writeBlob)for(const n of await a.list('games')){const g=await a.read('games/'+n);
+  for(const it of(g&&g.items)||[])if(it.image&&it.image.path){const bl=await a.readBlob(it.image.path);if(bl)await b.writeBlob(it.image.path,bl);}}}
 
 async function loadAll(){if(!PLAY_ONLY)S.cfg=await S.store.read('config.json');S.profiles=(await S.store.read('profiles.json'))||[];S.games=await loadGames();S.logMap={};await syncLogs();}
 async function refreshData(){S.profiles=(await S.store.read('profiles.json'))||[];S.games=await loadGames();await syncLogs();}
@@ -329,6 +399,8 @@ const DBX={token:null,exp:0,TOKEN_URL:'https://api.dropboxapi.com/oauth2/token',
   if(!r.ok){const e=new Error((d&&d.error_summary)||txt||('HTTP '+r.status));e.status=r.status;throw e;}return d;},
  async download(path){const r=await this.call('https://content.dropboxapi.com/2/files/download',{method:'POST',headers:{'Dropbox-API-Arg':dbxArg({path})}});
   if(r.status===409)return null;if(!r.ok)throw new Error('HTTP '+r.status+' '+await r.text());return r.text();},
+ async downloadBlob(path){const r=await this.call('https://content.dropboxapi.com/2/files/download',{method:'POST',headers:{'Dropbox-API-Arg':dbxArg({path})}});
+  if(r.status===409)return null;if(!r.ok)throw new Error('HTTP '+r.status+' '+await r.text());return r.blob();},
  async upload(path,text,mode){const r=await this.call('https://content.dropboxapi.com/2/files/upload',{method:'POST',
   headers:{'Dropbox-API-Arg':dbxArg({path,mode,autorename:true,mute:true}),'Content-Type':'application/octet-stream'},body:text});
   if(!r.ok)throw new Error('HTTP '+r.status+' '+await r.text());return r.json();}
@@ -341,7 +413,9 @@ class DbxStore{constructor(){this.kind='dropbox';this.name='Dropbox';}
    while(d.has_more){d=await DBX.rpc('files/list_folder/continue',{cursor:d.cursor});out=out.concat(d.entries);}
    const names=out.filter(e=>e['.tag']==='file').map(e=>e.name);await IDB.set('cache','list:'+dir,JSON.stringify(names));return names;}
   catch(e){if(e.status===409)return[];if(e.message==='not connected')throw e;const c=await IDB.get('cache','list:'+dir);if(c)return JSON.parse(c);throw e;}}
- async remove(p){await DBX.rpc('files/delete_v2',{path:'/'+p});}}
+ async remove(p){await DBX.rpc('files/delete_v2',{path:'/'+p});}
+ async readBlob(p){const c=await IDB.get('cache','blob:'+p);if(c instanceof Blob)return c;const b=await DBX.downloadBlob('/'+p);if(b)await IDB.set('cache','blob:'+p,b);return b;}
+ async writeBlob(p,b){await DBX.upload('/'+p,b,'overwrite');}}
 async function initPlay(){
  const q=new URLSearchParams(location.search);
  if(q.get('error'))toast(t('connectErr',{e:q.get('error_description')||q.get('error')}),true);
@@ -461,6 +535,7 @@ function masteryPct(g,m){const gm=m[g.id]||{};if(!g.items.length)return 0;return
 function isUnlocked(p,g,d){const u=st(p.id).unlocks[g.id];return d==='easy'||!!p.unlockAll||!!(u&&u[d]);}
 
 function viewRunSetup(p,g,prev){
+ for(const it of g.items)if(it.image&&it.image.path)imgURL(it.image.path).catch(()=>{});
  const sel=Object.assign({mode:'classic',diff:'easy',adaptive:true,opp:null},prev||{});
  if(!isUnlocked(p,g,sel.diff))sel.diff='easy';
  const re=()=>viewRunSetup(p,g,sel);
@@ -485,7 +560,9 @@ function viewRunSetup(p,g,prev){
 function poolFor(g,d){const allow={easy:[1,2],medium:[1,2,3],hard:[2,3]}[d];const p=g.items.filter(i=>allow.includes(i.difficulty));return p.length>=5?p:g.items.slice();}
 async function startRun(o){
  const masteries={};for(const p of o.players)masteries[p.id]=JSON.parse(JSON.stringify(st(p.id).mastery));
- const pool=poolFor(o.game,o.diff);
+ for(const pk of new Set(o.game.items.filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack)))await loadPack(pk).catch(e=>toast(e.message,true));
+ const okItem=i=>i.type!=='map'||(i.map&&PACKS[i.map.pack]&&PACKS[i.map.pack].byId[i.map.target]);
+ const pool=poolFor(Object.assign({},o.game,{items:o.game.items.filter(okItem)}),o.diff);if(!pool.length)return toast(t('noItems'),true);
  const R={id:uid(),players:o.players,game:o.game,mode:o.mode,diff:o.diff,adaptive:o.adaptive,sel:o.sel,started:new Date(),pool,used:new Set(),answers:[],
   score:o.players.map(()=>0),streak:o.players.map(()=>0),best:o.players.map(()=>0),lives:3,level:DIFF_LEVEL[o.diff],up:0,down:0,q:0,masteries,timer:null,ended:false};
  R.target=o.mode==='classic'?Math.min(10,pool.length):o.mode==='duel'?10:Infinity;
@@ -507,11 +584,135 @@ function prepare(item,diff){
  if(item.type==='single'||item.type==='multi'){let opts=item.options.map((text,i)=>({text,ok:item.correct.includes(i)}));
   if(item.type==='single'&&diff==='easy'&&opts.length>3){const right=opts.filter(o=>o.ok);opts=right.concat(shuffle(opts.filter(o=>!o.ok)).slice(0,3-right.length));}
   Q.opts=shuffle(opts);}
+ if(item.type==='map'&&item.map.task==='choose'){let o=item.map.options.slice();if(diff==='easy'&&o.length>3)o=[item.map.target].concat(shuffle(o.filter(x=>x!==item.map.target)).slice(0,2));Q.mopts=shuffle(o);}
  if(item.type==='order'){let s=shuffle(item.order);for(let k=0;k<6&&item.order.length>1&&s.join('\u0001')===item.order.join('\u0001');k++)s=shuffle(item.order);Q.chips=s;}
  return Q;
 }
 function answerText(it){switch(it.type){case'single':return it.options[it.correct[0]];case'multi':return it.correct.map(i=>it.options[i]).join(', ');
- case'order':return it.order.join(' → ');case'input':return it.answer;default:return'';}}
+ case'order':return it.order.join(' → ');case'input':return it.answer;case'spot':return t('spotAnswer');case'map':{const P=PACKS[it.map&&it.map.pack];const f=P&&P.byId[it.map.target];return f?fname(f):(it.answer||it.map.target);}default:return'';}}
+const IMG_URLS={};
+async function imgURL(path){if(IMG_URLS[path])return IMG_URLS[path];const b=await S.store.readBlob(path);if(!b)throw new Error(t('imgErr'));return(IMG_URLS[path]=URL.createObjectURL(b));}
+function lazyImg(path,attrs){const im=h('img',Object.assign({alt:''},attrs||{}));imgURL(path).then(u=>{im.src=u;}).catch(()=>{im.alt=t('imgErr');});return im;}
+function loadImgEl(url){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error(t('imgErr')));i.src=url;});}
+function clamp01(v){return Math.max(0,Math.min(1,v));}
+function normBox(b){let[x0,y0,x1,y1]=b.map(v=>clamp01(+v||0));if(x1<x0)[x0,x1]=[x1,x0];if(y1<y0)[y0,y1]=[y1,y0];if(x1-x0<0.03||y1-y0<0.03)return[0,0,1,1];return[x0,y0,x1,y1];}
+function bakeFigure(img,fig,maxSide){const W=img.naturalWidth,H=img.naturalHeight;const[x0,y0,x1,y1]=fig.box;const sx=x0*W,sy=y0*H,sw=Math.max(1,(x1-x0)*W),sh=Math.max(1,(y1-y0)*H);
+ const sc=Math.min(1,maxSide/Math.max(sw,sh));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(sw*sc));c.height=Math.max(1,Math.round(sh*sc));
+ const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,sx,sy,sw,sh,0,0,c.width,c.height);x.fillStyle='#D9DDE3';x.strokeStyle='#9AA3AF';x.lineWidth=1;
+ for(const cv of fig.covers||[]){const rx=(cv[0]*W-sx)*sc,ry=(cv[1]*H-sy)*sc,rw=(cv[2]-cv[0])*W*sc,rh=(cv[3]-cv[1])*H*sc;x.fillRect(rx,ry,rw,rh);x.strokeRect(rx,ry,rw,rh);}
+ return c;}
+function spotInBox(fig){if(!fig||!fig.spot)return null;const[x0,y0,x1,y1]=fig.box;const x=(fig.spot.x-x0)/(x1-x0),y=(fig.spot.y-y0)/(y1-y0);return(x<0||x>1||y<0||y>1)?null:{x,y,r:0.07};}
+function canvasBlob(c){return new Promise(r=>c.toBlob(r,'image/jpeg',0.85));}
+function figEditor(o){
+ const dlg=$('#dlg');const st=JSON.parse(JSON.stringify(o.fig||{photo:0,box:[0,0,1,1],covers:[]}));st.covers=st.covers||[];st.spot=st.spot||null;
+ let mode=(o.spot&&!st.spot)?'spot':'crop',imgEl=null,start=null,temp=null;
+ const stage=h('div',{class:'stage'});const help=h('p',{class:'small muted'});const bar=h('div',{class:'row',style:'gap:6px'});
+ const pct=v=>(v*100)+'%';
+ const rect=(b,cls)=>h('div',{class:cls,style:`left:${pct(b[0])};top:${pct(b[1])};width:${pct(b[2]-b[0])};height:${pct(b[3]-b[1])}`});
+ const rel=e=>{const r=imgEl.getBoundingClientRect();return{x:clamp01((e.clientX-r.left)/r.width),y:clamp01((e.clientY-r.top)/r.height)};};
+ const overlay=()=>{stage.querySelectorAll('.ov').forEach(n=>n.remove());if(!imgEl)return;
+  const L=h('div',{class:'ov',style:'position:absolute;inset:0;pointer-events:none'});L.append(rect(st.box,'crop'));
+  st.covers.forEach(c=>L.append(rect(c,'cover')));if(st.spot)L.append(h('div',{class:'spotdot',style:`left:${pct(st.spot.x)};top:${pct(st.spot.y)}`}));
+  if(temp)L.append(rect(temp,(mode==='cover'?'cover':'crop')+' temp'));stage.append(L);};
+ const drawBar=()=>{const modes=['crop','cover'].concat(o.spot?['spot']:[]);
+  bar.replaceChildren(...modes.map(m=>h('button',{class:'btn small'+(mode===m?'':' ghost'),'aria-pressed':String(mode===m),onclick:()=>{mode=m;drawBar();}},
+   t({crop:'modeCrop',cover:'modeCover',spot:'modeSpot'}[m]))),
+   h('button',{class:'btn ghost small',onclick:()=>{st.box=[0,0,1,1];overlay();}},t('wholePhoto')),
+   h('button',{class:'btn ghost small',onclick:()=>{st.covers=[];overlay();}},t('clearCovers')),
+   o.sources.length>1?h('button',{class:'btn ghost small',onclick:()=>{st.photo=(st.photo+1)%o.sources.length;st.box=[0,0,1,1];st.covers=[];st.spot=null;load();}},t('nextPhoto')):null);
+  help.textContent=t('help_'+mode);};
+ stage.addEventListener('pointerdown',e=>{if(!imgEl)return;e.preventDefault();const p=rel(e);if(mode==='spot'){st.spot=p;overlay();return;}
+  start=p;try{stage.setPointerCapture(e.pointerId);}catch(x){}});
+ stage.addEventListener('pointermove',e=>{if(!start)return;const p=rel(e);temp=[Math.min(start.x,p.x),Math.min(start.y,p.y),Math.max(start.x,p.x),Math.max(start.y,p.y)];overlay();});
+ const end=e=>{if(!start)return;const p=rel(e);const b=[Math.min(start.x,p.x),Math.min(start.y,p.y),Math.max(start.x,p.x),Math.max(start.y,p.y)];start=null;temp=null;
+  const tiny=b[2]-b[0]<0.015&&b[3]-b[1]<0.015;
+  if(mode==='cover'){if(tiny){const i=st.covers.findIndex(c=>p.x>=c[0]&&p.x<=c[2]&&p.y>=c[1]&&p.y<=c[3]);if(i>=0)st.covers.splice(i,1);}else st.covers.push(b);}
+  else if(mode==='crop'&&!tiny)st.box=b;overlay();};
+ stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',()=>{start=null;temp=null;overlay();});
+ const load=async()=>{imgEl=null;stage.replaceChildren(h('p',{class:'muted',style:'line-height:1.5;padding:20px'},'…'));
+  try{const src=await o.sources[st.photo]();imgEl=h('img',{src:src.src,alt:'',draggable:'false'});stage.replaceChildren(imgEl);overlay();}
+  catch(e){stage.replaceChildren(h('p',{style:'line-height:1.5;padding:20px'},t('imgErr')));}};
+ dlg.classList.add('wide');dlg.addEventListener('close',()=>dlg.classList.remove('wide'),{once:true});
+ dlg.replaceChildren(h('div',{class:'stack'},h('h2',{},t('imgEdit')),bar,help,h('div',{},stage),h('div',{class:'row'},
+  h('button',{class:'btn',onclick:async()=>{if(o.spot&&!spotInBox(st))return toast(t('help_spot'),true);dlg.close();await o.onApply(st);}},t('apply')),
+  o.onRemove?h('button',{class:'btn danger',onclick:async()=>{dlg.close();await o.onRemove();}},t('removeImg')):null,
+  h('button',{class:'btn ghost',onclick:()=>dlg.close()},t('cancel')))));
+ drawBar();dlg.showModal();load();
+}
+/* ================= map toolbox ================= */
+const PACKS={};const SVGNS='http://www.w3.org/2000/svg';
+function sv(tag,attrs){const e=document.createElementNS(SVGNS,tag);for(const k in attrs||{})e.setAttribute(k,attrs[k]);return e;}
+function fname(f){return f?(f.n[S.lang]||f.n.de||f.n.en||f.id):'';}
+async function listPacks(){try{return(await S.store.list('maps')).filter(n=>/\.json$/.test(n)&&n!=='index.json').map(n=>n.replace(/\.json$/,''));}catch(e){return[];}}
+async function loadPack(id){if(PACKS[id])return PACKS[id];const P=await S.store.read('maps/'+id+'.json');if(!P||!P.layers)throw new Error(t('mapMissing',{id}));
+ P.byId={};for(const L of P.layers)for(const f of L.f){f.layer=L.id;f.kind=L.kind;P.byId[f.id]=f;}return(PACKS[id]=P);}
+function parseD(d){const out=[];let cur=null,x=0,y=0;d.replace(/([Mlz])([^Mlz]*)/g,(m,c,a)=>{if(c==='z'){if(cur&&cur.length)cur.push(cur[0].slice());return'';}
+ const v=a.split(',').map(Number);if(c==='M'){x=v[0];y=v[1];cur=[[x,y]];out.push(cur);}else{x+=v[0];y+=v[1];cur.push([x,y]);}return'';});return out;}
+function geo(f){if(f._g)return f._g;if(f.x!=null)return(f._g={polys:[],b:[f.x,f.y,f.x,f.y]});const polys=parseD(f.d||'');const b=[1e9,1e9,-1e9,-1e9];
+ for(const pl of polys)for(const[x,y]of pl){if(x<b[0])b[0]=x;if(y<b[1])b[1]=y;if(x>b[2])b[2]=x;if(y>b[3])b[3]=y;}return(f._g={polys,b});}
+function inPolys(px,py,polys){let c=false;for(const r of polys)for(let i=0,j=r.length-1;i<r.length;j=i++){const[xi,yi]=r[i],[xj,yj]=r[j];
+ if((yi>py)!==(yj>py)&&px<(xj-xi)*(py-yi)/((yj-yi)||1e-9)+xi)c=!c;}return c;}
+function segDist(px,py,polys){let m=1e9;for(const r of polys)for(let i=1;i<r.length;i++){const[ax,ay]=r[i-1],[bx,by]=r[i];const dx=bx-ax,dy=by-ay;const L=dx*dx+dy*dy;
+ let tt=L?((px-ax)*dx+(py-ay)*dy)/L:0;tt=Math.max(0,Math.min(1,tt));const qx=ax+tt*dx-px,qy=ay+tt*dy-py;const d=Math.sqrt(qx*qx+qy*qy);if(d<m)m=d;}return m;}
+function mapHits(P,layerId,x,y,ppu,diff){const L=P.layers.find(l=>l.id===layerId);if(!L)return[];const out=[];
+ const tolPt={easy:26,medium:18,hard:12}[diff||'medium']||18;
+ for(const f of L.f){if(f.bg)continue;const g=geo(f);
+  if(L.kind==='point'){const d=Math.hypot(f.x-x,f.y-y)*ppu;if(d<=tolPt)out.push([d,f.id]);}
+  else if(L.kind==='line'){if(x<g.b[0]-30/ppu||x>g.b[2]+30/ppu||y<g.b[1]-30/ppu||y>g.b[3]+30/ppu)continue;const d=segDist(x,y,g.polys)*ppu;if(d<=14)out.push([d,f.id]);}
+  else{const inb=x>=g.b[0]&&x<=g.b[2]&&y>=g.b[1]&&y<=g.b[3];if(inb&&inPolys(x,y,g.polys))out.push([0,f.id]);
+   else if(f.c&&(f.a||0)*ppu*ppu<600){const d=Math.hypot(f.c[0]-x,f.c[1]-y)*ppu;if(d<=16)out.push([1+d,f.id]);}}}
+ return out.sort((a,b)=>a[0]-b[0]).map(v=>v[1]);}
+function mapView(P,o){o=o||{};const show=new Set(o.show||[]),hl=new Set(o.highlight||[]);
+ const wrap=h('div',{class:'mapwrap'+(o.faint?' showfaint':'')});const svg=sv('svg',{viewBox:`0 0 ${P.w} ${P.h}`,class:'map',preserveAspectRatio:'xMidYMid meet'});
+ svg.style.aspectRatio=P.w+'/'+P.h;svg.style.background=P.id==='ch'?'#ece6d6':'#cfe3f3';const root=sv('g');svg.append(root);const els={};
+ const always=L=>L.kind==='bg'||(L.kind!=='point'&&!['landscapes','continents','seas'].includes(L.id));
+ for(const L of P.layers){const need=always(L)||show.has(L.id)||L.f.some(f=>hl.has(f.id));if(!need)continue;const lg=sv('g');root.append(lg);
+  for(const f of L.f){let el;
+   if(L.kind==='point'){if(!show.has(L.id)&&!hl.has(f.id))continue;el=sv('circle',{cx:f.x,cy:f.y,r:3,class:'m-pt'});}
+   else el=sv('path',{d:f.d,class:'m-'+L.style+(f.bg?' m-bg':'')+(L.kind==='line'?' line':'')});
+   el.dataset.id=f.id;if(hl.has(f.id))el.classList.add('hl');lg.append(el);els[f.id]=el;}}
+ const marks=sv('g');root.append(marks);
+ let vb={x:0,y:0,w:P.w,h:P.h};const minW=P.w/40;
+ const apply=()=>{svg.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);const ppu=(svg.clientWidth||P.w)/vb.w;
+  svg.querySelectorAll('circle').forEach(c=>{const base=c.classList.contains('tapdot')?6:(c.classList.contains('hl')||c.classList.contains('ok')||c.classList.contains('bad'))?8:4.5;c.setAttribute('r',base/ppu);});};
+ const clamp=()=>{vb.w=Math.max(minW,Math.min(P.w,vb.w));vb.h=vb.w*P.h/P.w;vb.x=Math.max(0,Math.min(P.w-vb.w,vb.x));vb.y=Math.max(0,Math.min(P.h-vb.h,vb.y));};
+ const zoomAt=(cx,cy,k)=>{const nw=Math.max(minW,Math.min(P.w,vb.w/k));const f=nw/vb.w;vb.x=cx-(cx-vb.x)*f;vb.y=cy-(cy-vb.y)*f;vb.w=nw;clamp();apply();};
+ const toSvg=(ex,ey)=>{const r=svg.getBoundingClientRect();return{x:vb.x+(ex-r.left)/r.width*vb.w,y:vb.y+(ey-r.top)/r.height*vb.h};};
+ const api={el:wrap,svg,els,onTap:null,
+  ppu:()=>(svg.clientWidth||P.w)/vb.w,
+  mark:(id,cls)=>{const e=els[id];if(e){e.classList.remove('hl');e.classList.add(cls);if(e.parentNode)e.parentNode.append(e);}apply();},
+  addPoint:(f,cls)=>{if(els[f.id])return api.mark(f.id,cls);const c=sv('circle',{cx:f.x,cy:f.y,r:3,class:cls});marks.append(c);els[f.id]=c;apply();},
+  dot:(x,y,ok)=>{marks.append(sv('circle',{cx:x,cy:y,r:3,class:'tapdot',fill:ok?'#2E7D4F':'#C8322B'}));apply();},
+  zoomTo:(b,pad)=>{const w=Math.max(b[2]-b[0],(b[3]-b[1])*P.w/P.h,minW)*(pad||4);vb.w=w;vb.h=w*P.h/P.w;vb.x=(b[0]+b[2])/2-vb.w/2;vb.y=(b[1]+b[3])/2-vb.h/2;clamp();apply();},
+  reset:()=>{vb={x:0,y:0,w:P.w,h:P.h};apply();}};
+ const ptr=new Map();let drag=null,moved=false,pinch=null;
+ svg.addEventListener('pointerdown',e=>{svg.setPointerCapture&&svg.setPointerCapture(e.pointerId);ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptr.size===1){drag={x:e.clientX,y:e.clientY,vx:vb.x,vy:vb.y};moved=false;}
+  else if(ptr.size===2){const[a,b]=[...ptr.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),w:vb.w};moved=true;}});
+ svg.addEventListener('pointermove',e=>{if(!ptr.has(e.pointerId))return;ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptr.size===2&&pinch){const[a,b]=[...ptr.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);const m=toSvg((a.x+b.x)/2,(a.y+b.y)/2);zoomAt(m.x,m.y,(pinch.w/vb.w)*(d/pinch.d));return;}
+  if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.hypot(dx,dy)>6)moved=true;if(moved){const r=svg.getBoundingClientRect();vb.x=drag.vx-dx/r.width*vb.w;vb.y=drag.vy-dy/r.height*vb.h;clamp();apply();}}});
+ const up=e=>{const was=ptr.has(e.pointerId);ptr.delete(e.pointerId);if(ptr.size<2)pinch=null;
+  if(was&&ptr.size===0){if(!moved&&api.onTap){const p=toSvg(e.clientX,e.clientY);api.onTap(p.x,p.y,api.ppu());}drag=null;}};
+ svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',e=>{ptr.delete(e.pointerId);drag=null;pinch=null;});
+ svg.addEventListener('wheel',e=>{e.preventDefault();const p=toSvg(e.clientX,e.clientY);zoomAt(p.x,p.y,e.deltaY<0?1.25:0.8);},{passive:false});
+ const ctl=h('div',{class:'mapctl'},h('button',{type:'button','aria-label':t('zoomIn'),onclick:()=>zoomAt(vb.x+vb.w/2,vb.y+vb.h/2,1.5)},'+'),
+  h('button',{type:'button','aria-label':t('zoomOut'),onclick:()=>zoomAt(vb.x+vb.w/2,vb.y+vb.h/2,1/1.5)},'−'),h('button',{type:'button','aria-label':t('zoomReset'),onclick:()=>api.reset()},'⟲'));
+ wrap.append(svg,ctl,h('div',{class:'mapattr'},P.attribution||''));
+ new ResizeObserver(()=>apply()).observe(svg);setTimeout(apply,0);
+ return api;}
+function packCatalog(P){return`[map pack "${P.id}": ${P.name.en}]\n`+P.layers.filter(L=>L.kind!=='bg').map(L=>{const fs=L.f.filter(f=>!f.bg);if(!fs.length)return'';
+ return`${L.id} (${L.label.en}): `+fs.map(f=>f.id+'='+f.n.de+(f.n.en&&f.n.en!==f.n.de?'/'+f.n.en:'')+(f.cat&&L.kind==='point'?' ['+f.cat+']':'')).join('; ');}).filter(Boolean).join('\n');}
+function mapPicker(P,item,onPick){const dlg=$('#dlg');const tg=P.byId[item.map.target];const info=h('p',{class:'muted'},t('mapPick'));
+ const mv=mapView(P,{show:tg&&tg.kind==='point'?[tg.layer]:(tg?[tg.layer]:[]),highlight:tg?[tg.id]:[],faint:true});let sel=tg?tg.id:null;
+ mv.onTap=(x,y,ppu)=>{const hs=mapHits(P,tg?tg.layer:'',x,y,ppu,'easy');if(!hs.length)return;if(sel&&mv.els[sel])mv.els[sel].classList.remove('hl');sel=hs[0];
+  if(mv.els[sel])mv.els[sel].classList.add('hl');info.textContent=fname(P.byId[sel]);};
+ dlg.classList.add('wide');dlg.addEventListener('close',()=>dlg.classList.remove('wide'),{once:true});
+ dlg.replaceChildren(h('div',{class:'stack'},h('h2',{},t('mapBtn')+': '+fname(tg)),info,mv.el,h('div',{class:'row'},
+  h('button',{class:'btn',onclick:async()=>{dlg.close();if(sel&&sel!==item.map.target){const old=item.map.target;item.map.target=sel;
+   if(item.map.options){item.map.options=item.map.options.map(o=>o===old?sel:o).filter((v,i,a)=>a.indexOf(v)===i);if(!item.map.options.includes(sel))item.map.options.unshift(sel);}
+   if(item.map.task==='name'){const f=P.byId[sel];item.answer=f.n.de;item.accept=[f.n.en].filter(Boolean);}await onPick();}}},t('apply')),
+  h('button',{class:'btn ghost',onclick:()=>dlg.close()},t('cancel')))));dlg.showModal();if(tg)setTimeout(()=>mv.zoomTo(geo(tg).b,6),50);}
 function nextQuestion(R){
  if(R.ended)return;const item=pickItem(R);R.used.add(item.id);const Q=prepare(item,R.diff);Q.t0=performance.now();renderQuestion(R,Q);
 }
@@ -522,7 +723,7 @@ function hud(R){
   h('span',{title:t('streak')},'🔥 '+R.streak[i]),
   R.mode==='survival'?h('span',{'aria-label':t('lives')+': '+R.lives},'❤️'.repeat(R.lives)+'🤍'.repeat(3-R.lives)):null,
   R.mode==='timed'?h('span',{id:'timer'},'⏱ '+Math.max(0,Math.ceil((R.deadline-Date.now())/1000))+' s'):null,
-  (R.mode==='classic'||R.mode==='duel')?h('span',{},(R.q+1)+' / '+R.target):null,
+  (R.mode==='classic'||R.mode==='duel')?h('span',{},Math.min(R.q+1,R.target)+' / '+R.target):null,
   h('span',{class:'sp'}),
   h('button',{class:'btn ghost small',onclick:()=>finishRun(R,true)},t('quit')));
 }
@@ -548,9 +749,29 @@ function renderQuestion(R,Q){
   const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[it.answer].concat(it.accept||[]).some(a=>String(a).trim()===v);submit(v,ok,()=>{inp.style.borderColor=ok?'var(--green)':'var(--red)';});};
   area.append(inp,h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;setTimeout(()=>inp.focus(),30);
  }
+ let figEl=null;
+ if(it.type==='map'){const P=PACKS[it.map.pack];const tg=P.byId[it.map.target];const task=it.map.task;
+  const showL=task==='tap'?((tg.kind==='point'&&R.diff!=='hard')||(['landscapes','continents'].includes(tg.layer)&&R.diff==='easy')?[tg.layer]:[]):[];
+  const mv=mapView(P,{show:showL,highlight:task==='tap'?[]:[tg.id],faint:true});figEl=mv.el;
+  if(task!=='tap'){const g=geo(tg);const sm=(g.b[2]-g.b[0])<P.w*0.08&&(g.b[3]-g.b[1])<P.h*0.08;if(sm)setTimeout(()=>mv.zoomTo(g.b,tg.kind==='point'?60:8),30);}
+  const reveal=(ok,hit)=>{if(tg.kind==='point')mv.addPoint(tg,'ok');else mv.mark(tg.id,'ok');if(!ok&&hit&&hit!==tg.id){const hf=P.byId[hit];if(hf.kind==='point')mv.addPoint(hf,'bad');else mv.mark(hit,'bad');}};
+  if(task==='tap'){mv.onTap=(x,y,ppu)=>{if(done||R.ended)return;const hs=mapHits(P,tg.layer,x,y,ppu,R.diff);const ok=hs.includes(tg.id);
+    submit(hs.length?fname(P.byId[hs[0]]):'—',ok,()=>{mv.dot(x,y,ok);reveal(ok,hs[0]);});};}
+  else if(task==='choose'){area.append(h('div',{class:'opts'},Q.mopts.map(id=>{const b=h('button',{class:'opt',onclick:()=>{const ok=id===tg.id;
+    submit(fname(P.byId[id]),ok,()=>{b.classList.add(ok?'ok':'bad');area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.mopts[k]===tg.id)x.classList.add('ok');});reveal(ok,id);});}},fname(P.byId[id]));return b;})));}
+  else{const inp=h('input',{type:'text',class:'answerbox',autocomplete:'off',autocapitalize:'off',autocorrect:'off',spellcheck:'false','aria-label':t('hint_map_name')});
+   const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[it.answer,tg.n.de,tg.n.en].concat(it.accept||[]).filter(Boolean).some(a=>String(a).trim()===v);
+    submit(v,ok,()=>{inp.style.borderColor=ok?'var(--green)':'var(--red)';reveal(ok,null);});};
+   area.append(inp,h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;setTimeout(()=>inp.focus(),30);}}
+ if(it.image&&it.image.path){const im=lazyImg(it.image.path,{draggable:'false'});figEl=h('div',{class:'figwrap'},im);
+  if(it.type==='spot'&&it.spot){figEl.classList.add('spotable');const r=(it.spot.r||0.07)*(R.diff==='easy'?1.4:R.diff==='hard'?0.8:1);
+   im.addEventListener('pointerdown',e=>{if(done||R.ended)return;const rc=im.getBoundingClientRect();if(!rc.width)return;e.preventDefault();
+    const x=clamp01((e.clientX-rc.left)/rc.width),y=clamp01((e.clientY-rc.top)/rc.height);const dx=x-it.spot.x,dy=(y-it.spot.y)*(rc.height/rc.width);const ok=Math.hypot(dx,dy)<=r;
+    submit(Math.round(x*1000)+','+Math.round(y*1000),ok,()=>{figEl.append(h('div',{class:'spottarget',style:`left:${it.spot.x*100}%;top:${it.spot.y*100}%;width:${r*200}%`}),
+     h('div',{class:'spotmark '+(ok?'ok':'bad'),style:`left:${x*100}%;top:${y*100}%`}));});});}}
  const turn=R.mode==='duel'?h('p',{class:'hand',style:'font-size:1.3rem;color:var(--ink)'},t('turnOf',{name:R.players[curIdx(R)].name})):null;
  const keepEnter=S.onEnter;
- screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},it.prompt),h('div',{class:'hint'},t('hint_'+it.type)),area,fb)));
+ screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},it.prompt),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,fb)));
  S.onEnter=keepEnter;
 }
 function onAnswer(R,Q,given,correct,fb){
@@ -565,10 +786,10 @@ function onAnswer(R,Q,given,correct,fb){
  const over=()=>(R.mode==='classic'||R.mode==='duel')?R.q>=R.target:R.mode==='survival'?R.lives<=0:(R.mode==='timed'&&Date.now()>=R.deadline);
  const proceed=()=>{if(R.ended)return;if(over())finishRun(R,false);else nextQuestion(R);};
  fb.className='feedback';
- fb.append(h('div',{class:'stamp hand '+(correct?'ok':'bad')},correct?'✓ '+t('correct'):'✗ '+t('wrong')),
+ fb.append(...[h('div',{class:'stamp hand '+(correct?'ok':'bad')},correct?'✓ '+t('correct'):'✗ '+t('wrong')),
   !correct?h('p',{},h('b',{},t('rightAnswer',{a:answerText(it)}))):null,
-  !correct&&(it.type==='input'||it.type==='order')?h('p',{class:'muted'},t('yourAnswer',{a:given})):null,
-  R.mode!=='timed'&&it.explanation?h('p',{class:'muted'},it.explanation):null);
+  !correct&&(it.type==='input'||it.type==='order'||(it.type==='map'&&it.map.task==='name'))?h('p',{class:'muted'},t('yourAnswer',{a:given})):null,
+  R.mode!=='timed'&&it.explanation?h('p',{class:'muted'},it.explanation):null].filter(Boolean));
  const hudEl=$('.hud');if(hudEl)hudEl.replaceWith(hud(R));
  if(R.mode==='timed'){S.onEnter=null;setTimeout(proceed,correct?550:1400);}
  else{const nb=h('button',{class:'btn'},t('next'));nb.addEventListener('click',proceed);fb.append(nb);S.onEnter=proceed;setTimeout(()=>nb.focus(),30);}
@@ -621,9 +842,9 @@ function viewAdmin(tab){
  if(!S.admin)return viewAdminLogin();
  const body=h('div',{});
  screen(topbar(t('admin'),{rerender:()=>viewAdmin(tab),extra:h('button',{class:'btn ghost small',onclick:viewHome},t('lockAdmin'))}),
-  h('main',{class:'page wide'},h('div',{class:'tabs',role:'tablist'},[['players','tabPlayers'],['games','tabGames'],['logs','tabLogs'],['settings','tabSettings']].map(([k,l])=>
+  h('main',{class:'page wide'},h('div',{class:'tabs',role:'tablist'},[['players','tabPlayers'],['games','tabGames'],['logs','tabLogs'],['maps','tabMaps'],['settings','tabSettings']].map(([k,l])=>
    h('button',{role:'tab','aria-selected':String(tab===k),onclick:()=>viewAdmin(k)},t(l)))),body));
- ({players:adminPlayers,games:adminGames,logs:adminLogs,settings:adminSettings})[tab](body);
+ ({players:adminPlayers,games:adminGames,logs:adminLogs,maps:adminMaps,settings:adminSettings})[tab](body);
 }
 /* players */
 function adminPlayers(body){
@@ -653,7 +874,7 @@ function editPlayer(p){
 /* games */
 function adminGames(body){
  const imp=h('input',{type:'file',accept:'application/json,.json',style:'display:none',onchange:async e=>{const f=e.target.files[0];if(!f)return;
-  try{const g=JSON.parse(await f.text());if(!g||!g.title||!Array.isArray(g.items))throw 0;const items=g.items.filter(validItem);if(!items.length)throw 0;
+  try{const g=JSON.parse(await f.text());if(!g||!g.title||!Array.isArray(g.items))throw 0;for(const pk of new Set(g.items.filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack)))await loadPack(pk).catch(()=>{});const items=g.items.filter(validItem);if(!items.length)throw 0;
    items.forEach(i=>{if(!i.id)i.id=uid();});const ng={id:uid(),title:String(g.title),kind:g.kind||'other',instructions:g.instructions||'',createdAt:new Date().toISOString(),sources:g.sources||[],items};
    await saveGame(ng);toast(t('importDone',{t:ng.title}));viewAdmin('games');}catch(err){toast(t('importInvalid'),true);}}});
  body.append(h('div',{class:'row',style:'margin-bottom:14px'},h('button',{class:'btn',onclick:()=>viewGenerate(null)},'+ '+t('newGame')),
@@ -664,7 +885,7 @@ function adminGames(body){
    h('button',{class:'btn ghost small',onclick:()=>viewItems(g)},t('viewQuestions')),
    h('button',{class:'btn ghost small',onclick:()=>{const b=new Blob([JSON.stringify(g,null,2)],{type:'application/json'});const a=h('a',{href:URL.createObjectURL(b),download:ymd(new Date())+'_'+slug(g.title)+'.json'});
     document.body.append(a);a.click();a.remove();}},t('exportGame')),
-   h('button',{class:'btn danger small',onclick:async()=>{if(!confirm(t('confirmDelGame',{t:g.title})))return;await S.store.remove('games/'+g.id+'.json');S.games=await loadGames();viewAdmin('games');}},t('del'))))));
+   h('button',{class:'btn danger small',onclick:async()=>{if(!confirm(t('confirmDelGame',{t:g.title})))return;await S.store.remove('games/'+g.id+'.json');if(S.store.removeDir)await S.store.removeDir('games/'+g.id);S.games=await loadGames();viewAdmin('games');}},t('del'))))));
 }
 function validItem(it){
  if(!it||typeof it.prompt!=='string'||!it.prompt.trim())return false;
@@ -676,14 +897,25 @@ function validItem(it){
   case'multi':return opt&&Array.isArray(it.correct)&&it.correct.length>=1&&it.correct.every(i=>Number.isInteger(i)&&i>=0&&i<it.options.length);
   case'order':return Array.isArray(it.order)&&it.order.length>=2&&it.order.every(o=>typeof o==='string');
   case'input':if(it.accept&&!Array.isArray(it.accept))delete it.accept;return typeof it.answer==='string'&&it.answer.trim().length>0;
+  case'map':{const m=it.map;if(!m||typeof m.pack!=='string'||typeof m.target!=='string'||!['tap','choose','name'].includes(m.task))return false;
+   const P=PACKS[m.pack];if(!P)return false;const f=P.byId[m.target];if(!f||f.bg||f.kind==='bg')return false;
+   if(m.task==='choose'){let o=(Array.isArray(m.options)?m.options:[]).filter(id=>P.byId[id]&&P.byId[id].layer===f.layer&&!P.byId[id].bg);
+    if(!o.includes(f.id))o.unshift(f.id);o=o.filter((v,i,a)=>a.indexOf(v)===i);
+    if(o.length<3){const pool=P.layers.find(l=>l.id===f.layer).f.filter(x=>!x.bg&&!o.includes(x.id));while(o.length<4&&pool.length)o.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0].id);}
+    m.options=o.slice(0,6);}
+   if(m.task==='name'&&!(typeof it.answer==='string'&&it.answer.trim()))it.answer=f.n.de;
+   delete it.figure;delete it._fig;return true;}
+  case'spot':return!!((it._fig&&it._fig.spot)||(it.image&&it.image.path&&it.spot&&isFinite(it.spot.x)&&isFinite(it.spot.y)));
   default:return false;}
 }
 function itemRow(it,opts){
- return h('div',{class:'item',style:'align-items:flex-start'},opts.check||null,
-  h('div',{class:'grow'},h('div',{class:'row',style:'gap:6px;margin-bottom:4px'},h('span',{class:'tag'},t('t_'+it.type)),h('span',{class:'tag'},t('diff')+' '+it.difficulty)),
+ return h('div',{class:'item',style:'align-items:flex-start'},opts.check||null,opts.thumb||null,
+  h('div',{class:'grow'},h('div',{class:'row',style:'gap:6px;margin-bottom:4px'},h('span',{class:'tag'},t('t_'+it.type)+(it.type==='map'?' · '+it.map.pack+' · '+it.map.task:'')),h('span',{class:'tag'},t('diff')+' '+it.difficulty)),
    h('div',{},it.prompt),h('div',{class:'small',style:'color:var(--green)'},'✓ '+answerText(it)),
    (it.type==='single'||it.type==='multi')?h('div',{class:'small muted'},it.options.join(' · ')):null),
-  h('div',{class:'stack',style:'min-width:110px'},h('button',{class:'btn ghost small',onclick:opts.onEdit},t('edit')),opts.onDelete?h('button',{class:'btn danger small',onclick:opts.onDelete},t('del')):null));
+  h('div',{class:'stack',style:'min-width:110px'},h('button',{class:'btn ghost small',onclick:opts.onEdit},t('edit')),
+   it.type==='map'&&PACKS[it.map.pack]?h('button',{class:'btn ghost small',onclick:()=>mapPicker(PACKS[it.map.pack],it,opts.onMapChange||(async()=>{}))},'🗺 '+t('mapBtn')):null,
+   it.type!=='map'&&opts.onImage?h('button',{class:'btn ghost small',onclick:opts.onImage},opts.imageLabel||t('imgEdit')):null,opts.onDelete?h('button',{class:'btn danger small',onclick:opts.onDelete},t('del')):null));
 }
 function jsonEdit(it,onSave){
  const dlg=$('#dlg');const ta=h('textarea',{style:'min-height:320px;font-family:ui-monospace,Consolas,monospace;font-size:.85rem'});ta.value=JSON.stringify(it,null,2);
@@ -692,84 +924,174 @@ function jsonEdit(it,onSave){
    n.id=it.id;await onSave(n);dlg.close();}},t('save')),h('button',{class:'btn ghost',onclick:()=>dlg.close()},t('cancel')))));
  dlg.showModal();
 }
-function viewItems(g){
+async function viewItems(g){
+ for(const pk of new Set(g.items.filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack)))await loadPack(pk).catch(()=>{});
  const draw=()=>{screen(topbar(t('questionsOf',{t:g.title}),{back:()=>viewAdmin('games'),rerender:draw}),h('main',{class:'page wide'},
   g.items.length?h('div',{class:'list'},g.items.map((it,k)=>itemRow(it,{
+   thumb:it.image&&it.image.path?lazyImg(it.image.path,{class:'thumb'}):null,
+   onImage:it.image&&it.image.path?()=>figEditor({sources:[()=>imgURL(it.image.path).then(loadImgEl)],spot:it.type==='spot',
+     fig:{photo:0,box:[0,0,1,1],covers:[],spot:it.spot?{x:it.spot.x,y:it.spot.y}:null},
+     onApply:async f=>{try{const src=await imgURL(it.image.path).then(loadImgEl);const c=bakeFigure(src,f,1200);const old=it.image.path;
+       const path='games/'+g.id+'/img/'+uid()+'.jpg';await S.store.writeBlob(path,await canvasBlob(c));it.image={path,w:c.width,h:c.height};
+       if(it.type==='spot')it.spot=spotInBox(f);await saveGame(g);try{await S.store.remove(old);}catch(e){}draw();}catch(e){toast(t('err',{e:e.message}),true);}},
+     onRemove:async()=>{if(it.type==='spot'){if(!confirm(t('confirmDelSpot')))return;g.items.splice(k,1);}else{delete it.image;delete it.spot;}await saveGame(g);draw();}}):null,
+   onMapChange:async()=>{await saveGame(g);draw();},
    onEdit:()=>jsonEdit(it,async n=>{g.items[k]=n;await saveGame(g);draw();}),
    onDelete:async()=>{g.items.splice(k,1);await saveGame(g);draw();}}))):h('p',{class:'muted'},t('noQuestions'))));};
  draw();
 }
 /* generation */
+const HEIC_LIBS=[
+ {url:'https://cdn.jsdelivr.net/npm/heic-to@1.5.2/dist/iife/heic-to.js',ready:()=>typeof window.HeicTo==='function',
+  run:f=>window.HeicTo({blob:f,type:'image/jpeg',quality:0.9})},
+ {url:'https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js',ready:()=>typeof window.heic2any==='function',
+  run:async f=>{const o=await window.heic2any({blob:f,toType:'image/jpeg',quality:0.9});return Array.isArray(o)?o[0]:o;}}];
+function loadScript(url){return new Promise((res,rej)=>{const sc=document.createElement('script');sc.src=url;sc.onload=()=>res();
+ sc.onerror=()=>rej(new Error('HEIC converter could not be loaded (internet connection?)'));document.head.append(sc);});}
+async function heicToJpeg(file){const errs=[];
+ for(const lib of HEIC_LIBS){try{if(!lib.ready())await loadScript(lib.url);const b=await lib.run(file);if(b&&b.size)return b;errs.push('empty result');}
+  catch(e){errs.push((e&&(e.message||e.code))||String(e));}}
+ throw new Error(file.name+': HEIC conversion failed ('+errs.join(' / ')+')');}
 function blobToB64(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=()=>rej(r.error);r.readAsDataURL(b);});}
-async function fileToBlock(file){
- if(file.type==='application/pdf')return{type:'document',source:{type:'base64',media_type:'application/pdf',data:await blobToB64(file)}};
- const url=URL.createObjectURL(file);
+async function fileToBlock(file){return(await photoFromFile(file)).block;}
+async function photoFromFile(file){
+ if(file.type==='application/pdf')return{pdf:true,block:{type:'document',source:{type:'base64',media_type:'application/pdf',data:await blobToB64(file)}}};
+ let src=file;
+ if(/hei[cf]/i.test(file.type)||/\.hei[cf]$/i.test(file.name))src=await heicToJpeg(file);
+ const url=URL.createObjectURL(src);
  try{const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error(file.name+': image could not be read (HEIC?)'));i.src=url;});
   const sc=Math.min(1,1568/Math.max(img.naturalWidth,img.naturalHeight));const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*sc);c.height=Math.round(img.naturalHeight*sc);
-  c.getContext('2d').drawImage(img,0,0,c.width,c.height);return{type:'image',source:{type:'base64',media_type:'image/jpeg',data:c.toDataURL('image/jpeg',0.85).split(',')[1]}};}
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);const dataUrl=c.toDataURL('image/jpeg',0.85);
+  return{url:dataUrl,w:c.width,h:c.height,block:{type:'image',source:{type:'base64',media_type:'image/jpeg',data:dataUrl.split(',')[1]}}};}
  finally{URL.revokeObjectURL(url);}
 }
 const GEN_SYSTEM=`You create quiz questions from learning material shown in images or PDFs.
-Return ONLY a JSON object, with no prose and no code fences, of the form {"items":[...]}.
-Each item has: "type" (one of "single","multi","order","input"), "prompt" (the question), "difficulty" (1 easy, 2 medium, 3 hard), "explanation" (one short sentence explaining the answer, based only on the material).
+Deliver all questions by calling the save_questions tool once, with every question in "items".
+Each item has: "type" (one of "single","multi","order","input","spot","map"), "prompt" (the question), "difficulty" (1 easy, 2 medium, 3 hard), "explanation" (one short sentence explaining the answer, based only on the material).
 - single: "options" (3 to 5 strings), "correct" ([index of the one right option]).
 - multi: "options" (4 to 6 strings), "correct" ([indices of all right options, at least 2]).
 - order: "order" (3 to 6 strings in the correct order); the prompt must state the ordering criterion.
 - input: "answer" (the exact expected answer: one word or a short term, spelled and capitalised exactly as in the material); optional "accept" (other spellings that are equally correct).
-Rules: use only facts contained in the material and never invent content. Wrong options must be plausible but clearly wrong. Mix the types where the material allows (roughly 50% single, 15% multi, 15% order, 20% input). For vocabulary, ask in both directions and use input questions for spelling. Write the questions in the language of the material unless the notes say otherwise. Skip anything unreadable.`;
+- spot: the player taps a place in the figure (e.g. "Tap on Australia", "Tap on the left ventricle"). Requires "figure" and "spot": {"x","y"}, the target point in the same 0-1000 photo coordinates as the figure box. Use spot only when the target is clearly identifiable; if a printed label names the target, the teacher will cover it.
+- map: a question on an interactive map from the map packs listed in the request (only if packs are listed). Requires "map": {"pack": pack id, "task": "tap" | "choose" | "name", "target": an object id copied exactly from the pack list, "options": for "choose" 3 to 5 object ids from the same layer including the target}. tap = the player taps the target on the map ("Tippe auf den Kanton Uri"); choose = the target is highlighted and the player picks its name; name = the target is highlighted and the player types its name, then also give "answer" (the name as written in the material) and optional "accept". The prompt must never contain the answer of a choose/name task. Use only ids from the list; if something is not in the list, do not make a map question about it.
+When map packs are listed, prefer "map" questions for everything about places, borders, countries, cantons, capitals, cities, rivers, lakes, seas, mountains, passes, landscapes, monuments and historic sites; mix the three tasks. Use "figure" only for charts, diagrams or pictures that are not covered by a map pack.
+Figures: whenever a question needs a map, chart, diagram, table or picture from the material to be answerable, add "figure": {"photo": n, "box": [x0,y0,x1,y1]}. "photo" is the number of the image in this request (1 = first image; PDFs are not counted and cannot be used as figures). The box uses coordinates from 0 to 1000 relative to that photo's width (x) and height (y) and encloses the whole figure with a small margin. Never write a question that refers to a figure ("on the map", "number 6", "in the chart") without adding "figure".
+Rules: use only facts contained in the material and never invent content. Wrong options must be plausible but clearly wrong. Mix the types where the material allows (roughly 45% single, 15% multi, 10% order, 15% input, and 15% spot when the material contains maps or diagrams). For vocabulary, ask in both directions and use input questions for spelling. Write the questions in the language of the material unless the notes say otherwise. Skip anything unreadable.`;
+const QUIZ_TOOL={name:'save_questions',description:'Save the quiz questions created from the learning material.',
+ input_schema:{type:'object',required:['items'],properties:{items:{type:'array',items:{type:'object',required:['type','prompt','difficulty'],properties:{
+  type:{type:'string',enum:['single','multi','order','input','spot','map']},prompt:{type:'string'},difficulty:{type:'integer',enum:[1,2,3]},explanation:{type:'string'},
+  options:{type:'array',items:{type:'string'}},correct:{type:'array',items:{type:'integer'}},order:{type:'array',items:{type:'string'}},
+  answer:{type:'string'},accept:{type:'array',items:{type:'string'}},
+  figure:{type:'object',properties:{photo:{type:'integer'},box:{type:'array',items:{type:'number'}}}},
+  spot:{type:'object',properties:{x:{type:'number'},y:{type:'number'}}},
+  map:{type:'object',properties:{pack:{type:'string'},task:{type:'string',enum:['tap','choose','name']},target:{type:'string'},options:{type:'array',items:{type:'string'}}}}}}}}}};
+function attachFig(it,imgIdx){
+ if(it.figure&&Array.isArray(it.figure.box)&&it.figure.box.length===4){const gi=imgIdx[(parseInt(it.figure.photo,10)||1)-1];
+  if(gi!==undefined){const fig={photo:gi,box:normBox(it.figure.box.map(v=>(+v||0)/1000)),covers:[],spot:null};
+   if(it.spot&&isFinite(it.spot.x)&&isFinite(it.spot.y)){fig.spot={x:clamp01(it.spot.x/1000),y:clamp01(it.spot.y/1000)};const m=0.04;
+    fig.box=[Math.min(fig.box[0],fig.spot.x-m),Math.min(fig.box[1],fig.spot.y-m),Math.max(fig.box[2],fig.spot.x+m),Math.max(fig.box[3],fig.spot.y+m)].map(clamp01);}
+   it._fig=fig;}}
+ delete it.figure;delete it.spot;}
 async function callClaude(content){
  const key=await IDB.get('kv','apiKey');const model=(await IDB.get('kv','model'))||DEFAULT_MODEL;
  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-  body:JSON.stringify({model,max_tokens:8000,system:GEN_SYSTEM,messages:[{role:'user',content}]})});
+  body:JSON.stringify({model,max_tokens:16000,system:GEN_SYSTEM,tools:[QUIZ_TOOL],tool_choice:{type:'tool',name:'save_questions'},messages:[{role:'user',content}]})});
  const data=await r.json().catch(()=>null);
  if(!r.ok)throw new Error((data&&data.error&&data.error.message)||('HTTP '+r.status));
+ const tu=(data.content||[]).find(b=>b.type==='tool_use'&&b.input&&Array.isArray(b.input.items));
+ if(tu)return tu.input.items;
+ // fallback: tolerate a plain-text JSON answer
  const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').replace(/```json|```/g,'');
- const a=txt.indexOf('{'),b=txt.lastIndexOf('}');if(a<0||b<a)throw new Error('no JSON in response');
+ const a=txt.indexOf('{'),b=txt.lastIndexOf('}');if(a<0||b<a)throw new Error('no questions in response'+(data.stop_reason==='max_tokens'?' (answer too long)':''));
  const obj=JSON.parse(txt.slice(a,b+1));return Array.isArray(obj.items)?obj.items:[];
 }
-function viewGenerate(g){
+async function viewGenerate(g){
+ const avail=await listPacks();const used=new Set(((g&&g.items)||[]).filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack).concat((g&&g.mapPacks)||[]));
+ const pchk=avail.map(id=>{const c=h('input',{type:'checkbox',value:id});c.checked=used.has(id);return h('label',{style:'display:inline-flex;gap:6px;align-items:center;margin-right:16px'},c,id);});
  const f={title:g?g.title:'',kind:g?(g.kind||'other'):'vocab',instr:g?(g.instructions||''):'',count:20,files:[]};
  const title=h('input',{type:'text',id:'gt',value:f.title});const kind=h('select',{id:'gk'},['vocab','science','other'].map(k=>h('option',{value:k},t('k_'+k))));kind.value=f.kind;
  const instr=h('textarea',{id:'gi',placeholder:t('instrPh')});instr.value=f.instr;const cnt=h('input',{type:'number',id:'gc',min:'5',max:'80',value:'20'});
  const thumbs=h('div',{class:'thumbs'});const status=h('p',{class:'muted','aria-live':'polite'});
  const fi=h('input',{type:'file',id:'gf',multiple:true,accept:'image/*,application/pdf',onchange:e=>{f.files=[...e.target.files];
-  thumbs.replaceChildren(...f.files.map(x=>x.type==='application/pdf'?h('div',{class:'pdf'},'PDF'):h('img',{src:URL.createObjectURL(x),alt:x.name})));}});
+  thumbs.replaceChildren(...f.files.map(x=>x.type==='application/pdf'?h('div',{class:'pdf'},'PDF')
+   :(/hei[cf]/i.test(x.type)||/\.hei[cf]$/i.test(x.name))?h('div',{class:'pdf',title:x.name},'HEIC'):h('img',{src:URL.createObjectURL(x),alt:x.name})));}});
  const btn=h('button',{class:'btn big'},t('generate'));
  btn.addEventListener('click',async()=>{
   if(!g&&!title.value.trim())return toast(t('needTitle'),true);if(!f.files.length)return toast(t('needFiles'),true);
   if(!await IDB.get('kv','apiKey'))return toast(t('needKey'),true);
+  const packs=pchk.map(l=>l.querySelector('input')).filter(c=>c.checked).map(c=>c.value);let catalog='';
+  try{for(const id of packs)catalog+=packCatalog(await loadPack(id))+'\n\n';}catch(e){return toast(e.message,true);}
   btn.disabled=true;const total=Math.max(5,Math.min(80,parseInt(cnt.value,10)||20));const batches=[];for(let k=0;k<f.files.length;k+=4)batches.push(f.files.slice(k,k+4));
-  const existing=g?g.items.map(i=>i.prompt).slice(0,80):[];let out=[],dropped=0;
-  try{for(let b=0;b<batches.length;b++){status.textContent=t('working',{i:b+1,n:batches.length});
-    const blocks=[];for(const file of batches[b])blocks.push(await fileToBlock(file));
-    const n=Math.max(3,Math.round(total*batches[b].length/f.files.length));
-    blocks.push({type:'text',text:`Material type: ${kind.value}. Create about ${n} questions. Notes: ${instr.value.trim()||'none'}.`+(existing.length?`\nDo not repeat these existing questions:\n- `+existing.join('\n- '):'')});
-    const items=await callClaude(blocks);for(const it of items){if(validItem(it)){it.id=uid();out.push(it);}else dropped++;}}}
+  const existing=g?g.items.map(i=>i.prompt).slice(0,80):[];let out=[],dropped=0;const photos=[];
+  try{for(let b=0;b<batches.length;b++){
+    const blocks=[],imgIdx=[];for(const file of batches[b]){const ph=await photoFromFile(file);blocks.push(ph.block);if(!ph.pdf){imgIdx.push(photos.length);photos.push(ph);}}
+    const want=Math.max(3,Math.round(total*batches[b].length/f.files.length));let got=0;
+    for(let round=0;got<want&&round<5;round++){
+     status.textContent=t('working',{n:out.length,t:total});
+     const n=Math.min(25,want-got);const avoid=existing.concat(out.map(i=>i.prompt)).slice(-150);
+     const req=blocks.concat([{type:'text',text:`Images in this request: ${imgIdx.length}. Material type: ${kind.value}. Create about ${n} questions. Notes: ${instr.value.trim()||'none'}.`+(catalog?`\n\nAvailable map packs (object ids for map questions):\n${catalog}`:'')+(avoid.length?`\nDo not repeat these existing questions:\n- `+avoid.join('\n- '):'')}]);
+     const items=await callClaude(req);let valid=0;for(const it of items){attachFig(it,imgIdx);if(validItem(it)){it.id=uid();out.push(it);valid++;}else dropped++;}
+     got+=valid;if(!valid)break;}}}
   catch(e){btn.disabled=false;status.textContent='';return toast(t('genErr',{e:e.message}),true);}
-  viewReview(g,{title:title.value.trim(),kind:kind.value,instructions:instr.value.trim(),files:f.files.map(x=>x.name)},out,dropped);
+  const sources=photos.map(ph=>{let pr=null;return()=>pr||(pr=loadImgEl(ph.url));});
+  viewReview(g,{title:title.value.trim(),kind:kind.value,instructions:instr.value.trim(),files:f.files.map(x=>x.name),mapPacks:packs},out,dropped,sources);
  });
  const draw=()=>screen(topbar(g?t('addMaterial')+': '+g.title:t('newGame'),{back:()=>viewAdmin('games')}),h('main',{class:'page stack'},
   !g?h('div',{},h('label',{class:'f',for:'gt'},t('gameTitle')),title):null,
   h('div',{},h('label',{class:'f',for:'gk'},t('kind')),kind),h('div',{},h('label',{class:'f',for:'gi'},t('instructions')),instr),
   h('div',{},h('label',{class:'f',for:'gc'},t('count')),cnt),h('div',{},h('label',{class:'f',for:'gf'},t('files')),fi,h('p',{class:'small muted',style:'margin-top:6px'},t('materialNote'))),
+  avail.length?h('div',{},h('div',{class:'f'},t('mapsForGame')),h('div',{},pchk)):null,
   thumbs,btn,status));
  draw();
 }
-function viewReview(g,meta,items,dropped){
- const keep=items.map(()=>true);
+function viewReview(g,meta,items,dropped,sources){
+ sources=sources||[];const keep=items.map(()=>true);const status=h('p',{class:'muted','aria-live':'polite'});
+ const thumbFor=it=>{if(!it._fig)return null;const im=h('img',{class:'thumb',alt:''});const src=sources[it._fig.photo];
+  if(src)src().then(img=>{im.src=bakeFigure(img,it._fig,240).toDataURL('image/jpeg',0.8);}).catch(()=>{});return im;};
  const draw=()=>screen(topbar(t('review'),{back:()=>viewAdmin('games')}),h('main',{class:'page wide stack'},
   h('p',{},t('genDone',{n:items.length,d:dropped})),
   h('div',{class:'list'},items.map((it,k)=>{const cb=h('input',{type:'checkbox','aria-label':t('keep'),onchange:e=>{keep[k]=e.target.checked;}});cb.checked=keep[k];
-   return itemRow(it,{check:cb,onEdit:()=>jsonEdit(it,async n=>{items[k]=n;draw();})});})),
-  h('button',{class:'btn big',onclick:async()=>{
+   return itemRow(it,{check:cb,thumb:thumbFor(it),onMapChange:async()=>draw(),onEdit:()=>jsonEdit(it,async n=>{items[k]=n;draw();}),
+    onImage:sources.length?()=>figEditor({sources,spot:it.type==='spot',fig:it._fig,onApply:f=>{it._fig=f;draw();},onRemove:it._fig?()=>{delete it._fig;draw();}:null}):null,
+    imageLabel:it._fig?t('imgEdit'):t('imgAdd')});})),
+  h('button',{class:'btn big',onclick:async e=>{const btn=e.currentTarget;btn.disabled=true;
    const chosen=items.filter((_,k)=>keep[k]);const game=g||{id:uid(),title:meta.title,kind:meta.kind,instructions:meta.instructions,createdAt:new Date().toISOString(),sources:[],items:[]};
-   const seen=new Set(game.items.map(i=>i.type+'|'+i.prompt.trim().toLowerCase()));let dup=0;
-   for(const it of chosen){const key=it.type+'|'+it.prompt.trim().toLowerCase();if(seen.has(key)){dup++;continue;}seen.add(key);game.items.push(it);}
-   game.sources=(game.sources||[]).concat([{date:new Date().toISOString(),files:meta.files,added:chosen.length-dup}]);
-   if(meta.instructions)game.instructions=meta.instructions;
-   try{await saveGame(game);}catch(e){return toast(t('err',{e:e.message}),true);}
-   toast(t('saved')+(dup?' – '+t('dupSkipped',{n:dup}):''));viewAdmin('games');}},t('saveToGame'))));
+   const seen=new Set(game.items.map(i=>i.type+'|'+i.prompt.trim().toLowerCase()));let dup=0,skipped=0;const add=[];
+   for(const it of chosen){if(it.type==='spot'&&!spotInBox(it._fig)){skipped++;continue;}
+    const key=it.type+'|'+it.prompt.trim().toLowerCase();if(seen.has(key)){dup++;continue;}seen.add(key);add.push(it);}
+   try{const figs=add.filter(it=>it._fig);let n=0;
+    for(const it of figs){status.textContent=t('savingImgs',{i:++n,n:figs.length});const img=await sources[it._fig.photo]();const c=bakeFigure(img,it._fig,1200);
+     const path='games/'+game.id+'/img/'+uid()+'.jpg';await S.store.writeBlob(path,await canvasBlob(c));it.image={path,w:c.width,h:c.height};
+     if(it.type==='spot')it.spot=spotInBox(it._fig);delete it._fig;}
+    for(const it of add){delete it._fig;game.items.push(it);}
+    game.sources=(game.sources||[]).concat([{date:new Date().toISOString(),files:meta.files,added:add.length}]);
+    if(meta.instructions)game.instructions=meta.instructions;if(meta.mapPacks&&meta.mapPacks.length)game.mapPacks=[...new Set((game.mapPacks||[]).concat(meta.mapPacks))];await saveGame(game);}
+   catch(err){btn.disabled=false;status.textContent='';return toast(t('err',{e:err.message}),true);}
+   toast(t('saved')+(dup?' – '+t('dupSkipped',{n:dup}):'')+(skipped?' – '+t('spotSkipped',{n:skipped}):''));viewAdmin('games');}},t('saveToGame')),status));
  draw();
+}
+/* maps toolbox */
+async function adminMaps(body){
+ const imp=h('input',{type:'file',accept:'application/json,.json',multiple:true,style:'display:none',onchange:async e=>{let n=0;
+  try{for(const file of e.target.files){const d=JSON.parse(await file.text());const list=Array.isArray(d.packs)?d.packs:[d];
+    for(const P of list){if(!P||!P.id||!Array.isArray(P.layers))continue;await S.store.write('maps/'+P.id+'.json',P);delete PACKS[P.id];n++;}}
+   toast(t('mapsImported',{n}));}catch(err){toast(t('err',{e:err.message}),true);}viewAdmin('maps');}});
+ const ids=await listPacks();const viewer=h('div',{});
+ body.append(h('p',{class:'muted'},t('mapsIntro')),h('div',{class:'row',style:'margin-bottom:14px'},h('button',{class:'btn',onclick:()=>imp.click()},t('importMaps')),imp));
+ if(!ids.length)return body.append(h('p',{class:'muted'},t('noMaps')));
+ const cards=h('div',{class:'maplist'});body.append(cards,viewer);
+ for(const id of ids){let P;try{P=await loadPack(id);}catch(e){continue;}const n=P.layers.reduce((a,L)=>a+L.f.filter(f=>!f.bg&&L.kind!=='bg').length,0);
+  cards.append(h('button',{class:'item',onclick:()=>showPack(P)},h('div',{class:'grow'},h('b',{},fname({n:P.name})),h('div',{class:'small muted'},id+' · '+t('objects',{n}))),'›'));}
+ function showPack(P){const shown=new Set();const box=h('div',{});const tip=h('div',{class:'maptip'},t('tapToName'));
+  const draw=()=>{const mv=mapView(P,{show:[...shown],faint:shown.has('landscapes')||shown.has('continents')});mv.el.append(tip);
+   mv.onTap=(x,y,ppu)=>{const order=[...shown].concat(P.layers.filter(L=>L.kind!=='bg'&&L.kind!=='point'&&!['landscapes','continents','seas'].includes(L.id)&&!shown.has(L.id)).map(L=>L.id).reverse());let hit=null;
+    for(const L of order){const hs=mapHits(P,L,x,y,ppu,'medium');if(hs.length){hit=hs[0];break;}}
+    tip.textContent=hit?fname(P.byId[hit])+' ('+(P.layers.find(l=>l.id===P.byId[hit].layer).label[S.lang]||'')+')':t('tapToName');
+    Object.values(mv.els).forEach(e=>e.classList.remove('hl'));if(hit&&mv.els[hit])mv.els[hit].classList.add('hl');};
+   box.replaceChildren(mv.el);};
+  const toggles=h('div',{class:'row',style:'gap:14px;margin:10px 0'},P.layers.filter(L=>L.kind==='point'||['landscapes','continents'].includes(L.id)).map(L=>{
+   const c=h('input',{type:'checkbox',onchange:e=>{e.target.checked?shown.add(L.id):shown.delete(L.id);draw();}});return h('label',{style:'display:inline-flex;gap:6px;align-items:center'},c,L.label[S.lang]||L.id);}));
+  viewer.replaceChildren(h('h3',{},fname({n:P.name})),h('div',{class:'small muted'},t('layers')+':'),toggles,box);draw();}
 }
 /* logs */
 async function adminLogs(body){
