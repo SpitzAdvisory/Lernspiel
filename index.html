@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lernspiel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Kalam:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBFBF6; --grid:#DDE7F1; --ink:#1F3A93; --ink-soft:#E8EDF9;
+  --red:#C8322B; --mark:#F6E27A; --graphite:#2F3437; --green:#2E7D4F;
+  --muted:#667085; --white:#FFFFFF;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color:var(--graphite); font-size:18px; line-height:1.5; min-height:100vh;
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.hand{font-family:"Kalam","Comic Sans MS",cursive}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.top{display:flex;align-items:center;gap:12px;padding:14px 20px;background:rgba(251,251,246,.92);border-bottom:2px solid var(--grid);position:sticky;top:0;z-index:5}
+.top h1{font-size:1.35rem;margin:0;flex:1;color:var(--ink)}
+.page{max-width:780px;margin:0 auto;padding:24px 20px 60px 36px;border-left:2px solid var(--red);min-height:calc(100vh - 64px);background:linear-gradient(90deg,rgba(251,251,246,.85),rgba(251,251,246,.85))}
+.page.wide{max-width:1040px}
+h2{font-size:1.5rem;margin:0 0 12px;color:var(--ink)}
+h3{font-size:1.15rem;margin:24px 0 8px}
+p{margin:0 0 12px}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.btn{border:0;border-radius:10px;padding:10px 18px;background:var(--ink);color:var(--white);font-weight:700}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn.danger{background:transparent;color:var(--red);box-shadow:inset 0 0 0 2px var(--red)}
+.btn.small{padding:6px 12px;font-size:.9rem}
+.btn.big{padding:14px 28px;font-size:1.15rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stack>*+*{margin-top:12px}
+.lang{display:flex;border-radius:8px;overflow:hidden;box-shadow:inset 0 0 0 2px var(--ink)}
+.lang button{border:0;background:transparent;padding:4px 10px;font-weight:700;color:var(--ink)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+.players{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+.player{border:2px solid var(--ink);border-radius:16px;background:var(--white);padding:16px 10px;text-align:center}
+.player .av{font-size:3rem;line-height:1.1}
+.player .nm{font-weight:700;margin-top:6px}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{display:flex;align-items:center;gap:12px;background:var(--white);border:2px solid var(--grid);border-radius:12px;padding:12px 14px;text-align:left;width:100%}
+button.item{border-color:var(--ink)}
+.item .grow{flex:1;min-width:0}
+.bar{height:10px;border-radius:5px;background:var(--ink-soft);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--ink)}
+.choices{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.choice{border:2px solid var(--ink);border-radius:12px;background:var(--white);padding:12px;text-align:left}
+.choice[aria-pressed="true"]{background:var(--mark)}
+.choice:disabled{opacity:.5;border-style:dashed}
+.choice b{display:block}
+.choice span{font-size:.85rem;color:var(--muted)}
+.stickers{display:flex;flex-wrap:wrap;gap:10px}
+.sticker{display:flex;flex-direction:column;align-items:center;width:84px;text-align:center;font-size:.75rem;line-height:1.2}
+.sticker i{font-style:normal;font-size:1.7rem;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--mark);box-shadow:0 0 0 3px var(--white),0 0 0 5px var(--ink);transform:rotate(-6deg);margin-bottom:6px}
+.hud{display:flex;flex-wrap:wrap;gap:16px;align-items:center;font-weight:700;margin-bottom:16px}
+.hud .sp{flex:1}
+.card{background:var(--white);border:2px solid var(--ink);border-radius:18px;padding:22px;position:relative}
+.prompt{font-size:1.45rem;line-height:1.35;margin:0 0 6px;font-weight:700}
+.hint{font-size:.9rem;color:var(--muted);margin-bottom:16px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{border:2px solid var(--ink);border-radius:12px;background:var(--white);padding:12px 16px;text-align:left;font-size:1.1rem;min-height:52px}
+.opt[aria-pressed="true"]{background:var(--mark)}
+.opt.ok{border-color:var(--green);background:#E3F3E9}
+.opt.bad{border-color:var(--red);background:#FBE5E3}
+.seq{min-height:56px;border:2px dashed var(--ink);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{border:2px solid var(--ink);border-radius:10px;background:var(--white);padding:8px 12px;font-size:1.05rem}
+.chip.placed{background:var(--mark)}
+.chip .n{font-weight:700;margin-right:6px;color:var(--ink)}
+input[type=text],input[type=password],input[type=number],select,textarea{width:100%;border:2px solid var(--ink);border-radius:10px;padding:10px 12px;background:var(--white)}
+textarea{min-height:90px}
+label.f{display:block;font-weight:700;margin-bottom:4px}
+.answerbox{font-size:1.3rem}
+.feedback{margin-top:18px;padding-top:14px;border-top:2px dashed var(--grid)}
+.stamp{font-size:2rem;display:inline-block;transform:rotate(-4deg)}
+.stamp.ok{color:var(--green)}
+.stamp.bad{color:var(--red)}
+@media (prefers-reduced-motion:no-preference){
+  .stamp{animation:stamp .28s ease-out}
+  @keyframes stamp{from{transform:rotate(-4deg) scale(1.6);opacity:0}to{transform:rotate(-4deg) scale(1);opacity:1}}
+}
+.bigscore{font-size:4rem;color:var(--red);line-height:1;transform:rotate(-3deg);display:inline-block}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.tabs button{border:0;background:transparent;padding:8px 14px;border-radius:8px;font-weight:700;color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--white)}
+table{width:100%;border-collapse:collapse;background:var(--white);font-size:.9rem}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--grid);vertical-align:top}
+.scroll{overflow-x:auto}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--ink-soft);color:var(--ink)}
+.avpick{display:flex;flex-wrap:wrap;gap:6px}
+.avpick button{font-size:1.6rem;border:2px solid transparent;border-radius:10px;background:var(--white);width:48px;height:48px}
+.avpick button[aria-pressed="true"]{border-color:var(--ink);background:var(--mark)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.thumbs img,.thumbs .pdf{width:84px;height:84px;object-fit:cover;border-radius:8px;border:2px solid var(--grid);background:var(--white);display:grid;place-items:center;font-size:.8rem}
+dialog{border:2px solid var(--ink);border-radius:14px;max-width:680px;width:92vw;padding:20px}
+dialog::backdrop{background:rgba(31,58,147,.25)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--graphite);color:var(--white);padding:10px 18px;border-radius:10px;z-index:50;max-width:90vw}
+.toast.err{background:var(--red)}
+@media (max-width:560px){.page{padding-left:24px}.prompt{font-size:1.25rem}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<dialog id="dlg"></dialog>
+<script>
+'use strict';
+/* ================= i18n ================= */
+const T={
+de:{appTitle:'Lernspiel',whoPlays:'Wer spielt?',noPlayers:'Noch keine Spieler. Lege sie im Verwaltungsbereich an.',admin:'Verwaltung',back:'Zurück',
+hello:'Hallo {name}',level:'Stufe {n}',xpToNext:'Noch {n} Punkte bis Stufe {m}',chooseGame:'Spiel wählen',noGames:'Noch keine Spiele. Erstelle eines im Verwaltungsbereich.',
+questions:'{n} Fragen',mastered:'{p} % sicher',mode:'Spielart',m_classic:'Klassisch',md_classic:'Bis zu 10 Fragen in Ruhe',m_timed:'Zeitrennen',md_timed:'So viele wie möglich gegen die Uhr',
+m_survival:'Überleben',md_survival:'Drei Leben – wie weit kommst du?',m_duel:'Duell',md_duel:'Zwei Spieler, abwechselnd je 5 Fragen',difficulty:'Schwierigkeit',
+d_easy:'Leicht',d_medium:'Mittel',d_hard:'Schwer',dd_easy:'Weniger Auswahl, einfachere Fragen',dd_medium:'Alle Fragen',dd_hard:'Schwerere Fragen, weniger Zeit',
+lock_medium:'Frei ab 70 % in Leicht',lock_hard:'Frei ab 80 % in Mittel',adjust:'Anpassung',adaptive:'Adaptiv',ad_adaptive:'Übt Schwächen öfter, Niveau passt sich an',
+fixed:'Fest',ad_fixed:'Gleiches Niveau, zufällige Reihenfolge',opponent:'Gegner',needOpponent:'Für ein Duell braucht es einen zweiten Spieler.',start:'Los geht\'s',quit:'Beenden',
+hint_single:'Eine Antwort wählen',hint_multi:'Alle richtigen Antworten wählen',hint_order:'Tippe die Einträge in der richtigen Reihenfolge an. Nochmals tippen nimmt sie zurück.',
+hint_input:'Antwort eintippen – genaue Schreibweise, Gross-/Kleinschreibung zählt',check:'Prüfen',next:'Weiter',correct:'Richtig!',wrong:'Leider falsch',
+rightAnswer:'Richtig ist: {a}',yourAnswer:'Deine Antwort: {a}',turnOf:'{name} ist dran',points:'Punkte',accuracy:'Treffer',bestStreak:'Beste Serie',streak:'Serie',
+newBadges:'Neue Abzeichen',levelUp:'Neue Stufe erreicht: {n}',unlocked:'Neu freigeschaltet: {d}',winner:'{name} gewinnt das Duell',draw:'Unentschieden',
+again:'Nochmal',otherGame:'Anderes Spiel',changePlayer:'Spieler wechseln',resultTitle:'Auswertung',timeUp:'Zeit abgelaufen',noItems:'Dieses Spiel hat noch keine Fragen.',
+b_first_run:'Erster Lauf',b_perfect:'Fehlerfrei',b_streak10:'10er-Serie',b_answers100:'100 Antworten',b_survivor20:'Zäh',b_speed15:'Blitzschnell',b_duel_win:'Duellsieg',b_hard_clear:'Profi',b_master_game:'Thema gemeistert',
+pwTitle:'Verwaltung entsperren',password:'Passwort',unlock:'Entsperren',pwWrong:'Falsches Passwort.',tabPlayers:'Spieler',tabGames:'Spiele',tabLogs:'Protokolle',tabSettings:'Einstellungen',
+lockAdmin:'Verwaltung schliessen',addPlayer:'Spieler hinzufügen',editPlayer:'Spieler bearbeiten',name:'Name',avatar:'Figur',unlockAll:'Alle Schwierigkeiten freigeschaltet',save:'Speichern',cancel:'Abbrechen',
+edit:'Bearbeiten',del:'Löschen',confirmDelPlayer:'Spieler «{name}» mit Fortschritt löschen? Protokolle bleiben erhalten.',resetProgress:'Fortschritt zurücksetzen',
+confirmReset:'Punkte, Abzeichen, Freischaltungen und Lernstand von «{name}» zurücksetzen?',newGame:'Neues Spiel',importGame:'Spiel importieren',exportGame:'Exportieren',
+addMaterial:'Material hinzufügen',viewQuestions:'Fragen',confirmDelGame:'Spiel «{t}» löschen? Protokolle bleiben erhalten.',gameTitle:'Titel des Spiels',kind:'Art des Materials',
+k_vocab:'Vokabeln',k_science:'Sachwissen',k_other:'Anderes',instructions:'Hinweise für die Fragen (optional)',instrPh:'z. B. Deutsch–Französisch, beide Richtungen; Stoff für die 5. Klasse',
+count:'Anzahl Fragen (ungefähr)',files:'Fotos oder PDFs',generate:'Fragen erstellen',needKey:'Zuerst unter Einstellungen einen API-Schlüssel hinterlegen.',
+needFiles:'Bitte mindestens ein Foto oder PDF wählen.',needTitle:'Bitte einen Titel eingeben.',working:'Erstelle Fragen … Teil {i} von {n}',
+genDone:'{n} Fragen erstellt, {d} unbrauchbare verworfen. Bitte prüfen, bevor du speicherst.',genErr:'Erstellung fehlgeschlagen: {e}',review:'Fragen prüfen',keep:'behalten',
+saveToGame:'Ausgewählte Fragen speichern',saved:'Gespeichert',dupSkipped:'{n} doppelte Fragen übersprungen',editJson:'Als JSON bearbeiten',jsonInvalid:'Ungültig – bitte Format prüfen.',
+logsEmpty:'Noch keine Protokolle.',date:'Datum',player:'Spieler',game:'Spiel',details:'Details',mistakes:'Fehler in diesem Lauf',noMistakes:'Keine Fehler.',aborted:'abgebrochen',
+dataFolder:'Datenordner',browserStorage:'Browserspeicher (kein Ordner)',chooseFolder:'Ordner wählen',folderMoved:'Daten wurden in den neuen Ordner kopiert.',
+folderExisting:'Im gewählten Ordner sind bereits Spieldaten. Diese werden ab jetzt verwendet.',apiKey:'Anthropic-API-Schlüssel',apiKeyNote:'Nur in diesem Browser gespeichert, nie im Datenordner.',
+model:'Modell',modelNote:'Modellnamen bitte in der aktuellen Anthropic-Dokumentation prüfen.',changePw:'Passwort ändern',newPw:'Neues Passwort',pwShort:'Mindestens 4 Zeichen.',
+language:'Sprache',setupTitle:'Einrichtung',setupFolder:'Wo sollen Spiele, Spieler und Protokolle gespeichert werden?',useBrowser:'Nur im Browser speichern',
+noFsApi:'Dieser Browser kann keine Ordner verbinden. Bitte Chrome auf einem Desktop-Computer verwenden.',setPw:'Passwort für die Verwaltung festlegen',
+setPwNote:'Hält Kinder aus der Verwaltung fern, ist aber keine echte Sicherheit.',finish:'Einrichtung abschliessen',reconnectTitle:'Datenordner wieder verbinden',
+reconnectText:'Chrome braucht deine Erlaubnis, um auf «{name}» zuzugreifen.',reconnect:'Verbinden',otherFolder:'Anderen Ordner wählen',updated:'Aktualisiert',
+t_single:'Eine Antwort',t_multi:'Mehrfach',t_order:'Reihenfolge',t_input:'Eingabe',importDone:'«{t}» importiert',importInvalid:'Die Datei ist kein gültiges Spiel.',
+err:'Fehler: {e}',lives:'Leben',mode_:'Modus',score:'Punkte',answered:'Antworten',current:'Aktuell',materialNote:'Fotos werden verkleinert an Claude geschickt und nicht gespeichert. iPhone-Fotos im HEIC-Format kann Chrome oft nicht lesen – dann als JPEG exportieren.',
+questionsOf:'Fragen in «{t}»',noQuestions:'Keine Fragen.',diff:'Stufe',saving:'Speichere …',pwSet:'Passwort geändert',keySaved:'Gespeichert',
+noPlayersPlay:'Noch keine Spieler. Lege sie am Computer in der Verwaltung an.',sync:'Aktualisieren',connectTitle:'Mit Dropbox verbinden',
+connectText:'Dieses Gerät einmalig mit deiner Dropbox verbinden. Die Seite sieht dabei nur ihren eigenen Ordner «Apps/Lernspiel-Spitz».',connectBtn:'Mit Dropbox verbinden',
+connectErr:'Verbindung fehlgeschlagen: {e}',homeTip:'Tipp für das iPad: In Safari «Teilen» → «Zum Home-Bildschirm» wählen. So bleiben Verbindung und Daten eher erhalten.',
+disconnect:'Dropbox-Verbindung trennen',confirmDisconnect:'Verbindung zu Dropbox auf diesem Gerät trennen? Noch nicht hochgeladene Läufe bleiben gespeichert.',
+pending:'Noch nicht hochgeladene Läufe: {n}',savedOffline:'Keine Verbindung – der Lauf wird später hochgeladen.',loading:'Lade Daten …',
+folderHint:'Für den Abgleich mit dem iPad den Ordner «Dropbox (Privat)\\Apps\\Lernspiel-Spitz» wählen.'},
+en:{appTitle:'Learning game',whoPlays:'Who is playing?',noPlayers:'No players yet. Add them in the admin area.',admin:'Admin',back:'Back',
+hello:'Hi {name}',level:'Level {n}',xpToNext:'{n} points to level {m}',chooseGame:'Choose a game',noGames:'No games yet. Create one in the admin area.',
+questions:'{n} questions',mastered:'{p} % mastered',mode:'Mode',m_classic:'Classic',md_classic:'Up to 10 questions at your own pace',m_timed:'Time race',md_timed:'As many as you can against the clock',
+m_survival:'Survival',md_survival:'Three lives – how far can you get?',m_duel:'Duel',md_duel:'Two players, 5 questions each, taking turns',difficulty:'Difficulty',
+d_easy:'Easy',d_medium:'Medium',d_hard:'Hard',dd_easy:'Fewer choices, easier questions',dd_medium:'All questions',dd_hard:'Harder questions, less time',
+lock_medium:'Unlocks at 70 % on Easy',lock_hard:'Unlocks at 80 % on Medium',adjust:'Adjustment',adaptive:'Adaptive',ad_adaptive:'Practises weak spots more, level adjusts',
+fixed:'Fixed',ad_fixed:'Same level, random order',opponent:'Opponent',needOpponent:'A duel needs a second player.',start:'Start',quit:'Quit',
+hint_single:'Choose one answer',hint_multi:'Choose all correct answers',hint_order:'Tap the items in the right order. Tap again to take one back.',
+hint_input:'Type the answer – exact spelling, capitalisation counts',check:'Check',next:'Next',correct:'Correct!',wrong:'Not quite',
+rightAnswer:'Correct answer: {a}',yourAnswer:'Your answer: {a}',turnOf:'{name}\'s turn',points:'Points',accuracy:'Accuracy',bestStreak:'Best streak',streak:'Streak',
+newBadges:'New badges',levelUp:'New level reached: {n}',unlocked:'Newly unlocked: {d}',winner:'{name} wins the duel',draw:'It\'s a draw',
+again:'Play again',otherGame:'Other game',changePlayer:'Change player',resultTitle:'Results',timeUp:'Time\'s up',noItems:'This game has no questions yet.',
+b_first_run:'First run',b_perfect:'Flawless',b_streak10:'Streak of 10',b_answers100:'100 answers',b_survivor20:'Survivor',b_speed15:'Lightning',b_duel_win:'Duel winner',b_hard_clear:'Pro',b_master_game:'Topic mastered',
+pwTitle:'Unlock admin',password:'Password',unlock:'Unlock',pwWrong:'Wrong password.',tabPlayers:'Players',tabGames:'Games',tabLogs:'Logs',tabSettings:'Settings',
+lockAdmin:'Close admin',addPlayer:'Add player',editPlayer:'Edit player',name:'Name',avatar:'Avatar',unlockAll:'All difficulties unlocked',save:'Save',cancel:'Cancel',
+edit:'Edit',del:'Delete',confirmDelPlayer:'Delete player "{name}" and their progress? Logs are kept.',resetProgress:'Reset progress',
+confirmReset:'Reset points, badges, unlocks and learning state of "{name}"?',newGame:'New game',importGame:'Import game',exportGame:'Export',
+addMaterial:'Add material',viewQuestions:'Questions',confirmDelGame:'Delete game "{t}"? Logs are kept.',gameTitle:'Game title',kind:'Material type',
+k_vocab:'Vocabulary',k_science:'Subject knowledge',k_other:'Other',instructions:'Notes for the questions (optional)',instrPh:'e.g. German–French, both directions; year 5 level',
+count:'Number of questions (approx.)',files:'Photos or PDFs',generate:'Create questions',needKey:'Add an API key under Settings first.',
+needFiles:'Choose at least one photo or PDF.',needTitle:'Enter a title.',working:'Creating questions … part {i} of {n}',
+genDone:'{n} questions created, {d} unusable ones dropped. Please review before saving.',genErr:'Creation failed: {e}',review:'Review questions',keep:'keep',
+saveToGame:'Save selected questions',saved:'Saved',dupSkipped:'{n} duplicate questions skipped',editJson:'Edit as JSON',jsonInvalid:'Invalid – check the format.',
+logsEmpty:'No logs yet.',date:'Date',player:'Player',game:'Game',details:'Details',mistakes:'Mistakes in this run',noMistakes:'No mistakes.',aborted:'aborted',
+dataFolder:'Data folder',browserStorage:'Browser storage (no folder)',chooseFolder:'Choose folder',folderMoved:'Data copied to the new folder.',
+folderExisting:'The chosen folder already holds game data; it is used from now on.',apiKey:'Anthropic API key',apiKeyNote:'Stored in this browser only, never in the data folder.',
+model:'Model',modelNote:'Check the model name against current Anthropic docs.',changePw:'Change password',newPw:'New password',pwShort:'At least 4 characters.',
+language:'Language',setupTitle:'Setup',setupFolder:'Where should games, players and logs be stored?',useBrowser:'Store in the browser only',
+noFsApi:'This browser cannot connect folders. Use Chrome on a desktop computer.',setPw:'Set the admin password',
+setPwNote:'Keeps children out of the admin area; it is not real security.',finish:'Finish setup',reconnectTitle:'Reconnect data folder',
+reconnectText:'Chrome needs your permission to access "{name}".',reconnect:'Connect',otherFolder:'Choose another folder',updated:'Updated',
+t_single:'Single',t_multi:'Multiple',t_order:'Order',t_input:'Input',importDone:'Imported "{t}"',importInvalid:'The file is not a valid game.',
+err:'Error: {e}',lives:'Lives',mode_:'Mode',score:'Points',answered:'Answers',current:'Current',materialNote:'Photos are downscaled, sent to Claude and not stored. Chrome often cannot read iPhone HEIC photos – export them as JPEG.',
+questionsOf:'Questions in "{t}"',noQuestions:'No questions.',diff:'Level',saving:'Saving …',pwSet:'Password changed',keySaved:'Saved',
+noPlayersPlay:'No players yet. Add them in the admin area on the computer.',sync:'Refresh',connectTitle:'Connect to Dropbox',
+connectText:'Connect this device to your Dropbox once. The page only sees its own folder "Apps/Lernspiel-Spitz".',connectBtn:'Connect to Dropbox',
+connectErr:'Connection failed: {e}',homeTip:'Tip for the iPad: in Safari choose "Share" → "Add to Home Screen". The connection and data are then more likely to persist.',
+disconnect:'Disconnect Dropbox',confirmDisconnect:'Disconnect Dropbox on this device? Runs not yet uploaded are kept.',
+pending:'Runs waiting for upload: {n}',savedOffline:'No connection – the run will be uploaded later.',loading:'Loading data …',
+folderHint:'For syncing with the iPad, choose the folder "Dropbox (Privat)\\Apps\\Lernspiel-Spitz".'}
+};
+const DEFAULT_MODEL='claude-sonnet-5';
+const DBX_KEY='ktui04lktkyz4hn';
+const PLAY_ONLY=location.protocol==='https:'&&/\.github\.io$/.test(location.hostname);
+const AVATARS=['🦊','🐼','🐸','🦁','🐙','🦉','🐢','🐬','🦄','🐝','🐧','🦖','🐱','🐶','🐯','🦋','🐞','🚀','⚽','🎸','🌻','🍀','🌈','⭐'];
+const BADGES={first_run:'🎉',perfect:'💯',streak10:'🔥',answers100:'📚',survivor20:'🛡️',speed15:'⚡',duel_win:'🏆',hard_clear:'🎓',master_game:'👑'};
+const DIFFS=['easy','medium','hard'];
+const DIFF_LEVEL={easy:1,medium:2,hard:3};
+
+const S={store:null,cfg:null,profiles:[],games:[],lang:'de',admin:false,run:null,onEnter:null};
+function t(k,v){let s=(T[S.lang]&&T[S.lang][k])||T.en[k]||k;if(v)for(const[a,b]of Object.entries(v))s=s.split('{'+a+'}').join(b);return s;}
+
+/* ================= helpers ================= */
+const $=(s,r=document)=>r.querySelector(s);
+function h(tag,attrs,...kids){const el=document.createElement(tag);for(const[k,v]of Object.entries(attrs||{})){if(v==null||v===false)continue;
+ if(k==='class')el.className=v;else if(k.startsWith('on'))el.addEventListener(k.slice(2),v);else if(k==='value')el.value=v;else el.setAttribute(k,v===true?'':v);}
+ for(const c of kids.flat(Infinity)){if(c==null||c===false)continue;el.append(c instanceof Node?c:document.createTextNode(String(c)));}return el;}
+function screen(...kids){S.sid=(S.sid||0)+1;$('#app').replaceChildren(...kids);window.scrollTo(0,0);S.onEnter=null;}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function slug(s){return String(s).replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/Ä/g,'Ae').replace(/Ö/g,'Oe').replace(/Ü/g,'Ue').replace(/ß/g,'ss')
+ .normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'x';}
+function pad(n){return String(n).padStart(2,'0');}
+function ymd(d){return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());}
+function hms(d){return pad(d.getHours())+pad(d.getMinutes())+pad(d.getSeconds());}
+function fmtDate(iso){const d=new Date(iso);return d.toLocaleDateString(S.lang==='de'?'de-CH':'en-GB')+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
+function toast(msg,err){const el=h('div',{class:'toast'+(err?' err':''),role:'status'},msg);document.body.append(el);setTimeout(()=>el.remove(),err?6000:2600);}
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+function levelOf(xp){return Math.floor(Math.sqrt((xp||0)/50))+1;}
+function xpFor(level){return 50*(level-1)*(level-1);}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&S.onEnter&&!(e.target&&e.target.tagName==='TEXTAREA')){const f=S.onEnter;e.preventDefault();f();}});
+
+/* ================= storage ================= */
+const IDB={db:null,
+ open(){return new Promise((res,rej)=>{const r=indexedDB.open('lernspiel',2);r.onupgradeneeded=()=>{const d=r.result;for(const s of['kv','files','cache','outbox'])if(!d.objectStoreNames.contains(s))d.createObjectStore(s);};
+  r.onsuccess=()=>{this.db=r.result;res();};r.onerror=()=>rej(r.error);});},
+ tx(store,mode,fn){return new Promise((res,rej)=>{const tr=this.db.transaction(store,mode);const req=fn(tr.objectStore(store));tr.oncomplete=()=>res(req&&req.result);tr.onerror=()=>rej(tr.error);});},
+ get(s,k){return this.tx(s,'readonly',o=>o.get(k));},set(s,k,v){return this.tx(s,'readwrite',o=>o.put(v,k));},
+ del(s,k){return this.tx(s,'readwrite',o=>o.delete(k));},keys(s){return this.tx(s,'readonly',o=>o.getAllKeys());}};
+class IdbStore{constructor(){this.kind='browser';this.name=t('browserStorage');}
+ async read(p){const v=await IDB.get('files',p);return v===undefined?null:JSON.parse(v);}
+ async write(p,o){await IDB.set('files',p,JSON.stringify(o,null,2));}
+ async list(dir){const ks=await IDB.keys('files');const pre=dir.replace(/\/?$/,'/');return ks.filter(k=>k.startsWith(pre)&&!k.slice(pre.length).includes('/')).map(k=>k.slice(pre.length));}
+ async remove(p){await IDB.del('files',p);}}
+class FolderStore{constructor(hd){this.root=hd;this.kind='folder';this.name=hd.name;}
+ async dir(parts,create){let d=this.root;for(const p of parts)d=await d.getDirectoryHandle(p,{create});return d;}
+ split(p){const parts=p.split('/');const f=parts.pop();return[parts,f];}
+ async read(p){try{const[ps,f]=this.split(p);const d=await this.dir(ps,false);const fh=await d.getFileHandle(f);return JSON.parse(await(await fh.getFile()).text());}
+  catch(e){if(e.name==='NotFoundError'||e.name==='TypeMismatchError')return null;throw e;}}
+ async write(p,o){const[ps,f]=this.split(p);const d=await this.dir(ps,true);const fh=await d.getFileHandle(f,{create:true});const w=await fh.createWritable();await w.write(JSON.stringify(o,null,2));await w.close();}
+ async list(dir){try{const d=await this.dir(dir.split('/').filter(Boolean),false);const out=[];for await(const[n,hd]of d.entries()){if(hd.kind==='file')out.push(n);}return out;}
+  catch(e){if(e.name==='NotFoundError')return[];throw e;}}
+ async remove(p){const[ps,f]=this.split(p);const d=await this.dir(ps,false);await d.removeEntry(f);}}
+async function copyAll(a,b){for(const f of['config.json','profiles.json']){const v=await a.read(f);if(v)await b.write(f,v);}
+ for(const d of['games','mastery','logs'])for(const n of await a.list(d)){const v=await a.read(d+'/'+n);if(v)await b.write(d+'/'+n,v);}}
+
+async function loadAll(){if(!PLAY_ONLY)S.cfg=await S.store.read('config.json');S.profiles=(await S.store.read('profiles.json'))||[];S.games=await loadGames();S.logMap={};await syncLogs();}
+async function refreshData(){S.profiles=(await S.store.read('profiles.json'))||[];S.games=await loadGames();await syncLogs();}
+async function pool(items,n,fn){let i=0;await Promise.all(Array.from({length:Math.min(n,items.length)},async()=>{while(i<items.length){const k=i++;await fn(items[k]);}}));}
+function uniqLogs(){const seen=new Set();return Object.values(S.logMap||{}).filter(l=>l&&l.id&&!seen.has(l.id)&&seen.add(l.id));}
+async function syncLogs(){
+ S.logMap=S.logMap||{};const dbx=S.store.kind==='dropbox';
+ const names=(await S.store.list('logs')).filter(n=>n.endsWith('.json')&&!S.logMap[n]);
+ await pool(names,6,async n=>{let l=null;
+  if(dbx){const c=await IDB.get('cache','file:logs/'+n);if(c&&c!=='null')l=JSON.parse(c);}
+  if(!l){try{l=await S.store.read('logs/'+n);}catch(e){console.warn(n,e);}}
+  if(l)S.logMap[n]=l;});
+ if(dbx)for(const k of await IDB.keys('outbox'))if(!S.logMap[k]){const v=await IDB.get('outbox',k);if(v)S.logMap[k]=JSON.parse(v);}
+ computeState();
+}
+async function writeLog(name,log){
+ try{await S.store.write('logs/'+name,log);if(S.store.kind==='dropbox')await IDB.set('cache','file:logs/'+name,JSON.stringify(log));}
+ catch(e){if(S.store.kind!=='dropbox')throw e;await IDB.set('outbox',name,JSON.stringify(log));toast(t('savedOffline'));}
+}
+async function flushOutbox(){
+ if(!S.store||S.store.kind!=='dropbox')return;
+ for(const k of await IDB.keys('outbox')){try{const v=await IDB.get('outbox',k);await S.store.write('logs/'+k,JSON.parse(v));await IDB.set('cache','file:logs/'+k,v);await IDB.del('outbox',k);}catch(e){break;}}
+}
+/* ---- progress is derived from logs only ---- */
+function blankState(){return{xp:0,answers:0,correct:0,runs:0,badges:[],unlocks:{},mastery:{}};}
+function st(pid){return(S.state&&S.state[pid])||blankState();}
+function computeState(){S.state={};for(const p of S.profiles)S.state[p.id]=blankState();
+ for(const l of uniqLogs().sort((a,b)=>String(a.started).localeCompare(String(b.started))))applyLog(S.state,l);}
+function applyLog(state,l){
+ const out={};const game=S.games.find(g=>g.id===(l.game&&l.game.id));
+ for(const pl of l.players||[]){const s=state[pl.id];if(!s)continue;
+  const prof=S.profiles.find(p=>p.id===pl.id);if(prof&&prof.resetAt&&String(l.started)<prof.resetAt)continue;
+  const r={newBadges:[],unlocked:[],levelBefore:levelOf(s.xp)};
+  const gm=(s.mastery[l.game.id]=s.mastery[l.game.id]||{});
+  for(const a of l.answers||[]){if(a.player!==pl.id)continue;const m=gm[a.itemId]||{box:0,seen:0,right:0};m.seen++;
+   if(a.correct){m.right++;m.box=Math.min(5,m.box+1);}else m.box=Math.max(0,m.box-2);gm[a.itemId]=m;}
+  s.xp+=pl.score||0;s.answers+=pl.answered||0;s.correct+=pl.correct||0;s.runs++;
+  const acc=pl.answered?pl.correct/pl.answered:0;
+  const give=id=>{if(!s.badges.includes(id)){s.badges.push(id);r.newBadges.push(id);}};
+  give('first_run');
+  if(l.mode==='classic'&&!l.aborted&&pl.answered>=5&&pl.correct===pl.answered)give('perfect');
+  if((pl.bestStreak||0)>=10)give('streak10');if(s.answers>=100)give('answers100');
+  if(l.mode==='survival'&&pl.correct>=20)give('survivor20');if(l.mode==='timed'&&pl.correct>=15)give('speed15');
+  if(l.mode==='duel'&&l.winner===pl.id)give('duel_win');if(l.difficulty==='hard'&&pl.answered>=5&&acc>=0.8)give('hard_clear');
+  if(game&&game.items.length&&game.items.every(it=>gm[it.id]&&gm[it.id].box>=3))give('master_game');
+  const u=(s.unlocks[l.game.id]=s.unlocks[l.game.id]||{});
+  if(pl.answered>=5&&l.difficulty==='easy'&&acc>=0.7&&!u.medium){u.medium=true;r.unlocked.push('medium');}
+  if(pl.answered>=5&&l.difficulty==='medium'&&acc>=0.8&&!u.hard){u.hard=true;r.unlocked.push('hard');}
+  r.levelAfter=levelOf(s.xp);out[pl.id]=r;}
+ return out;
+}
+/* ---- Dropbox (play page on GitHub) ---- */
+function b64url(bytes){let s='';for(const b of bytes)s+=String.fromCharCode(b);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function dbxArg(o){return JSON.stringify(o).replace(/[\u007f-\uffff]/g,c=>'\\u'+('000'+c.charCodeAt(0).toString(16)).slice(-4));}
+const DBX={token:null,exp:0,TOKEN_URL:'https://api.dropboxapi.com/oauth2/token',
+ redirect(){return location.origin+location.pathname.replace(/index\.html$/,'');},
+ async start(){const v=b64url(crypto.getRandomValues(new Uint8Array(48)));
+  const ch=b64url(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v))));
+  await IDB.set('kv','dbxVerifier',v);
+  location.href='https://www.dropbox.com/oauth2/authorize?'+new URLSearchParams({client_id:DBX_KEY,response_type:'code',code_challenge:ch,code_challenge_method:'S256',redirect_uri:this.redirect(),token_access_type:'offline'});},
+ async finish(code){const v=await IDB.get('kv','dbxVerifier');
+  const r=await fetch(this.TOKEN_URL,{method:'POST',body:new URLSearchParams({code,grant_type:'authorization_code',code_verifier:v||'',client_id:DBX_KEY,redirect_uri:this.redirect()})});
+  const d=await r.json().catch(()=>({}));if(!r.ok||!d.refresh_token)throw new Error(d.error_description||d.error||('HTTP '+r.status));
+  await IDB.set('kv','dbxRefresh',d.refresh_token);await IDB.del('kv','dbxVerifier');this.token=d.access_token;this.exp=Date.now()+((d.expires_in||3600)-60)*1000;},
+ async access(){if(this.token&&Date.now()<this.exp)return this.token;const rt=await IDB.get('kv','dbxRefresh');if(!rt)throw new Error('not connected');
+  const r=await fetch(this.TOKEN_URL,{method:'POST',body:new URLSearchParams({grant_type:'refresh_token',refresh_token:rt,client_id:DBX_KEY})});
+  const d=await r.json().catch(()=>({}));if(!r.ok){if(r.status===400||r.status===401)await IDB.del('kv','dbxRefresh');throw new Error('not connected');}
+  this.token=d.access_token;this.exp=Date.now()+((d.expires_in||3600)-60)*1000;return this.token;},
+ async call(url,opts){for(let k=0;k<2;k++){const tok=await this.access();
+  const r=await fetch(url,Object.assign({},opts,{headers:Object.assign({Authorization:'Bearer '+tok},opts.headers||{})}));
+  if(r.status===401&&k===0){this.token=null;continue;}return r;}},
+ async rpc(ep,body){const r=await this.call('https://api.dropboxapi.com/2/'+ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const txt=await r.text();let d=null;try{d=JSON.parse(txt);}catch(e){}
+  if(!r.ok){const e=new Error((d&&d.error_summary)||txt||('HTTP '+r.status));e.status=r.status;throw e;}return d;},
+ async download(path){const r=await this.call('https://content.dropboxapi.com/2/files/download',{method:'POST',headers:{'Dropbox-API-Arg':dbxArg({path})}});
+  if(r.status===409)return null;if(!r.ok)throw new Error('HTTP '+r.status+' '+await r.text());return r.text();},
+ async upload(path,text,mode){const r=await this.call('https://content.dropboxapi.com/2/files/upload',{method:'POST',
+  headers:{'Dropbox-API-Arg':dbxArg({path,mode,autorename:true,mute:true}),'Content-Type':'application/octet-stream'},body:text});
+  if(!r.ok)throw new Error('HTTP '+r.status+' '+await r.text());return r.json();}
+};
+class DbxStore{constructor(){this.kind='dropbox';this.name='Dropbox';}
+ async read(p){try{const tx=await DBX.download('/'+p);await IDB.set('cache','file:'+p,tx==null?'null':tx);return tx==null?null:JSON.parse(tx);}
+  catch(e){if(e.message==='not connected')throw e;const c=await IDB.get('cache','file:'+p);if(c!==undefined)return JSON.parse(c);throw e;}}
+ async write(p,o){await DBX.upload('/'+p,JSON.stringify(o,null,2),p.startsWith('logs/')?'add':'overwrite');}
+ async list(dir){try{let d=await DBX.rpc('files/list_folder',{path:'/'+dir});let out=d.entries;
+   while(d.has_more){d=await DBX.rpc('files/list_folder/continue',{cursor:d.cursor});out=out.concat(d.entries);}
+   const names=out.filter(e=>e['.tag']==='file').map(e=>e.name);await IDB.set('cache','list:'+dir,JSON.stringify(names));return names;}
+  catch(e){if(e.status===409)return[];if(e.message==='not connected')throw e;const c=await IDB.get('cache','list:'+dir);if(c)return JSON.parse(c);throw e;}}
+ async remove(p){await DBX.rpc('files/delete_v2',{path:'/'+p});}}
+async function initPlay(){
+ const q=new URLSearchParams(location.search);
+ if(q.get('error'))toast(t('connectErr',{e:q.get('error_description')||q.get('error')}),true);
+ if(q.get('code')){try{await DBX.finish(q.get('code'));await DBX.upload('/README.txt','Lernspiel data folder. Please do not rename or move.\n','overwrite');}
+  catch(e){toast(t('connectErr',{e:e.message}),true);}history.replaceState(null,'',DBX.redirect());}
+ if(!await IDB.get('kv','dbxRefresh'))return viewConnect();
+ S.store=new DbxStore();
+ screen(topbar(t('appTitle')),h('main',{class:'page'},h('p',{class:'muted'},t('loading'))));
+ try{await flushOutbox();await loadAll();}
+ catch(e){if(!await IDB.get('kv','dbxRefresh'))return viewConnect();toast(t('err',{e:e.message}),true);
+  S.profiles=S.profiles||[];S.games=S.games||[];S.logMap=S.logMap||{};computeState();}
+ window.addEventListener('online',()=>flushOutbox().then(updateSyncStatus));
+ S.lastRefresh=Date.now();viewHome(true);
+}
+function viewConnect(){screen(topbar(t('appTitle'),{rerender:viewConnect}),h('main',{class:'page stack'},h('h2',{},t('connectTitle')),h('p',{},t('connectText')),
+ h('button',{class:'btn big',onclick:()=>DBX.start().catch(e=>toast(t('connectErr',{e:e.message}),true))},t('connectBtn')),h('p',{class:'small muted'},t('homeTip'))));}
+async function disconnectDbx(){if(!confirm(t('confirmDisconnect')))return;await IDB.del('kv','dbxRefresh');DBX.token=null;viewConnect();}
+async function updateSyncStatus(){const el=$('#syncstatus');if(!el||!PLAY_ONLY)return;const n=(await IDB.keys('outbox')).length;el.textContent=n?t('pending',{n}):'';}
+async function loadGames(){const out=[];for(const n of(await S.store.list('games')).filter(n=>n.endsWith('.json'))){try{const g=await S.store.read('games/'+n);if(g&&Array.isArray(g.items))out.push(g);}catch(e){console.warn(n,e);}}
+ return out.sort((a,b)=>a.title.localeCompare(b.title));}
+async function saveProfiles(){await S.store.write('profiles.json',S.profiles);}
+async function saveGame(g){g.updatedAt=new Date().toISOString();await S.store.write('games/'+g.id+'.json',g);S.games=await loadGames();}
+
+/* ================= boot ================= */
+async function init(){
+ try{await IDB.open();}catch(e){screen(h('div',{class:'page'},h('p',{},t('err',{e:e.message}))));return;}
+ S.lang=(await IDB.get('kv','lang'))||((navigator.language||'de').startsWith('de')?'de':'en');applyLang();
+ if(PLAY_ONLY)return initPlay();
+ const mode=await IDB.get('kv','storeMode');
+ if(mode==='folder'){const hd=await IDB.get('kv','dirHandle');
+  if(hd){let p='prompt';try{p=await hd.queryPermission({mode:'readwrite'});}catch(e){}
+   if(p==='granted')S.store=new FolderStore(hd);else return viewReconnect(hd);}}
+ else if(mode==='browser')S.store=new IdbStore();
+ if(!S.store)return viewSetup();
+ await afterStore();
+}
+async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
+function applyLang(){document.documentElement.lang=S.lang;document.title=t('appTitle');}
+async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
+function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
+ ['de','en'].map(l=>h('button',{'aria-pressed':String(S.lang===l),onclick:async()=>{await setLang(l);rerender();}},l.toUpperCase())));}
+function topbar(title,opts={}){return h('header',{class:'top'},
+ opts.back?h('button',{class:'btn ghost small',onclick:opts.back},'‹ '+t('back')):null,
+ h('h1',{},title),opts.extra||null,opts.rerender?langToggle(opts.rerender):null);}
+
+async function pickFolder(){if(!('showDirectoryPicker'in window)){toast(t('noFsApi'),true);return null;}
+ try{return await window.showDirectoryPicker({mode:'readwrite'});}catch(e){if(e.name!=='AbortError')toast(t('err',{e:e.message}),true);return null;}}
+
+function viewSetup(){
+ const re=()=>viewSetup();
+ screen(topbar(t('setupTitle'),{rerender:re}),h('main',{class:'page'},
+  h('h2',{},t('setupFolder')),
+  !('showDirectoryPicker'in window)?h('p',{class:'muted'},t('noFsApi')):null,
+  h('div',{class:'row'},
+   h('button',{class:'btn',disabled:!('showDirectoryPicker'in window),onclick:async()=>{const hd=await pickFolder();if(!hd)return;
+     await IDB.set('kv','dirHandle',hd);await IDB.set('kv','storeMode','folder');S.store=new FolderStore(hd);await afterStore();}},t('chooseFolder')),
+   h('button',{class:'btn ghost',onclick:async()=>{await IDB.set('kv','storeMode','browser');S.store=new IdbStore();await afterStore();}},t('useBrowser')))));
+}
+function viewReconnect(hd){
+ const re=()=>viewReconnect(hd);
+ screen(topbar(t('reconnectTitle'),{rerender:re}),h('main',{class:'page'},
+  h('p',{},t('reconnectText',{name:hd.name})),
+  h('div',{class:'row'},
+   h('button',{class:'btn',onclick:async()=>{try{if(await hd.requestPermission({mode:'readwrite'})==='granted'){S.store=new FolderStore(hd);await afterStore();}}catch(e){toast(t('err',{e:e.message}),true);}}},t('reconnect')),
+   h('button',{class:'btn ghost',onclick:async()=>{const n=await pickFolder();if(!n)return;await IDB.set('kv','dirHandle',n);S.store=new FolderStore(n);await afterStore();}},t('otherFolder')))));
+}
+function viewSetPassword(){
+ const re=()=>viewSetPassword();const pw=h('input',{type:'password',id:'pw',autocomplete:'new-password'});
+ const go=async()=>{if(pw.value.length<4)return toast(t('pwShort'),true);const salt=uid()+uid();
+  S.cfg={version:1,salt,pwHash:await sha(salt+pw.value),createdAt:new Date().toISOString()};
+  try{await S.store.write('config.json',S.cfg);}catch(e){return toast(t('err',{e:e.message}),true);}S.admin=true;viewAdmin('players');};
+ screen(topbar(t('setupTitle'),{rerender:re}),h('main',{class:'page stack'},
+  h('h2',{},t('setPw')),h('p',{class:'muted'},t('setPwNote')),
+  h('div',{},h('label',{class:'f',for:'pw'},t('password')),pw),
+  h('button',{class:'btn',onclick:go},t('finish'))));
+ S.onEnter=go;pw.focus();
+}
+
+/* ================= player side ================= */
+function viewHome(noRefresh){
+ S.admin=false;
+ const re=()=>viewHome(true);
+ const extra=PLAY_ONLY?h('button',{class:'btn ghost small',title:t('sync'),'aria-label':t('sync'),onclick:()=>{S.lastRefresh=0;viewHome();}},'↻')
+  :h('button',{class:'btn ghost small',onclick:viewAdminLogin},'🔒 '+t('admin'));
+ screen(topbar(t('appTitle'),{rerender:re,extra}),
+  h('main',{class:'page'},h('h2',{class:'hand'},t('whoPlays')),
+   S.profiles.length?h('div',{class:'players'},S.profiles.map(p=>h('button',{class:'player',onclick:()=>viewGames(p)},
+     h('div',{class:'av','aria-hidden':'true'},p.avatar),h('div',{class:'nm'},p.name),h('div',{class:'muted small'},t('level',{n:levelOf(st(p.id).xp)})))))
+   :h('p',{class:'muted'},PLAY_ONLY?t('noPlayersPlay'):t('noPlayers')),
+   h('p',{class:'small muted',id:'syncstatus',style:'margin-top:16px'}),
+   PLAY_ONLY?h('p',{style:'margin-top:40px'},h('button',{class:'btn ghost small',onclick:disconnectDbx},t('disconnect'))):null));
+ updateSyncStatus();
+ if(!noRefresh&&!S.refreshing&&Date.now()-(S.lastRefresh||0)>15000){const sid=S.sid;S.refreshing=true;
+  (async()=>{await flushOutbox();await refreshData();})()
+  .then(()=>{S.lastRefresh=Date.now();if(S.sid===sid)viewHome(true);})
+  .catch(e=>{if(e.message==='not connected')return viewConnect();if(S.sid===sid)toast(t('err',{e:e.message}),true);})
+  .finally(()=>{S.refreshing=false;});}
+}
+function badgeSticker(id){return h('div',{class:'sticker'},h('i',{'aria-hidden':'true'},BADGES[id]||'★'),t('b_'+id));}
+async function viewGames(p){
+ const s=st(p.id);const m=s.mastery;const lv=levelOf(s.xp);const lo=xpFor(lv),hi=xpFor(lv+1);
+ const re=()=>viewGames(p);
+ screen(topbar(t('chooseGame'),{back:viewHome,rerender:re}),h('main',{class:'page stack'},
+  h('div',{class:'row'},h('span',{style:'font-size:3rem','aria-hidden':'true'},p.avatar),
+   h('div',{class:'grow',style:'flex:1'},h('h2',{class:'hand',style:'margin:0'},t('hello',{name:p.name})),
+    h('div',{class:'small'},t('level',{n:lv})+' · '+s.xp+' '+t('points')),
+    h('div',{class:'bar',style:'margin-top:6px'},h('i',{style:'width:'+Math.round((s.xp-lo)/(hi-lo)*100)+'%'})),
+    h('div',{class:'small muted'},t('xpToNext',{n:hi-s.xp,m:lv+1})))),
+  s.badges.length?h('div',{class:'stickers'},s.badges.map(badgeSticker)):null,
+  h('h3',{},t('chooseGame')),
+  S.games.length?h('div',{class:'list'},S.games.map(g=>{const pct=masteryPct(g,m);
+   return h('button',{class:'item',onclick:()=>viewRunSetup(p,g)},h('div',{class:'grow'},h('b',{},g.title),
+    h('div',{class:'small muted'},t('questions',{n:g.items.length})+' · '+t('mastered',{p:pct})),h('div',{class:'bar',style:'margin-top:6px'},h('i',{style:'width:'+pct+'%'}))),h('span',{'aria-hidden':'true'},'›'));}))
+  :h('p',{class:'muted'},t('noGames'))));
+}
+function masteryPct(g,m){const gm=m[g.id]||{};if(!g.items.length)return 0;return Math.round(g.items.filter(i=>gm[i.id]&&gm[i.id].box>=3).length/g.items.length*100);}
+function isUnlocked(p,g,d){const u=st(p.id).unlocks[g.id];return d==='easy'||!!p.unlockAll||!!(u&&u[d]);}
+
+function viewRunSetup(p,g,prev){
+ const sel=Object.assign({mode:'classic',diff:'easy',adaptive:true,opp:null},prev||{});
+ if(!isUnlocked(p,g,sel.diff))sel.diff='easy';
+ const re=()=>viewRunSetup(p,g,sel);
+ const others=S.profiles.filter(x=>x.id!==p.id);
+ const choiceGroup=(items,key)=>h('div',{class:'choices'},items.map(it=>h('button',{class:'choice','aria-pressed':String(sel[key]===it.v),disabled:it.disabled||false,
+  onclick:()=>{sel[key]=it.v;re();}},h('b',{},(it.disabled?'🔒 ':'')+it.label),h('span',{},it.desc))));
+ const canStart=g.items.length>0&&(sel.mode!=='duel'||(sel.opp&&others.some(o=>o.id===sel.opp)));
+ screen(topbar(g.title,{back:()=>viewGames(p),rerender:re}),h('main',{class:'page stack'},
+  !g.items.length?h('p',{class:'muted'},t('noItems')):null,
+  h('h3',{},t('mode')),choiceGroup(['classic','timed','survival','duel'].map(v=>({v,label:t('m_'+v),desc:t('md_'+v)})),'mode'),
+  sel.mode==='duel'?h('div',{},h('h3',{},t('opponent')),others.length?h('div',{class:'players'},others.map(o=>h('button',{class:'player','aria-pressed':String(sel.opp===o.id),
+    style:sel.opp===o.id?'background:var(--mark)':'',onclick:()=>{sel.opp=o.id;re();}},h('div',{class:'av'},o.avatar),h('div',{class:'nm'},o.name))))
+   :h('p',{class:'muted'},t('needOpponent'))):null,
+  h('h3',{},t('difficulty')),choiceGroup(DIFFS.map(v=>{const lock=!isUnlocked(p,g,v);return{v,label:t('d_'+v),desc:lock?t('lock_'+v):t('dd_'+v),disabled:lock};}),'diff'),
+  h('h3',{},t('adjust')),choiceGroup([{v:true,label:t('adaptive'),desc:t('ad_adaptive')},{v:false,label:t('fixed'),desc:t('ad_fixed')}],'adaptive'),
+  h('div',{style:'margin-top:24px'},h('button',{class:'btn big',disabled:!canStart,onclick:()=>{
+   const players=[p];if(sel.mode==='duel')players.push(S.profiles.find(o=>o.id===sel.opp));
+   startRun({players,game:g,mode:sel.mode,diff:sel.diff,adaptive:sel.adaptive,sel});}},t('start')))));
+}
+
+/* ================= run engine ================= */
+function poolFor(g,d){const allow={easy:[1,2],medium:[1,2,3],hard:[2,3]}[d];const p=g.items.filter(i=>allow.includes(i.difficulty));return p.length>=5?p:g.items.slice();}
+async function startRun(o){
+ const masteries={};for(const p of o.players)masteries[p.id]=JSON.parse(JSON.stringify(st(p.id).mastery));
+ const pool=poolFor(o.game,o.diff);
+ const R={id:uid(),players:o.players,game:o.game,mode:o.mode,diff:o.diff,adaptive:o.adaptive,sel:o.sel,started:new Date(),pool,used:new Set(),answers:[],
+  score:o.players.map(()=>0),streak:o.players.map(()=>0),best:o.players.map(()=>0),lives:3,level:DIFF_LEVEL[o.diff],up:0,down:0,q:0,masteries,timer:null,ended:false};
+ R.target=o.mode==='classic'?Math.min(10,pool.length):o.mode==='duel'?10:Infinity;
+ if(o.mode==='timed'){R.deadline=Date.now()+({easy:90,medium:60,hard:45}[o.diff])*1000;R.timer=setInterval(()=>tick(R),250);}
+ S.run=R;nextQuestion(R);
+}
+function curIdx(R){return R.mode==='duel'?R.q%2:0;}
+function tick(R){if(R.ended)return clearInterval(R.timer);const left=Math.max(0,Math.ceil((R.deadline-Date.now())/1000));const el=$('#timer');if(el)el.textContent='⏱ '+left+' s';
+ if(left<=0){toast(t('timeUp'));finishRun(R,false);}}
+function pickItem(R){
+ let cand=R.pool.filter(i=>!R.used.has(i.id));if(!cand.length){R.used.clear();cand=R.pool.slice();}
+ if(!R.adaptive)return cand[Math.floor(Math.random()*cand.length)];
+ const gm=R.masteries[R.players[curIdx(R)].id][R.game.id]||{};
+ const w=cand.map(i=>{const b=(gm[i.id]&&gm[i.id].box)||0;const dd=Math.abs(i.difficulty-R.level);return(1/(b+1))*(dd===0?2.5:dd===1?1:0.4);});
+ let r=Math.random()*w.reduce((a,b)=>a+b,0);for(let k=0;k<cand.length;k++){r-=w[k];if(r<=0)return cand[k];}return cand[cand.length-1];
+}
+function prepare(item,diff){
+ const Q={item,type:item.type};
+ if(item.type==='single'||item.type==='multi'){let opts=item.options.map((text,i)=>({text,ok:item.correct.includes(i)}));
+  if(item.type==='single'&&diff==='easy'&&opts.length>3){const right=opts.filter(o=>o.ok);opts=right.concat(shuffle(opts.filter(o=>!o.ok)).slice(0,3-right.length));}
+  Q.opts=shuffle(opts);}
+ if(item.type==='order'){let s=shuffle(item.order);for(let k=0;k<6&&item.order.length>1&&s.join('\u0001')===item.order.join('\u0001');k++)s=shuffle(item.order);Q.chips=s;}
+ return Q;
+}
+function answerText(it){switch(it.type){case'single':return it.options[it.correct[0]];case'multi':return it.correct.map(i=>it.options[i]).join(', ');
+ case'order':return it.order.join(' → ');case'input':return it.answer;default:return'';}}
+function nextQuestion(R){
+ if(R.ended)return;const item=pickItem(R);R.used.add(item.id);const Q=prepare(item,R.diff);Q.t0=performance.now();renderQuestion(R,Q);
+}
+function hud(R){
+ const i=curIdx(R);const p=R.players[i];
+ return h('div',{class:'hud'},
+  R.mode==='duel'?R.players.map((pl,k)=>h('span',{style:k===i?'':'opacity:.5'},pl.avatar+' '+pl.name+': '+R.score[k])):h('span',{},p.avatar+' '+R.score[0]+' '+t('points')),
+  h('span',{title:t('streak')},'🔥 '+R.streak[i]),
+  R.mode==='survival'?h('span',{'aria-label':t('lives')+': '+R.lives},'❤️'.repeat(R.lives)+'🤍'.repeat(3-R.lives)):null,
+  R.mode==='timed'?h('span',{id:'timer'},'⏱ '+Math.max(0,Math.ceil((R.deadline-Date.now())/1000))+' s'):null,
+  (R.mode==='classic'||R.mode==='duel')?h('span',{},(R.q+1)+' / '+R.target):null,
+  h('span',{class:'sp'}),
+  h('button',{class:'btn ghost small',onclick:()=>finishRun(R,true)},t('quit')));
+}
+function renderQuestion(R,Q){
+ const it=Q.item;const area=h('div',{});const fb=h('div',{});let done=false;
+ const submit=(given,correct,mark)=>{if(done||R.ended)return;done=true;mark&&mark();area.querySelectorAll('button,input').forEach(b=>b.disabled=true);onAnswer(R,Q,given,correct,fb);};
+ if(it.type==='single'){
+  area.append(h('div',{class:'opts'},Q.opts.map(o=>{const b=h('button',{class:'opt',onclick:()=>submit(o.text,o.ok,()=>{b.classList.add(o.ok?'ok':'bad');
+   if(!o.ok)area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.opts[k].ok)x.classList.add('ok');});})},o.text);return b;})));
+ }else if(it.type==='multi'){
+  const chosen=new Set();const btns=Q.opts.map((o,k)=>{const b=h('button',{class:'opt','aria-pressed':'false',onclick:()=>{chosen.has(k)?chosen.delete(k):chosen.add(k);b.setAttribute('aria-pressed',String(chosen.has(k)));}},o.text);return b;});
+  const go=()=>{if(!chosen.size)return;const ok=Q.opts.every((o,k)=>o.ok===chosen.has(k));
+   submit([...chosen].map(k=>Q.opts[k].text).join(' | '),ok,()=>btns.forEach((b,k)=>{if(Q.opts[k].ok)b.classList.add('ok');else if(chosen.has(k))b.classList.add('bad');}));};
+  area.append(h('div',{class:'opts'},btns),h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;
+ }else if(it.type==='order'){
+  const seq=[];const seqBox=h('div',{class:'seq','aria-live':'polite'});const pool=h('div',{class:'row'});const chk=h('button',{class:'btn',disabled:true},t('check'));
+  const draw=()=>{seqBox.replaceChildren(...seq.map((k,n)=>h('button',{class:'chip placed',onclick:()=>{seq.splice(n,1);draw();}},h('span',{class:'n'},n+1),Q.chips[k])));
+   pool.replaceChildren(...Q.chips.map((c,k)=>seq.includes(k)?null:h('button',{class:'chip',onclick:()=>{seq.push(k);draw();}},c)));chk.disabled=seq.length!==Q.chips.length;};
+  const go=()=>{if(seq.length!==Q.chips.length)return;const given=seq.map(k=>Q.chips[k]);submit(given.join(' → '),given.every((g,n)=>g===it.order[n]));};
+  chk.addEventListener('click',go);draw();area.append(seqBox,pool,h('div',{style:'margin-top:14px'},chk));S.onEnter=go;
+ }else if(it.type==='input'){
+  const inp=h('input',{type:'text',class:'answerbox',autocomplete:'off',autocapitalize:'off',autocorrect:'off',spellcheck:'false','aria-label':t('hint_input')});
+  const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[it.answer].concat(it.accept||[]).some(a=>String(a).trim()===v);submit(v,ok,()=>{inp.style.borderColor=ok?'var(--green)':'var(--red)';});};
+  area.append(inp,h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;setTimeout(()=>inp.focus(),30);
+ }
+ const turn=R.mode==='duel'?h('p',{class:'hand',style:'font-size:1.3rem;color:var(--ink)'},t('turnOf',{name:R.players[curIdx(R)].name})):null;
+ const keepEnter=S.onEnter;
+ screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},it.prompt),h('div',{class:'hint'},t('hint_'+it.type)),area,fb)));
+ S.onEnter=keepEnter;
+}
+function onAnswer(R,Q,given,correct,fb){
+ const i=curIdx(R);const p=R.players[i];const it=Q.item;const ms=Math.round(performance.now()-Q.t0);let pts=0;
+ if(correct){R.streak[i]++;R.best[i]=Math.max(R.best[i],R.streak[i]);pts=10*it.difficulty+Math.min(R.streak[i]-1,5)*2+(R.mode==='timed'&&ms<5000?5:0);R.score[i]+=pts;R.up++;R.down=0;}
+ else{R.streak[i]=0;R.down++;R.up=0;if(R.mode==='survival')R.lives--;}
+ if(R.adaptive){if(R.up>=3&&R.level<3){R.level++;R.up=0;}if(R.down>=2&&R.level>1){R.level--;R.down=0;}}
+ const gm=(R.masteries[p.id][R.game.id]=R.masteries[p.id][R.game.id]||{});const st=gm[it.id]||{box:0,seen:0,right:0};
+ st.seen++;if(correct){st.right++;st.box=Math.min(5,st.box+1);}else st.box=Math.max(0,st.box-2);st.last=new Date().toISOString();gm[it.id]=st;
+ R.answers.push({itemId:it.id,type:it.type,prompt:it.prompt,expected:answerText(it),given,correct,ms,points:pts,player:p.id});
+ R.q++;
+ const over=()=>(R.mode==='classic'||R.mode==='duel')?R.q>=R.target:R.mode==='survival'?R.lives<=0:(R.mode==='timed'&&Date.now()>=R.deadline);
+ const proceed=()=>{if(R.ended)return;if(over())finishRun(R,false);else nextQuestion(R);};
+ fb.className='feedback';
+ fb.append(h('div',{class:'stamp hand '+(correct?'ok':'bad')},correct?'✓ '+t('correct'):'✗ '+t('wrong')),
+  !correct?h('p',{},h('b',{},t('rightAnswer',{a:answerText(it)}))):null,
+  !correct&&(it.type==='input'||it.type==='order')?h('p',{class:'muted'},t('yourAnswer',{a:given})):null,
+  R.mode!=='timed'&&it.explanation?h('p',{class:'muted'},it.explanation):null);
+ const hudEl=$('.hud');if(hudEl)hudEl.replaceWith(hud(R));
+ if(R.mode==='timed'){S.onEnter=null;setTimeout(proceed,correct?550:1400);}
+ else{const nb=h('button',{class:'btn'},t('next'));nb.addEventListener('click',proceed);fb.append(nb);S.onEnter=proceed;setTimeout(()=>nb.focus(),30);}
+}
+async function finishRun(R,aborted){
+ if(R.ended)return;R.ended=true;clearInterval(R.timer);S.onEnter=null;
+ if(!R.answers.length)return viewRunSetup(R.players[0],R.game,R.sel);
+ const results=R.players.map((p,i)=>{const a=R.answers.filter(x=>x.player===p.id);const c=a.filter(x=>x.correct).length;const lv=levelOf(st(p.id).xp);
+  return{p,i,answered:a.length,correct:c,acc:a.length?c/a.length:0,score:R.score[i],best:R.best[i],newBadges:[],unlocked:[],levelBefore:lv,levelAfter:lv};});
+ let winner=null,draw=false;if(R.mode==='duel'){if(R.score[0]===R.score[1])draw=true;else winner=R.score[0]>R.score[1]?0:1;}
+ const ended=new Date();
+ const log={id:R.id,version:2,device:PLAY_ONLY?'web':'desktop',game:{id:R.game.id,title:R.game.title},mode:R.mode,difficulty:R.diff,adaptive:R.adaptive,aborted:!!aborted,
+  started:R.started.toISOString(),ended:ended.toISOString(),
+  players:results.map(r=>({id:r.p.id,name:r.p.name,score:r.score,answered:r.answered,correct:r.correct,accuracy:Math.round(r.acc*100),bestStreak:r.best})),
+  winner:R.mode==='duel'?(draw?'draw':R.players[winner].id):null,answers:R.answers};
+ const eff=applyLog(S.state||(S.state={}),log);
+ for(const r of results){const e=eff[r.p.id];if(e)Object.assign(r,{newBadges:e.newBadges,unlocked:e.unlocked,levelBefore:e.levelBefore,levelAfter:e.levelAfter});
+  const lp=log.players.find(x=>x.id===r.p.id);lp.badgesEarned=r.newBadges;lp.unlocked=r.unlocked;}
+ const fname=ymd(R.started)+'_'+slug(R.players.map(p=>p.name).join('-'))+'_'+slug(R.game.title)+'_'+hms(R.started)+'_'+R.id.slice(-4)+'.json';
+ S.logMap=S.logMap||{};S.logMap[fname]=log;
+ try{await writeLog(fname,log);}catch(e){toast(t('err',{e:e.message}),true);}
+ viewResult(R,results,winner,draw);
+}
+function viewResult(R,results,winner,draw){
+ const p0=R.players[0];
+ screen(topbar(t('resultTitle')),h('main',{class:'page stack'},
+  R.mode==='duel'?h('h2',{class:'hand',style:'font-size:2rem'},draw?t('draw'):'🏆 '+t('winner',{name:R.players[winner].name})):null,
+  results.map(r=>h('section',{class:'card stack',style:'margin-bottom:14px'},
+   h('div',{class:'row'},h('span',{style:'font-size:2.4rem'},r.p.avatar),h('b',{style:'font-size:1.2rem'},r.p.name)),
+   h('div',{class:'row',style:'gap:28px;align-items:flex-end'},h('span',{class:'bigscore hand'},r.score),
+    h('div',{},h('div',{},t('accuracy')+': '+Math.round(r.acc*100)+' % ('+r.correct+'/'+r.answered+')'),h('div',{},t('bestStreak')+': '+r.best))),
+   r.levelAfter>r.levelBefore?h('p',{class:'hand',style:'font-size:1.3rem;color:var(--green)'},'⬆ '+t('levelUp',{n:r.levelAfter})):null,
+   r.unlocked.map(d=>h('p',{class:'hand',style:'font-size:1.2rem;color:var(--ink)'},'🔓 '+t('unlocked',{d:t('d_'+d)}))),
+   r.newBadges.length?h('div',{},h('h3',{},t('newBadges')),h('div',{class:'stickers'},r.newBadges.map(badgeSticker))):null)),
+  h('div',{class:'row'},
+   h('button',{class:'btn',onclick:()=>startRun({players:R.players,game:R.game,mode:R.mode,diff:R.diff,adaptive:R.adaptive,sel:R.sel})},t('again')),
+   h('button',{class:'btn ghost',onclick:()=>viewGames(p0)},t('otherGame')),
+   h('button',{class:'btn ghost',onclick:viewHome},t('changePlayer')))));
+}
+
+/* ================= admin ================= */
+function viewAdminLogin(){
+ const pw=h('input',{type:'password',id:'pw',autocomplete:'current-password'});
+ const go=async()=>{if(await sha(S.cfg.salt+pw.value)===S.cfg.pwHash){S.admin=true;viewAdmin('players');}else{toast(t('pwWrong'),true);pw.value='';pw.focus();}};
+ screen(topbar(t('pwTitle'),{back:viewHome,rerender:viewAdminLogin}),h('main',{class:'page stack'},
+  h('div',{},h('label',{class:'f',for:'pw'},t('password')),pw),h('button',{class:'btn',onclick:go},t('unlock'))));
+ S.onEnter=go;pw.focus();
+}
+function viewAdmin(tab){
+ if(!S.admin)return viewAdminLogin();
+ const body=h('div',{});
+ screen(topbar(t('admin'),{rerender:()=>viewAdmin(tab),extra:h('button',{class:'btn ghost small',onclick:viewHome},t('lockAdmin'))}),
+  h('main',{class:'page wide'},h('div',{class:'tabs',role:'tablist'},[['players','tabPlayers'],['games','tabGames'],['logs','tabLogs'],['settings','tabSettings']].map(([k,l])=>
+   h('button',{role:'tab','aria-selected':String(tab===k),onclick:()=>viewAdmin(k)},t(l)))),body));
+ ({players:adminPlayers,games:adminGames,logs:adminLogs,settings:adminSettings})[tab](body);
+}
+/* players */
+function adminPlayers(body){
+ body.append(h('div',{class:'row',style:'margin-bottom:14px'},h('button',{class:'btn',onclick:()=>editPlayer(null)},'+ '+t('addPlayer'))),
+  h('div',{class:'list'},S.profiles.map(p=>h('div',{class:'item'},h('span',{style:'font-size:2rem'},p.avatar),
+   h('div',{class:'grow'},h('b',{},p.name),h('div',{class:'small muted'},t('level',{n:levelOf(st(p.id).xp)})+' · '+st(p.id).xp+' '+t('points')+' · '+st(p.id).badges.length+' 🏅'+(p.unlockAll?' · 🔓':''))),
+   h('button',{class:'btn ghost small',onclick:()=>editPlayer(p)},t('edit')),
+   h('button',{class:'btn danger small',onclick:async()=>{if(!confirm(t('confirmDelPlayer',{name:p.name})))return;S.profiles=S.profiles.filter(x=>x.id!==p.id);
+    await saveProfiles();computeState();viewAdmin('players');}},t('del'))))));
+}
+function editPlayer(p){
+ const d={name:p?p.name:'',avatar:p?p.avatar:AVATARS[Math.floor(Math.random()*AVATARS.length)],unlockAll:p?!!p.unlockAll:false};
+ const dlg=$('#dlg');const nm=h('input',{type:'text',id:'pn',value:d.name,maxlength:'30'});
+ const avs=h('div',{class:'avpick'});const drawAv=()=>avs.replaceChildren(...AVATARS.map(a=>h('button',{type:'button','aria-pressed':String(d.avatar===a),onclick:()=>{d.avatar=a;drawAv();}},a)));drawAv();
+ const ua=h('input',{type:'checkbox',id:'ua'});ua.checked=d.unlockAll;
+ dlg.replaceChildren(h('div',{class:'stack'},h('h2',{},p?t('editPlayer'):t('addPlayer')),
+  h('div',{},h('label',{class:'f',for:'pn'},t('name')),nm),h('div',{},h('div',{class:'f'},t('avatar')),avs),
+  h('label',{},ua,' '+t('unlockAll')),
+  p?h('button',{class:'btn danger small',onclick:async()=>{if(!confirm(t('confirmReset',{name:p.name})))return;p.resetAt=new Date().toISOString();
+   await saveProfiles();computeState();dlg.close();viewAdmin('players');}},t('resetProgress')):null,
+  h('div',{class:'row'},h('button',{class:'btn',onclick:async()=>{const n=nm.value.trim();if(!n)return nm.focus();
+   if(p){p.name=n;p.avatar=d.avatar;p.unlockAll=ua.checked;}else S.profiles.push({id:uid(),name:n,avatar:d.avatar,unlockAll:ua.checked,createdAt:new Date().toISOString()});
+   try{await saveProfiles();}catch(e){return toast(t('err',{e:e.message}),true);}computeState();dlg.close();viewAdmin('players');}},t('save')),
+   h('button',{class:'btn ghost',onclick:()=>dlg.close()},t('cancel')))));
+ dlg.showModal();nm.focus();
+}
+/* games */
+function adminGames(body){
+ const imp=h('input',{type:'file',accept:'application/json,.json',style:'display:none',onchange:async e=>{const f=e.target.files[0];if(!f)return;
+  try{const g=JSON.parse(await f.text());if(!g||!g.title||!Array.isArray(g.items))throw 0;const items=g.items.filter(validItem);if(!items.length)throw 0;
+   items.forEach(i=>{if(!i.id)i.id=uid();});const ng={id:uid(),title:String(g.title),kind:g.kind||'other',instructions:g.instructions||'',createdAt:new Date().toISOString(),sources:g.sources||[],items};
+   await saveGame(ng);toast(t('importDone',{t:ng.title}));viewAdmin('games');}catch(err){toast(t('importInvalid'),true);}}});
+ body.append(h('div',{class:'row',style:'margin-bottom:14px'},h('button',{class:'btn',onclick:()=>viewGenerate(null)},'+ '+t('newGame')),
+  h('button',{class:'btn ghost',onclick:()=>imp.click()},t('importGame')),imp),
+  h('div',{class:'list'},S.games.map(g=>h('div',{class:'item',style:'flex-wrap:wrap'},h('div',{class:'grow'},h('b',{},g.title),
+   h('div',{class:'small muted'},t('questions',{n:g.items.length})+' · '+t('k_'+(g.kind||'other'))+(g.updatedAt?' · '+t('updated')+' '+fmtDate(g.updatedAt):''))),
+   h('button',{class:'btn small',onclick:()=>viewGenerate(g)},'+ '+t('addMaterial')),
+   h('button',{class:'btn ghost small',onclick:()=>viewItems(g)},t('viewQuestions')),
+   h('button',{class:'btn ghost small',onclick:()=>{const b=new Blob([JSON.stringify(g,null,2)],{type:'application/json'});const a=h('a',{href:URL.createObjectURL(b),download:ymd(new Date())+'_'+slug(g.title)+'.json'});
+    document.body.append(a);a.click();a.remove();}},t('exportGame')),
+   h('button',{class:'btn danger small',onclick:async()=>{if(!confirm(t('confirmDelGame',{t:g.title})))return;await S.store.remove('games/'+g.id+'.json');S.games=await loadGames();viewAdmin('games');}},t('del'))))));
+}
+function validItem(it){
+ if(!it||typeof it.prompt!=='string'||!it.prompt.trim())return false;
+ it.difficulty=[1,2,3].includes(+it.difficulty)?+it.difficulty:2;
+ if(Array.isArray(it.correct))it.correct=it.correct.map(Number);
+ const opt=Array.isArray(it.options)&&it.options.length>=2&&it.options.every(o=>typeof o==='string');
+ switch(it.type){
+  case'single':return opt&&Array.isArray(it.correct)&&it.correct.length===1&&Number.isInteger(it.correct[0])&&it.correct[0]>=0&&it.correct[0]<it.options.length;
+  case'multi':return opt&&Array.isArray(it.correct)&&it.correct.length>=1&&it.correct.every(i=>Number.isInteger(i)&&i>=0&&i<it.options.length);
+  case'order':return Array.isArray(it.order)&&it.order.length>=2&&it.order.every(o=>typeof o==='string');
+  case'input':if(it.accept&&!Array.isArray(it.accept))delete it.accept;return typeof it.answer==='string'&&it.answer.trim().length>0;
+  default:return false;}
+}
+function itemRow(it,opts){
+ return h('div',{class:'item',style:'align-items:flex-start'},opts.check||null,
+  h('div',{class:'grow'},h('div',{class:'row',style:'gap:6px;margin-bottom:4px'},h('span',{class:'tag'},t('t_'+it.type)),h('span',{class:'tag'},t('diff')+' '+it.difficulty)),
+   h('div',{},it.prompt),h('div',{class:'small',style:'color:var(--green)'},'✓ '+answerText(it)),
+   (it.type==='single'||it.type==='multi')?h('div',{class:'small muted'},it.options.join(' · ')):null),
+  h('div',{class:'stack',style:'min-width:110px'},h('button',{class:'btn ghost small',onclick:opts.onEdit},t('edit')),opts.onDelete?h('button',{class:'btn danger small',onclick:opts.onDelete},t('del')):null));
+}
+function jsonEdit(it,onSave){
+ const dlg=$('#dlg');const ta=h('textarea',{style:'min-height:320px;font-family:ui-monospace,Consolas,monospace;font-size:.85rem'});ta.value=JSON.stringify(it,null,2);
+ dlg.replaceChildren(h('div',{class:'stack'},h('h2',{},t('editJson')),ta,h('div',{class:'row'},
+  h('button',{class:'btn',onclick:async()=>{let n;try{n=JSON.parse(ta.value);}catch(e){return toast(t('jsonInvalid'),true);}if(!validItem(n))return toast(t('jsonInvalid'),true);
+   n.id=it.id;await onSave(n);dlg.close();}},t('save')),h('button',{class:'btn ghost',onclick:()=>dlg.close()},t('cancel')))));
+ dlg.showModal();
+}
+function viewItems(g){
+ const draw=()=>{screen(topbar(t('questionsOf',{t:g.title}),{back:()=>viewAdmin('games'),rerender:draw}),h('main',{class:'page wide'},
+  g.items.length?h('div',{class:'list'},g.items.map((it,k)=>itemRow(it,{
+   onEdit:()=>jsonEdit(it,async n=>{g.items[k]=n;await saveGame(g);draw();}),
+   onDelete:async()=>{g.items.splice(k,1);await saveGame(g);draw();}}))):h('p',{class:'muted'},t('noQuestions'))));};
+ draw();
+}
+/* generation */
+function blobToB64(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=()=>rej(r.error);r.readAsDataURL(b);});}
+async function fileToBlock(file){
+ if(file.type==='application/pdf')return{type:'document',source:{type:'base64',media_type:'application/pdf',data:await blobToB64(file)}};
+ const url=URL.createObjectURL(file);
+ try{const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error(file.name+': image could not be read (HEIC?)'));i.src=url;});
+  const sc=Math.min(1,1568/Math.max(img.naturalWidth,img.naturalHeight));const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*sc);c.height=Math.round(img.naturalHeight*sc);
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);return{type:'image',source:{type:'base64',media_type:'image/jpeg',data:c.toDataURL('image/jpeg',0.85).split(',')[1]}};}
+ finally{URL.revokeObjectURL(url);}
+}
+const GEN_SYSTEM=`You create quiz questions from learning material shown in images or PDFs.
+Return ONLY a JSON object, with no prose and no code fences, of the form {"items":[...]}.
+Each item has: "type" (one of "single","multi","order","input"), "prompt" (the question), "difficulty" (1 easy, 2 medium, 3 hard), "explanation" (one short sentence explaining the answer, based only on the material).
+- single: "options" (3 to 5 strings), "correct" ([index of the one right option]).
+- multi: "options" (4 to 6 strings), "correct" ([indices of all right options, at least 2]).
+- order: "order" (3 to 6 strings in the correct order); the prompt must state the ordering criterion.
+- input: "answer" (the exact expected answer: one word or a short term, spelled and capitalised exactly as in the material); optional "accept" (other spellings that are equally correct).
+Rules: use only facts contained in the material and never invent content. Wrong options must be plausible but clearly wrong. Mix the types where the material allows (roughly 50% single, 15% multi, 15% order, 20% input). For vocabulary, ask in both directions and use input questions for spelling. Write the questions in the language of the material unless the notes say otherwise. Skip anything unreadable.`;
+async function callClaude(content){
+ const key=await IDB.get('kv','apiKey');const model=(await IDB.get('kv','model'))||DEFAULT_MODEL;
+ const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+  body:JSON.stringify({model,max_tokens:8000,system:GEN_SYSTEM,messages:[{role:'user',content}]})});
+ const data=await r.json().catch(()=>null);
+ if(!r.ok)throw new Error((data&&data.error&&data.error.message)||('HTTP '+r.status));
+ const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').replace(/```json|```/g,'');
+ const a=txt.indexOf('{'),b=txt.lastIndexOf('}');if(a<0||b<a)throw new Error('no JSON in response');
+ const obj=JSON.parse(txt.slice(a,b+1));return Array.isArray(obj.items)?obj.items:[];
+}
+function viewGenerate(g){
+ const f={title:g?g.title:'',kind:g?(g.kind||'other'):'vocab',instr:g?(g.instructions||''):'',count:20,files:[]};
+ const title=h('input',{type:'text',id:'gt',value:f.title});const kind=h('select',{id:'gk'},['vocab','science','other'].map(k=>h('option',{value:k},t('k_'+k))));kind.value=f.kind;
+ const instr=h('textarea',{id:'gi',placeholder:t('instrPh')});instr.value=f.instr;const cnt=h('input',{type:'number',id:'gc',min:'5',max:'80',value:'20'});
+ const thumbs=h('div',{class:'thumbs'});const status=h('p',{class:'muted','aria-live':'polite'});
+ const fi=h('input',{type:'file',id:'gf',multiple:true,accept:'image/*,application/pdf',onchange:e=>{f.files=[...e.target.files];
+  thumbs.replaceChildren(...f.files.map(x=>x.type==='application/pdf'?h('div',{class:'pdf'},'PDF'):h('img',{src:URL.createObjectURL(x),alt:x.name})));}});
+ const btn=h('button',{class:'btn big'},t('generate'));
+ btn.addEventListener('click',async()=>{
+  if(!g&&!title.value.trim())return toast(t('needTitle'),true);if(!f.files.length)return toast(t('needFiles'),true);
+  if(!await IDB.get('kv','apiKey'))return toast(t('needKey'),true);
+  btn.disabled=true;const total=Math.max(5,Math.min(80,parseInt(cnt.value,10)||20));const batches=[];for(let k=0;k<f.files.length;k+=4)batches.push(f.files.slice(k,k+4));
+  const existing=g?g.items.map(i=>i.prompt).slice(0,80):[];let out=[],dropped=0;
+  try{for(let b=0;b<batches.length;b++){status.textContent=t('working',{i:b+1,n:batches.length});
+    const blocks=[];for(const file of batches[b])blocks.push(await fileToBlock(file));
+    const n=Math.max(3,Math.round(total*batches[b].length/f.files.length));
+    blocks.push({type:'text',text:`Material type: ${kind.value}. Create about ${n} questions. Notes: ${instr.value.trim()||'none'}.`+(existing.length?`\nDo not repeat these existing questions:\n- `+existing.join('\n- '):'')});
+    const items=await callClaude(blocks);for(const it of items){if(validItem(it)){it.id=uid();out.push(it);}else dropped++;}}}
+  catch(e){btn.disabled=false;status.textContent='';return toast(t('genErr',{e:e.message}),true);}
+  viewReview(g,{title:title.value.trim(),kind:kind.value,instructions:instr.value.trim(),files:f.files.map(x=>x.name)},out,dropped);
+ });
+ const draw=()=>screen(topbar(g?t('addMaterial')+': '+g.title:t('newGame'),{back:()=>viewAdmin('games')}),h('main',{class:'page stack'},
+  !g?h('div',{},h('label',{class:'f',for:'gt'},t('gameTitle')),title):null,
+  h('div',{},h('label',{class:'f',for:'gk'},t('kind')),kind),h('div',{},h('label',{class:'f',for:'gi'},t('instructions')),instr),
+  h('div',{},h('label',{class:'f',for:'gc'},t('count')),cnt),h('div',{},h('label',{class:'f',for:'gf'},t('files')),fi,h('p',{class:'small muted',style:'margin-top:6px'},t('materialNote'))),
+  thumbs,btn,status));
+ draw();
+}
+function viewReview(g,meta,items,dropped){
+ const keep=items.map(()=>true);
+ const draw=()=>screen(topbar(t('review'),{back:()=>viewAdmin('games')}),h('main',{class:'page wide stack'},
+  h('p',{},t('genDone',{n:items.length,d:dropped})),
+  h('div',{class:'list'},items.map((it,k)=>{const cb=h('input',{type:'checkbox','aria-label':t('keep'),onchange:e=>{keep[k]=e.target.checked;}});cb.checked=keep[k];
+   return itemRow(it,{check:cb,onEdit:()=>jsonEdit(it,async n=>{items[k]=n;draw();})});})),
+  h('button',{class:'btn big',onclick:async()=>{
+   const chosen=items.filter((_,k)=>keep[k]);const game=g||{id:uid(),title:meta.title,kind:meta.kind,instructions:meta.instructions,createdAt:new Date().toISOString(),sources:[],items:[]};
+   const seen=new Set(game.items.map(i=>i.type+'|'+i.prompt.trim().toLowerCase()));let dup=0;
+   for(const it of chosen){const key=it.type+'|'+it.prompt.trim().toLowerCase();if(seen.has(key)){dup++;continue;}seen.add(key);game.items.push(it);}
+   game.sources=(game.sources||[]).concat([{date:new Date().toISOString(),files:meta.files,added:chosen.length-dup}]);
+   if(meta.instructions)game.instructions=meta.instructions;
+   try{await saveGame(game);}catch(e){return toast(t('err',{e:e.message}),true);}
+   toast(t('saved')+(dup?' – '+t('dupSkipped',{n:dup}):''));viewAdmin('games');}},t('saveToGame'))));
+ draw();
+}
+/* logs */
+async function adminLogs(body){
+ try{await syncLogs();}catch(e){toast(t('err',{e:e.message}),true);}
+ const logs=uniqLogs().sort((a,b)=>String(b.started).localeCompare(String(a.started))).slice(0,300);
+ if(!logs.length)return body.append(h('p',{class:'muted'},t('logsEmpty')));
+ body.append(h('div',{class:'scroll'},h('table',{},h('thead',{},h('tr',{},[t('date'),t('player'),t('game'),t('mode_'),t('difficulty'),t('score'),t('accuracy'),''].map(x=>h('th',{},x)))),
+  h('tbody',{},logs.map(l=>h('tr',{},h('td',{},fmtDate(l.started)),h('td',{},l.players.map(p=>p.name).join(' vs ')),h('td',{},l.game.title),
+   h('td',{},t('m_'+l.mode)+(l.adaptive?' · '+t('adaptive'):'')+(l.aborted?' · '+t('aborted'):'')),h('td',{},t('d_'+l.difficulty)),
+   h('td',{},l.players.map(p=>p.score).join(' : ')),h('td',{},l.players.map(p=>p.accuracy+' %').join(' : ')),
+   h('td',{},h('button',{class:'btn ghost small',onclick:()=>logDetails(l)},t('details')))))))));
+}
+function logDetails(l){
+ const wrong=l.answers.filter(a=>!a.correct);const dlg=$('#dlg');const nameOf=id=>(l.players.find(p=>p.id===id)||{}).name||'';
+ dlg.replaceChildren(h('div',{class:'stack'},h('h2',{},l.game.title+' – '+fmtDate(l.started)),h('h3',{},t('mistakes')),
+  wrong.length?h('div',{class:'list'},wrong.map(a=>h('div',{class:'item',style:'display:block'},h('div',{},(l.players.length>1?nameOf(a.player)+': ':'')+a.prompt),
+   h('div',{class:'small',style:'color:var(--red)'},'✗ '+a.given),h('div',{class:'small',style:'color:var(--green)'},'✓ '+a.expected)))):h('p',{class:'muted'},t('noMistakes')),
+  h('button',{class:'btn',onclick:()=>dlg.close()},'OK')));
+ dlg.showModal();
+}
+/* settings */
+async function adminSettings(body){
+ const key=h('input',{type:'password',id:'ak',autocomplete:'off',placeholder:'sk-ant-…'});key.value=(await IDB.get('kv','apiKey'))||'';
+ const model=h('input',{type:'text',id:'am'});model.value=(await IDB.get('kv','model'))||DEFAULT_MODEL;
+ const npw=h('input',{type:'password',id:'np',autocomplete:'new-password'});
+ body.append(h('div',{class:'stack',style:'max-width:620px'},
+  h('h3',{},t('dataFolder')),h('p',{},h('b',{},S.store.kind==='folder'?'📁 '+S.store.name:t('browserStorage'))),
+  h('p',{class:'small muted'},t('folderHint')),
+  h('button',{class:'btn ghost',onclick:async()=>{const hd=await pickFolder();if(!hd)return;const ns=new FolderStore(hd);
+   try{const ex=await ns.read('config.json');if(ex)toast(t('folderExisting'));else{await copyAll(S.store,ns);toast(t('folderMoved'));}
+    await IDB.set('kv','dirHandle',hd);await IDB.set('kv','storeMode','folder');S.store=ns;await loadAll();viewAdmin('settings');}catch(e){toast(t('err',{e:e.message}),true);}}},t('chooseFolder')),
+  h('h3',{},t('apiKey')),key,h('p',{class:'small muted'},t('apiKeyNote')),
+  h('div',{},h('label',{class:'f',for:'am'},t('model')),model,h('p',{class:'small muted'},t('modelNote'))),
+  h('button',{class:'btn',onclick:async()=>{await IDB.set('kv','apiKey',key.value.trim());await IDB.set('kv','model',model.value.trim()||DEFAULT_MODEL);toast(t('keySaved'));}},t('save')),
+  h('h3',{},t('changePw')),h('div',{},h('label',{class:'f',for:'np'},t('newPw')),npw),
+  h('button',{class:'btn ghost',onclick:async()=>{if(npw.value.length<4)return toast(t('pwShort'),true);const salt=uid()+uid();
+   S.cfg=Object.assign({},S.cfg,{salt,pwHash:await sha(salt+npw.value)});await S.store.write('config.json',S.cfg);npw.value='';toast(t('pwSet'));}},t('changePw'))));
+}
+
+init();
+</script>
+</body>
+</html>
