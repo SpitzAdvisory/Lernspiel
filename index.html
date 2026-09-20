@@ -155,6 +155,19 @@ svg.map circle.badge{fill:#1F3A93;stroke:#fff;stroke-width:2;vector-effect:non-s
 svg.map text.badge{fill:#fff;font-weight:700;font-family:"Atkinson Hyperlegible",system-ui,sans-serif;pointer-events:none}
 svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-stroke}
 .maplist{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.mfig{display:block;width:100%;max-width:520px;height:auto;margin:6px 0 14px;-webkit-user-select:none;user-select:none}
+.mfig.clock{max-width:230px}.mfig.tap{cursor:pointer;touch-action:manipulation}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 3px;font-size:.9em}.frac span:first-child{border-bottom:2px solid currentColor;padding:0 3px}
+.keypad{display:grid;grid-template-columns:repeat(3,64px);gap:8px;margin-top:12px}.key{height:56px;min-width:56px;border:2px solid var(--ink);border-radius:12px;background:var(--white);font-size:1.4rem;font-weight:700;color:var(--ink)}
+.key:active{background:var(--ink-soft)}.numrow{gap:14px;align-items:flex-end}.numf{display:flex;flex-direction:column;gap:4px;font-weight:700}.numbox{width:170px;font-size:1.6rem;text-align:center}
+.coinrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 12px}.coin{border-radius:50%;border:3px solid #9b7b1c;background:radial-gradient(circle at 35% 30%,#fff6c8,#e0c05a);font-weight:700;font-size:.95rem;color:#3b2f00;padding:0}
+.coin.note{border-radius:8px;width:96px;height:52px;background:linear-gradient(135deg,#d9ecff,#b6d0f2);border-color:#35609c;color:#16325c}
+.purse{min-height:70px;border:2px dashed var(--ink);border-radius:14px;padding:8px;margin:10px 0}
+.emogrid{display:grid;grid-template-columns:repeat(3,64px);gap:6px;font-size:2.4rem;margin:6px 0 14px}.emogrid span{background:var(--white);border:2px solid var(--grid);border-radius:10px;text-align:center}
+.pv{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0}.pv>div{border:2px solid var(--ink);border-radius:12px;padding:8px 12px;text-align:center;background:var(--white)}.pv b{display:block;font-size:1.6rem}
+.helpbox{margin:10px 0 0;padding:10px 14px;border-left:4px solid var(--mark);background:#FFFBEA;border-radius:8px}.helpbox li{margin:4px 0}
+.years{display:flex;flex-wrap:wrap;gap:8px}.topicrow{display:flex;gap:8px;align-items:stretch}.topicrow .choice{flex:1}
+.glos dt{font-weight:700;margin-top:10px}.glos dd{margin:2px 0 0 0}
 @media (max-width:560px){.page{padding-left:24px}.prompt{font-size:1.25rem}}
 </style>
 </head>
@@ -272,6 +285,198 @@ T.fr={"appTitle": "Jeu d’apprentissage", "whoPlays": "Qui joue ?", "noPlayers"
 Object.assign(T.de,{"tr_btn": "Übersetzen", "tr_working": "Übersetze … {n} von {t}", "tr_done": "{n} Fragen übersetzt", "tr_none": "Alle Fragen sind bereits auf Deutsch, Englisch und Französisch vorhanden.", "tr_count": "{n} ohne vollständige Übersetzung", "tr_fail": "{n} Fragen konnten nicht übersetzt werden", "g_geo": "Geografie", "g_hist": "Geschichte", "langs": "Sprachen"});Object.assign(T.en,{"tr_btn": "Translate", "tr_working": "Translating … {n} of {t}", "tr_done": "{n} questions translated", "tr_none": "All questions already exist in German, English and French.", "tr_count": "{n} without full translation", "tr_fail": "{n} questions could not be translated", "g_geo": "Geography", "g_hist": "History", "langs": "Languages"});
 const LANGS=['de','en','fr'];
 const DEFAULT_MODEL='claude-sonnet-5';
+T.de.m_learn="Lernen";
+T.en.m_learn="Learn";
+T.fr.m_learn="Apprendre";
+T.de.md_learn="Erklärung, Beispiele, Üben – ohne Minuspunkte";
+T.en.md_learn="Explanation, examples, practice – no minus points";
+T.fr.md_learn="Explication, exemples, entraînement – sans points négatifs";
+T.de.help="Hilfe";
+T.en.help="Help";
+T.fr.help="Aide";
+T.de.helpOf="Hilfe {n}/{m}";
+T.en.helpOf="Help {n}/{m}";
+T.fr.helpOf="Aide {n}/{m}";
+T.de.helpCost="Jede Hilfe kostet einen Teil der Punkte.";
+T.en.helpCost="Each hint costs some of the points.";
+T.fr.helpCost="Chaque aide coûte une partie des points.";
+T.de.glossary="Begriffe";
+T.en.glossary="Terms";
+T.fr.glossary="Notions";
+T.de.example="Beispiel";
+T.en.example="Example";
+T.fr.example="Exemple";
+T.de.solution="Lösungsweg";
+T.en.solution="Solution";
+T.fr.solution="Solution";
+T.de.yourTurn="Jetzt du!";
+T.en.yourTurn="Your turn!";
+T.fr.yourTurn="À toi !";
+T.de.showStep="Nächster Schritt";
+T.en.showStep="Next step";
+T.fr.showStep="Étape suivante";
+T.de.year="Schuljahr";
+T.en.year="School year";
+T.fr.year="Année scolaire";
+T.de.yearN="{n}. Klasse";
+T.en.yearN="Year {n}";
+T.fr.yearN="{n}e année";
+T.de.comingSoon="folgt";
+T.en.comingSoon="coming";
+T.fr.comingSoon="à venir";
+T.de.area_1="Zahl und Variable";
+T.en.area_1="Number and algebra";
+T.fr.area_1="Nombres et algèbre";
+T.de.area_2="Form und Raum";
+T.en.area_2="Shape and space";
+T.fr.area_2="Forme et espace";
+T.de.area_3="Grössen, Funktionen, Daten und Zufall";
+T.en.area_3="Measures, functions, data and chance";
+T.fr.area_3="Grandeurs, fonctions, données et hasard";
+T.de.allTopics="Alle";
+T.en.allTopics="All";
+T.fr.allTopics="Tous";
+T.de.noTopics="Keine";
+T.en.noTopics="None";
+T.fr.noTopics="Aucun";
+T.de.topicsSel="Themen";
+T.en.topicsSel="Topics";
+T.fr.topicsSel="Thèmes";
+T.de.topicsN="{n} Themen";
+T.en.topicsN="{n} topics";
+T.fr.topicsN="{n} thèmes";
+T.de.pickTopic="Wähle mindestens ein Thema.";
+T.en.pickTopic="Choose at least one topic.";
+T.fr.pickTopic="Choisis au moins un thème.";
+T.de.math_title="Mathematik (Lehrplan 21)";
+T.en.math_title="Mathematics (Lehrplan 21)";
+T.fr.math_title="Mathématiques (Lehrplan 21)";
+T.de.lp21note="Themen nach Lehrplan 21. Der Lehrplan legt Ziele pro Zyklus fest; die Zuteilung zu den einzelnen Schuljahren ist eine Annäherung.";
+T.en.lp21note="Topics follow Lehrplan 21 (Switzerland). The curriculum sets goals per cycle; the split into single school years is an approximation.";
+T.fr.lp21note="Thèmes selon le Lehrplan 21 (Suisse). Le plan d’études fixe des objectifs par cycle ; la répartition par année est une approximation.";
+T.de.subj_math="Mathematik";
+T.en.subj_math="Mathematics";
+T.fr.subj_math="Mathématiques";
+T.de.subj_lang="Sprachen und Wörter";
+T.en.subj_lang="Languages and vocabulary";
+T.fr.subj_lang="Langues et vocabulaire";
+T.de.subj_geo="Geografie";
+T.en.subj_geo="Geography";
+T.fr.subj_geo="Géographie";
+T.de.subj_hist="Geschichte";
+T.en.subj_hist="History";
+T.fr.subj_hist="Histoire";
+T.de.subj_it="Informatik";
+T.en.subj_it="IT skills";
+T.fr.subj_it="Informatique";
+T.de.subj_other="Weitere";
+T.en.subj_other="Other";
+T.fr.subj_other="Autres";
+T.de.k_geo="Geografie";
+T.en.k_geo="Geography";
+T.fr.k_geo="Géographie";
+T.de.k_hist="Geschichte";
+T.en.k_hist="History";
+T.fr.k_hist="Histoire";
+T.de.k_math="Mathematik";
+T.en.k_math="Mathematics";
+T.fr.k_math="Mathématiques";
+T.de.k_it="Informatik";
+T.en.k_it="IT";
+T.fr.k_it="Informatique";
+T.de.newMathGame="Neues Mathe-Spiel";
+T.en.newMathGame="New maths game";
+T.fr.newMathGame="Nouveau jeu de maths";
+T.de.editMathGame="Mathe-Spiel bearbeiten";
+T.en.editMathGame="Edit maths game";
+T.fr.editMathGame="Modifier le jeu de maths";
+T.de.mg_free="Freies Rechnen";
+T.en.mg_free="Free arithmetic";
+T.fr.mg_free="Calcul libre";
+T.de.mg_ops="Rechenarten";
+T.en.mg_ops="Operations";
+T.fr.mg_ops="Opérations";
+T.de.mg_range="Zahlenbereich";
+T.en.mg_range="Number range";
+T.fr.mg_range="Plage de nombres";
+T.de.mg_from="von";
+T.en.mg_from="from";
+T.fr.mg_from="de";
+T.de.mg_to="bis";
+T.en.mg_to="to";
+T.fr.mg_to="à";
+T.de.mg_sets="Zahlenarten";
+T.en.mg_sets="Kinds of numbers";
+T.fr.mg_sets="Types de nombres";
+T.de.set_nat="natürliche Zahlen (0, 1, 2 …)";
+T.en.set_nat="natural numbers (0, 1, 2 …)";
+T.fr.set_nat="entiers naturels (0, 1, 2 …)";
+T.de.set_int="ganze Zahlen, auch negativ";
+T.en.set_int="integers, also negative";
+T.fr.set_int="entiers relatifs, aussi négatifs";
+T.de.set_dec="Dezimalzahlen";
+T.en.set_dec="decimals";
+T.fr.set_dec="nombres décimaux";
+T.de.set_frac="Brüche";
+T.en.set_frac="fractions";
+T.fr.set_frac="fractions";
+T.de.set_cx="komplexe Zahlen";
+T.en.set_cx="complex numbers";
+T.fr.set_cx="nombres complexes";
+T.de.mg_cxnote="Komplexe Zahlen gehören nicht zum Stoff der Volksschule; sie sind nur hier als Zusatz wählbar.";
+T.en.mg_cxnote="Complex numbers are not part of the compulsory-school curriculum; they are offered here as an extra only.";
+T.fr.mg_cxnote="Les nombres complexes ne font pas partie de l’école obligatoire ; ils sont proposés ici en plus seulement.";
+T.de.mg_topics="Themen aus dem Lehrplan";
+T.en.mg_topics="Curriculum topics";
+T.fr.mg_topics="Thèmes du plan d’études";
+T.de.mg_need="Wähle ein Thema oder freies Rechnen.";
+T.en.mg_need="Choose a topic or free arithmetic.";
+T.fr.mg_need="Choisis un thème ou le calcul libre.";
+T.de.builtinTag="eingebaut";
+T.en.builtinTag="built in";
+T.fr.builtinTag="intégré";
+T.de.hint_num="Tippe die Antwort ein.";
+T.en.hint_num="Type the answer.";
+T.fr.hint_num="Tape la réponse.";
+T.de.hint_numline="Tippe auf die richtige Stelle am Zahlenstrahl.";
+T.en.hint_numline="Tap the right place on the number line.";
+T.fr.hint_numline="Touche le bon endroit sur la droite numérique.";
+T.de.hint_build="Lege die Zahl mit Hundertern, Zehnern und Einern.";
+T.en.hint_build="Build the number with hundreds, tens and ones.";
+T.fr.hint_build="Construis le nombre avec des centaines, des dizaines et des unités.";
+T.de.hint_coins="Tippe auf Münzen und Noten. Tippe im Portemonnaie, um etwas zurückzulegen.";
+T.en.hint_coins="Tap coins and notes. Tap in the purse to put something back.";
+T.fr.hint_coins="Touche des pièces et des billets. Touche dans le porte-monnaie pour en retirer.";
+T.de.hint_clockset="Stelle die Zeiger mit den Knöpfen.";
+T.en.hint_clockset="Set the hands with the buttons.";
+T.fr.hint_clockset="Règle les aiguilles avec les boutons.";
+T.de.hint_grid="Tippe auf die Häuschen, um sie anzumalen oder wieder zu löschen.";
+T.en.hint_grid="Tap the squares to colour them in or clear them again.";
+T.fr.hint_grid="Touche les carreaux pour les colorier ou les effacer.";
+T.de.purse="Portemonnaie";
+T.en.purse="Purse";
+T.fr.purse="Porte-monnaie";
+T.de.hoursL="Stunden";
+T.en.hoursL="Hours";
+T.fr.hoursL="Heures";
+T.de.minutesL="Minuten";
+T.en.minutesL="Minutes";
+T.fr.minutesL="Minutes";
+T.de.H="Hunderter";
+T.en.H="Hundreds";
+T.fr.H="Centaines";
+T.de.Z="Zehner";
+T.en.Z="Tens";
+T.fr.Z="Dizaines";
+T.de.E="Einer";
+T.en.E="Ones";
+T.fr.E="Unités";
+T.de.info="Erklärung";
+T.en.info="Explanation";
+T.fr.info="Explication";
+T.de.mathSources="Quellen: Lehrplan 21 (lehrplan21.ch) für Themen und Reihenfolge; Lernprinzipien nach Dunlosky u. a. (2013) und IES Practice Guide (Pashler u. a., 2007). Aufgaben werden vom Spiel erzeugt.";
+T.en.mathSources="Sources: Lehrplan 21 (lehrplan21.ch) for topics and order; learning principles after Dunlosky et al. (2013) and the IES Practice Guide (Pashler et al., 2007). Problems are generated by the game.";
+T.fr.mathSources="Sources : Lehrplan 21 (lehrplan21.ch) pour les thèmes et l’ordre ; principes d’apprentissage d’après Dunlosky et al. (2013) et le guide IES (Pashler et al., 2007). Les exercices sont générés par le jeu.";
 const DBX_KEY='ktui04lktkyz4hn';
 const PLAY_ONLY=location.protocol==='https:'&&/\.github\.io$/.test(location.hostname);
 const AVATARS=['🦊','🐼','🐸','🦁','🐙','🦉','🐢','🐬','🦄','🐝','🐧','🦖','🐱','🐶','🐯','🦋','🐞','🚀','⚽','🎸','🌻','🍀','🌈','⭐'];
@@ -335,10 +540,25 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&S.onEnter&&!(e.targe
 /* ================= storage ================= */
 const IDB={db:null,
  open(){return new Promise((res,rej)=>{const r=indexedDB.open('lernspiel',2);r.onupgradeneeded=()=>{const d=r.result;for(const s of['kv','files','cache','outbox'])if(!d.objectStoreNames.contains(s))d.createObjectStore(s);};
-  r.onsuccess=()=>{this.db=r.result;res();};r.onerror=()=>rej(r.error);});},
- tx(store,mode,fn){return new Promise((res,rej)=>{const tr=this.db.transaction(store,mode);const req=fn(tr.objectStore(store));tr.oncomplete=()=>res(req&&req.result);tr.onerror=()=>rej(tr.error);});},
- get(s,k){return this.tx(s,'readonly',o=>o.get(k));},set(s,k,v){return this.tx(s,'readwrite',o=>o.put(v,k));},
- del(s,k){return this.tx(s,'readwrite',o=>o.delete(k));},keys(s){return this.tx(s,'readonly',o=>o.getAllKeys());}};
+  r.onsuccess=()=>{const d=r.result;this.db=d;d.onclose=()=>{if(this.db===d)this.db=null;};d.onversionchange=()=>{d.close();if(this.db===d)this.db=null;};res();};
+  r.onerror=()=>rej(r.error);r.onblocked=()=>rej(new Error('IndexedDB blocked'));});},
+ /* Safari may close the connection (e.g. after a redirect or when the tab was in the background): reopen and retry once */
+ async tx(store,mode,fn,retry){if(!this.db)await this.open();
+  try{return await new Promise((res,rej)=>{const tr=this.db.transaction(store,mode);const req=fn(tr.objectStore(store));tr.oncomplete=()=>res(req&&req.result);tr.onerror=()=>rej(tr.error);tr.onabort=()=>rej(tr.error||new Error('IndexedDB aborted'));});}
+  catch(e){retry=retry||0;const closing=e&&(e.name==='InvalidStateError'||e.name==='UnknownError'||/closing|closed|connection|lost/i.test(e.message||''));
+   if(!closing||retry>=2)throw e;try{this.db&&this.db.close();}catch(_){}this.db=null;await new Promise(r=>setTimeout(r,150*(retry+1)));await this.open();return this.tx(store,mode,fn,retry+1);}},
+ /* small settings (login tokens, language, API key) live in localStorage, which Safari keeps reliably; IndexedDB is only the fallback */
+ lsKey(k){return'lernspiel:'+k;},lsOk(v){return v==null||['string','number','boolean'].includes(typeof v)||Array.isArray(v)||(typeof v==='object'&&Object.getPrototypeOf(v)===Object.prototype);},
+ async get(s,k){if(s==='kv'){try{const x=localStorage.getItem(this.lsKey(k));if(x!==null)return JSON.parse(x);}catch(_){}
+   try{return await this.tx(s,'readonly',o=>o.get(k));}catch(e){console.warn('IDB get',k,e);return undefined;}}
+  if(s==='cache'){try{return await this.tx(s,'readonly',o=>o.get(k));}catch(e){console.warn('IDB cache',e);return undefined;}}
+  return this.tx(s,'readonly',o=>o.get(k));},
+ async set(s,k,v){if(s==='kv'&&this.lsOk(v)){try{localStorage.setItem(this.lsKey(k),JSON.stringify(v));try{await this.tx(s,'readwrite',o=>o.delete(k));}catch(_){}return;}catch(_){}}
+  if(s==='cache'){try{return await this.tx(s,'readwrite',o=>o.put(v,k));}catch(e){console.warn('IDB cache',e);return;}}
+  return this.tx(s,'readwrite',o=>o.put(v,k));},
+ async del(s,k){if(s==='kv'){try{localStorage.removeItem(this.lsKey(k));}catch(_){}try{await this.tx(s,'readwrite',o=>o.delete(k));}catch(e){console.warn('IDB del',e);}return;}
+  return this.tx(s,'readwrite',o=>o.delete(k));},
+ keys(s){return this.tx(s,'readonly',o=>o.getAllKeys());}};
 class IdbStore{constructor(){this.kind='browser';this.name=t('browserStorage');}
  async read(p){const v=await IDB.get('files',p);return v===undefined?null:JSON.parse(v);}
  async write(p,o){await IDB.set('files',p,JSON.stringify(o,null,2));}
@@ -387,6 +607,29 @@ async function flushOutbox(){
  for(const k of await IDB.keys('outbox')){try{const v=await IDB.get('outbox',k);await S.store.write('logs/'+k,JSON.parse(v));await IDB.set('cache','file:logs/'+k,v);await IDB.del('outbox',k);}catch(e){break;}}
 }
 /* ---- progress is derived from logs only ---- */
+
+function viewMathGame(g){
+ const gen=(g&&g.gen)||{topics:[],range:[0,100],sets:['nat'],ops:['+','-']};
+ const title=h('input',{type:'text',value:g?g.title:''});const tsel=new Set((gen.topics||[]).filter(x=>x!=='arith'));const free=h('input',{type:'checkbox'});free.checked=(gen.topics||[]).includes('arith');
+ const opsC=[['+','+'],['-','−'],['*','·'],['/',':']].map(([v,l])=>{const c=h('input',{type:'checkbox',value:v});c.checked=(gen.ops||[]).includes(v);return h('label',{style:'margin-right:14px'},c,' '+l);});
+ const setsC=['nat','int','dec','frac','cx'].map(v=>{const c=h('input',{type:'checkbox',value:v});c.checked=(gen.sets||[]).includes(v);return h('label',{style:'display:block'},c,' '+t('set_'+v));});
+ const lo=h('input',{type:'number',value:String((gen.range||[0,100])[0]),style:'width:120px'}),hi=h('input',{type:'number',value:String((gen.range||[0,100])[1]),style:'width:120px'});
+ const years=[...new Set(MT.map(x=>x.y))];
+ const save=async()=>{if(!title.value.trim())return toast(t('needTitle'),true);const topics=[...tsel];if(free.checked)topics.push('arith');if(!topics.length)return toast(t('mg_need'),true);
+  const ng=Object.assign({},g||{id:uid(),createdAt:new Date().toISOString()},{title:title.value.trim(),subject:'math',kind:'math',items:[],
+   gen:{topics,range:[+lo.value||0,+hi.value||100],sets:setsC.map(l=>l.querySelector('input')).filter(c=>c.checked).map(c=>c.value),ops:opsC.map(l=>l.querySelector('input')).filter(c=>c.checked).map(c=>c.value)}});
+  await saveGame(ng);toast(t('saved'));viewAdmin('games');};
+ screen(topbar(g?t('editMathGame'):t('newMathGame'),{back:()=>viewAdmin('games')}),h('main',{class:'page stack',style:'max-width:760px'},
+  h('div',{},h('label',{class:'f'},t('gameTitle')),title),
+  h('h3',{},t('mg_topics')),years.map(y=>h('details',{},h('summary',{},h('b',{},t('yearN',{n:y}))),
+   h('div',{class:'stack',style:'margin:8px 0 12px'},MT.filter(x=>x.y===y).map(tp=>{const c=h('input',{type:'checkbox'});c.checked=tsel.has(tp.id);c.addEventListener('change',()=>c.checked?tsel.add(tp.id):tsel.delete(tp.id));
+    return h('label',{},c,' '+nm3(tp.n));})))),
+  h('h3',{},h('label',{},free,' '+t('mg_free'))),
+  h('div',{class:'stack'},h('div',{},h('b',{},t('mg_ops'))),h('div',{},opsC),
+   h('div',{},h('b',{},t('mg_range'))),h('div',{class:'row'},t('mg_from'),lo,t('mg_to'),hi),
+   h('div',{},h('b',{},t('mg_sets'))),h('div',{},setsC),h('p',{class:'small muted'},t('mg_cxnote'))),
+  h('div',{},h('button',{class:'btn big',onclick:save},t('save')))));
+}
 function blankState(){return{xp:0,answers:0,correct:0,runs:0,badges:[],unlocks:{},mastery:{}};}
 function st(pid){return(S.state&&S.state[pid])||blankState();}
 function computeState(){S.state={};for(const p of S.profiles)S.state[p.id]=blankState();
@@ -407,7 +650,7 @@ function applyLog(state,l){
   if((pl.bestStreak||0)>=10)give('streak10');if(s.answers>=100)give('answers100');
   if(l.mode==='survival'&&pl.correct>=20)give('survivor20');if(l.mode==='timed'&&pl.correct>=15)give('speed15');
   if(l.mode==='duel'&&l.winner===pl.id)give('duel_win');if(l.difficulty==='hard'&&pl.answered>=5&&acc>=0.8)give('hard_clear');
-  if(game&&game.items.length&&game.items.every(it=>gm[it.id]&&gm[it.id].box>=3))give('master_game');
+  if(game&&gameUnits(game).length&&gameUnits(game).every(id=>gm[id]&&gm[id].box>=3))give('master_game');
   const u=(s.unlocks[l.game.id]=s.unlocks[l.game.id]||{});
   if(pl.answered>=5&&l.difficulty==='easy'&&acc>=0.7&&!u.medium){u.medium=true;r.unlocked.push('medium');}
   if(pl.answered>=5&&l.difficulty==='medium'&&acc>=0.8&&!u.hard){u.hard=true;r.unlocked.push('hard');}
@@ -475,7 +718,7 @@ function viewConnect(){screen(topbar(t('appTitle'),{rerender:viewConnect}),h('ma
 async function disconnectDbx(){if(!confirm(t('confirmDisconnect')))return;await IDB.del('kv','dbxRefresh');DBX.token=null;viewConnect();}
 async function updateSyncStatus(){const el=$('#syncstatus');if(!el||!PLAY_ONLY)return;const n=(await IDB.keys('outbox')).length;el.textContent=n?t('pending',{n}):'';}
 async function loadGames(){const out=[];for(const n of(await S.store.list('games')).filter(n=>n.endsWith('.json'))){try{const g=await S.store.read('games/'+n);if(g&&Array.isArray(g.items))out.push(g);}catch(e){console.warn(n,e);}}
- return out.sort((a,b)=>a.title.localeCompare(b.title));}
+ out.sort((a,b)=>a.title.localeCompare(b.title));return[MATH_GAME].concat(out);}
 async function saveProfiles(){await S.store.write('profiles.json',S.profiles);}
 async function saveGame(g){g.updatedAt=new Date().toISOString();await S.store.write('games/'+g.id+'.json',g);S.games=await loadGames();}
 
@@ -566,12 +809,14 @@ async function viewGames(p){
     h('div',{class:'small muted'},t('xpToNext',{n:hi-s.xp,m:lv+1})))),
   s.badges.length?h('div',{class:'stickers'},s.badges.map(badgeSticker)):null,
   h('h3',{},t('chooseGame')),
-  S.games.length?h('div',{class:'list'},S.games.map(g=>{const pct=masteryPct(g,m);
+  SUBJ_ORDER.map(sj=>{const gs=S.games.filter(g=>subjOf(g)===sj);if(!gs.length)return null;
+   return h('section',{},h('h3',{},t('subj_'+sj)),h('div',{class:'list'},gs.map(g=>{const pct=masteryPct(g,m);
    return h('button',{class:'item',onclick:()=>viewRunSetup(p,g)},h('div',{class:'grow'},h('b',{},g.title),
-    h('div',{class:'small muted'},t('questions',{n:g.items.length})+' · '+t('mastered',{p:pct})),h('div',{class:'bar',style:'margin-top:6px'},h('i',{style:'width:'+pct+'%'}))),h('span',{'aria-hidden':'true'},'›'));}))
-  :h('p',{class:'muted'},t('noGames'))));
+    h('div',{class:'small muted'},(g.gen?t('topicsN',{n:gameUnits(g).length}):t('questions',{n:g.items.length}))+' · '+t('mastered',{p:pct})),h('div',{class:'bar',style:'margin-top:6px'},h('i',{style:'width:'+pct+'%'}))),h('span',{'aria-hidden':'true'},'›'));})));})));
 }
-function masteryPct(g,m){const gm=m[g.id]||{};if(!g.items.length)return 0;return Math.round(g.items.filter(i=>gm[i.id]&&gm[i.id].box>=3).length/g.items.length*100);}
+function masteryPct(g,m){const gm=m[g.id]||{};const u=gameUnits(g);if(!u.length)return 0;return Math.round(u.filter(i=>gm[i]&&gm[i].box>=3).length/u.length*100);}
+const SUBJ_ORDER=['math','lang','geo','hist','it','other'];
+function subjOf(g){return g.subject||{vocab:'lang',geo:'geo',hist:'hist',math:'math',it:'it'}[g.kind]||'other';}
 function isUnlocked(p,g,d){const u=st(p.id).unlocks[g.id];return d==='easy'||!!p.unlockAll||!!(u&&u[d]);}
 
 function viewRunSetup(p,g,prev){
@@ -582,10 +827,13 @@ function viewRunSetup(p,g,prev){
  const others=S.profiles.filter(x=>x.id!==p.id);
  const choiceGroup=(items,key)=>h('div',{class:'choices'},items.map(it=>h('button',{class:'choice','aria-pressed':String(sel[key]===it.v),disabled:it.disabled||false,
   onclick:()=>{sel[key]=it.v;re();}},h('b',{},(it.disabled?'🔒 ':'')+it.label),h('span',{},it.desc))));
- const canStart=g.items.length>0&&(sel.mode!=='duel'||(sel.opp&&others.some(o=>o.id===sel.opp)));
+ if(g.gen&&!sel.topics){const all=genTopics(g);const y=sel.year||(g.gen.topics?null:1);sel.year=y;sel.topics=new Set(all.filter(x=>!y||x.y===y).map(x=>x.id));}
+ const canStart=(g.gen?sel.topics.size>0:g.items.length>0)&&(sel.mode!=='duel'||(sel.opp&&others.some(o=>o.id===sel.opp)));
+ const modes=(g.gen?['learn']:[]).concat(['classic','timed','survival','duel']);if(!modes.includes(sel.mode))sel.mode='classic';
  screen(topbar(g.title,{back:()=>viewGames(p),rerender:re}),h('main',{class:'page stack'},
-  !g.items.length?h('p',{class:'muted'},t('noItems')):null,
-  h('h3',{},t('mode')),choiceGroup(['classic','timed','survival','duel'].map(v=>({v,label:t('m_'+v),desc:t('md_'+v)})),'mode'),
+  !g.gen&&!g.items.length?h('p',{class:'muted'},t('noItems')):null,
+  g.gen?topicChooser(p,g,sel,re):null,
+  h('h3',{},t('mode')),choiceGroup(modes.map(v=>({v,label:t('m_'+v),desc:t('md_'+v)})),'mode'),
   sel.mode==='duel'?h('div',{},h('h3',{},t('opponent')),others.length?h('div',{class:'players'},others.map(o=>h('button',{class:'player','aria-pressed':String(sel.opp===o.id),
     style:sel.opp===o.id?'background:var(--mark)':'',onclick:()=>{sel.opp=o.id;re();}},h('div',{class:'av'},o.avatar),h('div',{class:'nm'},o.name))))
    :h('p',{class:'muted'},t('needOpponent'))):null,
@@ -593,7 +841,52 @@ function viewRunSetup(p,g,prev){
   h('h3',{},t('adjust')),choiceGroup([{v:true,label:t('adaptive'),desc:t('ad_adaptive')},{v:false,label:t('fixed'),desc:t('ad_fixed')}],'adaptive'),
   h('div',{style:'margin-top:24px'},h('button',{class:'btn big',disabled:!canStart,onclick:()=>{
    const players=[p];if(sel.mode==='duel')players.push(S.profiles.find(o=>o.id===sel.opp));
-   startRun({players,game:g,mode:sel.mode,diff:sel.diff,adaptive:sel.adaptive,sel});}},t('start')))));
+   startRun({players,game:g,mode:sel.mode,diff:sel.diff,adaptive:sel.adaptive,sel,topics:g.gen?[...sel.topics]:null});}},t('start')))));
+}
+
+function topicChooser(p,g,sel,re){
+ const gm=st(p.id).mastery[g.id]||{};const all=genTopics(g);const custom=!!g.gen.topics;
+ const yearsWith=new Set(MT.map(x=>x.y));
+ const shown=custom?all:all.filter(x=>x.y===sel.year);
+ const setAll=on=>{shown.forEach(x=>on?sel.topics.add(x.id):sel.topics.delete(x.id));re();};
+ const row=tp=>{const b=(gm[tp.id]&&gm[tp.id].box)||0;const on=sel.topics.has(tp.id);
+  return h('div',{class:'topicrow'},h('button',{class:'choice','aria-pressed':String(on),style:on?'background:var(--mark)':'',onclick:()=>{on?sel.topics.delete(tp.id):sel.topics.add(tp.id);re();}},
+   h('b',{},(on?'✓ ':'')+nm3(tp.n)),h('div',{class:'bar',style:'margin-top:6px;height:6px'},h('i',{style:'width:'+Math.round(Math.min(b,3)/3*100)+'%'}))),
+   h('button',{class:'btn ghost small','aria-label':t('info')+': '+nm3(tp.n),onclick:()=>viewTopicCard(tp,{back:re,lv:1})},'ℹ︎'));};
+ return h('div',{class:'stack'},
+  custom?null:h('div',{},h('h3',{},t('year')),h('div',{class:'years'},[1,2,3,4,5,6,7,8,9].map(y=>{const has=yearsWith.has(y);
+   return h('button',{class:'choice','aria-pressed':String(sel.year===y),disabled:!has,style:sel.year===y?'background:var(--mark)':'',onclick:()=>{sel.year=y;sel.topics=new Set(all.filter(x=>x.y===y).map(x=>x.id));re();}},
+    h('b',{},t('yearN',{n:y})),has?null:h('span',{},t('comingSoon')));})),h('p',{class:'small muted'},t('lp21note'))),
+  h('div',{class:'row'},h('h3',{style:'margin:0'},t('topicsSel')+' ('+sel.topics.size+')'),h('span',{class:'sp'}),
+   h('button',{class:'btn ghost small',onclick:()=>setAll(true)},t('allTopics')),h('button',{class:'btn ghost small',onclick:()=>setAll(false)},t('noTopics')),
+   h('button',{class:'btn ghost small',onclick:()=>viewGlossary({back:re})},'📖 '+t('glossary'))),
+  [1,2,3].map(a=>{const ts=shown.filter(x=>x.a===a);return ts.length?h('div',{class:'stack'},h('div',{class:'small muted',style:'font-weight:700'},t('area_'+a)),ts.map(row)):null;}));
+}
+function exampleFig(it){
+ if(it.type==='numline'){const nl=figNumline(Object.assign({},it.nl));nl.mark(it.target,'ok');return nl.el;}
+ if(it.type==='build'){const n=it.target;return figBlocks(Math.floor(n/100),Math.floor(n/10)%10,n%10);}
+ if(it.type==='coins'){let r=it.target;const out=[];for(const c of it.coins.slice().sort((a,b)=>b-a))while(r>=c){out.push(c);r-=c;}return figCoins(out);}
+ if(it.type==='clockset')return figClock(it.th,it.tm).el;
+ if(it.type==='grid')return figGrid(it.cols,it.rows,new Set(it.filled.concat(it.target)),{axis:it.axis}).el;
+ return it.fig?it.fig():null;}
+function viewTopicCard(tp,o){
+ const it=genItem(tp,o.lv||1,o.opts||{});const stepsL=h('ol',{class:'helpbox'});let k=0;
+ const more=h('button',{class:'btn ghost small'},t('showStep'));
+ const show=()=>{if(k<it.steps.length)stepsL.append(h('li',{},it.steps[k++]));if(k>=it.steps.length)more.remove();};more.addEventListener('click',show);show();
+ const terms=(tp.terms||[]).map(glossTerm).filter(Boolean);
+ screen(topbar(nm3(tp.n),{back:o.back}),h('main',{class:'page stack'},
+  o.noCard?null:h('section',{class:'card stack'},h('p',{style:'font-size:1.15rem'},nm3(tp.c)),
+   terms.length?h('dl',{class:'glos small'},terms.map(x=>[h('dt',{},x.t),h('dd',{},x.d)])):null),
+  h('section',{class:'card stack'},h('h3',{style:'margin:0'},'✏️ '+t('example')),h('p',{class:'prompt'},rich(it.prompt)),exampleFig(it),
+   h('div',{},h('b',{},t('solution'))),stepsL,more),
+  h('div',{},h('button',{class:'btn big',onclick:o.next||o.back},o.next?t('yourTurn'):t('back')))));
+}
+function viewGlossary(o){
+ const ids=[...new Set(MT.flatMap(x=>x.terms||[]))];const items=ids.map(id=>glossTerm(id)).filter(Boolean).sort((a,b)=>a.t.localeCompare(b.t,S.lang));
+ const q=h('input',{type:'search',placeholder:'🔎','aria-label':t('glossary')});const dl=h('dl',{class:'glos'});
+ const draw=()=>{const f=q.value.trim().toLowerCase();dl.replaceChildren(...items.filter(x=>!f||x.t.toLowerCase().includes(f)||x.d.toLowerCase().includes(f)).flatMap(x=>[h('dt',{},x.t),h('dd',{},x.d)]));};
+ q.addEventListener('input',draw);draw();
+ screen(topbar(t('glossary'),{back:o.back}),h('main',{class:'page stack'},q,h('section',{class:'card'},dl)));
 }
 
 /* ================= run engine ================= */
@@ -602,11 +895,12 @@ async function startRun(o){
  const masteries={};for(const p of o.players)masteries[p.id]=JSON.parse(JSON.stringify(st(p.id).mastery));
  for(const pk of new Set(o.game.items.filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack)))await loadPack(pk).catch(e=>toast(e.message,true));
  const okItem=i=>!i.joke&&(i.type!=='map'||(i.map&&PACKS[i.map.pack]&&PACKS[i.map.pack].byId[i.map.target]));
- const pool=poolFor(Object.assign({},o.game,{items:o.game.items.filter(okItem)}),o.diff);if(!pool.length)return toast(t('noItems'),true);
+ const pool=o.game.gen?(o.topics||gameUnits(o.game)).map(id=>({id,topic:id,difficulty:2,slot:true}))
+  :poolFor(Object.assign({},o.game,{items:o.game.items.filter(okItem)}),o.diff);if(!pool.length)return toast(t(o.game.gen?'pickTopic':'noItems'),true);
  const R={id:uid(),players:o.players,game:o.game,mode:o.mode,diff:o.diff,adaptive:o.adaptive,sel:o.sel,started:new Date(),pool,used:new Set(),answers:[],
   score:o.players.map(()=>0),streak:o.players.map(()=>0),best:o.players.map(()=>0),lives:3,level:DIFF_LEVEL[o.diff],up:0,down:0,q:0,masteries,timer:null,ended:false};
- R.target=o.mode==='classic'?25:o.mode==='duel'?26:Infinity;R.retry=[];R.extra=0;
- const own=o.game.items.filter(i=>i.joke&&i.type==='single');R.jokes=shuffle(own.concat(builtinJokes()));R.jokeAt=o.mode==='duel'?Infinity:5+Math.floor(Math.random()*4);
+ R.target=o.mode==='classic'?25:o.mode==='duel'?26:o.mode==='learn'?12:Infinity;R.retry=[];R.extra=0;R.gen=!!o.game.gen;R.topics=o.topics;R.cards=new Set();
+ const own=o.game.items.filter(i=>i.joke&&i.type==='single');R.jokes=shuffle(own.concat(builtinJokes()));R.jokeAt=(o.mode==='duel'||o.mode==='learn')?Infinity:5+Math.floor(Math.random()*4);
  if(o.mode==='timed'){R.deadline=Date.now()+({easy:90,medium:60,hard:45}[o.diff])*1000;R.timer=setInterval(()=>tick(R),250);}
  S.run=R;nextQuestion(R);
 }
@@ -617,11 +911,11 @@ function pickItem(R){
  let cand=R.pool.filter(i=>!R.used.has(i.id));if(!cand.length){R.used.clear();cand=R.pool.slice();}
  if(!R.adaptive)return cand[Math.floor(Math.random()*cand.length)];
  const gm=R.masteries[R.players[curIdx(R)].id][R.game.id]||{};
- const w=cand.map(i=>{const b=(gm[i.id]&&gm[i.id].box)||0;const dd=Math.abs(i.difficulty-R.level);return(1/(b+1))*(dd===0?2.5:dd===1?1:0.4);});
+ const w=cand.map(i=>{const b=(gm[i.id]&&gm[i.id].box)||0;const dd=i.slot?0:Math.abs(i.difficulty-R.level);return(1/(b+1))*(dd===0?2.5:dd===1?1:0.4);});
  let r=Math.random()*w.reduce((a,b)=>a+b,0);for(let k=0;k<cand.length;k++){r-=w[k];if(r<=0)return cand[k];}return cand[cand.length-1];
 }
 function loc(it,lang){const tr=it&&it.tr&&it.tr[lang||S.lang];if(!tr)return it;const o=Object.assign({},it);
- for(const k of['prompt','explanation','answer'])if(typeof tr[k]==='string'&&tr[k].trim())o[k]=tr[k];if(Array.isArray(tr.accept))o.accept=tr.accept;
+ for(const k of['prompt','explanation','answer'])if(typeof tr[k]==='string'&&tr[k].trim())o[k]=tr[k];if(Array.isArray(tr.accept))o.accept=tr.accept;if(Array.isArray(tr.hints)&&tr.hints.length)o.hints=tr.hints;
  if(Array.isArray(tr.options)&&Array.isArray(it.options)&&tr.options.length===it.options.length)o.options=tr.options;
  if(Array.isArray(tr.order)&&Array.isArray(it.order)&&tr.order.length===it.order.length)o.order=tr.order;return o;}
 function trMissing(it){return LANGS.filter(l=>!(it.tr&&it.tr[l]));}
@@ -639,7 +933,7 @@ function prepare(item,diff){
  return Q;
 }
 function answerText(it){switch(it.type){case'single':return it.options[it.correct[0]];case'multi':return it.correct.map(i=>it.options[i]).join(', ');
- case'order':return it.order.join(' → ');case'input':return it.answer;case'spot':return t('spotAnswer');case'map':{const P=PACKS[it.map&&it.map.pack];const f=P&&P.byId[it.map.target];return f?fname(f):(it.answer||it.map.target);}default:return'';}}
+ case'order':return it.order.join(' → ');case'input':return it.answer;case'spot':return t('spotAnswer');case'num':case'numline':case'build':case'coins':case'clockset':case'grid':return it.answer||'';case'map':{const P=PACKS[it.map&&it.map.pack];const f=P&&P.byId[it.map.target];return f?fname(f):(it.answer||it.map.target);}default:return'';}}
 const IMG_URLS={};
 async function imgURL(path){if(IMG_URLS[path])return IMG_URLS[path];const b=await S.store.readBlob(path);if(!b)throw new Error(t('imgErr'));return(IMG_URLS[path]=URL.createObjectURL(b));}
 function lazyImg(path,attrs){const im=h('img',Object.assign({alt:''},attrs||{}));imgURL(path).then(u=>{im.src=u;}).catch(()=>{im.alt=t('imgErr');});return im;}
@@ -778,9 +1072,12 @@ function mapPicker(P,item,onPick){const dlg=$('#dlg');const tg=P.byId[item.map.t
 function nextQuestion(R){
  if(R.ended)return;let item=null,retry=0,joke=false;const pi=curIdx(R);
  const k=R.retry.findIndex(r=>r.due<=R.q&&(R.mode!=='duel'||r.player===pi));
- if(k>=0){const r=R.retry.splice(k,1)[0];item=r.item;retry=r.count;}
+ if(k>=0){const r=R.retry.splice(k,1)[0];item=r.item;retry=r.count;if(item.gen)item=genItem(mtopic(item.topic),Math.max(1,R.level-1),R.game.gen)||item;}
  else if(R.q>=R.jokeAt&&R.jokes.length){item=R.jokes.shift();joke=true;R.jokeAt=R.q+6+Math.floor(Math.random()*5);if(R.target!==Infinity)R.target++;}
- else{item=pickItem(R);R.used.add(item.id);}
+ else{item=pickItem(R);R.used.add(item.id);if(item.slot){const tp=mtopic(item.topic);const lv=R.adaptive?R.level:DIFF_LEVEL[R.diff];
+   item=genItem(tp,lv,R.game.gen);if(!item)return nextQuestion(R);
+   if(R.mode==='learn'&&(!R.cards.has(tp.id)||R.q===3||R.q===7)){const first=!R.cards.has(tp.id);R.cards.add(tp.id);const it0=item;
+    return viewTopicCard(tp,{lv,opts:R.game.gen,back:()=>finishRun(R,true),next:()=>{const Q=prepare(it0,R.diff);Q.t0=performance.now();renderQuestion(R,Q);},noCard:!first});}}}
  const Q=prepare(item,R.diff);Q.retry=retry;Q.joke=joke;Q.t0=performance.now();renderQuestion(R,Q);
 }
 function hud(R){
@@ -790,7 +1087,7 @@ function hud(R){
   h('span',{title:t('streak')},'🔥 '+R.streak[i]),
   R.mode==='survival'?h('span',{'aria-label':t('lives')+': '+R.lives},'❤️'.repeat(R.lives)+'🤍'.repeat(3-R.lives)):null,
   R.mode==='timed'?h('span',{id:'timer'},'⏱ '+Math.max(0,Math.ceil((R.deadline-Date.now())/1000))+' s'):null,
-  (R.mode==='classic'||R.mode==='duel')?h('span',{},Math.min(R.q+1,R.target)+' / '+R.target):null,
+  (R.mode==='classic'||R.mode==='duel'||R.mode==='learn')?h('span',{},Math.min(R.q+1,R.target)+' / '+R.target):null,
   h('span',{class:'sp'}),
   h('button',{class:'btn ghost small',onclick:()=>finishRun(R,true)},t('quit')));
 }
@@ -817,10 +1114,46 @@ function renderQuestion(R,Q){
   chk.addEventListener('click',go);draw();area.append(seqBox,pool,h('div',{style:'margin-top:14px'},chk));S.onEnter=go;
  }else if(it.type==='input'){
   const inp=h('input',{type:'text',class:'answerbox',autocomplete:'off',autocapitalize:'off',autocorrect:'off',spellcheck:'false','aria-label':t('hint_input')});
-  const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[it.answer].concat(it.accept||[]).some(a=>String(a).trim()===v);submit(v,ok,()=>{inp.style.borderColor=ok?'var(--green)':'var(--red)';});};
+  const go=()=>{const v=inp.value.trim();if(!v)return;const ok=[it.answer].concat(it.accept||[]).some(a=>String(a).trim()===v||(/^[\d\s'.,\/+−-]+$/.test(String(a))&&sameNum(parseAns(a),parseAns(v))));submit(v,ok,()=>{inp.style.borderColor=ok?'var(--green)':'var(--red)';});};
   area.append(inp,h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;setTimeout(()=>inp.focus(),30);
  }
  let figEl=null;
+ if(it.fig&&!figEl)figEl=h('div',{},it.fig());
+ if(it.type==='num'){
+  const fields=it.fields||[{label:'',ans:null}];let cur=0;
+  const boxes=fields.map((f,k)=>{const b=h('input',{type:'text',class:'answerbox numbox',inputmode:'none',autocomplete:'off',autocorrect:'off',spellcheck:'false','aria-label':f.label||t('hint_num')});b.addEventListener('focus',()=>{cur=k;});return b;});
+  const ks=it.keys||'';const keys=['7','8','9','4','5','6','1','2','3',ks.includes(',')?',':null,'0',ks.includes('-')?'−':null,ks.includes('/')?'/':null,ks.includes('+')?'+':null,ks.includes('i')?'i':null].filter(Boolean);
+  const kp=h('div',{class:'keypad'},keys.map(k=>h('button',{class:'key',type:'button',onclick:()=>{if(done)return;boxes[cur].value+=k;}},k)),
+   h('button',{class:'key',type:'button','aria-label':'⌫',onclick:()=>{if(done)return;const b=boxes[cur];b.value=b.value.slice(0,-1);}},'⌫'));
+  const go=()=>{const vals=boxes.map(b=>b.value.trim());if(vals.some(v=>!v))return;let ok;
+   if(it.fields)ok=it.fields.every((f,k)=>{const p=parseAns(vals[k]);return p&&sameNum(p,{re:f.ans,im:0});});
+   else{const p=parseAns(vals[0]);ok=!!p&&sameNum(p,it.ans);if(ok&&it.reduce&&vals[0].includes('/')){const[n,d]=vals[0].replace(/[−-]/g,'').split('/').map(Number);if(gcd(n,d)!==1)ok=false;}}
+   submit(vals.join(' | '),ok,()=>boxes.forEach(b=>b.style.borderColor=ok?'var(--green)':'var(--red)'));};
+  area.append(h('div',{class:'row numrow'},fields.map((f,k)=>h('label',{class:'numf'},it.fields?h('span',{},f.label):null,boxes[k]))),kp,h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));
+  S.onEnter=go;setTimeout(()=>boxes[0].focus({preventScroll:true}),30);
+ }else if(it.type==='numline'){let nl;const o=Object.assign({},it.nl,{onTap:v=>{if(done||R.ended)return;const ok=Math.abs(v-it.target)<=(it.tol||0)+1e-9;
+   attempt(fmtN(v),ok,99,()=>nl.mark(v,'bad'),()=>{nl.mark(v,ok?'ok':'bad');if(!ok)nl.mark(it.target,'ok');});}});nl=figNumline(o);figEl=nl.el;
+ }else if(it.type==='build'){const cnt=[0,0,0];const names=['H','Z','E'].slice(3-it.places);const val=()=>cnt[0]*100+cnt[1]*10+cnt[2];const vis=h('div',{});
+  const draw=()=>{vis.replaceChildren(figBlocks(cnt[0],cnt[1],cnt[2]));ctl.replaceChildren(...names.map(nm=>{const i=['H','Z','E'].indexOf(nm);
+   return h('div',{},h('span',{class:'small'},t(nm)),h('b',{},String(cnt[i])),h('div',{class:'row',style:'gap:6px;justify-content:center'},
+    h('button',{class:'key',type:'button','aria-label':'− '+t(nm),onclick:()=>{if(done)return;if(cnt[i]>0)cnt[i]--;draw();}},'−'),
+    h('button',{class:'key',type:'button','aria-label':'+ '+t(nm),onclick:()=>{if(done)return;if(cnt[i]<9)cnt[i]++;draw();}},'+')));}));};
+  const ctl=h('div',{class:'pv'});draw();const go=()=>submit(String(val()),val()===it.target);
+  area.append(vis,ctl,h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;
+ }else if(it.type==='coins'){const purse=[];const pbox=h('div',{class:'purse coinrow','aria-label':t('purse')});
+  const draw=()=>pbox.replaceChildren(h('span',{class:'small muted',style:'width:100%'},t('purse')),...purse.map((v,k)=>coinEl(v,()=>{if(done)return;purse.splice(k,1);draw();})));
+  draw();const sum=()=>purse.reduce((a,b)=>a+b,0);const go=()=>{if(!purse.length)return;submit(fmtFr(sum()),sum()===it.target);};
+  area.append(h('div',{class:'coinrow'},it.coins.map(v=>coinEl(v,()=>{if(done)return;purse.push(v);purse.sort((a,b)=>b-a);draw();}))),pbox,h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;
+ }else if(it.type==='clockset'){let hh=12,mm=0;const ck=figClock(hh,mm);figEl=ck.el;const lab=h('b',{style:'font-size:1.3rem'});const up=()=>{ck.set(hh,mm);};
+  const btn=(txt,f,al)=>h('button',{class:'key',type:'button','aria-label':al,onclick:()=>{if(done)return;f();up();}},txt);up();
+  area.append(h('div',{class:'row',style:'gap:18px'},
+   h('div',{},h('div',{class:'small'},t('hoursL')),h('div',{class:'row',style:'gap:6px'},btn('−',()=>{hh=hh===1?12:hh-1;},'− '+t('hoursL')),btn('+',()=>{hh=hh%12+1;},'+ '+t('hoursL')))),
+   h('div',{},h('div',{class:'small'},t('minutesL')),h('div',{class:'row',style:'gap:6px'},btn('−',()=>{mm-=it.step;if(mm<0){mm+=60;hh=hh===1?12:hh-1;}},'− '+t('minutesL')),btn('+',()=>{mm+=it.step;if(mm>=60){mm-=60;hh=hh%12+1;}},'+ '+t('minutesL'))))),
+   h('div',{style:'margin-top:14px'},h('button',{class:'btn',onclick:()=>submit(hh+':'+pad(mm),hh%12===it.th%12&&mm===it.tm)},t('check'))));
+ }else if(it.type==='grid'){const mine=new Set();const gr=figGrid(it.cols,it.rows,new Set(it.filled),{axis:it.axis,onToggle:(k,e)=>{if(done)return;if(mine.has(k)){mine.delete(k);e.setAttribute('fill','#fff');}else{mine.add(k);e.setAttribute('fill','#E8A33D');}}});figEl=gr.el;
+  const go=()=>{const tg=new Set(it.target);const ok=mine.size===tg.size&&[...mine].every(k=>tg.has(k));
+   submit(mine.size+' ✓',ok,()=>{for(const k of tg)if(!mine.has(k))gr.cells[k].setAttribute('fill','#BFD8B8');for(const k of mine)if(!tg.has(k))gr.cells[k].setAttribute('fill',RED);});};
+  area.append(h('div',{style:'margin-top:4px'},h('button',{class:'btn',onclick:go},t('check'))));S.onEnter=go;}
  if(it.type==='map'){const P=PACKS[it.map.pack];const tg=P.byId[it.map.target];const task=it.map.task;
   const TL=P.layers.find(l=>l.id===tg.layer);
   const showL=TL&&TL.opt?[tg.layer]:(task==='tap'?((tg.kind==='point'&&R.diff!=='hard')||(['landscapes','continents','regions'].includes(tg.layer)&&R.diff==='easy')?[tg.layer]:[]):[]);
@@ -851,25 +1184,30 @@ function renderQuestion(R,Q){
      h('div',{class:'spotmark '+(ok?'ok':'bad'),style:`left:${x*100}%;top:${y*100}%`}));});});}}
  const turn=R.mode==='duel'?h('p',{class:'hand',style:'font-size:1.3rem;color:var(--ink)'},t('turnOf',{name:R.players[curIdx(R)].name})):null;
  const keepEnter=S.onEnter;
- screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},Q.prompt||it.prompt),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,retryMsg,fb)));
+ let helpEl=null;if(Array.isArray(it.hints)&&it.hints.length&&!Q.joke&&!it.joke){Q.hintsUsed=0;const ol=h('ol',{class:'helpbox',style:'display:none'});
+  const hb=h('button',{class:'btn ghost small',type:'button',title:t('helpCost')},'💡 '+t('help'));
+  hb.addEventListener('click',()=>{if(done||Q.hintsUsed>=it.hints.length)return;ol.style.display='';ol.append(h('li',{},it.hints[Q.hintsUsed++]));
+   hb.textContent='💡 '+t('helpOf',{n:Q.hintsUsed,m:it.hints.length});if(Q.hintsUsed>=it.hints.length)hb.disabled=true;});helpEl=h('div',{style:'margin:10px 0'},hb,ol);}
+ screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},rich(Q.prompt||it.prompt)),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,helpEl,retryMsg,fb)));
  S.onEnter=keepEnter;
 }
 function onAnswer(R,Q,given,correct,fb){
  const i=curIdx(R);const p=R.players[i];const it=Q.item;const ms=Math.round(performance.now()-Q.t0);let pts=0;const joke=!!(Q.joke||it.joke);
  if(joke){if(correct){pts=5;R.score[i]+=pts;}}
  else if(correct){if(!Q.second){R.streak[i]++;R.best[i]=Math.max(R.best[i],R.streak[i]);}
-  pts=10*it.difficulty+(Q.second?0:Math.min(R.streak[i]-1,5)*2)+(R.mode==='timed'&&ms<5000?5:0);if(Q.second)pts=Math.floor(pts/2);R.score[i]+=pts;
+  pts=10*it.difficulty+(Q.second?0:Math.min(R.streak[i]-1,5)*2)+(R.mode==='timed'&&ms<5000?5:0);if(Q.second)pts=Math.floor(pts/2);
+  if(Q.hintsUsed)pts=Math.max(2,Math.round(pts*Math.max(0.25,1-0.25*Q.hintsUsed)));R.score[i]+=pts;
   if(!Q.second){R.up++;R.down=0;}}
- else{R.streak[i]=0;R.down++;R.up=0;if(R.mode==='survival')R.lives--;const pen=5*(it.difficulty||1);const old=R.score[i];R.score[i]=Math.max(0,old-pen);pts=R.score[i]-old;
+ else{R.streak[i]=0;R.down++;R.up=0;if(R.mode==='survival')R.lives--;const pen=R.mode==='learn'?0:5*(it.difficulty||1);const old=R.score[i];R.score[i]=Math.max(0,old-pen);pts=R.score[i]-old;
   if((Q.retry||0)<2)R.retry.push({item:it,due:R.q+4,count:(Q.retry||0)+1,player:i});
-  if(R.mode==='classic'&&R.extra<15){R.target++;R.extra++;}}
+  if((R.mode==='classic'||R.mode==='learn')&&R.extra<(R.mode==='learn'?6:15)){R.target++;R.extra++;}}
  if(R.adaptive&&!joke){if(R.up>=3&&R.level<3){R.level++;R.up=0;}if(R.down>=2&&R.level>1){R.level--;R.down=0;}}
  if(!joke){const gm=(R.masteries[p.id][R.game.id]=R.masteries[p.id][R.game.id]||{});const ms2=gm[it.id]||{box:0,seen:0,right:0};
   ms2.seen++;if(correct&&!Q.second){ms2.right++;ms2.box=Math.min(5,ms2.box+1);}else if(!correct)ms2.box=Math.max(0,ms2.box-2);ms2.last=new Date().toISOString();gm[it.id]=ms2;}
- R.answers.push({itemId:it.id,type:it.type,prompt:Q.prompt||it.prompt,expected:answerText(it),given,correct,ms,points:pts,player:p.id,
+ R.answers.push({itemId:it.id,type:it.type,prompt:plain(Q.prompt||it.prompt),hints:Q.hintsUsed||undefined,expected:answerText(it),given,correct,ms,points:pts,player:p.id,
   second:Q.second?Q.firstGiven:undefined,joke:joke||undefined,retry:Q.retry||undefined});
  R.q++;
- const over=()=>(R.mode==='classic'||R.mode==='duel')?R.q>=R.target:R.mode==='survival'?R.lives<=0:(R.mode==='timed'&&Date.now()>=R.deadline);
+ const over=()=>(R.mode==='classic'||R.mode==='duel'||R.mode==='learn')?R.q>=R.target:R.mode==='survival'?R.lives<=0:(R.mode==='timed'&&Date.now()>=R.deadline);
  const proceed=()=>{if(R.ended)return;if(over())finishRun(R,false);else nextQuestion(R);};
  fb.className='feedback';
  const stampTxt=joke?t('jokeTag'):correct?'✓ '+t('correct')+(Q.second?' '+t('secondOk'):''):'✗ '+t('wrong');
@@ -918,6 +1256,508 @@ function viewResult(R,results,winner,draw){
    h('button',{class:'btn ghost',onclick:viewHome},t('changePlayer')))));
 }
 
+/* ================= Mathematik (eingebaut, Lehrplan 21) ================= */
+const X=(de,en,fr)=>({de,en,fr}[S.lang]||de);
+function ri(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a||1;}
+const DECSEP={de:',',en:'.',fr:','};const THSEP={de:"'",en:',',fr:'\u202F'};
+function fmtN(n){if(typeof n!=='number'||!isFinite(n))return String(n);const neg=n<0;const s=String(Math.round(Math.abs(n)*1e6)/1e6);let[i,d]=s.split('.');
+ if(i.length>4)i=i.replace(/\B(?=(\d{3})+(?!\d))/g,THSEP[S.lang]||"'");return(neg?'−':'')+i+(d?(DECSEP[S.lang]||',')+d:'');}
+function fmtFr(rp){const v=(rp/100).toFixed(2);return S.lang==='en'?'CHF '+v:'Fr. '+v;}
+function par(n){return n<0?'('+fmtN(n)+')':fmtN(n);}
+/* rich prompt: {f:a/b} renders as stacked fraction */
+function plain(s){return String(s).replace(/\{f:([^}]*)\}/g,'$1');}
+function rich(s){const out=[];String(s).split(/(\{f:[^}]*\})/).forEach(p=>{const m=p.match(/^\{f:(−?\d+)\/(\d+)\}$/);
+  if(m)out.push(h('span',{class:'frac','aria-label':m[1]+'/'+m[2]},h('span',{},m[1]),h('span',{},m[2])));else if(p)out.push(p);});return out;}
+/* ---------- answer parsing (natural, negative, decimals, fractions, complex) ---------- */
+function numOf(s){if(s===''||s==='+')return 1;if(s==='-')return -1;if(/^[+-]?\d+\/\d+$/.test(s)){const[a,b]=s.split('/');return +b?(+a)/(+b):NaN;}return /^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)?+s:NaN;}
+function parseAns(raw){let s=String(raw).trim().replace(/[\s'’\u202F]/g,'').replace(/[−–]/g,'-').replace(/,/g,'.');if(!s)return null;
+ if(/i$/.test(s)){const b=s.slice(0,-1);let k=-1;for(let j=b.length-1;j>0;j--)if((b[j]==='+'||b[j]==='-')&&b[j-1]!=='/'){k=j;break;}
+  const re=k>0?numOf(b.slice(0,k)):0;const im=numOf(k>0?b.slice(k):b);return isNaN(re)||isNaN(im)?null:{re,im};}
+ const v=numOf(s);return isNaN(v)?null:{re:v,im:0};}
+function sameNum(a,b){return a&&b&&Math.abs(a.re-b.re)<1e-9&&Math.abs(a.im-b.im)<1e-9;}
+/* ---------- illustrations (SVG) ---------- */
+function svgBox(w,hh,cls){return sv('svg',{viewBox:`0 0 ${w} ${hh}`,class:'mfig'+(cls?' '+cls:''),role:'img',style:`max-width:${Math.round(Math.min(520,w*1.25))}px`});}
+function stx(x,y,s,a){const e=sv('text',Object.assign({x,y,'text-anchor':'middle','font-size':16,fill:'#2F3437','font-family':'inherit'},a||{}));e.textContent=s;return e;}
+const INK='#1F3A93',RED='#C8322B',GRN='#2E7D4F',MARK='#F6E27A',GRID='#DDE7F1';
+function figDots(n,scatter){const s=svgBox(420,scatter?180:110);
+ if(scatter){const pts=[];let g=0;while(pts.length<n&&g++<4000){const x=ri(20,400),y=ri(20,160);if(pts.every(p=>Math.hypot(p[0]-x,p[1]-y)>30))pts.push([x,y]);}
+  pts.forEach(p=>s.append(sv('circle',{cx:p[0],cy:p[1],r:11,fill:RED})));return s;}
+ for(let f=0;f<2;f++){const ox=10+f*205;s.append(sv('rect',{x:ox,y:10,width:195,height:84,fill:'#fff',stroke:INK,'stroke-width':2,rx:6}));
+  for(let c=1;c<5;c++)s.append(sv('line',{x1:ox+c*39,y1:10,x2:ox+c*39,y2:94,stroke:INK}));s.append(sv('line',{x1:ox,y1:52,x2:ox+195,y2:52,stroke:INK}));
+  for(let k=0;k<10;k++){if(f*10+k>=n)break;s.append(sv('circle',{cx:ox+19.5+(k%5)*39,cy:31+Math.floor(k/5)*42,r:13,fill:RED}));}}
+ return s;}
+function figNumline(o){/* o:{a,b,minor,labelEvery,arrow,onTap,snap} */
+ const W=520,H=90,x0=26,x1=W-26;const s=svgBox(W,H,o.onTap?'tap':'');const X2=v=>x0+(v-o.a)/(o.b-o.a)*(x1-x0);
+ s.append(sv('line',{x1:x0-8,y1:50,x2:x1+12,y2:50,stroke:INK,'stroke-width':3}),sv('path',{d:`M${x1+14} 50 l-10 -6 v12 z`,fill:INK}));
+ for(let v=o.a;v<=o.b+1e-9;v+=o.minor){const big=Math.abs((v-o.a)%o.labelEvery)<1e-9||Math.abs((v-o.a)%o.labelEvery-o.labelEvery)<1e-9;
+  const mid=o.mid&&Math.abs((v-o.a)%o.mid)<1e-9;s.append(sv('line',{x1:X2(v),y1:big?36:mid?40:44,x2:X2(v),y2:big?64:mid?60:56,stroke:INK,'stroke-width':big?2.5:1.5}));
+  if(big)s.append(stx(X2(v),84,fmtN(v),{'font-size':15}));}
+ const layer=sv('g',{});s.append(layer);
+ if(o.arrow!=null)s.append(sv('path',{d:`M${X2(o.arrow)} 32 l-8 -16 h16 z`,fill:RED}));
+ const api={el:s,mark:(v,cls)=>{layer.append(sv('circle',{cx:X2(v),cy:50,r:8,fill:cls==='ok'?GRN:RED,stroke:'#fff','stroke-width':2}));}};
+ if(o.onTap)s.addEventListener('pointerdown',e=>{const r=s.getBoundingClientRect();const px=(e.clientX-r.left)/r.width*W;let v=o.a+(px-x0)/(x1-x0)*(o.b-o.a);
+  v=Math.round(v/o.snap)*o.snap;v=Math.max(o.a,Math.min(o.b,v));o.onTap(Math.round(v*1e6)/1e6);});
+ return api;}
+function figBlocks(H1,Z,E){const s=svgBox(520,150);let x=10;
+ for(let k=0;k<H1;k++){const g=sv('g',{});for(let r=0;r<10;r++)for(let c=0;c<10;c++)g.append(sv('rect',{x:x+c*9,y:20+r*9,width:9,height:9,fill:'#C9D4F0',stroke:INK,'stroke-width':.6}));s.append(g);x+=98;}
+ for(let k=0;k<Z;k++){for(let r=0;r<10;r++)s.append(sv('rect',{x,y:20+r*9,width:9,height:9,fill:'#BFD8B8',stroke:GRN,'stroke-width':.8}));x+=14;}
+ x+=6;for(let k=0;k<E;k++){s.append(sv('rect',{x:x+(k%3)*13,y:92+Math.floor(k/3)*13-26,width:10,height:10,fill:MARK,stroke:'#8a6d00','stroke-width':.8}));}
+ const vw=Math.max(520,x+50);s.setAttribute('viewBox',`0 0 ${vw} 130`);s.style.maxWidth=Math.min(620,vw)+'px';return s;}
+function figClock(hh,mm){const s=svgBox(220,220,'clock');const c=110;s.append(sv('circle',{cx:c,cy:c,r:100,fill:'#fff',stroke:INK,'stroke-width':4}));
+ for(let k=0;k<60;k++){const a=k*Math.PI/30,big=k%5===0;s.append(sv('line',{x1:c+Math.sin(a)*(big?84:90),y1:c-Math.cos(a)*(big?84:90),x2:c+Math.sin(a)*96,y2:c-Math.cos(a)*96,stroke:INK,'stroke-width':big?3:1}));}
+ for(let k=1;k<=12;k++){const a=k*Math.PI/6;s.append(stx(c+Math.sin(a)*70,c-Math.cos(a)*70+7,String(k),{'font-size':20,'font-weight':700}));}
+ const hH=sv('line',{x1:c,y1:c,x2:c,y2:c-50,stroke:'#2F3437','stroke-width':8,'stroke-linecap':'round'});
+ const hM=sv('line',{x1:c,y1:c,x2:c,y2:c-80,stroke:RED,'stroke-width':5,'stroke-linecap':'round'});s.append(hH,hM,sv('circle',{cx:c,cy:c,r:6,fill:'#2F3437'}));
+ const set=(h2,m2)=>{hH.setAttribute('transform',`rotate(${((h2%12)+m2/60)*30} ${c} ${c})`);hM.setAttribute('transform',`rotate(${m2*6} ${c} ${c})`);};set(hh,mm);return{el:s,set};}
+function figShape(k){const s=svgBox(220,160);const st={fill:'#C9D4F0',stroke:INK,'stroke-width':4,'stroke-linejoin':'round'};const rot=ri(-25,25);const g=sv('g',{transform:`rotate(${rot} 110 80)`});
+ const poly=n=>{const p=[];for(let i=0;i<n;i++){const a=i*2*Math.PI/n-Math.PI/2;p.push((110+Math.cos(a)*62).toFixed(1)+','+(84+Math.sin(a)*62).toFixed(1));}return sv('polygon',Object.assign({points:p.join(' ')},st));};
+ if(k==='circle')g.append(sv('circle',Object.assign({cx:110,cy:80,r:62},st)));
+ else if(k==='square')g.append(sv('rect',Object.assign({x:55,y:25,width:110,height:110},st)));
+ else if(k==='rectangle')g.append(sv('rect',Object.assign({x:25,y:40,width:170,height:80},st)));
+ else if(k==='triangle')g.append(sv('polygon',Object.assign({points:ri(0,1)?'110,15 195,145 25,145':'40,20 190,140 30,145'},st)));
+ else g.append(poly(k==='pentagon'?5:6));s.append(g);return s;}
+function figSolid(k){const s=svgBox(220,180);const st={fill:'#C9D4F0',stroke:INK,'stroke-width':3,'stroke-linejoin':'round'};const d={stroke:INK,'stroke-width':2,'stroke-dasharray':'6 5',fill:'none'};
+ if(k==='cube'||k==='cuboid'){const w=k==='cube'?90:140,hh=90,dx=40,dy=30,x=30,y=55;
+  s.append(sv('path',Object.assign({d:`M${x} ${y} h${w} v${hh} h${-w} z`},st)),sv('path',Object.assign({d:`M${x} ${y} l${dx} ${-dy} h${w} l${-dx} ${dy} z`},st,{fill:'#E8EDF9'})),
+   sv('path',Object.assign({d:`M${x+w} ${y} l${dx} ${-dy} v${hh} l${-dx} ${dy} z`},st,{fill:'#AFC0E8'})),sv('path',Object.assign({d:`M${x} ${y+hh} l${dx} ${-dy} h${w} M${x+dx} ${y+hh-dy} v${-hh}`},d)));}
+ else if(k==='sphere'){s.append(sv('circle',Object.assign({cx:110,cy:90,r:70},st)),sv('ellipse',{cx:110,cy:90,rx:70,ry:20,fill:'none',stroke:INK,'stroke-width':2,'stroke-dasharray':'6 5'}));}
+ else if(k==='cylinder'){s.append(sv('path',Object.assign({d:'M50 40 v100 a60 20 0 0 0 120 0 v-100'},st)),sv('ellipse',Object.assign({cx:110,cy:40,rx:60,ry:20},st,{fill:'#E8EDF9'})),sv('path',Object.assign({d:'M50 140 a60 20 0 0 1 120 0'},d)));}
+ else if(k==='cone'){s.append(sv('path',Object.assign({d:'M110 15 L50 145 a60 20 0 0 0 120 0 z'},st)),sv('path',Object.assign({d:'M50 145 a60 20 0 0 1 120 0'},d)));}
+ else{s.append(sv('path',Object.assign({d:'M110 15 L40 140 L150 165 z'},st)),sv('path',Object.assign({d:'M110 15 L150 165 L190 125 z'},st,{fill:'#AFC0E8'})),sv('path',Object.assign({d:'M40 140 L100 110 L190 125 M110 15 L100 110'},d)));}
+ return s;}
+const COINS=[5,10,20,50,100,200,500,1000,2000,5000,10000];
+function coinEl(v,onclick){const note=v>=1000;const w=note?96:[5,10,20,50,100,200,500].indexOf(v)*4+46;const b=h('button',{class:'coin'+(note?' note':''),style:note?'':`width:${w}px;height:${w}px`,onclick,type:'button'},
+  v>=100?(v/100)+(note?' Fr.':''):v+(S.lang==='en'?'c':' Rp.'));if(v>=100&&!note)b.title=v/100+' Fr.';return b;}
+function figCoins(list){return h('div',{class:'coinrow'},list.map(v=>coinEl(v,null)));}
+function figRuler(len){const s=svgBox(520,110);const u=32,x0=20;s.append(sv('rect',{x:x0-10,y:50,width:15*u+20,height:52,fill:'#FFF7D6',stroke:'#8a6d00','stroke-width':2,rx:4}));
+ for(let mm=0;mm<=150;mm++){const x=x0+mm*u/10;const big=mm%10===0,mid=mm%5===0;s.append(sv('line',{x1:x,y1:50,x2:x,y2:50+(big?22:mid?15:9),stroke:'#2F3437','stroke-width':big?2:1}));
+  if(big)s.append(stx(x,90,String(mm/10),{'font-size':14}));}
+ s.append(sv('rect',{x:x0,y:22,width:len*u/10,height:18,fill:RED,rx:9}));return s;}
+function figBars(data,step){const W=520,H=240,x0=46,y0=200;const max=Math.max(...data.map(d=>d.v));const top=Math.ceil(max/step)*step;const s=svgBox(W,H);
+ for(let v=0;v<=top;v+=step){const y=y0-v/top*170;s.append(sv('line',{x1:x0,y1:y,x2:W-10,y2:y,stroke:GRID,'stroke-width':1.5}),stx(x0-10,y+5,String(v),{'text-anchor':'end','font-size':13}));}
+ const bw=(W-x0-30)/data.length;data.forEach((d,i)=>{const hh=d.v/top*170;s.append(sv('rect',{x:x0+10+i*bw+bw*.15,y:y0-hh,width:bw*.7,height:hh,fill:HPAL[i%HPAL.length],stroke:INK,'stroke-width':1.5}),stx(x0+10+i*bw+bw/2,y0+22,d.label,{'font-size':14}));});
+ s.append(sv('line',{x1:x0,y1:y0,x2:W-10,y2:y0,stroke:INK,'stroke-width':2}),sv('line',{x1:x0,y1:y0,x2:x0,y2:20,stroke:INK,'stroke-width':2}));return s;}
+function figTally(rows){const s=svgBox(420,rows.length*44+10);rows.forEach((r,i)=>{const y=i*44+30;s.append(stx(70,y+2,r.label,{'text-anchor':'end','font-size':16}));
+  for(let k=0;k<r.v;k++){const grp=Math.floor(k/5),j=k%5,x=90+grp*50+j*9;if(j<4)s.append(sv('line',{x1:x,y1:y-16,x2:x,y2:y+8,stroke:'#2F3437','stroke-width':3,'stroke-linecap':'round'}));
+   else s.append(sv('line',{x1:90+grp*50-4,y1:y+4,x2:90+grp*50+32,y2:y-14,stroke:'#2F3437','stroke-width':3,'stroke-linecap':'round'}));}});return s;}
+function figGrid(cols,rows,filled,o){/* o:{axis:col index line, edit:Set, onToggle} */ const c=34;const s=svgBox(cols*c+4,rows*c+4,o&&o.onToggle?'tap':'');const cells={};
+ for(let r=0;r<rows;r++)for(let q=0;q<cols;q++){const k=r+','+q;const on=filled.has(k);const e=sv('rect',{x:2+q*c,y:2+r*c,width:c,height:c,fill:on?INK:'#fff',stroke:'#9AB',
+   'stroke-width':1});cells[k]=e;s.append(e);
+  if(o&&o.onToggle&&!on)e.addEventListener('pointerdown',ev=>{ev.preventDefault();o.onToggle(k,e);});}
+ if(o&&o.axis!=null)s.append(sv('line',{x1:2+o.axis*c,y1:0,x2:2+o.axis*c,y2:rows*c+4,stroke:RED,'stroke-width':4,'stroke-dasharray':'8 5'}));return{el:s,cells};}
+function figRectGrid(w,hh,showArea){const c=30;const s=svgBox((w+2)*c,(hh+2)*c);for(let r=0;r<=hh+2;r++)s.append(sv('line',{x1:0,y1:r*c,x2:(w+2)*c,y2:r*c,stroke:GRID}));
+ for(let q=0;q<=w+2;q++)s.append(sv('line',{x1:q*c,y1:0,x2:q*c,y2:(hh+2)*c,stroke:GRID}));
+ s.append(sv('rect',{x:c,y:c,width:w*c,height:hh*c,fill:showArea?'#C9D4F0':'none',stroke:INK,'stroke-width':4}));return s;}
+function figAngles(kinds){const s=svgBox(480,150);kinds.forEach((k,i)=>{const cx=40+i*155,cy=120;const deg=k==='right'?90:k==='acute'?ri(35,65):ri(115,150);const a=deg*Math.PI/180;
+  s.append(sv('path',{d:`M${cx+100} ${cy} L${cx} ${cy} L${cx+Math.cos(a)*100} ${cy-Math.sin(a)*100}`,fill:'none',stroke:INK,'stroke-width':4,'stroke-linecap':'round'}));
+  s.append(sv('path',{d:`M${cx+22} ${cy} A22 22 0 0 0 ${cx+Math.cos(a)*22} ${cy-Math.sin(a)*22}`,fill:'none',stroke:RED,'stroke-width':2}));
+  s.append(stx(cx+50,cy+26,String.fromCharCode(65+i),{'font-size':18,'font-weight':700}));});return s;}
+function figMarbles(r,b){const s=svgBox(260,170);s.append(sv('path',{d:'M40 50 Q30 160 130 160 Q230 160 220 50 Z',fill:'#F2E3C6',stroke:'#8a6d00','stroke-width':3}));
+ const all=Array(r).fill(RED).concat(Array(b).fill('#2D6CDF'));shuffle(all).forEach((col,i)=>s.append(sv('circle',{cx:75+(i%6)*22,cy:135-Math.floor(i/6)*22,r:10,fill:col,stroke:'#fff','stroke-width':1.5})));return s;}
+function figColumns(a,b,op){/* written addition/subtraction layout */ const w=Math.max(String(a).length,String(b).length)+1;const s=svgBox(40+w*36,150);
+ const put=(str,row)=>{str=String(str);for(let i=0;i<str.length;i++)s.append(stx(40+(w-str.length+i)*36+18,36+row*40,str[i],{'font-size':28,'font-family':'ui-monospace,monospace'}));};
+ put(a,0);put(b,1);s.append(stx(22,76,op,{'font-size':28}));s.append(sv('line',{x1:10,y1:92,x2:40+w*36,y2:92,stroke:INK,'stroke-width':3}));return s;}
+/* ---------- item helpers ---------- */
+function numItem(prompt,val,o){o=o||{};const ans=typeof val==='object'?val:{re:val,im:0};
+ return Object.assign({type:'num',prompt,ans,answer:o.answer||fmtN(ans.re),keys:o.keys||''},o);}
+function choiceItem(prompt,right,wrong,o){const opts=[right].concat(wrong.filter((w,i,a)=>w!==right&&a.indexOf(w)===i));return Object.assign({type:'single',prompt,options:opts,correct:[0]},o||{});}
+function distinctNear(v,n,spread,min){const out=new Set();let g=0;while(out.size<n&&g++<200){const d=v+ri(-spread,spread);if(d!==v&&d>=(min==null?0:min))out.add(d);}return[...out];}
+function clockWords(hh,mm){const h12=((hh-1)%12+12)%12+1,nx=h12%12+1;
+ if(S.lang==='en')return mm===0?h12+" o'clock":mm===30?'half past '+h12:mm===15?'quarter past '+h12:mm===45?'quarter to '+nx:h12+':'+pad(mm);
+ if(S.lang==='fr'){const hr=n=>n+(n===1?' heure':' heures');return mm===0?hr(h12):mm===30?hr(h12)+' et demie':mm===15?hr(h12)+' et quart':mm===45?hr(nx)+' moins le quart':h12+' h '+pad(mm);}
+ return mm===0?h12+' Uhr':mm===30?'halb '+nx:mm===15?'Viertel nach '+h12:mm===45?'Viertel vor '+nx:h12+':'+pad(mm);}
+const NAMES=['Lea','Noah','Mia','Luca','Elif','Samuel','Nora','Jonas','Aline','Levin','Emma','Malik'];
+const SHAPES={circle:['Kreis','circle','cercle'],triangle:['Dreieck','triangle','triangle'],square:['Quadrat','square','carré'],rectangle:['Rechteck','rectangle','rectangle'],pentagon:['Fünfeck','pentagon','pentagone'],hexagon:['Sechseck','hexagon','hexagone']};
+const SOLIDS={cube:['Würfel','cube','cube'],cuboid:['Quader','cuboid','pavé droit'],sphere:['Kugel','sphere','boule'],cylinder:['Zylinder','cylinder','cylindre'],cone:['Kegel','cone','cône'],pyramid:['Pyramide','pyramid','pyramide']};
+const nm3=a=>X(a[0],a[1],a[2]);
+const FRUIT=[['Äpfel','apples','pommes'],['Birnen','pears','poires'],['Bananen','bananas','bananes'],['Kirschen','cherries','cerises'],['Pflaumen','plums','prunes']];
+/* ---------- steps: hints = all but the last step; the last step shows the result ---------- */
+function steps(it,list){list=list.filter(Boolean);it.steps=list;it.hints=list.slice(0,-1);it.explanation=list.map(x=>/[.!?:]$/.test(x)?x:x+'.').join(' ');return it;}
+/* ================= topics (years 1-3; years 4-9 follow) ================= */
+const MT=[];function topic(id,y,a,n,c,terms,g){MT.push({id,y,a,n,c,terms,g});}
+/* ---- Year 1 ---- */
+topic('m1-count',1,1,['Anzahlen bis 20','Counting to 20','Compter jusqu’à 20'],
+ ['Zähle geschickt: Ein volles Zehnerfeld hat immer 10 Punkte. Dann zählst du nur noch die übrigen Punkte dazu.','Count cleverly: a full ten-frame always has 10 dots. Then you only count the remaining dots.','Compte malin : une grille de dix pleine a toujours 10 points. Ensuite, tu comptes seulement les points qui restent.'],['tenframe'],
+ lv=>{const n=lv===1?ri(3,10):ri(8,20);const it=numItem(X('Wie viele Punkte sind es?','How many dots are there?','Combien y a-t-il de points ?'),n,{fig:()=>figDots(n,lv===3)});
+  return steps(it,lv===3?[X('Kreise immer 5 Punkte in Gedanken ein.','Group the dots in fives in your head.','Regroupe les points par 5 dans ta tête.'),X('Zähle die Fünfergruppen: 5, 10, 15 …','Count the groups of five: 5, 10, 15 …','Compte les groupes de cinq : 5, 10, 15 …'),X('Es sind ','There are ','Il y a ')+n+'.']
+   :n>10?[X('Das erste Feld ist voll: 10 Punkte.','The first frame is full: 10 dots.','La première grille est pleine : 10 points.'),X('Zähle im zweiten Feld: ','Count the second frame: ','Compte dans la deuxième grille : ')+(n-10)+'.',X('10 und ','10 and ','10 et ')+(n-10)+' = '+n+'.']
+   :[X('Eine volle Reihe hat 5 Punkte.','A full row has 5 dots.','Une rangée pleine a 5 points.'),X('Zähle die zweite Reihe dazu.','Add the second row.','Ajoute la deuxième rangée.'),X('Es sind ','There are ','Il y a ')+n+'.']);});
+topic('m1-compare',1,1,['Vergleichen: <, >, =','Comparing: <, >, =','Comparer : <, >, ='],
+ ['Das Zeichen öffnet sich immer zur grösseren Zahl: 7 < 9 und 9 > 7.','The sign always opens towards the bigger number: 7 < 9 and 9 > 7.','Le signe s’ouvre toujours vers le plus grand nombre : 7 < 9 et 9 > 7.'],['lt','gt'],
+ lv=>{let a=ri(0,20),b=ri(0,20);if(Math.random()<.2)b=a;let la=String(a),lb=String(b),va=a,vb=b;
+  if(lv===3){const x=ri(1,9),y=ri(1,9);va=x+y;la=x+' + '+y;}const r=va<vb?'<':va>vb?'>':'=';
+  const it=choiceItem(X('Welches Zeichen passt? ','Which sign fits? ','Quel signe convient ? ')+la+' ☐ '+lb,r,['<','>','='].filter(z=>z!==r),{hintKey:'single'});
+  return steps(it,[lv===3?X('Rechne zuerst links: ','Work out the left side first: ','Calcule d’abord à gauche : ')+la+' = '+va+'.':X('Welche Zahl ist grösser?','Which number is bigger?','Quel nombre est le plus grand ?'),X('Die offene Seite zeigt zur grösseren Zahl.','The open side points to the bigger number.','Le côté ouvert est tourné vers le plus grand nombre.'),va+' '+r+' '+vb]);});
+topic('m1-numline20',1,1,['Zahlenstrahl bis 20','Number line to 20','Droite numérique jusqu’à 20'],
+ ['Auf dem Zahlenstrahl werden die Zahlen nach rechts immer grösser. Die 10 steht genau in der Mitte zwischen 0 und 20.','On the number line, numbers get bigger to the right. 10 is exactly in the middle between 0 and 20.','Sur la droite numérique, les nombres augmentent vers la droite. 10 est pile au milieu entre 0 et 20.'],['numberline'],
+ lv=>{const n=ri(1,19);const it={type:'numline',prompt:X('Tippe auf die Zahl ','Tap the number ','Touche le nombre ')+n+'.',target:n,tol:0,answer:String(n),nl:{a:0,b:20,minor:1,labelEvery:lv===1?1:lv===2?5:10,snap:1}};
+  return steps(it,[X('Die 10 liegt in der Mitte.','10 is in the middle.','10 est au milieu.'),n<10?X('Die Zahl ist kleiner als 10, also links von der Mitte.','The number is smaller than 10, so it is left of the middle.','Le nombre est plus petit que 10, donc à gauche du milieu.'):X('Die Zahl ist grösser als 10: gehe von der Mitte aus nach rechts.','The number is bigger than 10: go right from the middle.','Le nombre est plus grand que 10 : va vers la droite depuis le milieu.'),String(n)]);});
+topic('m1-decomp',1,1,['Zahlen zerlegen','Splitting numbers','Décomposer les nombres'],
+ ['Jede Zahl kann man in zwei Teile zerlegen: 7 = 3 + 4 = 5 + 2. Die Zerlegungen der 10 helfen später beim Rechnen.','Every number can be split into two parts: 7 = 3 + 4 = 5 + 2. The splits of 10 help a lot later.','Chaque nombre peut se décomposer en deux parties : 7 = 3 + 4 = 5 + 2. Les décompositions de 10 aideront beaucoup plus tard.'],['summand'],
+ lv=>{const n=lv===1?ri(3,6):lv===2?10:ri(6,10);const a=ri(0,n);const it=numItem(n+' = '+a+' + ?',n-a);
+  return steps(it,[X('Wie viel fehlt von ','How much is missing from ','Combien manque-t-il de ')+a+X(' bis ',' to ',' à ')+n+'?',X('Zähle von ','Count on from ','Compte à partir de ')+a+X(' weiter bis ',' up to ',' jusqu’à ')+n+'.',n+' = '+a+' + '+(n-a)]);});
+topic('m1-add10',1,1,['Plus bis 10','Adding to 10','Additions jusqu’à 10'],
+ ['Beim Addieren kommt etwas dazu. Tipp: Beginne mit der grösseren Zahl und zähle weiter.','When adding, something is added on. Tip: start with the bigger number and count on.','Additionner, c’est ajouter. Astuce : commence par le plus grand nombre et compte à partir de lui.'],['sum','summand'],
+ lv=>{const s=ri(2,10),a=ri(0,s),b=s-a;if(lv===3&&Math.random()<.6){const it=numItem(a+' + ? = '+s,b);return steps(it,[X('Wie viel fehlt von ','How much is missing from ','Combien manque-t-il de ')+a+X(' bis ',' to ',' à ')+s+'?',X('Zähle weiter: ','Count on: ','Compte : ')+a+' … '+s+'.',a+' + '+b+' = '+s]);}
+  const it=numItem(a+' + '+b+' = ?',s);return steps(it,[X('Beginne mit der grösseren Zahl: ','Start with the bigger number: ','Commence par le plus grand nombre : ')+Math.max(a,b)+'.',X('Zähle ','Count on ','Compte encore ')+Math.min(a,b)+X(' weiter.','.',' de plus.'),a+' + '+b+' = '+s]);});
+topic('m1-sub10',1,1,['Minus bis 10','Subtracting to 10','Soustractions jusqu’à 10'],
+ ['Beim Subtrahieren wird etwas weggenommen. Das Ergebnis heisst Differenz.','When subtracting, something is taken away. The result is called the difference.','Soustraire, c’est enlever. Le résultat s’appelle la différence.'],['difference'],
+ lv=>{const a=ri(2,10),b=ri(0,a);if(lv===3&&Math.random()<.5){const it=numItem(a+' − ? = '+(a-b),b);return steps(it,[X('Wie viel musst du von ','How much must you take from ','Combien dois-tu enlever à ')+a+X(' wegnehmen, damit ',' to get ',' pour obtenir ')+(a-b)+X(' übrig bleibt?','?',' ?'),X('Zähle von ','Count from ','Compte de ')+(a-b)+X(' bis ',' up to ',' jusqu’à ')+a+'.',a+' − '+b+' = '+(a-b)]);}
+  const it=numItem(a+' − '+b+' = ?',a-b);return steps(it,[X('Starte bei ','Start at ','Commence à ')+a+'.',X('Gehe ','Go ','Recule de ')+b+X(' Schritte zurück.',' steps back.',' pas.'),a+' − '+b+' = '+(a-b)]);});
+topic('m1-add20',1,1,['Rechnen bis 20 mit Zehnerübergang','Adding and subtracting to 20','Calculer jusqu’à 20 en passant par 10'],
+ ['Rechne bis zur 10 und dann weiter: 8 + 5 = 8 + 2 + 3 = 13. Beim Minus genauso: 13 − 5 = 13 − 3 − 2 = 8.','Go to 10 first, then on: 8 + 5 = 8 + 2 + 3 = 13. Same for minus: 13 − 5 = 13 − 3 − 2 = 8.','Passe d’abord par 10 : 8 + 5 = 8 + 2 + 3 = 13. Pareil pour la soustraction : 13 − 5 = 13 − 3 − 2 = 8.'],['bridge10'],
+ lv=>{if(Math.random()<.5){const a=ri(lv===1?5:3,9),b=ri(11-a,9);const f=10-a;const it=numItem(a+' + '+b+' = ?',a+b);
+   return steps(it,[X('Wie viel fehlt von ','How much is missing from ','Combien manque-t-il de ')+a+X(' bis 10?',' to 10?',' à 10 ?'),a+' + '+f+' = 10. '+X('Zerlege ','Split ','Décompose ')+b+' = '+f+' + '+(b-f)+'.',X('Jetzt noch ','Now add ','Il reste à ajouter ')+(b-f)+': 10 + '+(b-f)+' = '+(a+b)+'.']);}
+  const a=ri(11,lv===1?15:18),b=ri(a-9,9);const f=a-10;const it=numItem(a+' − '+b+' = ?',a-b);
+  return steps(it,[X('Rechne zuerst bis zur 10 zurück: ','First go back to 10: ','Recule d’abord jusqu’à 10 : ')+a+' − '+f+' = 10.',X('Zerlege ','Split ','Décompose ')+b+' = '+f+' + '+(b-f)+X('. Es bleibt ','. That leaves ','. Il reste ')+(b-f)+'.','10 − '+(b-f)+' = '+(a-b)+'.']);});
+topic('m1-double',1,1,['Verdoppeln und Halbieren','Doubling and halving','Doubler et partager en deux'],
+ ['Verdoppeln heisst: dieselbe Zahl noch einmal dazu, 6 + 6 = 12. Halbieren heisst: in zwei gleiche Teile teilen, die Hälfte von 12 ist 6.','Doubling means adding the same number again: 6 + 6 = 12. Halving means splitting into two equal parts: half of 12 is 6.','Doubler, c’est ajouter le même nombre : 6 + 6 = 12. Partager en deux, c’est faire deux parts égales : la moitié de 12, c’est 6.'],['double','half'],
+ lv=>{const n=ri(1,lv===1?5:10);if(Math.random()<.5){const it=numItem(X('Verdopple ','Double ','Double ')+n+'.',2*n);return steps(it,[X('Verdoppeln heisst: ','Doubling means: ','Doubler, c’est : ')+n+' + '+n+'.',n>5?X('Tipp: ','Tip: ','Astuce : ')+'5 + 5 = 10, '+X('dann noch ','then add ','puis encore ')+(n-5)+' + '+(n-5)+'.':X('Zähle mit den Fingern beider Hände.','Use the fingers of both hands.','Utilise les doigts des deux mains.'),n+' + '+n+' = '+2*n]);}
+  const it=numItem(X('Halbiere ','Halve ','Partage en deux : ')+2*n+'.',n);return steps(it,[X('Welche Zahl verdoppelt ergibt ','Which number doubled gives ','Quel nombre doublé donne ')+2*n+'?',X('Probiere: ','Try: ','Essaie : ')+Math.max(1,n-1)+' + '+Math.max(1,n-1)+' = '+2*Math.max(1,n-1)+'.',X('Die Hälfte von ','Half of ','La moitié de ')+2*n+X(' ist ',' is ',' est ')+n+'.']);});
+topic('m1-pattern',1,1,['Zahlenfolgen','Number patterns','Suites de nombres'],
+ ['Bei einer Zahlenfolge gibt es eine Regel, zum Beispiel immer +2. Finde die Regel, dann findest du die nächste Zahl.','A number pattern follows a rule, for example always +2. Find the rule and you find the next number.','Une suite de nombres suit une règle, par exemple toujours +2. Trouve la règle et tu trouveras le nombre suivant.'],['pattern'],
+ lv=>{const d=pick(lv===1?[1,2]:lv===2?[2,3,-1,-2]:[3,4,5,-2,-3]);let s=d>0?ri(0,20-4*d):ri(-4*d,20);const seq=[0,1,2,3].map(k=>s+k*d);const nx=s+4*d;
+  const it=numItem(seq.join(', ')+', ?',nx);return steps(it,[X('Wie ändert sich die Zahl von einer zur nächsten?','How does the number change from one to the next?','Comment le nombre change-t-il de l’un à l’autre ?'),X('Die Regel ist: immer ','The rule is: always ','La règle est : toujours ')+(d>0?'+':'−')+Math.abs(d)+'.',seq[3]+' '+(d>0?'+':'−')+' '+Math.abs(d)+' = '+nx]);});
+topic('m1-shapes',1,2,['Formen erkennen','Recognising shapes','Reconnaître les formes'],
+ ['Ein Dreieck hat 3 Ecken, ein Viereck 4. Ein Quadrat ist ein Viereck mit 4 gleich langen Seiten. Ein Kreis hat keine Ecken.','A triangle has 3 corners, a quadrilateral 4. A square is a quadrilateral with 4 equal sides. A circle has no corners.','Un triangle a 3 sommets, un quadrilatère 4. Un carré est un quadrilatère avec 4 côtés égaux. Un cercle n’a pas de sommet.'],['triangle','square','rectangle','circle','corner'],
+ lv=>{const ks=lv===1?['circle','triangle','square','rectangle']:Object.keys(SHAPES);const k=pick(ks);const it=choiceItem(X('Wie heisst diese Form?','What is this shape called?','Comment s’appelle cette forme ?'),nm3(SHAPES[k]),shuffle(ks.filter(x=>x!==k)).slice(0,3).map(x=>nm3(SHAPES[x])),{fig:()=>figShape(k)});
+  const corners={circle:0,triangle:3,square:4,rectangle:4,pentagon:5,hexagon:6}[k];
+  return steps(it,[X('Zähle die Ecken.','Count the corners.','Compte les sommets.'),X('Die Form hat ','The shape has ','La forme a ')+corners+X(' Ecken.',' corners.',' sommets.')+(k==='square'||k==='rectangle'?' '+X('Sind alle Seiten gleich lang?','Are all sides the same length?','Tous les côtés ont-ils la même longueur ?'):''),nm3(SHAPES[k])]);});
+topic('m1-position',1,2,['Lage: links, rechts, oben, unten','Position: left, right, above, below','Position : gauche, droite, dessus, dessous'],
+ ['Links und rechts siehst du von dir aus. Oben ist über etwas, unten ist darunter.','Left and right are seen from where you are. Above is over something, below is under it.','La gauche et la droite se voient depuis toi. Dessus, c’est au-dessus de quelque chose, dessous, c’est en dessous.'],['left','right'],
+ lv=>{const E=shuffle(['🍎','🐸','⭐','🚗','🎈','🐟','🌻','🍌','⚽']);const g=[[0,1,2],[3,4,5],[6,7,8]];const r=ri(0,2),c=ri(0,2);
+  const dirs=[['links','left','à gauche',0,-1],['rechts','right','à droite',0,1],['oben','above','au-dessus',-1,0],['unten','below','en dessous',1,0]].filter(d=>r+d[3]>=0&&r+d[3]<3&&c+d[4]>=0&&c+d[4]<3);
+  const d=pick(lv===1?dirs.filter(x=>x[3]===0).concat(dirs).slice(0,dirs.length):dirs);const tgt=E[g[r+d[3]][c+d[4]]];
+  const q=X('Was ist direkt '+d[0]+' von '+E[g[r][c]]+'?','What is directly '+d[1]+' '+(d[3]?'':'of ')+E[g[r][c]]+'?','Qu’est-ce qui est juste '+d[2]+(d[3]?' de ':' de ')+E[g[r][c]]+' ?');
+  const it=choiceItem(q,tgt,shuffle(E.filter(x=>x!==tgt&&x!==E[g[r][c]])).slice(0,3),{fig:()=>h('div',{class:'emogrid'},g.flat().map(i=>h('span',{},E[i])))});
+  return steps(it,[X('Suche zuerst ','First find ','Cherche d’abord ')+E[g[r][c]]+'.',X('Schau jetzt nach ','Now look ','Regarde maintenant ')+X(d[0],d[1],d[2])+'.',tgt]);});
+topic('m1-money',1,3,['Geld bis 20 Franken','Money up to 20 francs','L’argent jusqu’à 20 francs'],
+ ['Münzen gibt es zu 1, 2 und 5 Franken, Noten zu 10 und 20 Franken. Zähle mit der grössten Münze oder Note zuerst.','There are coins of 1, 2 and 5 francs and notes of 10 and 20 francs. Start counting with the biggest one.','Il existe des pièces de 1, 2 et 5 francs et des billets de 10 et 20 francs. Commence à compter par la plus grande valeur.'],['franc'],
+ lv=>{const pool=lv===1?[100,200,500]:[100,200,500,1000];let list=[],sum=0;const n=ri(2,lv===1?3:5);for(let k=0;k<n;k++){const v=pick(pool);if(sum+v>2000)break;list.push(v);sum+=v;}list.sort((a,b)=>b-a);
+  if(lv===3){const tgt=ri(3,20)*100;const it={type:'coins',prompt:X('Lege genau ','Pay exactly ','Paie exactement ')+fmtFr(tgt)+'.',target:tgt,coins:[100,200,500,1000],answer:fmtFr(tgt)};
+   return steps(it,[X('Nimm zuerst die grösste Münze oder Note, die noch passt.','First take the biggest coin or note that still fits.','Prends d’abord la plus grande pièce ou le plus grand billet qui convient encore.'),X('Wie viel fehlt noch? Lege weiter.','How much is still missing? Keep going.','Combien manque-t-il encore ? Continue.'),fmtFr(tgt)]);}
+  const it=numItem(X('Wie viele Franken sind das?','How many francs is that?','Combien de francs cela fait-il ?'),sum/100,{fig:()=>figCoins(list)});
+  return steps(it,[X('Beginne mit dem grössten Wert: ','Start with the biggest value: ','Commence par la plus grande valeur : ')+list[0]/100+'.',X('Zähle die anderen dazu: ','Add the others: ','Ajoute les autres : ')+list.map(v=>v/100).join(' + ')+'.',list.map(v=>v/100).join(' + ')+' = '+sum/100]);});
+topic('m1-clock',1,3,['Uhr: volle und halbe Stunden','Clock: o’clock and half past','L’heure : heures pile et demies'],
+ ['Der kurze Zeiger zeigt die Stunde, der lange die Minuten. Zeigt der lange Zeiger auf die 12, ist es eine volle Stunde, zeigt er auf die 6, ist es halb.','The short hand shows the hour, the long hand the minutes. Long hand on 12: o’clock. Long hand on 6: half past.','La petite aiguille indique l’heure, la grande les minutes. Grande aiguille sur 12 : heure pile. Sur 6 : et demie.'],['hourhand','minutehand'],
+ lv=>{const hh=ri(1,12),mm=lv===1?0:pick([0,30]);const right=clockWords(hh,mm);const wrong=new Set();let g=0;while(wrong.size<3&&g++<50){const w=clockWords(ri(1,12),pick([0,30]));if(w!==right)wrong.add(w);}
+  if(mm===30)wrong.add(clockWords(hh,0));const it=choiceItem(X('Wie spät ist es?','What time is it?','Quelle heure est-il ?'),right,[...wrong].slice(0,3),{fig:()=>figClock(hh,mm).el});
+  return steps(it,[X('Wohin zeigt der lange Zeiger? ','Where does the long hand point? ','Où pointe la grande aiguille ? ')+(mm===0?'12':'6'),X('Der kurze Zeiger steht ','The short hand is ','La petite aiguille est ')+(mm===0?X('genau auf der ','exactly on ','exactement sur le ')+hh:X('zwischen ','between ','entre ')+hh+X(' und ',' and ',' et ')+(hh%12+1))+'.',right]);});
+topic('m1-length',1,3,['Längen vergleichen','Comparing lengths','Comparer des longueurs'],
+ ['Um Längen zu vergleichen, legst du sie am gleichen Anfang an. Was weiter hinausragt, ist länger.','To compare lengths, line them up at the same start. The one that reaches further is longer.','Pour comparer des longueurs, aligne-les au même point de départ. Celle qui va le plus loin est la plus longue.'],['length'],
+ lv=>{const cols=[['rot','red','rouge',RED],['blau','blue','bleu','#2D6CDF'],['grün','green','vert',GRN]];const n=lv===1?2:3;const L=shuffle([3,4,5,6,7,8,9,10,11,12]).slice(0,n);
+  const longest=L.indexOf(Math.max(...L)),shortest=L.indexOf(Math.min(...L));const askLong=lv===1||Math.random()<.5;const k=askLong?longest:shortest;
+  const fig=()=>{const s=svgBox(460,n*40+10);L.forEach((l,i)=>s.append(sv('rect',{x:10+(lv===3?ri(0,60):0),y:10+i*40,width:l*34,height:22,rx:11,fill:cols[i][3]})));return s;};
+  const it=choiceItem(askLong?X('Welcher Stab ist am längsten?','Which bar is the longest?','Quelle barre est la plus longue ?'):X('Welcher Stab ist am kürzesten?','Which bar is the shortest?','Quelle barre est la plus courte ?'),X(cols[k][0],cols[k][1],cols[k][2]),cols.slice(0,n).filter((c,i)=>i!==k).map(c=>X(c[0],c[1],c[2])),{fig});
+  return steps(it,[lv===3?X('Achtung: Die Stäbe beginnen nicht am gleichen Ort. Schau auf Anfang und Ende.','Careful: the bars do not start at the same place. Look at both ends.','Attention : les barres ne commencent pas au même endroit. Regarde le début et la fin.'):X('Die Stäbe beginnen am gleichen Ort.','The bars start at the same place.','Les barres commencent au même endroit.'),X('Vergleiche, wie lang jeder Stab ist.','Compare how long each bar is.','Compare la longueur de chaque barre.'),X(cols[k][0],cols[k][1],cols[k][2])]);});
+/* ---- Year 2 ---- */
+topic('m2-placevalue',2,1,['Zehner und Einer','Tens and ones','Dizaines et unités'],
+ ['Eine Zahl bis 100 besteht aus Zehnern und Einern: 47 = 4 Zehner und 7 Einer. Die Zehner stehen links.','A number up to 100 is made of tens and ones: 47 = 4 tens and 7 ones. The tens are on the left.','Un nombre jusqu’à 100 est fait de dizaines et d’unités : 47 = 4 dizaines et 7 unités. Les dizaines sont à gauche.'],['tens','ones','placevalue'],
+ lv=>{const z=ri(1,9),e=ri(0,9),n=10*z+e;if(lv>=2&&Math.random()<.5){const it={type:'build',prompt:X('Lege die Zahl ','Build the number ','Construis le nombre ')+n+'.',target:n,places:2,answer:String(n)};
+   return steps(it,[X('Wie viele Zehner hat ','How many tens does ','Combien de dizaines a ')+n+'?',X('Lege ','Place ','Pose ')+z+X(' Zehnerstangen.',' ten-bars.',' barres de dix.'),z+X(' Zehner und ',' tens and ',' dizaines et ')+e+X(' Einer',' ones',' unités')]);}
+  const it=numItem(X('Welche Zahl ist das?','Which number is this?','Quel est ce nombre ?'),n,{fig:()=>figBlocks(0,z,e)});return steps(it,[X('Zähle die Zehnerstangen: ','Count the ten-bars: ','Compte les barres de dix : ')+z+'.',X('Zähle die einzelnen Würfel: ','Count the single cubes: ','Compte les cubes seuls : ')+e+'.',z+X(' Zehner und ',' tens and ',' dizaines et ')+e+X(' Einer = ',' ones = ',' unités = ')+n]);});
+topic('m2-numline100',2,1,['Zahlenstrahl bis 100','Number line to 100','Droite numérique jusqu’à 100'],
+ ['Auf dem Zahlenstrahl bis 100 helfen die Zehnerzahlen 10, 20, 30 … beim Finden. Die 50 ist in der Mitte.','On the number line to 100, the tens 10, 20, 30 … help you find your way. 50 is in the middle.','Sur la droite jusqu’à 100, les dizaines 10, 20, 30 … t’aident à te repérer. 50 est au milieu.'],['numberline'],
+ lv=>{const n=ri(1,99);if(lv===3&&Math.random()<.5){const v=ri(1,19)*5;const it=numItem(X('Welche Zahl zeigt der Pfeil?','Which number does the arrow show?','Quel nombre la flèche montre-t-elle ?'),v,{fig:()=>figNumline({a:0,b:100,minor:5,labelEvery:50,mid:10,arrow:v}).el});
+   return steps(it,[X('Die langen Striche sind 0, 50 und 100. Die mittleren sind Zehner.','The long marks are 0, 50 and 100. The middle ones are tens.','Les longs traits sont 0, 50 et 100. Les moyens sont les dizaines.'),X('Jeder kleine Schritt ist 5.','Each small step is 5.','Chaque petit pas vaut 5.'),String(v)]);}
+  const it={type:'numline',prompt:X('Tippe auf die Zahl ','Tap the number ','Touche le nombre ')+n+'.',target:n,tol:lv===1?2:1,answer:String(n),nl:{a:0,b:100,minor:lv===1?5:10,labelEvery:lv===1?10:lv===2?50:100,mid:lv===2?10:null,snap:1}};
+  return steps(it,[X('Suche zuerst den Zehner: ','First find the ten: ','Cherche d’abord la dizaine : ')+(n-n%10)+'.',X('Gehe dann noch ','Then go ','Avance encore de ')+n%10+X(' kleine Schritte weiter.',' small steps further.',' petits pas.'),String(n)]);});
+topic('m2-skip',2,1,['In Schritten zählen','Counting in steps','Compter par bonds'],
+ ['Du kannst in 2er-, 5er- und 10er-Schritten zählen: 5, 10, 15, 20 … Rückwärts geht es genauso.','You can count in steps of 2, 5 and 10: 5, 10, 15, 20 … Backwards works the same way.','Tu peux compter de 2 en 2, de 5 en 5 et de 10 en 10 : 5, 10, 15, 20 … À l’envers, c’est pareil.'],['pattern'],
+ lv=>{const d=pick([2,5,10]);const back=lv===3&&Math.random()<.5;let s=d*ri(1,Math.floor(100/d)-5);if(lv>=2&&d!==2)s+=ri(0,d-1)*(d===10?1:0);const seq=[0,1,2,3,4].map(k=>back?s+(4-k)*d:s+k*d);const hole=ri(1,3);
+  const shown=seq.map((v,i)=>i===hole?'?':v);const it=numItem(shown.join(', '),seq[hole]);return steps(it,[X('Wie gross ist der Schritt von Zahl zu Zahl?','How big is the step from number to number?','Quelle est la taille du bond d’un nombre à l’autre ?'),X('Es geht immer ','It always goes ','Ça fait toujours ')+(back?'−':'+')+d+'.',String(seq[hole])]);});
+topic('m2-add100',2,1,['Plus bis 100','Adding to 100','Additions jusqu’à 100'],
+ ['Rechne zuerst die Zehner, dann die Einer: 34 + 25 = 34 + 20 + 5 = 59. Wird es über einen Zehner hinaus, rechne bis zum nächsten Zehner.','Add the tens first, then the ones: 34 + 25 = 34 + 20 + 5 = 59. When you cross a ten, go to the next ten first.','Ajoute d’abord les dizaines, puis les unités : 34 + 25 = 34 + 20 + 5 = 59. Si tu dépasses une dizaine, passe d’abord par la dizaine suivante.'],['sum','tens','ones'],
+ lv=>{let a,b;if(lv===1){a=ri(1,8)*10+ri(0,4);b=ri(1,8-Math.floor(a/10))*10+ri(0,9-a%10);if(a+b>100)b=10;}else{a=ri(12,78);b=ri(11,99-a);}
+  const s=a+b;if(lv===3&&Math.random()<.5){const it=numItem(a+' + ? = '+s,b);return steps(it,[X('Wie viel fehlt von ','How much is missing from ','Combien manque-t-il de ')+a+X(' bis ',' to ',' à ')+s+'?',X('Gehe zuerst zum nächsten Zehner: ','First go to the next ten: ','Va d’abord à la dizaine suivante : ')+a+' → '+(Math.ceil(a/10)*10)+'.',a+' + '+b+' = '+s]);}
+  const bz=b-b%10,be=b%10;const it=numItem(a+' + '+b+' = ?',s);return steps(it,[bz&&be?X('Zerlege ','Split ','Décompose ')+b+' = '+bz+' + '+be+'.':X('Rechne zuerst die Zehner, dann die Einer.','Add the tens first, then the ones.','Ajoute d’abord les dizaines, puis les unités.'),bz?X('Zuerst die Zehner: ','First the tens: ','D’abord les dizaines : ')+a+' + '+bz+' = '+(a+bz)+'.':null,be?X('Dann die Einer: ','Then the ones: ','Puis les unités : ')+(a+bz)+' + '+be+' = '+s+'.':a+' + '+b+' = '+s]);});
+topic('m2-sub100',2,1,['Minus bis 100','Subtracting to 100','Soustractions jusqu’à 100'],
+ ['Nimm zuerst die Zehner weg, dann die Einer: 72 − 35 = 72 − 30 − 5 = 37.','Take away the tens first, then the ones: 72 − 35 = 72 − 30 − 5 = 37.','Enlève d’abord les dizaines, puis les unités : 72 − 35 = 72 − 30 − 5 = 37.'],['difference','tens','ones'],
+ lv=>{let a,b;if(lv===1){a=ri(3,9)*10+ri(5,9);b=ri(1,Math.floor(a/10)-1)*10+ri(0,a%10);}else{a=ri(30,99);b=ri(11,a-5);}
+  const bz=b-b%10,be=b%10;const it=numItem(a+' − '+b+' = ?',a-b);return steps(it,[bz&&be?X('Zerlege ','Split ','Décompose ')+b+' = '+bz+' + '+be+'.':X('Nimm zuerst die Zehner weg, dann die Einer.','Take away the tens first, then the ones.','Enlève d’abord les dizaines, puis les unités.'),bz?X('Zuerst die Zehner: ','First the tens: ','D’abord les dizaines : ')+a+' − '+bz+' = '+(a-bz)+'.':null,be?X('Dann die Einer: ','Then the ones: ','Puis les unités : ')+(a-bz)+' − '+be+' = '+(a-b)+'.':a+' − '+b+' = '+(a-b)]);});
+topic('m2-times2510',2,1,['Einmaleins mit 2, 5 und 10','Times tables 2, 5 and 10','Tables de 2, 5 et 10'],
+ ['Mal heisst: mehrmals dasselbe. 4 · 5 bedeutet 5 + 5 + 5 + 5 = 20. Die 10er-Reihe ist leicht: Hänge eine 0 an.','Times means the same number several times. 4 · 5 means 5 + 5 + 5 + 5 = 20. The 10 table is easy: add a 0.','Fois, c’est plusieurs fois le même nombre. 4 · 5 veut dire 5 + 5 + 5 + 5 = 20. La table de 10 est facile : ajoute un 0.'],['product','factor'],
+ lv=>{const f=pick([2,5,10]),k=ri(lv===1?1:0,10);const it=numItem(k+' · '+f+' = ?',k*f);return steps(it,[X(k+' · '+f+' heisst: ',k+' · '+f+' means: ',k+' · '+f+' veut dire : ')+(k?Array(Math.min(k,5)).fill(f).join(' + ')+(k>5?' + …':''):'0'),f===5?X('Tipp: 5er-Zahlen enden auf 0 oder 5. Rechne ','Tip: 5-times results end in 0 or 5. Work out ','Astuce : les multiples de 5 finissent par 0 ou 5. Calcule ')+k+' · 10 : 2.':f===10?X('Hänge an ','Add a 0 to ','Ajoute un 0 à ')+k+X(' eine 0 an.','.','.'):X('Verdopple ','Double ','Double ')+k+'.',k+' · '+f+' = '+k*f]);});
+topic('m2-times',2,1,['Kleines Einmaleins','Times tables','Tables de multiplication'],
+ ['Kernaufgaben helfen: 1 ·, 2 ·, 5 · und 10 · weisst du schnell. Daraus leitest du ab: 6 · 7 = 5 · 7 + 7 = 42.','Key facts help: 1 ×, 2 ×, 5 × and 10 × are quick. From them you get the others: 6 · 7 = 5 · 7 + 7 = 42.','Les calculs clés aident : 1 ×, 2 ×, 5 × et 10 × se trouvent vite. On en déduit les autres : 6 · 7 = 5 · 7 + 7 = 42.'],['product','factor'],
+ lv=>{const a=ri(lv===1?2:3,lv===1?6:10),b=ri(2,10);if(lv===3&&Math.random()<.5){const it=numItem(a+' · ? = '+a*b,b);return steps(it,[X('Welche Zahl mal ','Which number times ','Quel nombre fois ')+a+X(' ergibt ',' gives ',' donne ')+a*b+'?',X('Rechne ','Work out ','Calcule ')+a*b+' : '+a+'.',a+' · '+b+' = '+a*b]);}
+  const near=a>5?5:a>2?2:1;const it=numItem(a+' · '+b+' = ?',a*b);return steps(it,[X('Nutze eine Kernaufgabe: ','Use a key fact: ','Utilise un calcul clé : ')+near+' · '+b+' = '+near*b+'.',X('Dazu noch ','Add ','Ajoute encore ')+(a-near)+' · '+b+' = '+(a-near)*b+'.',near*b+' + '+(a-near)*b+' = '+a*b]);});
+topic('m2-div',2,1,['Teilen','Dividing','Diviser'],
+ ['Teilen ist die Umkehrung von Mal: 20 : 4 = 5, weil 5 · 4 = 20.','Dividing is the reverse of times: 20 : 4 = 5 because 5 · 4 = 20.','Diviser, c’est l’inverse de multiplier : 20 : 4 = 5 car 5 · 4 = 20.'],['quotient','inverse'],
+ lv=>{const b=ri(2,lv===1?5:10),q=ri(1,10);const it=numItem(b*q+' : '+b+' = ?',q);return steps(it,[X('Denke an das Einmaleins mit ','Think of the ','Pense à la table de ')+b+X('.',' times table.','.'),X('Welche Zahl mal ','Which number times ','Quel nombre fois ')+b+X(' ergibt ',' gives ',' donne ')+b*q+'?',q+' · '+b+' = '+b*q+X(', also ',', so ',', donc ')+b*q+' : '+b+' = '+q]);});
+topic('m2-evenodd',2,1,['Gerade und ungerade Zahlen','Even and odd numbers','Nombres pairs et impairs'],
+ ['Gerade Zahlen kann man in zwei gleiche Hälften teilen. Sie enden auf 0, 2, 4, 6 oder 8.','Even numbers can be split into two equal halves. They end in 0, 2, 4, 6 or 8.','Les nombres pairs se partagent en deux moitiés égales. Ils finissent par 0, 2, 4, 6 ou 8.'],['even','odd'],
+ lv=>{const n=ri(1,lv===1?20:lv===2?100:999);const ev=n%2===0;const E=X('gerade','even','pair'),O=X('ungerade','odd','impair');
+  const it=choiceItem(X('Ist ','Is ','Le nombre ')+n+X(' gerade oder ungerade?',' even or odd?',' est-il pair ou impair ?'),ev?E:O,[ev?O:E]);return steps(it,[X('Schau nur auf die letzte Ziffer: ','Only look at the last digit: ','Regarde seulement le dernier chiffre : ')+n%10+'.',X('Gerade Zahlen enden auf 0, 2, 4, 6 oder 8.','Even numbers end in 0, 2, 4, 6 or 8.','Les nombres pairs finissent par 0, 2, 4, 6 ou 8.'),ev?E:O]);});
+topic('m2-symmetry',2,2,['Symmetrie','Symmetry','Symétrie'],
+ ['Eine Figur ist symmetrisch, wenn beide Hälften an der Spiegelachse genau gleich sind, wie in einem Spiegel.','A figure is symmetrical when both halves match exactly at the mirror line, like in a mirror.','Une figure est symétrique quand ses deux moitiés sont identiques de part et d’autre de l’axe, comme dans un miroir.'],['axis','mirror'],
+ lv=>{const rows=lv===1?4:5,half=lv===1?2:3,cols=half*2;const f=new Set();while(f.size<(lv===1?3:5))f.add(ri(0,rows-1)+','+ri(0,half-1));
+  const target=new Set([...f].map(k=>{const[r,c]=k.split(',').map(Number);return r+','+(cols-1-c);}));
+  const it={type:'grid',prompt:X('Male das Spiegelbild auf der rechten Seite.','Draw the mirror image on the right side.','Dessine l’image miroir sur le côté droit.'),rows,cols,filled:[...f],target:[...target],axis:half,answer:X('Spiegelbild','mirror image','image miroir')};
+  return steps(it,[X('Die rote Linie ist der Spiegel.','The red line is the mirror.','La ligne rouge est le miroir.'),X('Ein Feld, das 1 Häuschen links vom Spiegel ist, kommt 1 Häuschen rechts davon hin.','A square 1 box left of the mirror goes 1 box right of it.','Une case à 1 carreau à gauche du miroir va à 1 carreau à droite.'),X('Gehe Zeile für Zeile vor.','Go row by row.','Procède ligne par ligne.')]);});
+topic('m2-solids',2,2,['Körper erkennen','Recognising solids','Reconnaître les solides'],
+ ['Körper sind dreidimensional. Ein Würfel hat 6 gleiche quadratische Flächen, eine Kugel hat keine Ecken und Kanten.','Solids are three-dimensional. A cube has 6 equal square faces, a sphere has no corners or edges.','Les solides ont trois dimensions. Un cube a 6 faces carrées identiques, une boule n’a ni sommet ni arête.'],['cube','cuboid','sphere','cylinder','cone','pyramid','edge','face'],
+ lv=>{const ks=Object.keys(SOLIDS);const k=pick(ks);const it=choiceItem(X('Wie heisst dieser Körper?','What is this solid called?','Comment s’appelle ce solide ?'),nm3(SOLIDS[k]),shuffle(ks.filter(x=>x!==k)).slice(0,lv===1?2:3).map(x=>nm3(SOLIDS[x])),{fig:()=>figSolid(k)});
+  const tip={cube:X('Alle Kanten sind gleich lang.','All edges are the same length.','Toutes les arêtes ont la même longueur.'),cuboid:X('Er hat Ecken und Kanten, aber nicht alle Kanten sind gleich lang.','It has corners and edges, but not all edges are the same length.','Il a des sommets et des arêtes, mais elles n’ont pas toutes la même longueur.'),sphere:X('Keine Ecken, keine Kanten, überall rund.','No corners, no edges, round everywhere.','Pas de sommet, pas d’arête, rond partout.'),cylinder:X('Zwei runde Flächen oben und unten.','Two round faces at top and bottom.','Deux faces rondes en haut et en bas.'),cone:X('Eine runde Fläche und eine Spitze.','One round face and a point.','Une face ronde et une pointe.'),pyramid:X('Dreieckige Seitenflächen treffen sich in einer Spitze.','Triangular faces meet at a point.','Des faces triangulaires se rejoignent en une pointe.')}[k];
+  return steps(it,[X('Hat der Körper Ecken? Runde Flächen?','Does the solid have corners? Round faces?','Le solide a-t-il des sommets ? Des faces rondes ?'),tip,nm3(SOLIDS[k])]);});
+topic('m2-money',2,3,['Geld: Franken und Rappen','Money: francs and centimes','L’argent : francs et centimes'],
+ ['1 Franken = 100 Rappen. Münzen gibt es zu 5, 10, 20 und 50 Rappen und zu 1, 2 und 5 Franken.','1 franc = 100 centimes (Rappen). Coins: 5, 10, 20 and 50 centimes and 1, 2 and 5 francs.','1 franc = 100 centimes. Pièces : 5, 10, 20 et 50 centimes et 1, 2 et 5 francs.'],['franc','rappen'],
+ lv=>{if(lv>=2&&Math.random()<.6){const tgt=lv===2?ri(2,20)*50:ri(10,99)*10+(Math.random()<.4?5:0);const it={type:'coins',prompt:X('Lege genau ','Pay exactly ','Paie exactement ')+fmtFr(tgt)+'.',target:tgt,coins:[5,10,20,50,100,200,500,1000],answer:fmtFr(tgt)};
+   return steps(it,[X('Lege zuerst die Franken.','First put down the francs.','Pose d’abord les francs.'),X('Dann die Rappen: Wie viele fehlen noch bis ','Then the centimes: how many are still missing to ','Puis les centimes : combien manque-t-il encore pour ')+fmtFr(tgt)+'?',fmtFr(tgt)]);}
+  const list=[];let sum=0;for(let k=0;k<ri(3,5);k++){const v=pick([10,20,50,100,200]);list.push(v);sum+=v;}list.sort((a,b)=>b-a);
+  const it=numItem(X('Wie viele Rappen sind das zusammen?','How many centimes is that altogether?','Combien de centimes cela fait-il en tout ?'),sum,{fig:()=>figCoins(list)});
+  return steps(it,[X('1 Franken sind 100 Rappen, 2 Franken sind 200 Rappen.','1 franc is 100 centimes, 2 francs are 200 centimes.','1 franc vaut 100 centimes, 2 francs valent 200 centimes.'),X('Zähle vom grössten Wert aus: ','Count from the biggest value: ','Compte à partir de la plus grande valeur : ')+list.join(' + ')+'.',list.join(' + ')+' = '+sum]);});
+topic('m2-clock',2,3,['Uhr: Viertelstunden und Minuten','Clock: quarters and minutes','L’heure : quarts d’heure et minutes'],
+ ['Eine Stunde hat 60 Minuten. Von einer Zahl zur nächsten auf dem Zifferblatt sind es 5 Minuten.','An hour has 60 minutes. From one number to the next on the clock face is 5 minutes.','Une heure a 60 minutes. D’un nombre au suivant sur le cadran, il y a 5 minutes.'],['hour','minute'],
+ lv=>{const hh=ri(1,12),mm=lv===1?pick([0,15,30,45]):ri(0,11)*5;
+  if(lv>=2&&Math.random()<.5){const it={type:'clockset',prompt:X('Stelle die Uhr auf ','Set the clock to ','Règle l’horloge sur ')+hh+':'+pad(mm)+'.',th:hh,tm:mm,step:5,answer:hh+':'+pad(mm)};
+   return steps(it,[X('Stelle zuerst den langen Minutenzeiger: ','First set the long minute hand: ','Règle d’abord la grande aiguille : ')+mm+X(' Minuten',' minutes',' minutes')+(mm?X(' = Zahl ',' = number ',' = chiffre ')+mm/5:'')+'.',X('Der kurze Zeiger zeigt die Stunde ','The short hand shows the hour ','La petite aiguille montre l’heure ')+hh+'.',hh+':'+pad(mm)]);}
+  const it=numItem(X('Wie spät ist es? (Stunden : Minuten)','What time is it? (hours : minutes)','Quelle heure est-il ? (heures : minutes)'),0,{fig:()=>figClock(hh,mm).el,fields:[{label:'h',ans:hh},{label:'min',ans:mm}],answer:hh+':'+pad(mm)});
+  return steps(it,[X('Der lange Zeiger zeigt auf die ','The long hand points to ','La grande aiguille pointe vers le ')+(mm/5||12)+'. '+X('Rechne ','Work out ','Calcule ')+(mm/5||12)+' · 5.',X('Der kurze Zeiger ist ','The short hand is ','La petite aiguille est ')+(mm?X('nach der ','past ','après le ')+hh:X('auf der ','on ','sur le ')+hh)+'.',hh+':'+pad(mm)]);});
+topic('m2-measure',2,3,['Messen mit dem Massstab','Measuring with a ruler','Mesurer avec la règle'],
+ ['Lege das Lineal bei 0 an, nicht beim Rand. Dann liest du ab, wo das Ende ist. 1 m = 100 cm.','Put the ruler at 0, not at its edge. Then read where the end is. 1 m = 100 cm.','Place la règle au 0, pas au bord. Puis lis où se trouve la fin. 1 m = 100 cm.'],['cm','m'],
+ lv=>{if(lv===3&&Math.random()<.5){const m=ri(1,5),c=ri(1,99);const it=numItem(m+' m '+c+' cm = ? cm',m*100+c);return steps(it,['1 m = 100 cm.',m+' m = '+m*100+' cm.',m*100+' + '+c+' = '+(m*100+c)]);}
+  const L=lv===1?ri(2,14)*10:ri(15,145);const cm=L/10;const it=numItem(X('Wie lang ist der rote Streifen? (in cm)','How long is the red strip? (in cm)','Quelle est la longueur de la bande rouge ? (en cm)'),cm,{fig:()=>figRuler(L),keys:lv===1?'':','});
+  return steps(it,[X('Der Streifen beginnt bei 0.','The strip starts at 0.','La bande commence à 0.'),X('Lies die Zahl am Ende ab.','Read the number at the end.','Lis le nombre à la fin.')+(L%10?' '+X('Die kleinen Striche sind Millimeter: 10 mm = 1 cm.','The small marks are millimetres: 10 mm = 1 cm.','Les petits traits sont des millimètres : 10 mm = 1 cm.'):''),fmtN(cm)+' cm']);});
+topic('m2-timeunits',2,3,['Zeiteinheiten','Units of time','Unités de temps'],
+ ['1 Stunde = 60 Minuten, 1 Tag = 24 Stunden, 1 Woche = 7 Tage, 1 Jahr = 12 Monate.','1 hour = 60 minutes, 1 day = 24 hours, 1 week = 7 days, 1 year = 12 months.','1 heure = 60 minutes, 1 jour = 24 heures, 1 semaine = 7 jours, 1 an = 12 mois.'],['hour','minute'],
+ lv=>{const Q=[[X('Wie viele Minuten hat eine Stunde?','How many minutes are in an hour?','Combien de minutes y a-t-il dans une heure ?'),60],[X('Wie viele Tage hat eine Woche?','How many days are in a week?','Combien de jours y a-t-il dans une semaine ?'),7],[X('Wie viele Monate hat ein Jahr?','How many months are in a year?','Combien de mois y a-t-il dans une année ?'),12],[X('Wie viele Stunden hat ein Tag?','How many hours are in a day?','Combien d’heures y a-t-il dans une journée ?'),24]];
+  if(lv>=2){const k=ri(2,lv===2?3:6);Q.push([k+X(' Wochen sind wie viele Tage?',' weeks are how many days?',' semaines font combien de jours ?'),7*k],[k+X(' Stunden sind wie viele Minuten?',' hours are how many minutes?',' heures font combien de minutes ?'),60*k],[X('Eine halbe Stunde sind wie viele Minuten?','Half an hour is how many minutes?','Une demi-heure, c’est combien de minutes ?'),30]);}
+  const q=pick(Q);const it=numItem(q[0],q[1]);return steps(it,[X('Erinnere dich: 1 Stunde = 60 Minuten, 1 Woche = 7 Tage.','Remember: 1 hour = 60 minutes, 1 week = 7 days.','Rappelle-toi : 1 heure = 60 minutes, 1 semaine = 7 jours.'),X('Musst du etwas mehrmals nehmen? Dann rechne mal.','Do you need something several times? Then multiply.','Faut-il prendre quelque chose plusieurs fois ? Alors multiplie.'),String(q[1])]);});
+topic('m2-data',2,3,['Strichlisten und Diagramme','Tally charts and bar charts','Tableaux à traits et diagrammes'],
+ ['In einer Strichliste steht jeder Strich für 1, der Querstrich macht ein Fünferbündel. Im Säulendiagramm zeigt die Höhe der Säule die Anzahl.','In a tally chart each mark is 1; the crossing line makes a bundle of five. In a bar chart the height shows the number.','Dans un tableau à traits, chaque trait vaut 1 ; le trait en travers fait un paquet de cinq. Dans un diagramme en barres, la hauteur montre le nombre.'],['tally','barchart'],
+ lv=>{const fr=shuffle(FRUIT).slice(0,lv===1?3:4);const rows=fr.map(f=>({label:nm3(f),v:ri(2,lv===1?9:14)}));const tally=lv===1||Math.random()<.5;
+  const a=ri(0,rows.length-1);let b=ri(0,rows.length-1);if(b===a)b=(a+1)%rows.length;
+  let q,val,st;if(lv===1){q=X('Wie viele ','How many ','Combien de ')+rows[a].label+'?';val=rows[a].v;st=[X('Suche die Zeile ','Find the row ','Cherche la ligne ')+rows[a].label+'.',X('Zähle die Fünferbündel zuerst.','Count the bundles of five first.','Compte d’abord les paquets de cinq.'),String(val)];}
+  else if(Math.random()<.5){q=X('Wie viele ','How many ','Combien de ')+rows[a].label+X(' und ',' and ',' et de ')+rows[b].label+X(' sind es zusammen?',' are there altogether?',' y a-t-il en tout ?');val=rows[a].v+rows[b].v;st=[rows[a].label+': '+rows[a].v+'.',rows[b].label+': '+rows[b].v+'.',rows[a].v+' + '+rows[b].v+' = '+val];}
+  else{const hi=rows[a].v>=rows[b].v?a:b,lo=hi===a?b:a;q=X('Wie viele ','How many ','Combien de ')+rows[hi].label+X(' mehr als ',' more than ',' de plus que de ')+rows[lo].label+'?';val=rows[hi].v-rows[lo].v;st=[rows[hi].label+': '+rows[hi].v+', '+rows[lo].label+': '+rows[lo].v+'.',X('«Wie viele mehr» heisst: Unterschied rechnen, also minus.','“How many more” means finding the difference: subtract.','« Combien de plus » veut dire calculer la différence : soustraire.'),rows[hi].v+' − '+rows[lo].v+' = '+val];}
+  const it=numItem(q,val,{fig:()=>tally?figTally(rows):figBars(rows,lv===1?1:2)});return steps(it,st);});
+/* ---- Year 3 ---- */
+topic('m3-placevalue',3,1,['Zahlen bis 1000: Stellenwerte','Numbers to 1000: place value','Nombres jusqu’à 1000 : valeur de position'],
+ ['Eine dreistellige Zahl hat Hunderter, Zehner und Einer: 358 = 3 H + 5 Z + 8 E.','A three-digit number has hundreds, tens and ones: 358 = 3 H + 5 T + 8 O.','Un nombre à trois chiffres a des centaines, des dizaines et des unités : 358 = 3 c + 5 d + 8 u.'],['hundreds','tens','ones','placevalue'],
+ lv=>{const H1=ri(1,9),Z=ri(0,9),E=ri(0,9),n=100*H1+10*Z+E;const r=Math.random();
+  if(r<.33){const it={type:'build',prompt:X('Lege die Zahl ','Build the number ','Construis le nombre ')+n+'.',target:n,places:3,answer:String(n)};return steps(it,[X('Beginne mit den Hundertern: ','Start with the hundreds: ','Commence par les centaines : ')+H1+'.',X('Dann ','Then ','Puis ')+Z+X(' Zehner und ',' tens and ',' dizaines et ')+E+X(' Einer.',' ones.',' unités.'),H1+' H '+Z+' Z '+E+' E']);}
+  if(r<.66){const it=numItem(H1+X(' Hunderter, ',' hundreds, ',' centaines, ')+Z+X(' Zehner und ',' tens and ',' dizaines et ')+E+X(' Einer = ?',' ones = ?',' unités = ?'),n);return steps(it,[H1+X(' Hunderter = ',' hundreds = ',' centaines = ')+100*H1+'.',Z+X(' Zehner = ',' tens = ',' dizaines = ')+10*Z+'.',100*H1+' + '+10*Z+' + '+E+' = '+n]);}
+  const place=pick([['Hunderter','hundreds','centaines',H1],['Zehner','tens','dizaines',Z],['Einer','ones','unités',E]]);const it=numItem(X('Wie viele '+place[0]+' hat '+n+'?','How many '+place[1]+' does '+n+' have?','Combien de '+place[2]+' le nombre '+n+' a-t-il ?'),place[3]);
+  return steps(it,[X('Von links: Hunderter, Zehner, Einer.','From the left: hundreds, tens, ones.','De gauche à droite : centaines, dizaines, unités.'),X('Suche die richtige Stelle in ','Find the right place in ','Trouve la bonne position dans ')+n+'.',String(place[3])]);});
+topic('m3-numline1000',3,1,['Zahlenstrahl bis 1000','Number line to 1000','Droite numérique jusqu’à 1000'],
+ ['Zwischen 0 und 1000 helfen die Hunderter als Orientierung. 500 liegt in der Mitte.','Between 0 and 1000 the hundreds help you find your way. 500 is in the middle.','Entre 0 et 1000, les centaines servent de repères. 500 est au milieu.'],['numberline'],
+ lv=>{const n=lv===1?ri(1,9)*100:lv===2?ri(1,99)*10:ri(5,195)*5;const it={type:'numline',prompt:X('Tippe auf die Zahl ','Tap the number ','Touche le nombre ')+n+'.',target:n,tol:lv===1?20:lv===2?10:10,answer:String(n),nl:{a:0,b:1000,minor:lv===1?100:50,labelEvery:lv===3?500:100,mid:lv===3?100:null,snap:lv===1?100:5}};
+  return steps(it,[X('Suche zuerst den Hunderter: ','First find the hundred: ','Cherche d’abord la centaine : ')+(n-n%100)+'.',n%100?X('Gehe von dort noch ','From there go ','De là, avance encore de ')+n%100+X(' weiter. 50 ist die Hälfte bis zum nächsten Hunderter.',' further. 50 is halfway to the next hundred.','. 50, c’est la moitié jusqu’à la centaine suivante.'):X('Die Zahl ist genau ein Hunderter.','The number is exactly a hundred.','Le nombre est exactement une centaine.'),String(n)]);});
+topic('m3-order',3,1,['Zahlen ordnen','Ordering numbers','Ranger des nombres'],
+ ['Vergleiche zuerst die Hunderter. Sind sie gleich, vergleiche die Zehner, dann die Einer.','Compare the hundreds first. If they are equal, compare the tens, then the ones.','Compare d’abord les centaines. Si elles sont égales, compare les dizaines, puis les unités.'],['placevalue'],
+ lv=>{const base=ri(1,8)*100;const ns=new Set();while(ns.size<4)ns.add(lv===1?ri(1,9)*100+ri(0,9)*10:lv===2?ri(100,999):base+ri(0,99));const arr=[...ns].sort((a,b)=>a-b).map(String);
+  const it={type:'order',prompt:X('Ordne von klein nach gross.','Order from smallest to largest.','Range du plus petit au plus grand.'),order:arr};return steps(it,[X('Vergleiche zuerst die Hunderter.','Compare the hundreds first.','Compare d’abord les centaines.'),X('Bei gleichen Hundertern entscheiden die Zehner.','If the hundreds are equal, the tens decide.','Si les centaines sont égales, les dizaines décident.'),arr.join(' < ')]);});
+topic('m3-round',3,1,['Runden','Rounding','Arrondir'],
+ ['Beim Runden schaust du auf die Stelle rechts davon: 0 bis 4 abrunden, 5 bis 9 aufrunden. 347 ≈ 350 (Zehner), 347 ≈ 300 (Hunderter).','When rounding, look at the digit to the right: 0 to 4 round down, 5 to 9 round up. 347 ≈ 350 (tens), 347 ≈ 300 (hundreds).','Pour arrondir, regarde le chiffre à droite : de 0 à 4 on arrondit en dessous, de 5 à 9 au-dessus. 347 ≈ 350 (dizaine), 347 ≈ 300 (centaine).'],['round'],
+ lv=>{const n=ri(lv===1?11:101,lv===1?99:999);const to=lv===1?10:pick([10,100]);const r=Math.round(n/to)*to;const dig=to===10?n%10:Math.floor(n/10)%10;
+  const it=numItem(X('Runde ','Round ','Arrondis ')+n+X(' auf ',' to the nearest ',' à la ')+(to===10?X('Zehner.','ten.','dizaine.'):X('Hunderter.','hundred.','centaine.')),r);
+  return steps(it,[X('Schau auf die Ziffer rechts davon: ','Look at the digit to the right: ','Regarde le chiffre à droite : ')+dig+'.',dig>=5?X('5 oder mehr: aufrunden.','5 or more: round up.','5 ou plus : on arrondit au-dessus.'):X('Weniger als 5: abrunden.','Less than 5: round down.','Moins de 5 : on arrondit en dessous.'),n+' ≈ '+r]);});
+topic('m3-addsub1000',3,1,['Plus und Minus bis 1000','Adding and subtracting to 1000','Additions et soustractions jusqu’à 1000'],
+ ['Zerlege die zweite Zahl in Hunderter, Zehner und Einer und rechne Schritt für Schritt: 456 + 237 = 456 + 200 + 30 + 7.','Split the second number into hundreds, tens and ones and go step by step: 456 + 237 = 456 + 200 + 30 + 7.','Décompose le deuxième nombre en centaines, dizaines et unités et avance pas à pas : 456 + 237 = 456 + 200 + 30 + 7.'],['sum','difference'],
+ lv=>{const plus=Math.random()<.5;let a,b;if(lv===1){a=ri(1,8)*100+ri(0,9)*10;b=ri(1,9-Math.floor(a/100))*100;if(!plus){a=ri(3,9)*100+ri(0,9)*10;b=ri(1,Math.floor(a/100)-1)*100;}}
+  else if(plus){a=ri(120,700);b=ri(101,999-a);}else{a=ri(300,999);b=ri(101,a-50);}
+  const bh=b-b%100,bz=b%100-b%10,be=b%10;const op=plus?'+':'−';const f=(x,y)=>plus?x+y:x-y;const it=numItem(a+' '+op+' '+b+' = ?',f(a,b));
+  return steps(it,[X('Zerlege ','Split ','Décompose ')+b+' = '+[bh,bz,be].filter(Boolean).join(' + ')+'.',a+' '+op+' '+bh+' = '+f(a,bh)+(bz?', '+f(a,bh)+' '+op+' '+bz+' = '+f(a,bh+bz):'')+'.',be?f(a,bh+bz)+' '+op+' '+be+' = '+f(a,b):a+' '+op+' '+b+' = '+f(a,b)]);});
+topic('m3-written',3,1,['Schriftlich addieren und subtrahieren','Written addition and subtraction','Addition et soustraction posées'],
+ ['Schreibe die Zahlen stellengerecht untereinander: Einer unter Einer. Rechne von rechts nach links und notiere den Übertrag.','Write the numbers in columns: ones under ones. Work from right to left and carry over.','Écris les nombres en colonnes : unités sous unités. Calcule de droite à gauche et note la retenue.'],['carry'],
+ lv=>{const plus=Math.random()<.5;let a,b;if(plus){a=ri(lv===1?100:200,lv===1?499:799);b=ri(100,999-a);}else{a=ri(400,999);b=ri(101,a-10);}
+  const op=plus?'+':'−';const res=plus?a+b:a-b;const it=numItem(X('Rechne schriftlich.','Work it out in columns.','Pose le calcul.'),res,{fig:()=>figColumns(a,b,op)});
+  const e1=plus?a%10+b%10:a%10-b%10;return steps(it,[X('Beginne rechts bei den Einern: ','Start on the right with the ones: ','Commence à droite par les unités : ')+a%10+' '+op+' '+b%10+(plus?' = '+e1+(e1>9?X(': schreibe ',': write ',' : écris ')+e1%10+X(', Übertrag 1.',', carry 1.',', retenue 1.'):'.'):(e1<0?X(': geht nicht, borge 1 Zehner.',': not possible, borrow 1 ten.',' : impossible, emprunte 1 dizaine.'):' = '+e1+'.')),X('Dann die Zehner, dann die Hunderter. Übertrag nicht vergessen!','Then the tens, then the hundreds. Don’t forget the carry!','Puis les dizaines, puis les centaines. N’oublie pas la retenue !'),a+' '+op+' '+b+' = '+res]);});
+topic('m3-mult',3,1,['Multiplizieren','Multiplying','Multiplier'],
+ ['Mit Zehnerzahlen rechnest du wie im Einmaleins und hängst eine 0 an: 4 · 30 = 4 · 3 · 10 = 120.','With tens you use the times table and add a 0: 4 · 30 = 4 · 3 · 10 = 120.','Avec des dizaines, utilise les tables et ajoute un 0 : 4 · 30 = 4 · 3 · 10 = 120.'],['product','factor'],
+ lv=>{const a=ri(2,9);if(lv===1){const b=ri(2,10);const it=numItem(a+' · '+b+' = ?',a*b);return steps(it,[X('Nutze eine Kernaufgabe: ','Use a key fact: ','Utilise un calcul clé : ')+'5 · '+b+' = '+5*b+'.',(a>5?'+ ':'− ')+Math.abs(a-5)+' · '+b+'.',a+' · '+b+' = '+a*b]);}
+  if(lv===2){const b=ri(2,9)*10;const it=numItem(a+' · '+b+' = ?',a*b);return steps(it,[a+' · '+b+' = '+a+' · '+b/10+' · 10.',a+' · '+b/10+' = '+a*b/10+'.',a*b/10+' · 10 = '+a*b]);}
+  const b=ri(12,19);const it=numItem(a+' · '+b+' = ?',a*b);return steps(it,[X('Zerlege ','Split ','Décompose ')+b+' = 10 + '+(b-10)+'.',a+' · 10 = '+10*a+', '+a+' · '+(b-10)+' = '+a*(b-10)+'.',10*a+' + '+a*(b-10)+' = '+a*b]);});
+topic('m3-divrest',3,1,['Teilen mit Rest','Division with remainder','Division avec reste'],
+ ['Nicht jede Zahl lässt sich ohne Rest teilen: 23 : 4 = 5 Rest 3, weil 5 · 4 = 20 und 23 − 20 = 3.','Not every number divides exactly: 23 : 4 = 5 remainder 3, because 5 · 4 = 20 and 23 − 20 = 3.','Tous les nombres ne se divisent pas exactement : 23 : 4 = 5 reste 3, car 5 · 4 = 20 et 23 − 20 = 3.'],['quotient','remainder'],
+ lv=>{const b=ri(2,lv===1?5:9),q=ri(2,9),r=ri(lv===1?0:1,b-1),n=b*q+r;
+  const it=numItem(n+' : '+b+' = ?',0,{fields:[{label:X('Ergebnis','result','résultat'),ans:q},{label:X('Rest','remainder','reste'),ans:r}],answer:q+' '+X('Rest','R','reste')+' '+r});
+  return steps(it,[X('Welche Zahl aus der ','Which number in the ','Quel nombre de la table de ')+b+X('er-Reihe ist am nächsten unter ',' times table is just below ',' est juste en dessous de ')+n+'?',q+' · '+b+' = '+q*b+'. '+X('Wie viel fehlt bis ','How much is left to ','Combien reste-t-il jusqu’à ')+n+'?',n+' : '+b+' = '+q+' '+X('Rest','remainder','reste')+' '+r]);});
+topic('m3-missing',3,1,['Platzhalter und Umkehraufgaben','Missing numbers and inverse operations','Nombres manquants et opérations inverses'],
+ ['Eine Umkehraufgabe hilft: Ist ? + 45 = 120, dann rechnest du 120 − 45. Ist 3 · ? = 24, dann rechnest du 24 : 3.','An inverse operation helps: if ? + 45 = 120, work out 120 − 45. If 3 · ? = 24, work out 24 : 3.','L’opération inverse aide : si ? + 45 = 120, calcule 120 − 45. Si 3 · ? = 24, calcule 24 : 3.'],['inverse'],
+ lv=>{const k=ri(0,lv===1?1:3);let q,v,inv;if(k===0){const a=ri(20,400),b=ri(20,500);q='? + '+b+' = '+(a+b);v=a;inv=(a+b)+' − '+b;}else if(k===1){const a=ri(100,900),b=ri(10,a-10);q=a+' − ? = '+(a-b);v=b;inv=a+' − '+(a-b);}
+  else if(k===2){const a=ri(2,9),b=ri(2,10);q=a+' · ? = '+a*b;v=b;inv=a*b+' : '+a;}else{const a=ri(2,9),b=ri(2,10);q='? : '+a+' = '+b;v=a*b;inv=b+' · '+a;}
+  const it=numItem(q,v);return steps(it,[X('Welche Umkehraufgabe passt?','Which inverse operation fits?','Quelle opération inverse convient ?'),X('Rechne ','Work out ','Calcule ')+inv+'.',inv+' = '+v]);});
+topic('m3-estimate',3,1,['Überschlagen','Estimating','Estimer'],
+ ['Beim Überschlag rundest du die Zahlen und rechnest ungefähr: 398 + 205 ≈ 400 + 200 = 600. So kannst du dein Ergebnis prüfen.','To estimate, round the numbers and calculate roughly: 398 + 205 ≈ 400 + 200 = 600. That lets you check your answer.','Pour estimer, arrondis les nombres et calcule à peu près : 398 + 205 ≈ 400 + 200 = 600. Ainsi tu peux vérifier ton résultat.'],['estimate','round'],
+ lv=>{const a=ri(1,7)*100+ri(-12,12),b=ri(1,8-Math.round(a/100))*100+ri(-12,12);const plus=lv===1||Math.random()<.6;const A=Math.round(a/100)*100,B=Math.round(b/100)*100;
+  const exact=plus?a+b:Math.abs(a-b);const right=plus?A+B:Math.abs(A-B);const ex=plus?a+' + '+b:Math.max(a,b)+' − '+Math.min(a,b);
+  const it=choiceItem(X('Ungefähr wie viel ist ','Roughly how much is ','Environ combien font ')+ex+'?',fmtN(right),[fmtN(right+100),fmtN(Math.max(0,right-100)),fmtN(right+1000)].filter(x=>x!==fmtN(right)));
+  return steps(it,[X('Runde beide Zahlen auf Hunderter: ','Round both numbers to hundreds: ','Arrondis les deux nombres à la centaine : ')+(plus?A+' + '+B:Math.max(A,B)+' − '+Math.min(A,B))+'.',X('Rechne jetzt mit den runden Zahlen.','Now calculate with the round numbers.','Calcule maintenant avec les nombres ronds.'),'≈ '+right+X(' (genau: ',' (exactly: ',' (exactement : ')+exact+')']);});
+topic('m3-word',3,1,['Sachaufgaben','Word problems','Problèmes'],
+ ['Lies genau: Was weisst du, was ist gesucht? Schreibe die Rechnung auf und prüfe am Schluss, ob die Antwort passt.','Read carefully: what do you know, what are you looking for? Write the calculation and check that the answer makes sense.','Lis bien : que sais-tu, que cherches-tu ? Écris le calcul et vérifie que la réponse a du sens.'],['sum','difference','product'],
+ lv=>{const n=pick(NAMES);const k=ri(0,lv===1?2:6);let q,v,st;
+  if(k===0){const a=ri(20,80),b=ri(5,40);q=X(`${n} hat ${a} Sammelbilder und bekommt ${b} dazu. Wie viele sind es jetzt?`,`${n} has ${a} stickers and gets ${b} more. How many are there now?`,`${n} a ${a} images et en reçoit ${b} de plus. Combien en a-t-il maintenant ?`);v=a+b;st=[X('Es kommt etwas dazu: plus.','Something is added: plus.','On ajoute quelque chose : plus.'),a+' + '+b+'.',a+' + '+b+' = '+v];}
+  else if(k===1){const a=ri(40,95),b=ri(5,a-5);q=X(`Im Bus sitzen ${a} Personen. ${b} steigen aus. Wie viele sind noch im Bus?`,`There are ${a} people on the bus. ${b} get off. How many are still on the bus?`,`Il y a ${a} personnes dans le bus. ${b} descendent. Combien en reste-t-il ?`);v=a-b;st=[X('Es wird weniger: minus.','It gets fewer: minus.','Il y en a moins : moins.'),a+' − '+b+'.',a+' − '+b+' = '+v];}
+  else if(k===2){const kk=ri(2,9),p=ri(2,9);q=X(`${n} kauft ${kk} Hefte zu je ${p} Franken. Wie viele Franken kostet das?`,`${n} buys ${kk} notebooks at ${p} francs each. How many francs does that cost?`,`${n} achète ${kk} cahiers à ${p} francs chacun. Combien de francs cela coûte-t-il ?`);v=kk*p;st=[X('Gleich viel, mehrmals: mal.','The same amount several times: times.','Plusieurs fois la même quantité : fois.'),kk+' · '+p+'.',kk+' · '+p+' = '+v];}
+  else if(k===3){const p=ri(12,45);q=X(`Ein Buch kostet ${p} Franken. ${n} bezahlt mit einer 50-Franken-Note. Wie viel Rückgeld gibt es?`,`A book costs ${p} francs. ${n} pays with a 50-franc note. How much change is there?`,`Un livre coûte ${p} francs. ${n} paie avec un billet de 50 francs. Combien lui rend-on ?`);v=50-p;st=[X('Rückgeld = bezahlt − Preis.','Change = paid − price.','Monnaie rendue = payé − prix.'),'50 − '+p+'.','50 − '+p+' = '+v];}
+  else if(k===4){const kk=ri(2,8),e=ri(2,9);q=X(`${kk*e} Äpfel werden gleichmässig auf ${kk} Kinder verteilt. Wie viele bekommt jedes Kind?`,`${kk*e} apples are shared equally among ${kk} children. How many does each child get?`,`${kk*e} pommes sont partagées également entre ${kk} enfants. Combien chaque enfant en reçoit-il ?`);v=e;st=[X('Gleichmässig verteilen: geteilt.','Share equally: divide.','Partager également : diviser.'),kk*e+' : '+kk+'.',kk*e+' : '+kk+' = '+e];}
+  else if(k===5){const a=ri(3,9),b=ri(2,6);q=X(`Auf einem Bauernhof leben ${a} Hühner und ${b} Kühe. Wie viele Beine haben sie zusammen?`,`On a farm there are ${a} hens and ${b} cows. How many legs do they have altogether?`,`Dans une ferme, il y a ${a} poules et ${b} vaches. Combien de pattes ont-elles en tout ?`);v=2*a+4*b;st=[X('Ein Huhn hat 2 Beine, eine Kuh 4.','A hen has 2 legs, a cow 4.','Une poule a 2 pattes, une vache 4.'),a+' · 2 = '+2*a+', '+b+' · 4 = '+4*b+'.',2*a+' + '+4*b+' = '+v];}
+  else{const a=ri(30,80),b=ri(10,40),c=ri(5,a-5);q=X(`Im Bus sitzen ${a} Personen. ${c} steigen aus und ${b} steigen ein. Wie viele sitzen jetzt im Bus?`,`There are ${a} people on the bus. ${c} get off and ${b} get on. How many are on the bus now?`,`Il y a ${a} personnes dans le bus. ${c} descendent et ${b} montent. Combien y en a-t-il maintenant ?`);v=a-c+b;st=[X('Zwei Schritte: zuerst aussteigen, dann einsteigen.','Two steps: first getting off, then getting on.','Deux étapes : d’abord ceux qui descendent, puis ceux qui montent.'),a+' − '+c+' = '+(a-c)+'.',(a-c)+' + '+b+' = '+v];}
+  return steps(numItem(q,v),[X('Was weisst du? Was ist gesucht?','What do you know? What are you looking for?','Que sais-tu ? Que cherches-tu ?')].concat(st));});
+topic('m3-perimeter',3,2,['Umfang und Fläche auf dem Gitter','Perimeter and area on a grid','Périmètre et aire sur quadrillage'],
+ ['Der Umfang ist der Weg rund um die Figur: alle Seiten zusammen. Die Fläche zählst du in Häuschen.','The perimeter is the distance around the shape: all sides together. The area is counted in squares.','Le périmètre est le tour de la figure : tous les côtés ensemble. L’aire se compte en carreaux.'],['perimeter','area'],
+ lv=>{const w=ri(2,7),hh=ri(2,5);const area=lv===3&&Math.random()<.5;
+  const it=numItem(area?X('Wie viele Häuschen gross ist das Rechteck?','How many squares does the rectangle cover?','Combien de carreaux le rectangle couvre-t-il ?'):X('Wie lang ist der Umfang? (1 Häuschen = 1 cm)','How long is the perimeter? (1 square = 1 cm)','Quel est le périmètre ? (1 carreau = 1 cm)'),area?w*hh:2*(w+hh),{fig:()=>figRectGrid(w,hh,area)});
+  return steps(it,area?[X('Zähle, wie viele Häuschen in einer Reihe sind: ','Count the squares in one row: ','Compte les carreaux d’une rangée : ')+w+'.',X('Es gibt ','There are ','Il y a ')+hh+X(' Reihen.',' rows.',' rangées.'),hh+' · '+w+' = '+w*hh]:[X('Das Rechteck ist ','The rectangle is ','Le rectangle mesure ')+w+X(' cm lang und ',' cm long and ',' cm de long et ')+hh+X(' cm breit.',' cm wide.',' cm de large.'),X('Gehe einmal ganz herum: ','Go all the way round: ','Fais tout le tour : ')+[w,hh,w,hh].join(' + ')+'.',[w,hh,w,hh].join(' + ')+' = '+2*(w+hh)+' cm']);});
+topic('m3-angles',3,2,['Rechte Winkel','Right angles','Angles droits'],
+ ['Ein rechter Winkel sieht aus wie die Ecke eines Blatts Papier. Du kannst ihn mit einem gefalteten Papier prüfen.','A right angle looks like the corner of a sheet of paper. You can check it with a folded piece of paper.','Un angle droit ressemble au coin d’une feuille de papier. Tu peux le vérifier avec un papier plié.'],['rightangle'],
+ lv=>{const kinds=shuffle(['right','acute','obtuse']);const k=kinds.indexOf('right');const L=['A','B','C'];
+  const it=choiceItem(X('Welcher Winkel ist ein rechter Winkel?','Which angle is a right angle?','Quel angle est un angle droit ?'),L[k],L.filter((x,i)=>i!==k),{fig:()=>figAngles(kinds)});
+  return steps(it,[X('Ein rechter Winkel ist wie die Ecke eines Blatts.','A right angle is like the corner of a sheet of paper.','Un angle droit est comme le coin d’une feuille.'),X('Ein Schenkel steht genau senkrecht auf dem anderen.','One arm stands exactly upright on the other.','Un côté est exactement perpendiculaire à l’autre.'),L[k]]);});
+topic('m3-mirror',3,2,['Spiegeln auf dem Gitter','Reflecting on a grid','Symétrie sur quadrillage'],
+ ['Beim Spiegeln bleibt jedes Feld gleich weit von der Spiegelachse entfernt, nur auf der anderen Seite.','When reflecting, every square stays the same distance from the mirror line, just on the other side.','Dans une symétrie, chaque case reste à la même distance de l’axe, mais de l’autre côté.'],['axis','mirror'],
+ lv=>{const rows=lv===1?5:6,half=lv===1?3:4,cols=half*2;const f=new Set();const n=lv===1?4:lv===2?6:8;while(f.size<n)f.add(ri(0,rows-1)+','+ri(0,half-1));
+  const target=new Set([...f].map(k=>{const[r,c]=k.split(',').map(Number);return r+','+(cols-1-c);}));
+  const it={type:'grid',prompt:X('Spiegle die Figur an der roten Linie.','Reflect the shape in the red line.','Trace le symétrique de la figure par rapport à la ligne rouge.'),rows,cols,filled:[...f],target:[...target],axis:half,answer:X('Spiegelbild','mirror image','image miroir')};
+  return steps(it,[X('Beginne mit dem Feld, das am nächsten an der Linie ist.','Start with the square closest to the line.','Commence par la case la plus proche de la ligne.'),X('Zähle die Häuschen bis zur Linie und gleich viele auf der anderen Seite.','Count the squares to the line and the same number on the other side.','Compte les carreaux jusqu’à la ligne et autant de l’autre côté.'),X('Prüfe jede Zeile.','Check every row.','Vérifie chaque ligne.')]);});
+topic('m3-length',3,3,['Längen umrechnen','Converting lengths','Convertir des longueurs'],
+ ['1 km = 1000 m, 1 m = 10 dm = 100 cm, 1 cm = 10 mm.','1 km = 1000 m, 1 m = 10 dm = 100 cm, 1 cm = 10 mm.','1 km = 1000 m, 1 m = 10 dm = 100 cm, 1 cm = 10 mm.'],['m','cm','mm','km'],
+ lv=>{const P=lv===1?[['m','cm',100],['cm','mm',10]]:lv===2?[['m','cm',100],['cm','mm',10],['km','m',1000],['m','dm',10],['dm','cm',10]]:[['m','cm',100],['km','m',1000],['cm','mm',10],['m','mm',1000]];
+  const[u1,u2,f]=pick(P);const back=lv>=2&&Math.random()<.5;const k=ri(1,9)*(back?1:1);let q,v;if(back){q=k*f+' '+u2+' = ? '+u1;v=k;}else{q=k+' '+u1+' = ? '+u2;v=k*f;}
+  return steps(numItem(q,v),['1 '+u1+' = '+f+' '+u2+'.',back?X('Wie oft passt ','How many times does ','Combien de fois ')+f+X(' in ',' go into ',' dans ')+k*f+'?':k+' · '+f+'.',q.replace('?',String(v))]);});
+topic('m3-mass',3,3,['Gewicht: kg und g','Mass: kg and g','Masse : kg et g'],
+ ['1 kg = 1000 g. Ein halbes Kilogramm sind 500 g.','1 kg = 1000 g. Half a kilogram is 500 g.','1 kg = 1000 g. Un demi-kilo, c’est 500 g.'],['kg','g'],
+ lv=>{if(lv===1||Math.random()<.5){const k=ri(1,9);const back=Math.random()<.5;const it=numItem(back?k*1000+' g = ? kg':k+' kg = ? g',back?k:k*1000);return steps(it,['1 kg = 1000 g.',back?k*1000+' : 1000.':k+' · 1000.',back?String(k):String(k*1000)]);}
+  const a=ri(1,9)*100,b=ri(1,9)*100;const it=numItem(a+' g + '+b+' g = ? g',a+b);return steps(it,[X('Beide sind in Gramm.','Both are in grams.','Les deux sont en grammes.'),a+' + '+b+'.',(a+b)+' g']);});
+topic('m3-capacity',3,3,['Hohlmasse: l, dl, ml','Capacity: l, dl, ml','Contenances : l, dl, ml'],
+ ['1 l = 10 dl = 1000 ml und 1 dl = 100 ml.','1 l = 10 dl = 1000 ml and 1 dl = 100 ml.','1 l = 10 dl = 1000 ml et 1 dl = 100 ml.'],['liter'],
+ lv=>{const P=[['l','dl',10],['dl','ml',100],['l','ml',1000]];const[u1,u2,f]=pick(lv===1?P.slice(0,1):P);const k=ri(1,9);const it=numItem(k+' '+u1+' = ? '+u2,k*f);return steps(it,['1 '+u1+' = '+f+' '+u2+'.',k+' · '+f+'.',k+' '+u1+' = '+k*f+' '+u2]);});
+topic('m3-timespan',3,3,['Uhrzeit und Zeitspannen','Times and time spans','Heures et durées'],
+ ['Zeitspannen rechnest du in Schritten: zuerst bis zur vollen Stunde, dann die ganzen Stunden, dann den Rest.','Work out time spans in steps: first to the full hour, then whole hours, then the rest.','Calcule les durées par étapes : d’abord jusqu’à l’heure pile, puis les heures entières, puis le reste.'],['hour','minute'],
+ lv=>{if(Math.random()<.4){const hh=ri(1,12),mm=ri(0,59);const it=numItem(X('Wie spät ist es? (Stunden : Minuten)','What time is it? (hours : minutes)','Quelle heure est-il ? (heures : minutes)'),0,{fig:()=>figClock(hh,mm).el,fields:[{label:'h',ans:hh},{label:'min',ans:mm}],answer:hh+':'+pad(mm)});
+   return steps(it,[X('Zähle beim langen Zeiger in 5er-Schritten bis zur letzten Zahl, dann einzeln weiter.','For the long hand, count in fives to the last number, then in ones.','Pour la grande aiguille, compte de 5 en 5 jusqu’au dernier chiffre, puis de 1 en 1.'),X('Der kurze Zeiger ist nach der ','The short hand is past ','La petite aiguille a dépassé le ')+hh+'.',hh+':'+pad(mm)]);}
+  const h1=ri(7,15),m1=ri(0,11)*5,d=lv===1?pick([30,60,90]):ri(4,30)*5;const tot=h1*60+m1+d;const h2=Math.floor(tot/60),m2=tot%60;const toFull=m1?60-m1:0;
+  const it=numItem(X(`Von ${h1}:${pad(m1)} bis ${h2}:${pad(m2)}. Wie viele Minuten sind das?`,`From ${h1}:${pad(m1)} to ${h2}:${pad(m2)}. How many minutes is that?`,`De ${h1}:${pad(m1)} à ${h2}:${pad(m2)}. Combien de minutes cela fait-il ?`),d);
+  return steps(it,[toFull&&toFull<d?X('Bis zur vollen Stunde: ','To the full hour: ','Jusqu’à l’heure pile : ')+toFull+' min.':X('Zähle die ganzen Stunden: 1 h = 60 min.','Count the whole hours: 1 h = 60 min.','Compte les heures entières : 1 h = 60 min.'),X('Dann weiter bis ','Then on to ','Puis jusqu’à ')+h2+':'+pad(m2)+'.',d+' min']);});
+topic('m3-change',3,3,['Geld: Rückgeld und Preise','Money: change and prices','L’argent : monnaie et prix'],
+ ['Rückgeld = bezahlter Betrag − Preis. Rechne Franken und Rappen getrennt oder alles in Rappen.','Change = amount paid − price. Work out francs and centimes separately, or everything in centimes.','Monnaie rendue = montant payé − prix. Calcule francs et centimes séparément, ou tout en centimes.'],['franc','rappen'],
+ lv=>{const price=lv===1?ri(2,9)*100+pick([0,50]):ri(150,1900)+(Math.random()<.5?0:5);const paid=[500,1000,2000,5000].find(x=>x>price);
+  const it=numItem(X('Du kaufst etwas für ','You buy something for ','Tu achètes quelque chose pour ')+fmtFr(price)+X(' und bezahlst mit ',' and pay with ',' et tu paies avec ')+fmtFr(paid)+X('. Wie viel Rückgeld bekommst du? (in Franken)','. How much change do you get? (in francs)','. Combien te rend-on ? (en francs)'),(paid-price)/100,{keys:',',answer:fmtFr(paid-price)});
+  return steps(it,[X('Rechne in Rappen: ','Work in centimes: ','Calcule en centimes : ')+paid+' − '+price+'.',X('Ergänze vom Preis bis zum bezahlten Betrag.','Count up from the price to the amount paid.','Complète du prix jusqu’au montant payé.'),fmtFr(paid-price)]);});
+topic('m3-chance',3,3,['Zufall: sicher, möglich, unmöglich','Chance: certain, possible, impossible','Hasard : certain, possible, impossible'],
+ ['Sicher heisst: es passiert immer. Unmöglich heisst: es passiert nie. Möglich heisst: es kann passieren, muss aber nicht.','Certain means it always happens. Impossible means it never happens. Possible means it can happen, but does not have to.','Certain veut dire que ça arrive toujours. Impossible, que ça n’arrive jamais. Possible, que ça peut arriver, mais pas forcément.'],['certain','possible','impossible'],
+ lv=>{const r=pick([0,ri(1,5),ri(1,5)]),b=r===0?ri(3,6):pick([0,ri(1,5)]);const col=Math.random()<.5?'r':'b';const nr=col==='r'?r:b,nt=r+b;
+  const C=X('sicher','certain','certain'),P=X('möglich','possible','possible'),I=X('unmöglich','impossible','impossible');const right=nr===0?I:nr===nt?C:P;
+  const it=choiceItem(X('Du ziehst ohne hinzuschauen eine Kugel. Sie ist ','Without looking, you draw a marble. It is ','Sans regarder, tu tires une bille. Elle est ')+(col==='r'?X('rot','red','rouge'):X('blau','blue','bleue'))+X('. Ist das sicher, möglich oder unmöglich?','. Is that certain, possible or impossible?','. Est-ce certain, possible ou impossible ?'),right,[C,P,I].filter(x=>x!==right),{fig:()=>figMarbles(r,b)});
+  return steps(it,[X('Zähle die ','Count the ','Compte les billes ')+(col==='r'?X('roten','red','rouges'):X('blauen','blue','bleues'))+X(' Kugeln: ',' marbles: ',' : ')+nr+'.',X('Wie viele Kugeln sind es insgesamt? ','How many marbles are there in total? ','Combien y a-t-il de billes en tout ? ')+nt+'.',right]);});
+topic('m3-combi',3,3,['Kombinieren','Combinations','Combinaisons'],
+ ['Wenn du jedes Teil mit jedem kombinierst, rechnest du mal: 3 T-Shirts und 2 Hosen ergeben 3 · 2 = 6 Möglichkeiten.','If you combine every item with every other, multiply: 3 T-shirts and 2 trousers give 3 · 2 = 6 outfits.','Si tu combines chaque élément avec chaque autre, multiplie : 3 t-shirts et 2 pantalons donnent 3 · 2 = 6 tenues.'],['combination'],
+ lv=>{const a=ri(2,lv===1?3:5),b=ri(2,lv===1?3:4);const n=pick(NAMES);const it=numItem(X(`${n} hat ${a} T-Shirts und ${b} Hosen. Wie viele verschiedene Kombinationen gibt es?`,`${n} has ${a} T-shirts and ${b} pairs of trousers. How many different outfits are there?`,`${n} a ${a} t-shirts et ${b} pantalons. Combien de tenues différentes y a-t-il ?`),a*b);
+  return steps(it,[X('Nimm das erste T-Shirt: Es passt zu jeder Hose, also ','Take the first T-shirt: it goes with every pair of trousers, so ','Prends le premier t-shirt : il va avec chaque pantalon, donc ')+b+X(' Möglichkeiten.',' outfits.',' tenues.'),X('Jedes der ','Each of the ','Chacun des ')+a+X(' T-Shirts hat ',' T-shirts has ',' t-shirts a ')+b+X(' Möglichkeiten.',' outfits.',' tenues.'),a+' · '+b+' = '+a*b]);});
+topic('m3-charts',3,3,['Diagramme lesen','Reading charts','Lire des diagrammes'],
+ ['Lies zuerst die Beschriftung der Achse. Jeder Strich kann für mehr als 1 stehen, zum Beispiel für 5.','Read the axis labels first. Each line can stand for more than 1, for example for 5.','Lis d’abord les graduations de l’axe. Chaque trait peut valoir plus que 1, par exemple 5.'],['barchart'],
+ lv=>{const step=lv===1?5:10;const fr=shuffle(FRUIT).slice(0,4);const rows=fr.map(f=>({label:nm3(f),v:ri(1,lv===1?8:9)*step/(lv===3?2:1)}));const tot=rows.reduce((s,r)=>s+r.v,0);
+  const a=ri(0,3);let b=(a+ri(1,3))%4;const hi=rows[a].v>=rows[b].v?a:b,lo=hi===a?b:a;const k=lv===1?0:ri(0,2);let q,v,st;
+  if(k===0){q=X('Wie viele ','How many ','Combien de ')+rows[a].label+'?';v=rows[a].v;st=[X('Jede Linie steht für ','Each line stands for ','Chaque ligne vaut ')+step+'.',X('Wo endet die Säule ','Where does the bar for ','Où se termine la barre ')+rows[a].label+'?',String(v)];}
+  else if(k===1){q=X('Wie viele ','How many ','Combien de ')+rows[hi].label+X(' mehr als ',' more than ',' de plus que de ')+rows[lo].label+'?';v=rows[hi].v-rows[lo].v;st=[rows[hi].label+': '+rows[hi].v+', '+rows[lo].label+': '+rows[lo].v+'.',X('Unterschied: minus.','Difference: subtract.','Différence : soustraire.'),rows[hi].v+' − '+rows[lo].v+' = '+v];}
+  else{q=X('Wie viele Früchte sind es insgesamt?','How many fruits are there altogether?','Combien de fruits y a-t-il en tout ?');v=tot;st=[X('Lies alle vier Säulen ab.','Read all four bars.','Lis les quatre barres.'),rows.map(r=>r.v).join(' + ')+'.',rows.map(r=>r.v).join(' + ')+' = '+tot];}
+  return steps(numItem(q,v,{fig:()=>figBars(rows,step)}),st);});
+/* ---- free arithmetic for tailored math games ---- */
+function randIn(lo,hi,set){if(set==='nat')return ri(Math.max(0,lo),Math.max(0,hi));if(set==='dec')return ri(lo*10,hi*10)/10;return ri(lo,hi);}
+function genArith(lv,o){const sets=(o.sets&&o.sets.length?o.sets:['nat']);const ops=(o.ops&&o.ops.length?o.ops:['+','-']);let[lo,hi]=o.range||[0,100];if(hi<=lo)hi=lo+10;
+ const set=pick(sets);const op=pick(ops);const sym={'+':'+','-':'−','*':'·','/':':'}[op];
+ if(set==='cx'){const r=()=>ri(Math.max(-9,Math.min(lo,-1)),Math.min(9,Math.max(hi,1)));const a=[r(),r()],b=[r(),r()];const o2=op==='/'?'*':op;
+  const res=o2==='+'?[a[0]+b[0],a[1]+b[1]]:o2==='-'?[a[0]-b[0],a[1]-b[1]]:[a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]];
+  const cs=z=>{const re=z[0],im=z[1];const ims=Math.abs(im)===1?'i':Math.abs(im)+'i';return im===0?fmtN(re):re===0?(im<0?'−':'')+ims:fmtN(re)+(im<0?' − ':' + ')+ims;};
+  const it=numItem('('+cs(a)+') '+({'+':'+','-':'−','*':'·'}[o2])+' ('+cs(b)+') = ?',{re:res[0],im:res[1]},{keys:'-+i',answer:cs(res)});
+  return steps(it,o2==='*'?[X('Multipliziere jeden Teil mit jedem: (a + bi)(c + di) = ac + adi + bci + bd·i².','Multiply every part by every part: (a + bi)(c + di) = ac + adi + bci + bd·i².','Multiplie chaque partie par chaque partie : (a + bi)(c + di) = ac + adi + bci + bd·i².'),X('Denke daran: i² = −1.','Remember: i² = −1.','Rappelle-toi : i² = −1.'),cs(res)]
+   :[X('Rechne Realteil und Imaginärteil getrennt.','Work out the real part and the imaginary part separately.','Calcule séparément la partie réelle et la partie imaginaire.'),X('Realteil: ','Real part: ','Partie réelle : ')+a[0]+' '+sym+' '+par(b[0])+' = '+res[0]+'. '+X('Imaginärteil: ','Imaginary part: ','Partie imaginaire : ')+a[1]+' '+sym+' '+par(b[1])+' = '+res[1]+'.',cs(res)]);}
+ if(set==='frac'){const dmax=lv===1?6:lv===2?10:12;const mk=()=>{const d=ri(2,dmax);return[ri(lo<0?-d:1,Math.max(1,Math.min(hi,3))*d),d];};let a=mk(),b=mk();
+  const red=(n,d)=>{if(d<0){n=-n;d=-d;}const g=gcd(n,d);return[n/g,d/g];};let res;
+  if(op==='+')res=red(a[0]*b[1]+b[0]*a[1],a[1]*b[1]);else if(op==='-')res=red(a[0]*b[1]-b[0]*a[1],a[1]*b[1]);else if(op==='*')res=red(a[0]*b[0],a[1]*b[1]);else{if(!b[0])b[0]=1;res=red(a[0]*b[1],a[1]*b[0]);}
+  const F=f=>'{f:'+(f[0]<0?'−'+(-f[0]):f[0])+'/'+f[1]+'}';const txt=f=>f[1]===1?fmtN(f[0]):(f[0]<0?'−':'')+Math.abs(f[0])+'/'+f[1];
+  const it=numItem(F(a)+' '+sym+' '+(b[0]<0?'('+F(b)+')':F(b))+' = ?',{re:res[0]/res[1],im:0},{keys:'/-',answer:txt(res),reduce:lv===3});
+  const L=a[1]*b[1]/gcd(a[1],b[1]);
+  return steps(it,op==='+'||op==='-'?[X('Bringe beide Brüche auf den gleichen Nenner: ','Give both fractions the same denominator: ','Mets les deux fractions au même dénominateur : ')+L+'.',X('Rechne dann nur mit den Zählern und kürze am Schluss.','Then work only with the numerators and simplify at the end.','Calcule ensuite seulement avec les numérateurs et simplifie à la fin.'),txt(res)]
+   :op==='*'?[X('Zähler mal Zähler, Nenner mal Nenner.','Numerator times numerator, denominator times denominator.','Numérateur fois numérateur, dénominateur fois dénominateur.'),X('Kürze das Ergebnis.','Simplify the result.','Simplifie le résultat.'),txt(res)]
+   :[X('Teilen durch einen Bruch heisst: mit dem Kehrwert malnehmen.','Dividing by a fraction means multiplying by its reciprocal.','Diviser par une fraction, c’est multiplier par son inverse.'),X('Der Kehrwert von ','The reciprocal of ','L’inverse de ')+txt(b)+X(' ist ',' is ',' est ')+txt([b[1],b[0]])+'.',txt(res)]);}
+ let a=randIn(lo,hi,set),b=randIn(lo,hi,set);if(op==='-'&&set==='nat'&&b>a)[a,b]=[b,a];
+ if(op==='/'){if(set==='dec'){b=ri(2,9);const q=ri(1,Math.max(2,Math.round(Math.abs(hi)*10)))/10;a=Math.round(q*b*10)/10;}else{b=ri(1,Math.max(2,Math.min(12,Math.abs(hi))))*(set==='int'&&Math.random()<.5?-1:1);{let l2=Math.ceil(lo/Math.abs(b)),h2=Math.floor(hi/Math.abs(b));if(h2<l2)h2=l2;a=b*randIn(l2,h2,set==='nat'?'nat':'int');}}}
+ if(op==='*'&&set!=='dec'){b=ri(set==='int'?-12:0,12);}
+ const res=Math.round((op==='+'?a+b:op==='-'?a-b:op==='*'?a*b:a/b)*1e6)/1e6;
+ const it=numItem(fmtN(a)+' '+sym+' '+par(b)+' = ?',res,{keys:(set==='int'||res<0?'-':'')+(set==='dec'?',':'')});
+ const neg=a<0||b<0;return steps(it,[neg?X('Achte auf die Vorzeichen: ','Watch the signs: ','Attention aux signes : ')+(op==='*'||op==='/'?X('minus mal minus ergibt plus, minus mal plus ergibt minus.','minus times minus is plus, minus times plus is minus.','moins fois moins donne plus, moins fois plus donne moins.'):X('minus eine negative Zahl ist plus.','subtracting a negative number is adding.','soustraire un nombre négatif, c’est ajouter.')):X('Überschlage zuerst ungefähr.','Estimate roughly first.','Estime d’abord à peu près.'),set==='dec'?X('Rechne ohne Komma und setze es am Schluss.','Work without the decimal point and put it back at the end.','Calcule sans virgule et remets-la à la fin.'):X('Zerlege eine Zahl in einfache Teile.','Split a number into easy parts.','Décompose un nombre en parties faciles.'),fmtN(a)+' '+sym+' '+par(b)+' = '+fmtN(res)]);}
+const MATH_ARITH={id:'arith',y:0,a:1,n:['Freies Rechnen','Free arithmetic','Calcul libre'],c:['Rechnen mit den Zahlen und Rechenarten, die für dieses Spiel eingestellt sind.','Calculating with the numbers and operations set for this game.','Calculer avec les nombres et les opérations choisis pour ce jeu.'],terms:['sum','difference','product','quotient'],g:genArith};
+function mtopic(id){return id==='arith'?MATH_ARITH:MT.find(x=>x.id===id);}
+function genItem(tp,lv,o){let it;for(let k=0;k<6;k++){try{it=tp.g(lv,o||{});break;}catch(e){console.warn(tp.id,e);}}if(!it)return null;
+ it.id=tp.id;it.topic=tp.id;it.difficulty=lv;it.gen=true;return it;}
+/* ---------- glossary ---------- */
+const GLOSS={tenframe:['Zehnerfeld','ten-frame','grille de dix','Ein Feld mit 2 Reihen zu 5 Plätzen. Voll hat es 10 Punkte.','A frame with 2 rows of 5 places. Full, it has 10 dots.','Une grille de 2 rangées de 5 cases. Pleine, elle a 10 points.'],
+ lt:['kleiner als (<)','less than (<)','plus petit que (<)','3 < 5 heisst: 3 ist kleiner als 5.','3 < 5 means: 3 is less than 5.','3 < 5 veut dire : 3 est plus petit que 5.'],
+ gt:['grösser als (>)','greater than (>)','plus grand que (>)','8 > 2 heisst: 8 ist grösser als 2.','8 > 2 means: 8 is greater than 2.','8 > 2 veut dire : 8 est plus grand que 2.'],
+ numberline:['Zahlenstrahl','number line','droite numérique','Eine Linie, auf der die Zahlen der Grösse nach geordnet sind, nach rechts immer grösser.','A line on which numbers are placed in order, getting bigger to the right.','Une ligne sur laquelle les nombres sont rangés dans l’ordre, de plus en plus grands vers la droite.'],
+ summand:['Summand','addend','terme','Eine der Zahlen, die addiert werden. In 3 + 4 sind 3 und 4 die Summanden.','One of the numbers being added. In 3 + 4, 3 and 4 are the addends.','Un des nombres qu’on additionne. Dans 3 + 4, 3 et 4 sont les termes.'],
+ sum:['Summe','sum','somme','Das Ergebnis einer Addition. 3 + 4 = 7: Die Summe ist 7.','The result of an addition. 3 + 4 = 7: the sum is 7.','Le résultat d’une addition. 3 + 4 = 7 : la somme est 7.'],
+ difference:['Differenz','difference','différence','Das Ergebnis einer Subtraktion. 9 − 4 = 5: Die Differenz ist 5.','The result of a subtraction. 9 − 4 = 5: the difference is 5.','Le résultat d’une soustraction. 9 − 4 = 5 : la différence est 5.'],
+ bridge10:['Zehnerübergang','bridging ten','passage de la dizaine','Wenn eine Rechnung über einen Zehner hinausgeht, zum Beispiel 8 + 5 über die 10.','When a calculation goes past a ten, for example 8 + 5 goes past 10.','Quand un calcul dépasse une dizaine, par exemple 8 + 5 dépasse 10.'],
+ double:['verdoppeln','double','doubler','Eine Zahl zweimal nehmen: das Doppelte von 6 ist 12.','Take a number twice: double 6 is 12.','Prendre un nombre deux fois : le double de 6 est 12.'],
+ half:['halbieren','halve','partager en deux','In zwei gleich grosse Teile teilen: die Hälfte von 12 ist 6.','Split into two equal parts: half of 12 is 6.','Partager en deux parts égales : la moitié de 12 est 6.'],
+ pattern:['Zahlenfolge','number sequence','suite de nombres','Zahlen, die nach einer Regel aufeinander folgen, zum Beispiel 2, 4, 6, 8.','Numbers that follow each other by a rule, for example 2, 4, 6, 8.','Des nombres qui se suivent selon une règle, par exemple 2, 4, 6, 8.'],
+ triangle:['Dreieck','triangle','triangle','Eine Figur mit 3 Ecken und 3 Seiten.','A shape with 3 corners and 3 sides.','Une figure avec 3 sommets et 3 côtés.'],
+ square:['Quadrat','square','carré','Ein Viereck mit 4 gleich langen Seiten und 4 rechten Winkeln.','A quadrilateral with 4 equal sides and 4 right angles.','Un quadrilatère avec 4 côtés égaux et 4 angles droits.'],
+ rectangle:['Rechteck','rectangle','rectangle','Ein Viereck mit 4 rechten Winkeln. Gegenüberliegende Seiten sind gleich lang.','A quadrilateral with 4 right angles. Opposite sides are equal.','Un quadrilatère avec 4 angles droits. Les côtés opposés sont égaux.'],
+ circle:['Kreis','circle','cercle','Eine runde Figur ohne Ecken. Jeder Punkt ist gleich weit vom Mittelpunkt entfernt.','A round shape without corners. Every point is the same distance from the centre.','Une figure ronde sans sommet. Chaque point est à la même distance du centre.'],
+ corner:['Ecke','corner (vertex)','sommet','Die Stelle, an der zwei Seiten zusammentreffen.','The point where two sides meet.','Le point où deux côtés se rejoignent.'],
+ left:['links','left','à gauche','Die Seite, auf der bei den meisten Menschen das Herz schlägt.','The side where most people’s heart beats.','Le côté où bat le cœur chez la plupart des gens.'],
+ right:['rechts','right','à droite','Die andere Seite als links.','The side opposite to left.','Le côté opposé à la gauche.'],
+ franc:['Franken (Fr.)','franc (CHF)','franc (fr.)','Die Schweizer Währung. 1 Franken = 100 Rappen.','The Swiss currency. 1 franc = 100 centimes (Rappen).','La monnaie suisse. 1 franc = 100 centimes.'],
+ rappen:['Rappen (Rp.)','centime (Rappen)','centime','Der hundertste Teil eines Frankens.','One hundredth of a franc.','Le centième d’un franc.'],
+ hourhand:['Stundenzeiger','hour hand','petite aiguille','Der kurze Zeiger der Uhr. Er zeigt die Stunde.','The short hand of the clock. It shows the hour.','L’aiguille courte de l’horloge. Elle indique l’heure.'],
+ minutehand:['Minutenzeiger','minute hand','grande aiguille','Der lange Zeiger der Uhr. Er zeigt die Minuten.','The long hand of the clock. It shows the minutes.','L’aiguille longue de l’horloge. Elle indique les minutes.'],
+ length:['Länge','length','longueur','Wie lang etwas ist, gemessen zum Beispiel in cm oder m.','How long something is, measured for example in cm or m.','La taille de quelque chose, mesurée par exemple en cm ou en m.'],
+ tens:['Zehner (Z)','tens (T)','dizaines (d)','Die zweite Stelle von rechts. 1 Zehner = 10 Einer.','The second place from the right. 1 ten = 10 ones.','La deuxième position en partant de la droite. 1 dizaine = 10 unités.'],
+ ones:['Einer (E)','ones (O)','unités (u)','Die Stelle ganz rechts in einer ganzen Zahl.','The rightmost place in a whole number.','La position tout à droite dans un nombre entier.'],
+ hundreds:['Hunderter (H)','hundreds (H)','centaines (c)','Die dritte Stelle von rechts. 1 Hunderter = 10 Zehner = 100 Einer.','The third place from the right. 1 hundred = 10 tens = 100 ones.','La troisième position en partant de la droite. 1 centaine = 10 dizaines = 100 unités.'],
+ placevalue:['Stellenwert','place value','valeur de position','Der Wert einer Ziffer hängt davon ab, wo sie steht: In 352 steht die 5 für 50.','The value of a digit depends on its position: in 352 the 5 stands for 50.','La valeur d’un chiffre dépend de sa position : dans 352, le 5 vaut 50.'],
+ product:['Produkt','product','produit','Das Ergebnis einer Multiplikation. 4 · 5 = 20: Das Produkt ist 20.','The result of a multiplication. 4 · 5 = 20: the product is 20.','Le résultat d’une multiplication. 4 · 5 = 20 : le produit est 20.'],
+ factor:['Faktor','factor','facteur','Eine der Zahlen, die multipliziert werden. In 4 · 5 sind 4 und 5 Faktoren.','One of the numbers being multiplied. In 4 · 5, 4 and 5 are factors.','Un des nombres qu’on multiplie. Dans 4 · 5, 4 et 5 sont les facteurs.'],
+ quotient:['Quotient','quotient','quotient','Das Ergebnis einer Division. 20 : 4 = 5: Der Quotient ist 5.','The result of a division. 20 : 4 = 5: the quotient is 5.','Le résultat d’une division. 20 : 4 = 5 : le quotient est 5.'],
+ inverse:['Umkehraufgabe','inverse operation','opération inverse','Die Rechnung, die eine andere rückgängig macht: Minus kehrt Plus um, Geteilt kehrt Mal um.','The calculation that undoes another: minus undoes plus, divide undoes times.','Le calcul qui annule un autre : la soustraction annule l’addition, la division annule la multiplication.'],
+ remainder:['Rest','remainder','reste','Was beim Teilen übrig bleibt: 23 : 4 = 5 Rest 3.','What is left over when dividing: 23 : 4 = 5 remainder 3.','Ce qui reste dans une division : 23 : 4 = 5 reste 3.'],
+ even:['gerade Zahl','even number','nombre pair','Eine Zahl, die man ohne Rest durch 2 teilen kann.','A number that can be divided by 2 with nothing left over.','Un nombre qu’on peut diviser par 2 sans reste.'],
+ odd:['ungerade Zahl','odd number','nombre impair','Eine Zahl, bei der beim Teilen durch 2 der Rest 1 bleibt.','A number that leaves 1 over when divided by 2.','Un nombre qui laisse un reste de 1 quand on le divise par 2.'],
+ axis:['Symmetrieachse','line of symmetry','axe de symétrie','Die Linie, an der eine Figur gespiegelt wird.','The line in which a shape is reflected.','La ligne par rapport à laquelle une figure est reflétée.'],
+ mirror:['spiegeln','reflect','faire une symétrie','Eine Figur so umklappen, als würde man sie im Spiegel sehen.','Flip a shape as if you were seeing it in a mirror.','Retourner une figure comme si on la voyait dans un miroir.'],
+ cube:['Würfel','cube','cube','Ein Körper mit 6 gleichen quadratischen Flächen, 12 Kanten und 8 Ecken.','A solid with 6 equal square faces, 12 edges and 8 corners.','Un solide avec 6 faces carrées identiques, 12 arêtes et 8 sommets.'],
+ cuboid:['Quader','cuboid','pavé droit','Ein Körper mit 6 rechteckigen Flächen, zum Beispiel eine Schachtel.','A solid with 6 rectangular faces, for example a box.','Un solide avec 6 faces rectangulaires, par exemple une boîte.'],
+ sphere:['Kugel','sphere','boule (sphère)','Ein runder Körper ohne Ecken und Kanten, wie ein Ball.','A round solid without corners or edges, like a ball.','Un solide rond sans sommet ni arête, comme un ballon.'],
+ cylinder:['Zylinder','cylinder','cylindre','Ein Körper mit zwei runden Flächen und einer gebogenen Fläche, wie eine Dose.','A solid with two round faces and one curved face, like a tin.','Un solide avec deux faces rondes et une face courbe, comme une boîte de conserve.'],
+ cone:['Kegel','cone','cône','Ein Körper mit einer runden Grundfläche und einer Spitze.','A solid with a round base and a point.','Un solide avec une base ronde et une pointe.'],
+ pyramid:['Pyramide','pyramid','pyramide','Ein Körper mit einer Grundfläche und dreieckigen Seitenflächen, die sich in einer Spitze treffen.','A solid with a base and triangular faces that meet at a point.','Un solide avec une base et des faces triangulaires qui se rejoignent en une pointe.'],
+ edge:['Kante','edge','arête','Die Linie, an der zwei Flächen eines Körpers zusammenstossen.','The line where two faces of a solid meet.','La ligne où deux faces d’un solide se rejoignent.'],
+ face:['Fläche','face','face','Eine der flachen oder gebogenen Seiten eines Körpers.','One of the flat or curved sides of a solid.','Un des côtés plats ou courbes d’un solide.'],
+ hour:['Stunde (h)','hour (h)','heure (h)','1 Stunde = 60 Minuten. Ein Tag hat 24 Stunden.','1 hour = 60 minutes. A day has 24 hours.','1 heure = 60 minutes. Une journée a 24 heures.'],
+ minute:['Minute (min)','minute (min)','minute (min)','1 Minute = 60 Sekunden.','1 minute = 60 seconds.','1 minute = 60 secondes.'],
+ cm:['Zentimeter (cm)','centimetre (cm)','centimètre (cm)','1 cm = 10 mm. 100 cm = 1 m.','1 cm = 10 mm. 100 cm = 1 m.','1 cm = 10 mm. 100 cm = 1 m.'],
+ m:['Meter (m)','metre (m)','mètre (m)','1 m = 10 dm = 100 cm = 1000 mm.','1 m = 10 dm = 100 cm = 1000 mm.','1 m = 10 dm = 100 cm = 1000 mm.'],
+ mm:['Millimeter (mm)','millimetre (mm)','millimètre (mm)','Der kleinste Strich auf dem Lineal. 10 mm = 1 cm.','The smallest mark on the ruler. 10 mm = 1 cm.','Le plus petit trait de la règle. 10 mm = 1 cm.'],
+ km:['Kilometer (km)','kilometre (km)','kilomètre (km)','1 km = 1000 m.','1 km = 1000 m.','1 km = 1000 m.'],
+ kg:['Kilogramm (kg)','kilogram (kg)','kilogramme (kg)','1 kg = 1000 g.','1 kg = 1000 g.','1 kg = 1000 g.'],
+ g:['Gramm (g)','gram (g)','gramme (g)','Eine kleine Gewichtseinheit. 1000 g = 1 kg.','A small unit of mass. 1000 g = 1 kg.','Une petite unité de masse. 1000 g = 1 kg.'],
+ liter:['Liter (l)','litre (l)','litre (l)','1 l = 10 dl = 1000 ml.','1 l = 10 dl = 1000 ml.','1 l = 10 dl = 1000 ml.'],
+ tally:['Strichliste','tally chart','tableau à traits','Jeder Strich zählt 1. Der fünfte Strich wird quer darüber gezogen.','Each mark counts 1. The fifth mark is drawn across the others.','Chaque trait compte 1. Le cinquième trait est tracé en travers.'],
+ barchart:['Säulendiagramm','bar chart','diagramme en barres','Ein Bild mit Säulen. Je höher die Säule, desto grösser die Anzahl.','A picture with bars. The taller the bar, the bigger the number.','Une image avec des barres. Plus la barre est haute, plus le nombre est grand.'],
+ round:['runden','round','arrondir','Eine Zahl durch eine nahe, einfachere Zahl ersetzen: 47 ≈ 50.','Replace a number by a nearby, simpler one: 47 ≈ 50.','Remplacer un nombre par un nombre proche plus simple : 47 ≈ 50.'],
+ estimate:['Überschlag','estimate','estimation','Eine ungefähre Rechnung mit gerundeten Zahlen, um ein Ergebnis zu prüfen.','A rough calculation with rounded numbers to check a result.','Un calcul approximatif avec des nombres arrondis pour vérifier un résultat.'],
+ carry:['Übertrag','carry','retenue','Wenn eine Stelle 10 oder mehr ergibt, wird 1 zur nächsten Stelle weitergegeben.','When a column makes 10 or more, 1 is passed on to the next column.','Quand une colonne donne 10 ou plus, on reporte 1 dans la colonne suivante.'],
+ perimeter:['Umfang','perimeter','périmètre','Die Länge des Weges einmal ganz um eine Figur herum.','The length of the way once around a shape.','La longueur du tour complet d’une figure.'],
+ area:['Fläche (Flächeninhalt)','area','aire','Wie viel Platz eine Figur bedeckt, zum Beispiel in Häuschen oder cm².','How much space a shape covers, for example in squares or cm².','La place que couvre une figure, par exemple en carreaux ou en cm².'],
+ rightangle:['rechter Winkel','right angle','angle droit','Ein Winkel wie die Ecke eines Blatts Papier (90°).','An angle like the corner of a sheet of paper (90°).','Un angle comme le coin d’une feuille de papier (90°).'],
+ certain:['sicher','certain','certain','Es passiert auf jeden Fall.','It will definitely happen.','Cela arrivera à coup sûr.'],
+ possible:['möglich','possible','possible','Es kann passieren, muss aber nicht.','It can happen, but does not have to.','Cela peut arriver, mais pas forcément.'],
+ impossible:['unmöglich','impossible','impossible','Es kann nie passieren.','It can never happen.','Cela ne peut jamais arriver.'],
+ combination:['Kombination','combination','combinaison','Eine Auswahl, bei der Dinge zusammengestellt werden, zum Beispiel T-Shirt und Hose.','A selection in which things are put together, for example a T-shirt and trousers.','Un choix où l’on assemble des choses, par exemple un t-shirt et un pantalon.']};
+function glossTerm(id){const g=GLOSS[id];if(!g)return null;const i=Math.max(0,LANGS.indexOf(S.lang));return{t:g[i],d:g[3+i]};}
+/* ---------- the built-in game ---------- */
+const MATH_GAME={id:'math-lp21',builtin:true,subject:'math',kind:'math',items:[],gen:{topics:null}};
+Object.defineProperty(MATH_GAME,'title',{get:()=>t('math_title'),enumerable:true});
+function genTopics(g){return g.gen.topics?g.gen.topics.map(mtopic).filter(Boolean):MT;}
+function gameUnits(g){return g.gen?genTopics(g).map(x=>x.id):g.items.map(i=>i.id);}
+
 /* ================= admin ================= */
 function viewAdminLogin(){
  const pw=h('input',{type:'password',id:'pw',autocomplete:'current-password'});
@@ -965,9 +1805,12 @@ function adminGames(body){
   try{const g=JSON.parse(await f.text());if(!g||!g.title||!Array.isArray(g.items))throw 0;for(const pk of new Set(g.items.filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack)))await loadPack(pk).catch(()=>{});const items=g.items.filter(validItem);if(!items.length)throw 0;
    items.forEach(i=>{if(!i.id)i.id=uid();});const ng={id:uid(),title:String(g.title),kind:g.kind||'other',instructions:g.instructions||'',createdAt:new Date().toISOString(),sources:g.sources||[],items};
    await saveGame(ng);toast(t('importDone',{t:ng.title}));viewAdmin('games');}catch(err){toast(t('importInvalid'),true);}}});
+ const mg=S.games.filter(g=>g.gen&&!g.builtin);const mgList=mg.length?h('div',{class:'list',style:'margin-bottom:14px'},mg.map(g=>h('div',{class:'item'},h('div',{class:'grow'},h('b',{},g.title),h('div',{class:'small muted'},t('k_math')+' · '+t('topicsN',{n:g.gen.topics.length}))),
+  h('button',{class:'btn small',onclick:()=>viewMathGame(g)},t('edit')),h('button',{class:'btn danger small',onclick:async()=>{if(!confirm(t('confirmDelGame',{t:g.title})))return;await S.store.remove('games/'+g.id+'.json');S.games=await loadGames();viewAdmin('games');}},t('del'))))):null;
  body.append(h('div',{class:'row',style:'margin-bottom:14px'},h('button',{class:'btn',onclick:()=>viewGenerate(null)},'+ '+t('newGame')),
-  h('button',{class:'btn ghost',onclick:()=>imp.click()},t('importGame')),imp),
-  h('div',{class:'list'},S.games.map(g=>h('div',{class:'item',style:'flex-wrap:wrap'},h('div',{class:'grow'},h('b',{},g.title),
+  h('button',{class:'btn',onclick:()=>viewMathGame(null)},'+ '+t('newMathGame')),
+  h('button',{class:'btn ghost',onclick:()=>imp.click()},t('importGame')),imp),mgList||'',
+  h('div',{class:'list'},S.games.filter(g=>!g.builtin&&!g.gen).map(g=>h('div',{class:'item',style:'flex-wrap:wrap'},h('div',{class:'grow'},h('b',{},g.title),
    h('div',{class:'small muted'},t('questions',{n:g.items.length})+' · '+t('k_'+(g.kind||'other'))+((m=>m?' · '+t('tr_count',{n:m}):'')(g.items.filter(i=>trMissing(i).length).length))+(g.updatedAt?' · '+t('updated')+' '+fmtDate(g.updatedAt):''))),
    h('button',{class:'btn small',onclick:()=>viewGenerate(g)},'+ '+t('addMaterial')),
    h('button',{class:'btn ghost small',onclick:()=>viewItems(g)},t('viewQuestions')),
@@ -981,12 +1824,12 @@ function normTr(it){const tr=it.tr;if(!tr||typeof tr!=='object'){delete it.tr;re
   if(typeof x.explanation==='string'&&x.explanation.trim())y.explanation=x.explanation.trim();
   if(Array.isArray(it.options)){if(!(Array.isArray(x.options)&&x.options.length===it.options.length&&x.options.every(v=>typeof v==='string'&&v.trim())))continue;y.options=x.options;}
   if(Array.isArray(it.order)){if(!(Array.isArray(x.order)&&x.order.length===it.order.length&&x.order.every(v=>typeof v==='string'&&v.trim())))continue;y.order=x.order;}
-  if(typeof x.answer==='string'&&x.answer.trim())y.answer=x.answer.trim();if(Array.isArray(x.accept))y.accept=x.accept.filter(v=>typeof v==='string'&&v.trim());
+  if(typeof x.answer==='string'&&x.answer.trim())y.answer=x.answer.trim();if(Array.isArray(x.hints))y.hints=x.hints.filter(v=>typeof v==='string'&&v.trim());if(Array.isArray(x.accept))y.accept=x.accept.filter(v=>typeof v==='string'&&v.trim());
   o[l]=y;}
  if(Object.keys(o).length)it.tr=o;else delete it.tr;}
 function validItem(it){
  if(!it||typeof it.prompt!=='string'||!it.prompt.trim())return false;
- normTr(it);
+ normTr(it);if(it.hints!=null){if(Array.isArray(it.hints))it.hints=it.hints.filter(v=>typeof v==='string'&&v.trim()).slice(0,5);else delete it.hints;}
  it.difficulty=[1,2,3].includes(+it.difficulty)?+it.difficulty:2;
  if(Array.isArray(it.correct))it.correct=it.correct.map(Number);
  const opt=Array.isArray(it.options)&&it.options.length>=2&&it.options.every(o=>typeof o==='string');
@@ -1092,11 +1935,11 @@ When map packs are listed, use "map" questions for everything about places: coun
 History map packs (ids starting with "h", e.g. "h07-revolutionen-napoleon") contain one political map per year; their layer ids look like "y1815" or "ym500" (m = BC), object ids like "y1815:austrian-empire". Pick the year layer that matches the time in the material (the nearest available year) and say the year in the prompt, e.g. "Tippe auf das Kaisertum Österreich (1815)". Borders in these maps are simplified and approximate. Their "places" layer holds cities, battles and historic sites.
 Country groups (Skandinavien, Nordische Länder, Baltikum, Benelux, Britische Inseln, Iberische Halbinsel) are in the "regions" layer of the world and europe packs.
 Jokes: add one extra item per about 10 questions with "joke": true, type "single": a funny, kind, age-appropriate fake question about the topic whose correct option (put it first, the game shuffles) is the joking answer; "explanation" is the punchline. Never make fun of people, countries or groups.
-Languages: every item also has \"tr\" with the keys \"de\", \"en\" and \"fr\". Each holds the complete question in that language: \"prompt\", \"explanation\" and, depending on the type, \"options\" (same number and same order as the item's options, so the correct indices stay valid), \"order\" (same order), \"answer\" and \"accept\". The top-level fields hold the version in the language of the material. Translate naturally for children and keep the difficulty. German is written the Swiss way, without \"ß\" (use \"ss\"). For vocabulary questions translate only the instruction: the words being asked about and the expected answers stay in the language that is being tested (example: de \"Was heisst 'Haus' auf Französisch?\", en \"What is 'Haus' in French?\", fr \"Comment dit-on « Haus » en français ?\"; the answer is \"maison\" in all three). Map questions: keep the placeholder {nr}; for name tasks give \"answer\" as the place name in that language. Jokes: translate the joke, or if the pun does not work, write an equally kind joke on the same topic whose joking answer stays the first option.\nRules: use only facts contained in the material and never invent content. Wrong options must be plausible but clearly wrong. For vocabulary, ask in both directions and use input questions for spelling. Write the questions in the language of the material unless the notes say otherwise. Skip anything unreadable.`;
-const TR_SCHEMA={type:'object',required:['de','en','fr'],properties:{de:{type:'object',properties:{prompt:{type:'string'},explanation:{type:'string'},options:{type:'array',items:{type:'string'}},order:{type:'array',items:{type:'string'}},answer:{type:'string'},accept:{type:'array',items:{type:'string'}}}},en:{type:'object',properties:{prompt:{type:'string'},explanation:{type:'string'},options:{type:'array',items:{type:'string'}},order:{type:'array',items:{type:'string'}},answer:{type:'string'},accept:{type:'array',items:{type:'string'}}}},fr:{type:'object',properties:{prompt:{type:'string'},explanation:{type:'string'},options:{type:'array',items:{type:'string'}},order:{type:'array',items:{type:'string'}},answer:{type:'string'},accept:{type:'array',items:{type:'string'}}}}}};
+Languages: every item also has \"tr\" with the keys \"de\", \"en\" and \"fr\". Each holds the complete question in that language: \"prompt\", \"explanation\" and, depending on the type, \"options\" (same number and same order as the item's options, so the correct indices stay valid), \"order\" (same order), \"answer\" and \"accept\". The top-level fields hold the version in the language of the material. Translate naturally for children and keep the difficulty. German is written the Swiss way, without \"ß\" (use \"ss\"). For vocabulary questions translate only the instruction: the words being asked about and the expected answers stay in the language that is being tested (example: de \"Was heisst 'Haus' auf Französisch?\", en \"What is 'Haus' in French?\", fr \"Comment dit-on « Haus » en français ?\"; the answer is \"maison\" in all three). Map questions: keep the placeholder {nr}; for name tasks give \"answer\" as the place name in that language. Jokes: translate the joke, or if the pun does not work, write an equally kind joke on the same topic whose joking answer stays the first option.\nHelp steps: for every question that needs thinking (always for mathematics) add \"hints\": 2 to 4 short steps that lead the child towards the solution one at a time, like a good teacher: first what to look at, then the method, never the final result. Give the hints in \"tr\" for each language too.\nRules: use only facts contained in the material and never invent content. Wrong options must be plausible but clearly wrong. For vocabulary, ask in both directions and use input questions for spelling. Write the questions in the language of the material unless the notes say otherwise. Skip anything unreadable.`;
+const TR_SCHEMA={type:'object',required:['de','en','fr'],properties:{de:{type:'object',properties:{hints:{type:'array',items:{type:'string'}},prompt:{type:'string'},explanation:{type:'string'},options:{type:'array',items:{type:'string'}},order:{type:'array',items:{type:'string'}},answer:{type:'string'},accept:{type:'array',items:{type:'string'}}}},en:{type:'object',properties:{hints:{type:'array',items:{type:'string'}},prompt:{type:'string'},explanation:{type:'string'},options:{type:'array',items:{type:'string'}},order:{type:'array',items:{type:'string'}},answer:{type:'string'},accept:{type:'array',items:{type:'string'}}}},fr:{type:'object',properties:{hints:{type:'array',items:{type:'string'}},prompt:{type:'string'},explanation:{type:'string'},options:{type:'array',items:{type:'string'}},order:{type:'array',items:{type:'string'}},answer:{type:'string'},accept:{type:'array',items:{type:'string'}}}}}};
 const QUIZ_TOOL={name:'save_questions',description:'Save the quiz questions created from the learning material.',
  input_schema:{type:'object',required:['items'],properties:{items:{type:'array',items:{type:'object',required:['type','prompt','difficulty','tr'],properties:{
-  tr:TR_SCHEMA,type:{type:'string',enum:['single','multi','order','input','map']},prompt:{type:'string'},difficulty:{type:'integer',enum:[1,2,3]},explanation:{type:'string'},
+  tr:TR_SCHEMA,hints:{type:'array',items:{type:'string'}},type:{type:'string',enum:['single','multi','order','input','map']},prompt:{type:'string'},difficulty:{type:'integer',enum:[1,2,3]},explanation:{type:'string'},
   options:{type:'array',items:{type:'string'}},correct:{type:'array',items:{type:'integer'}},order:{type:'array',items:{type:'string'}},
   answer:{type:'string'},accept:{type:'array',items:{type:'string'}},joke:{type:'boolean'},
   map:{type:'object',properties:{pack:{type:'string'},task:{type:'string',enum:['tap','choose','name','label','number']},target:{type:'string'},
@@ -1151,7 +1994,7 @@ async function viewGenerate(g){
  const avail=await listPacks();const used=new Set(((g&&g.items)||[]).filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack).concat((g&&g.mapPacks)||[]));
  const pchk=avail.sort().map(id=>{const c=h('input',{type:'checkbox',value:id});c.checked=used.size?used.has(id):!isHistPack(id);return h('label',{style:'display:inline-flex;gap:6px;align-items:center;margin-right:16px'},c,id);});
  const f={title:g?g.title:'',kind:g?(g.kind||'other'):'vocab',instr:g?(g.instructions||''):'',count:20,files:[]};
- const title=h('input',{type:'text',id:'gt',value:f.title});const kind=h('select',{id:'gk'},['vocab','science','other'].map(k=>h('option',{value:k},t('k_'+k))));kind.value=f.kind;
+ const title=h('input',{type:'text',id:'gt',value:f.title});const kind=h('select',{id:'gk'},['vocab','geo','hist','math','it','science','other'].map(k=>h('option',{value:k},t('k_'+k))));kind.value=f.kind;
  const instr=h('textarea',{id:'gi',placeholder:t('instrPh')});instr.value=f.instr;const cnt=h('input',{type:'number',id:'gc',min:'5',max:'80',value:'20'});
  const thumbs=h('div',{class:'thumbs'});const status=h('p',{class:'muted','aria-live':'polite'});
  const fi=h('input',{type:'file',id:'gf',multiple:true,accept:'image/*,application/pdf',onchange:e=>{f.files=[...e.target.files];
