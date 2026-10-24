@@ -4030,7 +4030,6 @@ function kFigure(o,R,pts,ref){
 function kPenta(M,r,a0){const P=[];for(let i=0;i<5;i++){const a=a0+i*2*Math.PI/5;
  P.push([M[0]+r*Math.cos(a),M[1]+r*Math.sin(a)]);}return P;}
 const PENTA_M=[80,44], PENTA_R=20, PENTA=kPenta(PENTA_M,PENTA_R,Math.PI);
-const RECT=[[14,14],[34,14],[34,28],[14,28]];
 
 const KTASKS3=[
 /* ------------------------------------------- Prüfung Aufgabe 3 (3 Punkte) */
@@ -4100,23 +4099,32 @@ const KTASKS3=[
   const img=P=>kRefAx(kRefAx(P,g1,g2),h1,h2);
   return kFigure(o,R,[img(A),img(B),img(C)],ref);}},
 
-/* ---------------------------------------- Prüfung Aufgabe 10 (5.5 Punkte) */
+/* ---------------------------------------- Prüfung Aufgabe 10 (5.5 Punkte)
+   Drei Figuren: das Rechteck ABCD wird zuerst vervollständigt, dann am Punkt
+   Z₁ gespiegelt, und die erste Bildfigur danach an der Achse s₂. */
 {id:'k-doppelspiegelung',y:9,tools:['pt','ln','sg','ci','pp','pl'],
- n:['Punktspiegelung des Rechtecks','Point reflection of the rectangle','Symétrie centrale du rectangle'],
- goal:['Spiegle das Rechteck ABCD am Punkt Z. Zeichne die Bildfigur A′B′C′D′ mit allen vier Seiten.',
-  'Reflect the rectangle ABCD in the point Z. Draw the image A′B′C′D′ with all four sides.',
-  'Applique au rectangle ABCD la symétrie de centre Z. Trace l’image A′B′C′D′ avec ses quatre côtés.'],
- steps:[['Bei der Punktspiegelung liegt jeder Bildpunkt auf der Geraden durch den Punkt und Z.','Er liegt gleich weit auf der anderen Seite von Z.','Gerade durch A und Z, dann Kreis um Z durch A: der zweite Schnittpunkt ist A′.','Mit B, C und D gleich verfahren und die vier Bildpunkte verbinden.'],
-  ['Under a point reflection every image point lies on the line through the point and Z.','It lies the same distance away on the other side of Z.','Line through A and Z, then circle around Z through A: the second intersection is A′.','Do the same for B, C and D, then join the four image points.'],
-  ['Dans une symétrie centrale, chaque image est sur la droite passant par le point et Z.','Elle est à la même distance de l’autre côté.','Droite par A et Z, puis cercle de centre Z passant par A : la seconde intersection est A′.','Fais de même pour B, C et D, puis relie les quatre images.']],
- geg:()=>{const o=[];
-  RECT.forEach((p,i)=>o.push({k:'P',x:p[0],y:p[1],given:1,n:'ABCD'[i]}));
-  for(let i=0;i<4;i++)o.push({k:'S',a:i,b:(i+1)%4});
-  o.push({k:'P',x:48,y:40,given:1,n:'Z'});
-  return o;},
- ok:(o,R)=>{const Z=kByName(o,R,'Z');if(!Z)return false;
-  const P=['A','B','C','D'].map(n=>kByName(o,R,n));if(P.some(x=>!x))return false;
-  return kFigure(o,R,P.map(p=>kRefZ(p,Z)),kdist(P[0],P[1]));}}
+ n:['Rechteck, Punkt- und Achsenspiegelung','Rectangle, point and axis reflection','Rectangle, symétrie centrale et axiale'],
+ goal:['Gegeben sind A, B und D des Rechtecks ABCD. Vervollständige zuerst das Rechteck. Spiegle es dann am Punkt Z₁ und die erste Bildfigur danach an der Achse s₂. Zeichne alle drei Figuren mit allen vier Seiten.',
+  'Given are A, B and D of the rectangle ABCD. First complete the rectangle. Then reflect it in the point Z₁, and the first image in the axis s₂. Draw all three figures with all four sides.',
+  'A, B et D du rectangle ABCD sont donnés. Complète d’abord le rectangle. Applique-lui ensuite la symétrie de centre Z₁, puis à la première image celle d’axe s₂. Trace les trois figures avec leurs quatre côtés.'],
+ steps:[['Im Rechteck liegt C auf der Parallelen zu AD durch B und auf der Parallelen zu AB durch D.','Bei der Punktspiegelung liegt jeder Bildpunkt auf der Geraden durch den Punkt und Z₁, gleich weit auf der anderen Seite: Gerade durch A und Z₁, dann Kreis um Z₁ durch A - der zweite Schnittpunkt ist A₁.','Bei der Achsenspiegelung fälle von A₁ das Lot auf s₂ und trage den Abstand jenseits der Achse nochmals ab: Kreis um den Fusspunkt durch A₁ - der zweite Schnittpunkt ist A₂.','Mit B, C und D gleich verfahren und jede der drei Figuren schliessen.'],
+  ['In the rectangle C lies on the parallel to AD through B and on the parallel to AB through D.','Under the point reflection every image lies on the line through the point and Z₁, the same distance on the other side: line through A and Z₁, then circle around Z₁ through A - the second intersection is A₁.','For the axis reflection drop the perpendicular from A₁ onto s₂ and step the distance off again beyond the axis: circle around the foot through A₁ - the second intersection is A₂.','Do the same for B, C and D, and close each of the three figures.'],
+  ['Dans le rectangle, C est sur la parallèle à AD par B et sur la parallèle à AB par D.','Dans la symétrie centrale, chaque image est sur la droite passant par le point et Z₁, à la même distance de l’autre côté : droite par A et Z₁, puis cercle de centre Z₁ passant par A - la seconde intersection est A₁.','Pour la symétrie axiale, abaisse la perpendiculaire de A₁ sur s₂ et reporte la distance au-delà de l’axe : cercle de centre le pied passant par A₁ - la seconde intersection est A₂.','Fais de même pour B, C et D, et ferme chacune des trois figures.']],
+ geg:()=>[{k:'P',x:14,y:14,given:1,n:'A'},{k:'P',x:34,y:14,given:1,n:'B'},
+          {k:'P',x:14,y:28,given:1,n:'D'},
+          {k:'S',a:0,b:1},{k:'S',a:0,b:2},
+          {k:'P',x:48,y:40,given:1,n:'Z'},
+          {k:'P',x:92,y:10,given:1,n:'s'},{k:'P',x:92,y:86,given:1,n:'s′'},
+          {k:'L',a:6,b:7}],
+ ok:(o,R)=>{const A=kByName(o,R,'A'),B=kByName(o,R,'B'),D=kByName(o,R,'D'),
+  Z=kByName(o,R,'Z'),s1=kByName(o,R,'s'),s2=kByName(o,R,'s′');
+  if(!A||!B||!D||!Z||!s1||!s2)return false;
+  const ref=kdist(A,B);
+  const C=[B[0]+D[0]-A[0],B[1]+D[1]-A[1]];        /* das Rechteck schliesst sich */
+  const orig=[A,B,C,D];
+  const f1=orig.map(p=>kRefZ(p,Z));
+  const f2=f1.map(p=>kRefAx(p,s1,s2));
+  return kFigure(o,R,orig,ref)&&kFigure(o,R,f1,ref)&&kFigure(o,R,f2,ref);}}
 ];
 KTASKS3.forEach(t=>KTASKS.push(t));
 
