@@ -3990,6 +3990,136 @@ const KTASKS2=[
 ];
 KTASKS2.forEach(t=>KTASKS.push(t));
 
+/* ===== Prüfung, Aufgaben 3, 6, 7 und 10 =====
+   Diese vier Aufgaben verlangen nicht eine einzelne Gerade, sondern eine
+   Abbildung, die eine ganze Figur trifft. Geprüft wird darum nicht ein
+   einzelnes Objekt, sondern die vollständige Bildfigur: jeder Bildpunkt und
+   jede Verbindung zwischen zwei Bildpunkten. */
+
+/* ---------- Abbildungen ---------- */
+function kRefZ(P,Z){return [2*Z[0]-P[0],2*Z[1]-P[1]];}
+function kRefAx(P,p,q){const d=kunit(kv(p,q));const t=kdot(kv(p,P),d);
+ const F=[p[0]+d[0]*t,p[1]+d[1]*t];return [2*F[0]-P[0],2*F[1]-P[1]];}
+
+/* ---------- Deckung von Punkten und Kanten ----------
+   KTOLP ist kleiner als der Fangradius der Zeichenfläche: ein konstruierter
+   Punkt liegt exakt, ein nach Augenmass gesetzter nur zufällig so nah. Den
+   Ausschlag gibt ohnehin der Verschiebungstest. */
+const KTOLP=1.4;
+function kHasPoint(o,R,T){return kPoints(o,R).some(P=>kdist(P,T)<=KTOLP);}
+/* Eine Kante gilt als gezeichnet, wenn ein Objekt beide Zielpunkte trägt:
+   eine Gerade immer, eine Strecke nur, wenn sie beide überdeckt, ein Strahl
+   nur ab seinem Anfangspunkt. */
+function kEdge(o,R,a,b,ref){
+ for(let i=0;i<o.length;i++){const ob=o[i],L=R[i];
+  if(!L||!L.p||!kLineLike(o,i))continue;
+  if(!kThrough(L,a,ref)||!kThrough(L,b,ref))continue;
+  if(ob.k==='L')return true;
+  const d=kv(L.p,L.q),dd=kdot(d,d);if(dd<KEPS)continue;
+  const ta=kdot(kv(L.p,a),d)/dd, tb=kdot(kv(L.p,b),d)/dd;
+  const lo=Math.min(ta,tb), hi=Math.max(ta,tb);
+  if(ob.k==='S'){if(lo>=-0.08&&hi<=1.08)return true;}
+  else if(lo>=-0.08)return true;}
+ return false;}
+/* ganze Figur: alle Bildpunkte vorhanden und der Umriss geschlossen */
+function kFigure(o,R,pts,ref){
+ for(const P of pts)if(!kHasPoint(o,R,P))return false;
+ for(let i=0;i<pts.length;i++)if(!kEdge(o,R,pts[i],pts[(i+1)%pts.length],ref))return false;
+ return true;}
+
+function kPenta(M,r,a0){const P=[];for(let i=0;i<5;i++){const a=a0+i*2*Math.PI/5;
+ P.push([M[0]+r*Math.cos(a),M[1]+r*Math.sin(a)]);}return P;}
+const PENTA_M=[80,44], PENTA_R=20, PENTA=kPenta(PENTA_M,PENTA_R,Math.PI);
+const RECT=[[14,14],[34,14],[34,28],[14,28]];
+
+const KTASKS3=[
+/* ------------------------------------------- Prüfung Aufgabe 3 (3 Punkte) */
+{id:'k-fuenfeck-achse',y:8,tools:['pt','ln','sg','ci'],
+ n:['Spiegelachse am Fünfeck','Mirror axis for the pentagon','Axe de symétrie du pentagone'],
+ goal:['Konstruiere die Spiegelachse so, dass A auf sich selbst fällt (A = A′) und der Mittelpunkt M′ auf der Geraden g liegt. Eine der beiden Lösungen genügt.',
+  'Construct the mirror axis so that A maps onto itself (A = A′) and the centre M′ lies on g. One of the two solutions is enough.',
+  'Construis l’axe tel que A soit sa propre image (A = A′) et que le centre M′ se trouve sur g. Une des deux solutions suffit.'],
+ steps:[['A bleibt liegen, also geht die Achse durch A.','Die Spiegelung erhält Längen: |AM′| ist so lang wie |AM|.','Kreis um A durch M - er schneidet g in den möglichen Lagen von M′.','Die Achse ist die Mittelsenkrechte von M und M′; sie geht von selbst durch A.'],
+  ['A stays where it is, so the axis passes through A.','Reflection preserves length: |AM′| equals |AM|.','Circle around A through M - it cuts g at the possible positions of M′.','The axis is the perpendicular bisector of M and M′; it passes through A by itself.'],
+  ['A reste en place, donc l’axe passe par A.','La symétrie conserve les longueurs : |AM′| vaut |AM|.','Cercle de centre A passant par M - il coupe g aux positions possibles de M′.','L’axe est la médiatrice de M et M′ ; il passe par A de lui-même.']],
+ geg:()=>{const o=[];
+  PENTA.forEach((p,i)=>o.push({k:'P',x:p[0],y:p[1],given:1,n:'ABCDE'[i]}));
+  for(let i=0;i<5;i++)o.push({k:'S',a:i,b:(i+1)%5});
+  o.push({k:'P',x:PENTA_M[0],y:PENTA_M[1],given:1,n:'M'});
+  o.push({k:'P',x:10,y:64,given:1,n:'g'},{k:'P',x:56,y:26,given:1,n:'g′'});
+  o.push({k:'L',a:o.length-2,b:o.length-1});
+  return o;},
+ ok:(o,R)=>{const A=kByName(o,R,'A'),M=kByName(o,R,'M'),
+  g1=kByName(o,R,'g'),g2=kByName(o,R,'g′');
+  if(!A||!M||!g1||!g2)return false;const ref=kdist(A,M);
+  return kLines(o,R).some(l=>{
+   if(!kThrough(l,A,ref))return false;
+   const M2=kRefAx(M,l.p,l.q);
+   if(kdist(M2,M)<ref*0.25)return false;
+   return kDistLine(M2,g1,g2)<=KTOLR*kScale(kdist(g1,g2));});}},
+
+/* ----------------------------------------- Prüfung Aufgabe 6 (2.5 Punkte) */
+{id:'k-achse-auf-g',y:8,tools:['pt','ln','sg','ci'],
+ n:['Achse, die BC auf g legt','Axis mapping BC onto g','Axe amenant BC sur g'],
+ goal:['Konstruiere die Spiegelachse so, dass die Bildstrecke B′C′ auf der Geraden g liegt.',
+  'Construct the mirror axis so that the image segment B′C′ lies on the line g.',
+  'Construis l’axe tel que le segment image B′C′ se trouve sur la droite g.'],
+ steps:[['Verlängere BC bis zum Schnittpunkt S mit g.','Die Achse geht durch S und halbiert den Winkel zwischen BC und g.','Konstruiere diese Winkelhalbierende: Kreis um S, dann Mittelsenkrechte der beiden Schnittpunkte.','Beide Winkelhalbierenden sind Lösungen; eine genügt.'],
+  ['Extend BC to its intersection S with g.','The axis passes through S and bisects the angle between BC and g.','Construct that bisector: circle around S, then the perpendicular bisector of the two intersections.','Both bisectors work; one is enough.'],
+  ['Prolonge BC jusqu’à son intersection S avec g.','L’axe passe par S et partage l’angle entre BC et g.','Construis cette bissectrice : cercle de centre S, puis médiatrice des deux intersections.','Les deux bissectrices conviennent ; une suffit.']],
+ geg:()=>[{k:'P',x:30,y:20,given:1,n:'A'},{k:'P',x:58,y:28,given:1,n:'B'},{k:'P',x:40,y:50,given:1,n:'C'},
+          {k:'S',a:0,b:1},{k:'S',a:1,b:2},{k:'S',a:2,b:0},
+          {k:'P',x:18,y:78,given:1,n:'g'},{k:'P',x:112,y:66,given:1,n:'g′'},{k:'L',a:6,b:7}],
+ ok:(o,R)=>{const B=kByName(o,R,'B'),C=kByName(o,R,'C'),
+  g1=kByName(o,R,'g'),g2=kByName(o,R,'g′');
+  if(!B||!C||!g1||!g2)return false;
+  const ref=kdist(g1,g2), tol=KTOLR*kScale(ref);
+  return kLines(o,R).some(l=>{
+   const B2=kRefAx(B,l.p,l.q),C2=kRefAx(C,l.p,l.q);
+   if(kdist(B2,B)<ref*0.03&&kdist(C2,C)<ref*0.03)return false;
+   return kDistLine(B2,g1,g2)<=tol&&kDistLine(C2,g1,g2)<=tol;});}},
+
+/* ----------------------------------------- Prüfung Aufgabe 7 (2.5 Punkte) */
+{id:'k-zwei-parallelen',y:9,tools:['pt','ln','sg','ci','pp','pl'],
+ n:['Spiegelung an zwei Parallelen','Reflection in two parallels','Symétrie selon deux parallèles'],
+ goal:['g und h sind parallel. Spiegle das Dreieck ABC zuerst an g und dann an h. Zeichne das zweite Bilddreieck A′B′C′ mit allen drei Seiten.',
+  'g and h are parallel. Reflect triangle ABC first in g, then in h. Draw the second image triangle A′B′C′ with all three sides.',
+  'g et h sont parallèles. Applique la symétrie d’axe g puis celle d’axe h au triangle ABC. Trace le second triangle image A′B′C′ avec ses trois côtés.'],
+ steps:[['Zwei Spiegelungen an Parallelen ergeben zusammen eine Verschiebung.','Die Verschiebung steht senkrecht auf den beiden Geraden und ist doppelt so lang wie ihr Abstand.','Fälle von A das Lot auf g, verlängere es und trage den doppelten Abstand ab - das ist A′.','Mit B und C gleich verfahren, dann A′B′C′ verbinden.'],
+  ['Two reflections in parallel lines together give a translation.','The translation is perpendicular to both lines and twice their distance.','Drop the perpendicular from A onto g, extend it and step off twice the distance - that is A′.','Do the same for B and C, then join A′B′C′.'],
+  ['Deux symétries d’axes parallèles donnent une translation.','Elle est perpendiculaire aux deux droites et vaut deux fois leur distance.','Abaisse la perpendiculaire de A sur g, prolonge-la et reporte le double de la distance - c’est A′.','Fais de même pour B et C, puis relie A′B′C′.']],
+ geg:()=>[{k:'P',x:16,y:60,given:1,n:'A'},{k:'P',x:34,y:26,given:1,n:'B'},{k:'P',x:10,y:38,given:1,n:'C'},
+          {k:'S',a:0,b:1},{k:'S',a:1,b:2},{k:'S',a:2,b:0},
+          {k:'P',x:46,y:14,given:1,n:'g'},{k:'P',x:32,y:78,given:1,n:'g′'},{k:'L',a:6,b:7},
+          {k:'P',x:76,y:14,given:1,n:'h'},{k:'P',x:62,y:78,given:1,n:'h′'},{k:'L',a:9,b:10}],
+ ok:(o,R)=>{const A=kByName(o,R,'A'),B=kByName(o,R,'B'),C=kByName(o,R,'C');
+  const g1=kByName(o,R,'g'),g2=kByName(o,R,'g′'),
+        h1=kByName(o,R,'h'),h2=kByName(o,R,'h′');
+  if(!A||!B||!C||!g1||!g2||!h1||!h2)return false;
+  const ref=kdist(A,B);
+  const img=P=>kRefAx(kRefAx(P,g1,g2),h1,h2);
+  return kFigure(o,R,[img(A),img(B),img(C)],ref);}},
+
+/* ---------------------------------------- Prüfung Aufgabe 10 (5.5 Punkte) */
+{id:'k-doppelspiegelung',y:9,tools:['pt','ln','sg','ci','pp','pl'],
+ n:['Punktspiegelung des Rechtecks','Point reflection of the rectangle','Symétrie centrale du rectangle'],
+ goal:['Spiegle das Rechteck ABCD am Punkt Z. Zeichne die Bildfigur A′B′C′D′ mit allen vier Seiten.',
+  'Reflect the rectangle ABCD in the point Z. Draw the image A′B′C′D′ with all four sides.',
+  'Applique au rectangle ABCD la symétrie de centre Z. Trace l’image A′B′C′D′ avec ses quatre côtés.'],
+ steps:[['Bei der Punktspiegelung liegt jeder Bildpunkt auf der Geraden durch den Punkt und Z.','Er liegt gleich weit auf der anderen Seite von Z.','Gerade durch A und Z, dann Kreis um Z durch A: der zweite Schnittpunkt ist A′.','Mit B, C und D gleich verfahren und die vier Bildpunkte verbinden.'],
+  ['Under a point reflection every image point lies on the line through the point and Z.','It lies the same distance away on the other side of Z.','Line through A and Z, then circle around Z through A: the second intersection is A′.','Do the same for B, C and D, then join the four image points.'],
+  ['Dans une symétrie centrale, chaque image est sur la droite passant par le point et Z.','Elle est à la même distance de l’autre côté.','Droite par A et Z, puis cercle de centre Z passant par A : la seconde intersection est A′.','Fais de même pour B, C et D, puis relie les quatre images.']],
+ geg:()=>{const o=[];
+  RECT.forEach((p,i)=>o.push({k:'P',x:p[0],y:p[1],given:1,n:'ABCD'[i]}));
+  for(let i=0;i<4;i++)o.push({k:'S',a:i,b:(i+1)%4});
+  o.push({k:'P',x:48,y:40,given:1,n:'Z'});
+  return o;},
+ ok:(o,R)=>{const Z=kByName(o,R,'Z');if(!Z)return false;
+  const P=['A','B','C','D'].map(n=>kByName(o,R,n));if(P.some(x=>!x))return false;
+  return kFigure(o,R,P.map(p=>kRefZ(p,Z)),kdist(P[0],P[1]));}}
+];
+KTASKS3.forEach(t=>KTASKS.push(t));
+
 /* ---------------- Wissensaufgaben aus der Prüfung ---------------- */
 /* Aufgabe 2: Symmetrie der Grossbuchstaben (Blockschrift) */
 const PLETT=[['A','ax'],['E','ax'],['H','both'],['I','both'],['L','none'],['N','pt'],
