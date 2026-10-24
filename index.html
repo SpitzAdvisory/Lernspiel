@@ -4125,6 +4125,34 @@ const KTASKS3=[
   const f1=orig.map(p=>kRefZ(p,Z));
   const f2=f1.map(p=>kRefAx(p,s1,s2));
   return kFigure(o,R,orig,ref)&&kFigure(o,R,f1,ref)&&kFigure(o,R,f2,ref);}}
+,
+/* ------------------------------------- Prüfung Aufgabe 5b (Sternaufgabe)
+   Der Tisch ABCD trägt die Banden a = AD links, b = DC unten, c = BC rechts,
+   d = AB oben. Gespielt wird über b und danach über c. */
+{id:'k-billard2',y:9,tools:['pt','ln','sg','ci','pp'],
+ n:['Billard: Stoss über zwei Banden','Billiards: two cushions','Billard : deux bandes'],
+ goal:['Die weisse Kugel W soll über die Bande b (unten, DC) und danach über die Bande c (rechts, BC) die schwarze Kugel S treffen. Konstruiere den ganzen Weg.',
+  'The white ball W must hit the black ball S over cushion b (bottom, DC) and then cushion c (right, BC). Construct the whole path.',
+  'La boule blanche W doit toucher la noire S via la bande b (en bas, DC) puis la bande c (à droite, BC). Construis tout le trajet.'],
+ steps:[['Spiegle W an der Bande b: W₁.','Spiegle W₁ an der Bande c: W₂.','Die Gerade von W₂ zur schwarzen Kugel schneidet die Bande c im zweiten Auftreffpunkt.','Die Gerade von W₁ zu diesem Punkt schneidet die Bande b im ersten Auftreffpunkt. Der Weg ist W → erster Punkt → zweiter Punkt → S.'],
+  ['Reflect W in cushion b: W₁.','Reflect W₁ in cushion c: W₂.','The line from W₂ to the black ball meets cushion c at the second contact point.','The line from W₁ to that point meets cushion b at the first contact point. The path is W → first point → second point → S.'],
+  ['Applique à W la symétrie d’axe b : W₁.','Applique à W₁ la symétrie d’axe c : W₂.','La droite de W₂ à la boule noire coupe la bande c au second point de contact.','La droite de W₁ à ce point coupe la bande b au premier point de contact. Le trajet est W → premier point → second point → S.']],
+ geg:()=>[{k:'P',x:14,y:8,given:1,n:'A'},{k:'P',x:62,y:8,given:1,n:'B'},
+          {k:'P',x:62,y:44,given:1,n:'C'},{k:'P',x:14,y:44,given:1,n:'D'},
+          {k:'S',a:0,b:1},{k:'S',a:1,b:2},{k:'S',a:2,b:3},{k:'S',a:3,b:0},
+          {k:'P',x:30,y:30,given:1,n:'W'},{k:'P',x:46,y:18,given:1,n:'S'}],
+ ok:(o,R)=>{const B=kByName(o,R,'B'),C=kByName(o,R,'C'),D=kByName(o,R,'D'),
+  W=kByName(o,R,'W'),Sb=kByName(o,R,'S');
+  if(!B||!C||!D||!W||!Sb)return false;
+  const ref=kdist(D,C);
+  const W1=kRefAx(W,D,C);                      /* an der unteren Bande b */
+  const W2=kRefAx(W1,B,C);                     /* an der rechten Bande c */
+  const t2=kIntLL(W2,Sb,B,C);if(!t2.length)return false;
+  const P2=t2[0];
+  const t1=kIntLL(W1,P2,D,C);if(!t1.length)return false;
+  const P1=t1[0];
+  return kHasPoint(o,R,P1)&&kHasPoint(o,R,P2)
+      && kEdge(o,R,W,P1,ref)&&kEdge(o,R,P1,P2,ref)&&kEdge(o,R,P2,Sb,ref);}}
 ];
 KTASKS3.forEach(t=>KTASKS.push(t));
 
