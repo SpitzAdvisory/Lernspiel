@@ -2262,10 +2262,16 @@ function renderQuestion(R,Q){
  }else if(it.type==='speak'){
   const RUNDEN=it.rounds||1, NOETIG=1;
   const status=h('p',{class:'small muted',style:'margin-top:10px;min-height:1.4em','aria-live':'polite'});
-  const heard=h('div',{style:'display:none;margin:10px 0 0;padding:10px 12px;border-radius:10px;'
+  const heard=h('div',{style:'margin:10px 0 0;padding:10px 12px;border-radius:10px;'
    +'background:var(--paper);border:2px solid var(--grid)','aria-live':'polite'},
    h('div',{class:'small muted',style:'margin:0 0 2px'},t('speakHeard')),
-   h('div',{class:'fr',style:'font-size:1.45rem;line-height:1.25;word-break:break-word'}));
+   h('div',{class:'fr',style:'font-size:1.45rem;line-height:1.25;word-break:break-word;color:var(--muted)'},'\u2014'));
+  const zeigeHeard=(text,ok)=>{
+   if(!text){heard.style.borderColor='var(--grid)';heard.lastChild.textContent='\u2014';
+    heard.lastChild.style.color='var(--muted)';return;}
+   heard.style.borderColor=ok?'var(--green)':'var(--red)';
+   heard.lastChild.textContent='\u00ab\u202f'+text+'\u202f\u00bb';
+   heard.lastChild.style.color=ok?'var(--green)':'var(--ink)';};
   const dots=h('p',{class:'small muted',style:'margin:6px 0 0;letter-spacing:3px;font-size:1.2rem'});
   const wegZeile=h('p',{class:'small muted',style:'margin:6px 0 0'});
   const wegSetzen=()=>{wegZeile.textContent=hoerWegText();};
@@ -2295,10 +2301,7 @@ function renderQuestion(R,Q){
     submit(it.answer,ok,null);};
    const rundeFertig=(ok,text)=>{
     runde++;if(ok)treffer++;marken();
-    if(text){heard.style.display='';
-     heard.style.borderColor=ok?'var(--green)':'var(--red)';
-     heard.lastChild.textContent='«\u202f'+text+'\u202f»';
-     heard.lastChild.style.color=ok?'var(--green)':'var(--ink)';}
+    zeigeHeard(text,ok);
     status.textContent=(ok?'✓ ':'✗ ')+t('speakRound',{n:runde,m:RUNDEN});
     if(runde>=RUNDEN){btn.disabled=true;weiter.style.display='none';setTimeout(ende,600);return;}};
    const go=async()=>{
@@ -2316,17 +2319,17 @@ function renderQuestion(R,Q){
     frei();wegSetzen();
     if(done||R.ended||fertig)return;
     if(fehler){
-     heard.style.display='none';
+     zeigeHeard('',false);
      status.textContent=hoerText(fehler);
      return;}
-    if(!r||r.leer){heard.style.display='none';status.textContent=t('speakNothing');return;}
+    if(!r||r.leer){zeigeHeard('',false);status.textContent=t('speakNothing');return;}
     rundeFertig(r.ok,r.text);};
    weiter.addEventListener('click',()=>{if(done||R.ended||fertig)return;
     if(stopper)try{stopper();}catch(_){}
     frei();runde=RUNDEN;marken();ende();});
    marken();
    area.append(
-    h('div',{class:'row',style:'gap:10px;margin-top:6px'},btn,weiter),pegel,dots,heard,status,wegZeile);
+    h('div',{class:'row',style:'gap:10px;margin-top:6px'},btn,weiter),heard,pegel,dots,status,wegZeile);
   }
  }else if(it.type==='construct'){
   const bd=kBoard(it.task);Q.board=bd;
@@ -2440,15 +2443,19 @@ function sprechSchritt(it,weiterKnopf,freigabe,R,spieler){
  const btn=micKnopf(t('speakStart'),t('speakStop'),()=>go(),()=>{if(loslassen)loslassen();});
  const status=h('p',{class:'small muted',style:'margin:8px 0 0;min-height:1.3em','aria-live':'polite'});
  /* Das Gehoerte in voller Groesse, nicht als Randnotiz. */
- const gehoert=h('div',{style:'display:none;margin:10px 0 0;padding:10px 12px;border-radius:10px;'
+ const gehoert=h('div',{style:'margin:10px 0 0;padding:10px 12px;border-radius:10px;'
   +'background:var(--paper);border:2px solid var(--grid)','aria-live':'polite'},
   h('div',{class:'small muted',style:'margin:0 0 2px'},t('speakHeard')),
-  h('div',{class:'fr',style:'font-size:1.45rem;line-height:1.25;word-break:break-word'}));
+  h('div',{class:'fr',style:'font-size:1.45rem;line-height:1.25;word-break:break-word;color:var(--muted)'},'\u2014'));
  const zeigeGehoert=(text,ok)=>{
-  if(!text){gehoert.style.display='none';return;}
   gehoert.style.display='';
+  if(!text){
+   gehoert.style.borderColor='var(--grid)';
+   gehoert.lastChild.textContent='\u2014';
+   gehoert.lastChild.style.color='var(--muted)';
+   return;}
   gehoert.style.borderColor=ok?'var(--green)':'var(--red)';
-  gehoert.lastChild.textContent='«\u202f'+text+'\u202f»';
+  gehoert.lastChild.textContent='\u00ab\u202f'+text+'\u202f\u00bb';
   gehoert.lastChild.style.color=ok?'var(--green)':'var(--ink)';
  };
  const pegel=h('div',{style:'height:6px;border-radius:3px;background:var(--grid);margin:8px 0 0;overflow:hidden'},
@@ -2486,11 +2493,12 @@ function sprechSchritt(it,weiterKnopf,freigabe,R,spieler){
   if(btn.setzeAn)btn.setzeAn(false);
   wegZeile.textContent=hoerWegText();
   if(fehler){zeigeGehoert('',false);return oeffne(hoerText(fehler));}
+  if(!r||r.leer){zeigeGehoert('',false);return oeffne(t('speakNothing'));}
   zeigeGehoert((r&&r.text)||'', !!(r&&r.ok));
   if(r&&r.ok)return oeffne('✓ '+t('sprechGut'));
   oeffne(t('sprechGenug',{a:it.sprich}));
  };
- kasten.append(kopf,h('div',{class:'row',style:'gap:10px'},btn,ueber),pegel,gehoert,status,wegZeile);
+ kasten.append(kopf,h('div',{class:'row',style:'gap:10px'},btn,ueber),gehoert,pegel,status,wegZeile);
  return kasten;
 }
 function onAnswer(R,Q,given,correct,fb){
