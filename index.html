@@ -5422,9 +5422,9 @@ function frPairs(tp){const es=shuffle(tp.w).slice(0,5);
   pairs:es.map(e=>[frWord(e),natPlain(e)]),answer:es.map(e=>frWord(e)+' = '+natPlain(e)).join(' · ')},
   [X('Fang mit den Wörtern an, die du sicher weisst.','Start with the words you are sure about.','Commence par les mots que tu connais bien.'),
    es.map(e=>frWord(e)+' = '+natPlain(e)).join('   ')]);}
-function frWrite(tp){const nouns=tp.w.filter(x=>x[3]);const es=shuffle(nouns.length>=5?nouns:tp.w).slice(0,5);const withArt=es.every(e=>e[3]);
- return steps({type:'handwrite',prompt:(withArt?X('Schreibe diese Wörter von Hand auf Französisch, mit Artikel:','Write these words by hand in French, with the article:','Écris ces mots à la main en français, avec l’article :')
-   :X('Schreibe diese Wörter von Hand auf Französisch:','Write these words by hand in French:','Écris ces mots à la main en français :'))+'\n'+es.map(e=>'• '+natPlain(e)).join('\n'),
+function frWrite(tp){const nouns=tp.w.filter(x=>x[3]);const es=shuffle(nouns.length?nouns:tp.w).slice(0,1);const withArt=es.every(e=>e[3]);
+ return steps({type:'handwrite',prompt:(withArt?X('Schreibe von Hand auf Französisch, mit Artikel:','Write by hand in French, with the article:','Écris à la main en français, avec l’article :')
+   :X('Schreibe von Hand auf Französisch:','Write by hand in French:','Écris à la main en français :'))+'\n'+es.map(e=>'• '+natPlain(e)).join('\n'),
   solution:es.map(e=>frWord(e)).join('\n'),answer:es.map(e=>frWord(e)).join(' · ')},
   [X('Schreibe zuerst, was du sicher weisst.','Write what you are sure of first.','Écris d’abord ce dont tu es sûr.'),es.map(e=>frWord(e)+' – '+natPlain(e)).join('   ')]);}
 FRT.forEach(([id,y,key,n])=>{const w=FRW[key];
@@ -5588,8 +5588,8 @@ function ddPairs(tp){
    es.map(d=>ddFr(d)+' = '+ddDe(d)).join('   ')]);}
 
 function ddWrite(tp){
- const es=ddTake(tp,5);
- if(es.length<2)return ddType(tp);
+ const es=ddTake(tp,1);
+ if(!es.length)return ddType(tp);
  return steps({type:'handwrite',prompt:X('Schreibe von Hand auf Französisch:','Write by hand in French:','Écris à la main en français :')+'\n'+es.map(d=>'• '+ddDe(d)).join('\n'),
   solution:es.map(d=>ddFr(d)).join('\n'),answer:es.map(d=>ddFr(d)).join(' · '),
   sprich:ddFr(es[0]),sprichAccept:ddAccept(es[0])},
