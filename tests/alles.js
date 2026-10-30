@@ -7,7 +7,7 @@ const fs=require('fs'),path=require('path');
 const D=__dirname;
 const filter=process.argv[2]||'';
 const dateien=fs.readdirSync(D)
- .filter(f=>/^(stellen|stellen2|spielpause|mathblatt|pad|finger|sprachen|kb|ueber|sperre|widerspruch|rueckfall|neu|proxy)\.js$/.test(f))
+ .filter(f=>/^(stellen|stellen2|spielpause|ton|mathblatt|pad|finger|sprachen|kb|ueber|sperre|widerspruch|rueckfall|neu|proxy)\.js$/.test(f))
  .filter(f=>!filter||f.includes(filter)).sort();
 let schlecht=0;
 console.log('Pruefe '+dateien.length+' Dateien gegen app.html ('+

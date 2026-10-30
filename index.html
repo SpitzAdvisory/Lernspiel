@@ -1270,7 +1270,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V57';
+const APPVER='V58';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1876,12 +1876,19 @@ function penOn(p){return !!S.penForce||!(p&&p.pen===false);}
 function fnv1a(str){let hh=0x811c9dc5;const b=new TextEncoder().encode(String(str).normalize('NFC').trim());
  for(let i=0;i<b.length;i++){hh^=b[i];hh=(hh*0x01000193)>>>0;}return ('0000000'+hh.toString(16)).slice(-8);}
 const AUDOK={};let AUDEL=null;
-function audioUrl(fr){return 'audio/fr/'+fnv1a(fr)+'.mp3';}
-function ttsFr(say){try{const sp=window.speechSynthesis;if(!sp)return false;sp.cancel();
- const u=new SpeechSynthesisUtterance(say);u.lang='fr-FR';u.rate=0.9;u.volume=1;
- const vs=sp.getVoices().filter(v=>/^fr/i.test(v.lang));
- if(vs.length)u.voice=vs.find(v=>/fr-CH/i.test(v.lang))||vs.find(v=>/fr-FR/i.test(v.lang))||vs[0];
+function audioUrl(text,spr){return 'audio/'+(spr||'fr')+'/'+fnv1a(text)+'.mp3';}
+/* Vorzug je Sprache: erst die schweizerische Variante, dann die grosse. */
+const TONSPR={fr:['fr-CH','fr-FR','fr'],de:['de-CH','de-DE','de'],en:['en-GB','en-US','en']};
+function ttsBrowser(say,spr){try{const sp=window.speechSynthesis;if(!sp)return false;sp.cancel();
+ const reihe=TONSPR[spr||'fr']||TONSPR.fr;
+ const u=new SpeechSynthesisUtterance(say);u.lang=reihe[1];u.rate=0.9;u.volume=1;
+ const kurz=reihe[2];
+ const vs=sp.getVoices().filter(v=>new RegExp('^'+kurz,'i').test(v.lang));
+ if(vs.length){let w=null;
+  for(const k of reihe){w=vs.find(v=>v.lang.replace('_','-').toLowerCase()===k.toLowerCase());if(w)break;}
+  u.voice=w||vs[0];}
  sp.speak(u);return true;}catch(_){return false;}}
+function ttsFr(say){return ttsBrowser(say,'fr');}
 /* Auf dem iPad darf erst nach einer Beruehrung Ton kommen. Beim ersten
    Antippen wird darum ein stummer Schnipsel abgespielt; danach ist das
    Element frei und spaetere Aufrufe gehen durch. */
@@ -1917,11 +1924,17 @@ function tonLaeuft(){
  try{ if(window.speechSynthesis && speechSynthesis.speaking) return true; }catch(_){}
  return false;
 }
-function sayFr(fr,fehlt){
+function lesbar(text,spr){
+ let s=String(text).replace(/…/g,'');
+ if((spr||'fr')==='fr')s=s.replace(/\bqc\b/g,'quelque chose').replace(/\bqn\b/g,'quelqu’un');
+ return s.replace(/\s+/g,' ').trim();}
+function sayFr(fr,fehlt){return sag(fr,'fr',fehlt);}
+function sag(text,spr,fehlt){
  if(MIKROAN)return;
- const say=String(fr).replace(/\bqc\b/g,'quelque chose').replace(/\bqn\b/g,'quelqu’un').replace(/…/g,'').replace(/\s+/g,' ').trim();
- const url=audioUrl(fr);
- const weiter=()=>{if(!ttsFr(say)&&fehlt)fehlt();};
+ spr=spr||'fr';
+ const say=lesbar(text,spr);
+ const url=audioUrl(text,spr);
+ const weiter=()=>{if(!ttsBrowser(say,spr)&&fehlt)fehlt();};
  if(AUDOK[url]===false)return weiter();
  try{
   if(!AUDEL)AUDEL=new Audio();
@@ -1939,9 +1952,9 @@ function sayFr(fr,fehlt){
   const gesperrt=e&&e.name==='NotAllowedError';
   if(!gesperrt)AUDOK[url]=false;
   weiter();}}
-function sndBtn(fr,pre){const k=pre?'listen':'listenAfter';
+function sndBtn(fr,pre,spr){const k=pre?'listen':'listenAfter';
  const b=h('button',{class:'btn ghost small sndb',type:'button','aria-label':t(k),title:t(k),
-  onclick:ev=>{ev.preventDefault();ev.stopPropagation();if(b.disabled)return;sayFr(fr);}},'🔊');
+  onclick:ev=>{ev.preventDefault();ev.stopPropagation();if(b.disabled)return;sag(fr,spr||'fr');}},'🔊');
  if(!pre)b.disabled=true;
  return b;}
 
