@@ -1945,6 +1945,7 @@ function tonLaeuft(){
 function lesbar(text,spr){
  let s=String(text).replace(/…/g,'');
  if((spr||'fr')==='fr')s=s.replace(/\bqc\b/g,'quelque chose').replace(/\bqn\b/g,'quelqu’un');
+ else s=s.replace(/;/g,', ');          /* mehrere Bedeutungen als Aufzaehlung */
  return s.replace(/\s+/g,' ').trim();}
 function sayFr(fr,fehlt){return sag(fr,'fr',fehlt);}
 function sag(text,spr,fehlt){
@@ -3136,7 +3137,8 @@ function renderQuestion(R,Q){
  const pen=penOn(R.players[curIdx(R)])&&it.type!=='handwrite'&&blattSpiel(R.game);
  const pad=pen?scratchPad({height:it.type==='map'?240:300}):null;if(pad)Q.pad=pad;
  const padBox=pad?h('details',{class:'padbox',open:true},h('summary',{},'🖊 '+t('padTitle')),pad.el):null;
- screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre)):null),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,helpEl,fragEl,retryMsg,fb),padBox));
+ screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre)):null,
+   it.nat?sndBtn(it.nat,true,it.natSpr||'de'):null),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,helpEl,fragEl,retryMsg,fb),padBox));
  if(pen)area.querySelectorAll('input[type=text],input[type=number]').forEach(i=>{i.classList.add('penfield');
   i.setAttribute('autocomplete','off');i.setAttribute('autocorrect','off');i.setAttribute('autocapitalize','off');i.setAttribute('spellcheck','false');
   const ph=i.getAttribute('placeholder');if(ph)i.addEventListener('input',()=>{if(i.value)i.removeAttribute('placeholder');else i.setAttribute('placeholder',ph);});});
@@ -6141,6 +6143,9 @@ function frWord(e){return e[3]&&e[3]!=='pl'?artOf(e[3])+(artOf(e[3])==='l’'?''
 function deOf(e){return e[1];}function enOf(e){return e[2];}
 function nat(e){return S.lang==='en'?enOf(e):S.lang==='fr'?frWord(e):deOf(e);}
 function natPlain(e){return S.lang==='en'?enOf(e):deOf(e);}
+/* Die Seite in der Sprache des Kindes wird mitgesprochen. Fuer Deutsch
+   liegen die Aufnahmen bereit; sonst spricht die Stimme des Geraets. */
+function natSpr(){return S.lang==='en'?'en':'de';}
 /* --- accent keypad attached to a text input --- */
 /* ---------- Eigene Buchstabentastatur ----------
    Auf dem iPad bleibt die Systemtastatur oft aus: das Feld hat den Fokus
@@ -6207,11 +6212,12 @@ function frChoice(tp,toFr){const es=shuffle(tp.w).slice(0,4);const e=es[0];
  const q=toFr?X('Wie heisst das auf Französisch?','What is this in French?','Comment dit-on cela en français ?')
   :X('Was heisst das auf Deutsch?','What does this mean in English?','Que veut dire ce mot ?');
  const it=choiceItem(q+'\n'+(toFr?natPlain(e):frWord(e)),right,wrong);
+ if(toFr){it.nat=natPlain(e);it.natSpr=natSpr();}
  return steps(it,[X('Denk an den Wortschatz dieses Themas.','Think of this theme’s vocabulary.','Pense au vocabulaire de ce thème.'),
   frWord(e)+' = '+deOf(e)+(enOf(e)&&enOf(e)!==deOf(e)?' / '+enOf(e):'')]);}
 function frType(tp){const e=pick(tp.w);
  const it={type:'input',prompt:X('Schreibe auf Französisch:','Write in French:','Écris en français :')+'\n'+natPlain(e),
-  answer:frWord(e),accept:frAccept(e),fr:true};
+  answer:frWord(e),accept:frAccept(e),fr:true,nat:natPlain(e),natSpr:natSpr()};
  return steps(it,[e[3]?X('Vergiss den Artikel nicht.','Don’t forget the article.','N’oublie pas l’article.')
    :X('Achte auf die Akzente.','Watch the accents.','Attention aux accents.'),frWord(e)]);}
 function frArticle(tp){const nouns=tp.w.filter(x=>x[3]&&x[3]!=='pl'&&x[3]!=='mv'&&x[3]!=='fv');
@@ -6230,7 +6236,8 @@ function frWrite(tp){return SCHRIFTOK?frWriteAlt(tp):frType(tp);}
 function frWriteAlt(tp){const nouns=tp.w.filter(x=>x[3]);const es=shuffle(nouns.length?nouns:tp.w).slice(0,1);const withArt=es.every(e=>e[3]);
  return steps({type:'handwrite',prompt:(withArt?X('Schreibe von Hand auf Französisch, mit Artikel:','Write by hand in French, with the article:','Écris à la main en français, avec l’article :')
    :X('Schreibe von Hand auf Französisch:','Write by hand in French:','Écris à la main en français :'))+'\n'+es.map(e=>'• '+natPlain(e)).join('\n'),
-  solution:es.map(e=>frWord(e)).join('\n'),answer:es.map(e=>frWord(e)).join(' · ')},
+  solution:es.map(e=>frWord(e)).join('\n'),answer:es.map(e=>frWord(e)).join(' · '),
+  nat:es.length===1?natPlain(es[0]):null,natSpr:natSpr()},
   [X('Schreibe zuerst, was du sicher weisst.','Write what you are sure of first.','Écris d’abord ce dont tu es sûr.'),es.map(e=>frWord(e)+' – '+natPlain(e)).join('   ')]);}
 FRT.forEach(([id,y,key,n])=>{const w=FRW[key];
  const tp={id,y,a:1,n:n.split('|'),w,
@@ -6348,6 +6355,7 @@ function ddChoice(tp,toFr){
              :X('Was heisst das auf Deutsch?','What does this mean in German?','Que veut dire cette expression ?');
  const it=choiceItem(q+'\n'+(toFr?ddDe(d):ddFr(d)),f(d),wrong);
  if(!toFr)it.sound=ddFr(d);
+ if(toFr){it.nat=ddDeList(d)[0];it.natSpr='de';}
  it.sprich=ddFr(d);it.sprichAccept=ddAccept(d);
  return steps(it,[X('Denk an den Wortschatz dieser Unité.','Think of this unit’s vocabulary.','Pense au vocabulaire de cette unité.'),
   ddFr(d)+' = '+ddDeAll(d)]);}
@@ -6356,6 +6364,7 @@ function ddType(tp){
  const d=ddOne(tp);
  const it={type:'input',prompt:X('Schreibe auf Französisch:','Write in French:','Écris en français :')+'\n'+ddDe(d),
   answer:ddFr(d),accept:ddAccept(d),fr:true,sound:ddFr(d),
+  nat:ddDeList(d)[0],natSpr:'de',
   sprich:ddFr(d),sprichAccept:ddAccept(d)};
  return steps(it,[ddArt(d)?X('Vergiss den Artikel nicht.','Don’t forget the article.','N’oublie pas l’article.')
    :X('Achte auf die Akzente.','Watch the accents.','Attention aux accents.'),ddFr(d)]);}
@@ -6412,6 +6421,7 @@ function ddSpeak(tp,mode){
  const body=mode==='say'?ddDe(d):fr;
  const it={type:'speak',mode,prompt:head+'\n'+body,answer:fr,accept:ddAccept(d),rounds:1,
   sound:mode==='say'?null:fr,autoSound:mode==='repeat',soundPre:mode!=='say',
+  nat:mode==='say'?ddDeList(d)[0]:null,natSpr:'de',
   fr:true,difficulty:mode==='say'?3:mode==='read'?2:1};
  return steps(it,[mode==='say'
    ?X('Denk zuerst an das Wort, dann sprich es laut und deutlich.','Think of the word first, then say it clearly.','Pense au mot, puis dis-le clairement.')
