@@ -25,6 +25,9 @@ const namen=manifest.map(x=>x.file);
   pruef('Semikolon wird zur Aufzaehlung',lesbar('klingeln;läuten','de')==='klingeln, läuten',lesbar('klingeln;läuten','de'));
   pruef('Franzoesisch bleibt unveraendert',lesbar('donner qc','fr')==='donner quelque chose',lesbar('donner qc','fr'));
   pruef('Englisch nimmt dieselbe Regel',lesbar('a;b','en')==='a, b',lesbar('a;b','en'));
+  pruef('Abkuerzung jmdn. wird ausgeschrieben',lesbar('jmdn. grüssen','de')==='jemanden grüssen',lesbar('jmdn. grüssen','de'));
+  pruef('Abkuerzung etw. wird ausgeschrieben',lesbar('etw. anschauen','de')==='etwas anschauen',lesbar('etw. anschauen','de'));
+  pruef('Abkuerzungen nur auf Deutsch',lesbar('etw. x','en')==='etw. x',lesbar('etw. x','en'));
 
   /* Sprache der Muttersprachseite */
   S.lang='de'; pruef('Deutsch gewaehlt',natSpr()==='de');

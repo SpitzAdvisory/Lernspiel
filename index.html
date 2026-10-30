@@ -1942,10 +1942,16 @@ function tonLaeuft(){
  try{ if(window.speechSynthesis && speechSynthesis.speaking) return true; }catch(_){}
  return false;
 }
+/* Abkuerzungen schreibt die Stimme nicht von selbst aus; vorgelesen
+   klingen sie wie Buchstabensalat. Gleiche Liste wie im Tonmanifest. */
+const DEKURZ=[[/\bjmdn\./g,'jemanden'],[/\bjmdm\./g,'jemandem'],[/\bjmds\./g,'jemandes'],
+ [/\bjmd\./g,'jemand'],[/\betw\./g,'etwas'],[/\busw\./g,'und so weiter'],
+ [/\bbzw\./g,'beziehungsweise'],[/\bca\./g,'circa']];
 function lesbar(text,spr){
  let s=String(text).replace(/…/g,'');
  if((spr||'fr')==='fr')s=s.replace(/\bqc\b/g,'quelque chose').replace(/\bqn\b/g,'quelqu’un');
- else s=s.replace(/;/g,', ');          /* mehrere Bedeutungen als Aufzaehlung */
+ else{ s=s.replace(/;/g,', ');         /* mehrere Bedeutungen als Aufzaehlung */
+  if((spr||'fr')==='de')for(const [r,x] of DEKURZ)s=s.replace(r,x); }
  return s.replace(/\s+/g,' ').trim();}
 function sayFr(fr,fehlt){return sag(fr,'fr',fehlt);}
 function sag(text,spr,fehlt){

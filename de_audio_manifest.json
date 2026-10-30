@@ -2965,13 +2965,13 @@
  },
  {
   "de": "an etw. denken",
-  "say": "an etw. denken",
+  "say": "an etwas denken",
   "file": "f86812e6.mp3",
   "quelle": "DDV"
  },
  {
   "de": "an etw. teilnehmen",
-  "say": "an etw. teilnehmen",
+  "say": "an etwas teilnehmen",
   "file": "3f4d37da.mp3",
   "quelle": "DDV"
  },
@@ -3049,13 +3049,13 @@
  },
  {
   "de": "auf etw. warten",
-  "say": "auf etw. warten",
+  "say": "auf etwas warten",
   "file": "b4f79a12.mp3",
   "quelle": "DDV"
  },
  {
   "de": "auf jmdn. warten",
-  "say": "auf jmdn. warten",
+  "say": "auf jemanden warten",
   "file": "74764a26.mp3",
   "quelle": "DDV"
  },
@@ -3067,7 +3067,7 @@
  },
  {
   "de": "aufhören, etw. zu tun",
-  "say": "aufhören, etw. zu tun",
+  "say": "aufhören, etwas zu tun",
   "file": "63f7b1e8.mp3",
   "quelle": "DDV"
  },
@@ -6427,13 +6427,13 @@
  },
  {
   "de": "es fertigbringen etw. zu tun",
-  "say": "es fertigbringen etw. zu tun",
+  "say": "es fertigbringen etwas zu tun",
   "file": "d55e7e00.mp3",
   "quelle": "DDV"
  },
  {
   "de": "es fertigbringen, etw. zu tun",
-  "say": "es fertigbringen, etw. zu tun",
+  "say": "es fertigbringen, etwas zu tun",
   "file": "1c7e1bee.mp3",
   "quelle": "DDV"
  },
@@ -6457,25 +6457,25 @@
  },
  {
   "de": "etw. anschauen",
-  "say": "etw. anschauen",
+  "say": "etwas anschauen",
   "file": "74b170c8.mp3",
   "quelle": "DDV"
  },
  {
   "de": "etw. brauchen",
-  "say": "etw. brauchen",
+  "say": "etwas brauchen",
   "file": "52ef576e.mp3",
   "quelle": "DDV"
  },
  {
   "de": "etw. geniessen",
-  "say": "etw. geniessen",
+  "say": "etwas geniessen",
   "file": "8e59d164.mp3",
   "quelle": "DDV"
  },
  {
   "de": "etw. lesen",
-  "say": "etw. lesen",
+  "say": "etwas lesen",
   "file": "70581b40.mp3",
   "quelle": "DDV"
  },
@@ -6625,7 +6625,7 @@
  },
  {
   "de": "für jmdn. da sein",
-  "say": "für jmdn. da sein",
+  "say": "für jemanden da sein",
   "file": "6ab4a886.mp3",
   "quelle": "DDV"
  },
@@ -6823,7 +6823,7 @@
  },
  {
   "de": "gut sein in etw.",
-  "say": "gut sein in etw.",
+  "say": "gut sein in etwas",
   "file": "03d253a8.mp3",
   "quelle": "DDV"
  },
@@ -6985,7 +6985,7 @@
  },
  {
   "de": "ich um jmdn. kümmern",
-  "say": "ich um jmdn. kümmern",
+  "say": "ich um jemanden kümmern",
   "file": "f376f630.mp3",
   "quelle": "DDV"
  },
@@ -7159,7 +7159,7 @@
  },
  {
   "de": "in jmdn. verliebt sein",
-  "say": "in jmdn. verliebt sein",
+  "say": "in jemanden verliebt sein",
   "file": "748a69d0.mp3",
   "quelle": "DDV"
  },
@@ -7201,193 +7201,193 @@
  },
  {
   "de": "jmdm. Freude machen",
-  "say": "jmdm. Freude machen",
+  "say": "jemandem Freude machen",
   "file": "57585f74.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. antworten",
-  "say": "jmdm. antworten",
+  "say": "jemandem antworten",
   "file": "862f6b24.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. die Hand geben",
-  "say": "jmdm. die Hand geben",
+  "say": "jemandem die Hand geben",
   "file": "d6c95262.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. ein Geschenk machen",
-  "say": "jmdm. ein Geschenk machen",
+  "say": "jemandem ein Geschenk machen",
   "file": "1906dd54.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. einen Brief schreiben",
-  "say": "jmdm. einen Brief schreiben",
+  "say": "jemandem einen Brief schreiben",
   "file": "3c57c340.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. einen Pass zuspielen",
-  "say": "jmdm. einen Pass zuspielen",
+  "say": "jemandem einen Pass zuspielen",
   "file": "dded1cd6.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. einen Streich spielen",
-  "say": "jmdm. einen Streich spielen",
+  "say": "jemandem einen Streich spielen",
   "file": "cb22e336.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. etw. ausleihen",
-  "say": "jmdm. etw. ausleihen",
+  "say": "jemandem etwas ausleihen",
   "file": "c5bc294e.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. etw. bringen",
-  "say": "jmdm. etw. bringen",
+  "say": "jemandem etwas bringen",
   "file": "a4f3cb9c.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. etw. erklären",
-  "say": "jmdm. etw. erklären",
+  "say": "jemandem etwas erklären",
   "file": "527d5c62.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. etw. erzählen",
-  "say": "jmdm. etw. erzählen",
+  "say": "jemandem etwas erzählen",
   "file": "6914b182.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. etw. geben",
-  "say": "jmdm. etw. geben",
+  "say": "jemandem etwas geben",
   "file": "1cb2ccee.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. etw. schreiben",
-  "say": "jmdm. etw. schreiben",
+  "say": "jemandem etwas schreiben",
   "file": "d5641660.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. etw. vorlesen",
-  "say": "jmdm. etw. vorlesen",
+  "say": "jemandem etwas vorlesen",
   "file": "a0854252.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. etw. zeigen",
-  "say": "jmdm. etw. zeigen",
+  "say": "jemandem etwas zeigen",
   "file": "838f8362.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. helfen",
-  "say": "jmdm. helfen",
+  "say": "jemandem helfen",
   "file": "f2572bb0.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. telefonieren",
-  "say": "jmdm. telefonieren",
+  "say": "jemandem telefonieren",
   "file": "f8f38118.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. vertrauen",
-  "say": "jmdm. vertrauen",
+  "say": "jemandem vertrauen",
   "file": "8f938093.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdm. zuhören",
-  "say": "jmdm. zuhören",
+  "say": "jemandem zuhören",
   "file": "47090540.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. anmachen",
-  "say": "jmdn. anmachen",
+  "say": "jemanden anmachen",
   "file": "26df50c2.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. besuchen",
-  "say": "jmdn. besuchen",
+  "say": "jemanden besuchen",
   "file": "6f0f4b08.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. betrügen",
-  "say": "jmdn. betrügen",
+  "say": "jemanden betrügen",
   "file": "191f02a0.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. brauchen",
-  "say": "jmdn. brauchen",
+  "say": "jemanden brauchen",
   "file": "dc087938.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. einladen",
-  "say": "jmdn. einladen",
+  "say": "jemanden einladen",
   "file": "3fcf0d30.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. fragen",
-  "say": "jmdn. fragen",
+  "say": "jemanden fragen",
   "file": "94271806.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. grüssen",
-  "say": "jmdn. grüssen",
+  "say": "jemanden grüssen",
   "file": "222b2da4.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. heiraten",
-  "say": "jmdn. heiraten",
+  "say": "jemanden heiraten",
   "file": "e2a190a8.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. kennenlernen",
-  "say": "jmdn. kennenlernen",
+  "say": "jemanden kennenlernen",
   "file": "e8e82018.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. treffen",
-  "say": "jmdn. treffen",
+  "say": "jemanden treffen",
   "file": "67da1ae8.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. verlassen",
-  "say": "jmdn. verlassen",
+  "say": "jemanden verlassen",
   "file": "a02ed7ec.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. verlieren",
-  "say": "jmdn. verlieren",
+  "say": "jemanden verlieren",
   "file": "60652870.mp3",
   "quelle": "DDV"
  },
  {
   "de": "jmdn. zum Essen einladen",
-  "say": "jmdn. zum Essen einladen",
+  "say": "jemanden zum Essen einladen",
   "file": "45aae1e2.mp3",
   "quelle": "DDV"
  },
@@ -7639,19 +7639,19 @@
  },
  {
   "de": "mit jmdm. schimpfen",
-  "say": "mit jmdm. schimpfen",
+  "say": "mit jemandem schimpfen",
   "file": "17b09dd2.mp3",
   "quelle": "DDV"
  },
  {
   "de": "mit jmdm. sprechen",
-  "say": "mit jmdm. sprechen",
+  "say": "mit jemandem sprechen",
   "file": "7b6bec2e.mp3",
   "quelle": "DDV"
  },
  {
   "de": "mit jmdm. verheiratet sein",
-  "say": "mit jmdm. verheiratet sein",
+  "say": "mit jemandem verheiratet sein",
   "file": "e9f94fa8.mp3",
   "quelle": "DDV"
  },
@@ -8251,7 +8251,7 @@
  },
  {
   "de": "sich in jmdn. verlieben",
-  "say": "sich in jmdn. verlieben",
+  "say": "sich in jemanden verlieben",
   "file": "8c9235a2.mp3",
   "quelle": "DDV"
  },
@@ -8293,13 +8293,13 @@
  },
  {
   "de": "sich um etw. kümmern",
-  "say": "sich um etw. kümmern",
+  "say": "sich um etwas kümmern",
   "file": "fed6a150.mp3",
   "quelle": "DDV"
  },
  {
   "de": "sich um jmdn. kümmern",
-  "say": "sich um jmdn. kümmern",
+  "say": "sich um jemanden kümmern",
   "file": "2009af28.mp3",
   "quelle": "DDV"
  },
@@ -8311,13 +8311,13 @@
  },
  {
   "de": "sich über etw. aufregen",
-  "say": "sich über etw. aufregen",
+  "say": "sich über etwas aufregen",
   "file": "82415458.mp3",
   "quelle": "DDV"
  },
  {
   "de": "sich über jmdn. aufregen",
-  "say": "sich über jmdn. aufregen",
+  "say": "sich über jemanden aufregen",
   "file": "7e849668.mp3",
   "quelle": "DDV"
  },
@@ -9043,7 +9043,7 @@
  },
  {
   "de": "viel Zeit mit jmdm. verbringen",
-  "say": "viel Zeit mit jmdm. verbringen",
+  "say": "viel Zeit mit jemandem verbringen",
   "file": "3368358e.mp3",
   "quelle": "DDV"
  },
@@ -9085,7 +9085,7 @@
  },
  {
   "de": "von etw. träumen",
-  "say": "von etw. träumen",
+  "say": "von etwas träumen",
   "file": "c251a0b4.mp3",
   "quelle": "DDV"
  },
