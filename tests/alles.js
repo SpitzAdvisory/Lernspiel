@@ -7,7 +7,7 @@ const fs=require('fs'),path=require('path');
 const D=__dirname;
 const filter=process.argv[2]||'';
 const dateien=fs.readdirSync(D)
- .filter(f=>/^(stellen|stellen2|spielpause|ton|frag|nat|mathblatt|pad|finger|sprachen|kb|ueber|sperre|widerspruch|rueckfall|neu|proxy)\.js$/.test(f))
+ .filter(f=>/^(stellen|stellen2|spielpause|ton|frag|nat|ddenglisch|mathblatt|pad|finger|sprachen|kb|ueber|sperre|widerspruch|rueckfall|neu|proxy)\.js$/.test(f))
  .filter(f=>!filter||f.includes(filter)).sort();
 /* Die Pruefdateien reichen die Seite nicht selbst aus, sondern bedienen
    sich aus einem festen Ordner. Wird dort eine alte Fassung liegen
