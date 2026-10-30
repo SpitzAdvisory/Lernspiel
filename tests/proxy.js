@@ -46,16 +46,26 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
 
   pruef('Ohne Schlüssel gilt der Vermittler als Weg',(await hoerWeg(()=>{}))==='eleven');
 
-  /* Ohne Adresse bleibt der alte Weg */
+  /* Ohne Eintrag gilt die Adresse aus der App. Sonst muesste sie auf jedem
+     Geraet von Hand eingetragen werden. */
   await IDB.set('kv','proxyUrl','');
-  await IDB.set('kv','elevenKey','k');
-  gesehen=null;HOERWEG=null;
-  await hoerScribe(new Float32Array(8000).fill(0.1));
-  pruef('Ohne Adresse weiterhin direkt',!!gesehen&&/elevenlabs\.io/.test(gesehen.direkt||''),gesehen&&gesehen.direkt);
+  pruef('Ohne Eintrag gilt die Vorgabe der App',
+   (await vermittler())===VERMITTLER_VORGABE,await vermittler());
+  pruef('Die Vorgabe ist eine https-Adresse',/^https:\/\/[^\/]+$/.test(VERMITTLER_VORGABE),VERMITTLER_VORGABE);
 
   /* Unsinnige Adresse wird nicht genommen */
   await IDB.set('kv','proxyUrl','nicht-https');
-  pruef('Adresse ohne https zählt nicht',(await vermittler())==='');
+  pruef('Adresse ohne https zählt nicht, die Vorgabe greift',
+   (await vermittler())===VERMITTLER_VORGABE,await vermittler());
+
+  /* Abschalten bleibt moeglich */
+  await IDB.set('kv','proxyUrl','aus');
+  pruef('«aus» schaltet den Vermittler ab',(await vermittler())==='');
+  await IDB.set('kv','elevenKey','k');
+  gesehen=null;HOERWEG=null;
+  await hoerScribe(new Float32Array(8000).fill(0.1));
+  pruef('Abgeschaltet geht es wieder unmittelbar',
+   !!gesehen&&/elevenlabs\.io/.test(gesehen.direkt||''),gesehen&&gesehen.direkt);
 
   window.fetch=echtesFetch;
   await IDB.set('kv','proxyUrl','');await IDB.set('kv','elevenKey','');

@@ -18,6 +18,9 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    this.start=()=>{setTimeout(()=>{const w=window.__sagt;
     if(w&&self.onresult)self.onresult({results:[Object.assign([{transcript:w}],{length:1})]});
     if(self.onend)self.onend();},20);};this.stop=()=>{};};
+  /* Die App bringt eine Vermittleradresse mit. Fuer die Pruefung der
+     uebrigen Hoerwege wird sie abgeschaltet. */
+  await IDB.set('kv','proxyUrl','aus');
   HOERWEG=null;HOERKAPUTT=null;
   const R={score:[100],target:12,extra:0,mode:'learn',answers:[{points:10}]};
   const nb=h('button',{class:'btn'},t('next'));

@@ -33,6 +33,9 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
 
   /* ---- 2. ElevenLabs ---- */
   await IDB.set('kv','elevenKey','test-schluessel');
+  /* Die App bringt eine Vermittleradresse mit. Fuer die Pruefung der
+     uebrigen Hoerwege wird sie abgeschaltet. */
+  await IDB.set('kv','proxyUrl','aus');
   HOERWEG=null;HOERKAPUTT=null;
   try{await IDB.del?IDB.del('kv','scribeModel'):0;}catch(_){}
   let gesehen=null;

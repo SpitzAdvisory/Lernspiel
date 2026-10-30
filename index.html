@@ -2397,9 +2397,16 @@ function wavAus(daten,rate){
   v.setInt16(44+i*2, x<0?x*0x8000:x*0x7FFF, true);}
  return new Blob([b],{type:'audio/wav'});
 }
+/* Die Adresse des Vermittlers ist kein Geheimnis - die Schluessel liegen
+   dahinter, im Cloudflare-Konto. Steht sie hier, muss sie auf keinem Geraet
+   eingetragen werden. Die Einstellung hat weiterhin Vorrang, und wer
+   «aus» eintraegt, schaltet den Vermittler fuer dieses Geraet ab. */
+const VERMITTLER_VORGABE='https://spitz-lernen.urs-409.workers.dev';
 async function vermittler(){
  const u=String((await IDB.get('kv','proxyUrl'))||'').trim().replace(/\/+$/,'');
- return /^https:\/\//.test(u)?u:'';
+ if(/^(aus|off|kein|nein)$/i.test(u))return '';
+ if(/^https:\/\//.test(u))return u;
+ return VERMITTLER_VORGABE;
 }
 async function hoerScribe(daten,code){
  const prox=await vermittler();

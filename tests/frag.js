@@ -41,8 +41,9 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   pruef('Aufgabentext bleibt unter 600 Zeichen',
    aufgabeText({},{},{prompt:'x'.repeat(2000)}).length<=600);
 
-  /* ---------- 2. Ohne Vermittleradresse kein Knopf ---------- */
-  await IDB.set('kv','proxyUrl','');
+  /* ---------- 2. Ohne Vermittler kein Knopf ----------
+     Die App bringt eine Adresse mit; «aus» schaltet sie ab. */
+  await IDB.set('kv','proxyUrl','aus');
   const b0=fragBox({},{},{type:'input',prompt:'p'},()=>false);
   document.body.append(b0);
   await warte(120);
@@ -175,7 +176,7 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    ![...document.querySelectorAll('.page button')].some(x=>/Emilia|Ask Kate/.test(x.textContent)));
 
   window.fetch=echtesFetch;window.hoerFrei=echtesHoer;window.sag=echtesSag;
-  await IDB.set('kv','proxyUrl','');
+  await IDB.set('kv','proxyUrl','aus');
   return aus;});
  let f=0;
  r.forEach(x=>{if(x[0]==='FAIL')f++;console.log('  '+x[0]+'  '+x[1]+(x[2]?'   '+x[2]:''));});
