@@ -827,6 +827,24 @@ T.fr.help="Aide";
 T.de.helpOf="Hilfe {n}/{m}";
 T.en.helpOf="Help {n}/{m}";
 T.fr.helpOf="Aide {n}/{m}";
+T.de.fragAn="{name} fragen";
+T.en.fragAn="Ask {name}";
+T.fr.fragAn="Demander à {name}";
+T.de.fragAus="Fertig";
+T.en.fragAus="Done";
+T.fr.fragAus="Terminé";
+T.de.fragHoert="Ich höre zu …";
+T.en.fragHoert="Listening …";
+T.fr.fragHoert="J’écoute …";
+T.de.fragDenkt="{name} denkt nach …";
+T.en.fragDenkt="{name} is thinking …";
+T.fr.fragDenkt="{name} réfléchit …";
+T.de.fragNichts="Nichts gehört. Nochmals drücken und sprechen.";
+T.en.fragNichts="Heard nothing. Press again and speak.";
+T.fr.fragNichts="Rien entendu. Appuie encore et parle.";
+T.de.fragFehler="Das hat nicht geklappt. Nochmals versuchen.";
+T.en.fragFehler="That did not work. Try again.";
+T.fr.fragFehler="Cela n’a pas marché. Essaie encore.";
 T.de.helpCost="Jede Hilfe kostet einen Teil der Punkte.";
 T.en.helpCost="Each hint costs some of the points.";
 T.fr.helpCost="Chaque aide coûte une partie des points.";
@@ -2155,7 +2173,7 @@ function hoerBrowser(o){
   let r;
   try{ r = new C(); }catch(e){ return fehler(new Error('kein-browser-hoeren')); }
   try{
-   r.lang = 'fr-FR'; r.continuous = false; r.interimResults = false;
+   r.lang = o.lang || 'fr-FR'; r.continuous = false; r.interimResults = false;
    r.maxAlternatives = 5;
   }catch(_){}
   let erledigt = false, varianten = [];
@@ -2383,11 +2401,11 @@ async function vermittler(){
  const u=String((await IDB.get('kv','proxyUrl'))||'').trim().replace(/\/+$/,'');
  return /^https:\/\//.test(u)?u:'';
 }
-async function hoerScribe(daten){
+async function hoerScribe(daten,code){
  const prox=await vermittler();
  if(prox){
   const fd=new FormData();
-  fd.append('language_code','fra');
+  fd.append('language_code',code||'fra');
   fd.append('file',wavAus(daten,16000),'aufnahme.wav');
   let r;
   try{ r=await fetch(prox+'/stt',{method:'POST',body:fd}); }
@@ -2480,6 +2498,24 @@ async function hoerPruefe(ziel, akzept, o){
  catch(e){ throw new Error('erkennung: ' + (e && e.message || e)); }
  const text = String((r && r.text) || '').trim();
  return hoerUrteil(text ? [text] : [], ziel, akzept);
+}
+
+/* Freies Zuhoeren: ohne Zielwort, in der gewaehlten Sprache. Fuer den
+   Frag-Knopf, wo nicht geprueft, sondern verstanden werden soll. */
+async function hoerFrei(o, code){
+ o = o || {};
+ const weg = await hoerWeg(o.aufLadung);
+ if(weg === 'browser'){
+  const b = await hoerBrowser(o);
+  return String((b.varianten && b.varianten[0]) || '').trim();
+ }
+ const { daten } = await hoerAufnahme(o);
+ if(weg === 'eleven') return await hoerScribe(daten, code || 'fra');
+ const kurz = code === 'deu' ? 'de' : code === 'eng' ? 'en' : 'fr';
+ let r;
+ try{ r = await HOER.p(daten, { language: kurz, task: 'transcribe' }); }
+ catch(e){ throw new Error('erkennung: ' + (e && e.message || e)); }
+ return String((r && r.text) || '').trim();
 }
 
 /* ---------- Groesse des Schreibblatts: pro Geraet gespeichert ---------- */
@@ -2614,6 +2650,92 @@ function noteFig(note){const s=svgBox(note.w,note.h);
  for(const st of note.s){if(st.p.length<2){s.append(sv('circle',{cx:st.p[0][0],cy:st.p[0][1],r:2,fill:INK}));continue;}
   s.append(sv('polyline',{points:st.p.map(q=>q[0]+','+q[1]).join(' '),fill:'none',stroke:INK,'stroke-width':2.2,'stroke-linejoin':'round','stroke-linecap':'round'}));}
  return s;}
+/* ---------- Frag-Knopf ----------------------------------------------------
+   Felix liest die Aufgaben selbst, bleibt aber manchmal stecken. Ein Druck,
+   eine gesprochene Frage, eine gesprochene Antwort - in seiner Sprache.
+   Die erwartete Loesung wird nicht mitgeschickt und die Begleitung ist
+   angewiesen, sie nie zu nennen. Sie zeigt den naechsten Schritt.
+   Ohne eingetragene Vermittleradresse bleibt der Knopf verborgen: ohne ihn
+   gibt es keinen Weg zu Stimme und Begleitung. */
+const TUTORNAME={de:'Emilia',en:'Kate',fr:'Emilie'};
+const STTCODE={de:'deu',en:'eng',fr:'fra'};
+const SRLANG={de:'de-CH',en:'en-GB',fr:'fr-FR'};
+
+async function tutorSprich(text,spr){
+ const prox=await vermittler();
+ if(!prox)return sag(text,spr);
+ let u=null;
+ try{
+  const r=await fetch(prox+'/tts',{method:'POST',headers:{'content-type':'application/json'},
+   body:JSON.stringify({text:text,spr:spr})});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const b=await r.blob();
+  if(!b||!b.size)throw new Error('leer');
+  if(!AUDEL)AUDEL=new Audio();
+  u=URL.createObjectURL(b);
+  AUDEL.muted=false;AUDEL.volume=1;AUDEL.src=u;
+  try{AUDEL.load();}catch(_){}
+  const p=AUDEL.play();
+  if(p&&p.catch)p.catch(()=>sag(text,spr));
+  const weg=u;setTimeout(()=>{try{URL.revokeObjectURL(weg);}catch(_){}} ,120000);
+ }catch(_){
+  if(u)try{URL.revokeObjectURL(u);}catch(__){}
+  sag(text,spr);
+ }
+}
+
+/* Was die Begleitung von der Aufgabe erfaehrt. Bewusst ohne it.answer,
+   it.correct, f.ans und o.ok: was nicht ankommt, kann nicht verraten werden. */
+function aufgabeText(R,Q,it){
+ const teile=[plain(Q.prompt||it.prompt||'')];
+ const G=it.gitter;
+ if(G)teile.push('Rechnung: '+G.a+' '+(G.op||'+')+' '+G.b);
+ if(it.fr)teile.push('Franzoesisch: '+it.fr);
+ if((it.type==='single'||it.type==='multi')&&Array.isArray(Q.opts))
+  teile.push('Auswahl: '+Q.opts.map(o=>o.text).join(' / '));
+ if(it.type==='order'&&Array.isArray(Q.chips))
+  teile.push('Bausteine: '+Q.chips.join(' / '));
+ return teile.filter(x=>x&&String(x).trim()).join(' | ').slice(0,600);
+}
+
+function fragBox(R,Q,it,gesperrt){
+ const spr=(S.lang&&TUTORNAME[S.lang])?S.lang:'de';
+ const name=TUTORNAME[spr];
+ const box=h('div',{style:'margin:10px 0;display:none'});
+ const gehoert=h('p',{class:'small muted',style:'margin:6px 0 0','aria-live':'polite'});
+ const antw=h('p',{class:'hand',style:'font-size:1.2rem;line-height:1.3;margin:6px 0 0','aria-live':'polite'});
+ let laeuft=false,stopper=null;
+ const b=micKnopf(t('fragAn',{name:name}),t('fragAus'),()=>los(),()=>{
+  if(stopper)try{stopper();}catch(_){}});
+ const los=async()=>{
+  if(laeuft||(gesperrt&&gesperrt())){if(b.setzeAn)b.setzeAn(false);return;}
+  laeuft=true;antw.textContent='';gehoert.textContent='\u25CF '+t('fragHoert');
+  let frage='',fehler=null;
+  try{ frage=await hoerFrei({halten:true,lang:SRLANG[spr],
+   aufAktiv:f=>{stopper=f;}},STTCODE[spr]); }
+  catch(e){ fehler=(e&&e.message)||'fehler'; }
+  stopper=null;if(b.setzeAn)b.setzeAn(false);
+  if(fehler){laeuft=false;gehoert.textContent=hoerText(fehler);return;}
+  if(!frage){laeuft=false;gehoert.textContent=t('fragNichts');return;}
+  gehoert.textContent='\u00AB\u202F'+frage+'\u202F\u00BB';
+  antw.textContent=t('fragDenkt',{name:name});
+  try{
+   const prox=await vermittler();
+   if(!prox)throw new Error('kein-vermittler');
+   const r=await fetch(prox+'/frage',{method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({frage:frage,aufgabe:aufgabeText(R,Q,it),spr:spr})});
+   const d=await r.json().catch(()=>null);
+   if(!r.ok||!d||!d.text)throw new Error(String((d&&d.error)||('HTTP '+r.status)).slice(0,90));
+   antw.textContent=d.text;
+   tutorSprich(d.text,spr);
+  }catch(e){ antw.textContent=t('fragFehler'); }
+  laeuft=false;
+ };
+ box.append(h('div',{class:'row',style:'gap:10px'},b),gehoert,antw);
+ vermittler().then(u=>{if(u)box.style.display='';}).catch(()=>{});
+ return box;
+}
+
 function renderQuestion(R,Q){
  R.cur=Q;
  const it=Q.item;const area=h('div',{});const fb=h('div',{});let done=false;
@@ -3001,10 +3123,13 @@ function renderQuestion(R,Q){
   const hb=h('button',{class:'btn ghost small',type:'button',title:t('helpCost')},'💡 '+t('help'));
   hb.addEventListener('click',()=>{if(done||Q.hintsUsed>=it.hints.length)return;ol.style.display='';ol.append(h('li',{},it.hints[Q.hintsUsed++]));
    hb.textContent='💡 '+t('helpOf',{n:Q.hintsUsed,m:it.hints.length});if(Q.hintsUsed>=it.hints.length)hb.disabled=true;});helpEl=h('div',{style:'margin:10px 0'},hb,ol);}
+ /* Bei 'speak' und 'handwrite' gehoert das Mikrofon schon der Aufgabe.
+    Zwei Aufnahmen auf einem Schirm verwirren mehr, als sie helfen. */
+ const fragEl=(it.type==='speak'||Q.joke||it.joke)?null:fragBox(R,Q,it,()=>R.ended);
  const pen=penOn(R.players[curIdx(R)])&&it.type!=='handwrite'&&blattSpiel(R.game);
  const pad=pen?scratchPad({height:it.type==='map'?240:300}):null;if(pad)Q.pad=pad;
  const padBox=pad?h('details',{class:'padbox',open:true},h('summary',{},'🖊 '+t('padTitle')),pad.el):null;
- screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre)):null),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,helpEl,retryMsg,fb),padBox));
+ screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre)):null),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,helpEl,fragEl,retryMsg,fb),padBox));
  if(pen)area.querySelectorAll('input[type=text],input[type=number]').forEach(i=>{i.classList.add('penfield');
   i.setAttribute('autocomplete','off');i.setAttribute('autocorrect','off');i.setAttribute('autocapitalize','off');i.setAttribute('spellcheck','false');
   const ph=i.getAttribute('placeholder');if(ph)i.addEventListener('input',()=>{if(i.value)i.removeAttribute('placeholder');else i.setAttribute('placeholder',ph);});});
