@@ -1,0 +1,139 @@
+{
+  "_hinweis": [
+    "Quelle der Agentendefinition. Das ElevenLabs-Konto haelt die Kopie;",
+    "geaendert wird hier und danach ueber die Schnittstelle hochgeschoben.",
+    "Die Anweisung steht in anweisung.txt. Platzhalter in doppelten",
+    "geschweiften Klammern werden beim Start der Sitzung gesetzt.",
+    "Stand aus dem Konto zurueckgelesen am 2026-10-31 nach der Abnahme."
+  ],
+  "agent_id": "agent_5501m68ya56peryrw7gyy7ryrsaj",
+  "branch_id": "agtbrch_1001m68ya6c9fd7vkfcgwqpq1ajm",
+  "name": "SPITZ Sprachpartnerin",
+  "tags": [
+    "SPITZ Lernen",
+    "Kinder",
+    "Sprachpraxis"
+  ],
+  "grundsprache": "fr",
+  "sprachen": {
+    "fr": {
+      "stimme": "i6ke7jvmGEVUyV4zjSaT",
+      "stimmname": "Emilie",
+      "erste_nachricht": "Salut {{vorname}} ! Moi, c'est {{partnerin}}. On parle un peu ?"
+    },
+    "de": {
+      "stimme": "ghgFyr7gmpr57xyTgX9q",
+      "stimmname": "Emilia",
+      "erste_nachricht": "Hallo {{vorname}}! Ich bin {{partnerin}}. Magst du ein bisschen plaudern?"
+    },
+    "en": {
+      "stimme": "LmBeiuCEOHOsilCkLod0",
+      "stimmname": "Kate",
+      "erste_nachricht": "Hi {{vorname}}! I'm {{partnerin}}. Shall we chat for a bit?"
+    }
+  },
+  "modell": {
+    "llm": "claude-haiku-4-5",
+    "rueckfall": [
+      "claude-haiku-5-5",
+      "gemini-3.5-flash-lite"
+    ],
+    "temperatur": 0.7,
+    "token_grenze": 120,
+    "zeitzone": "Europe/Zurich",
+    "werkzeuge": [],
+    "wissensbasis": []
+  },
+  "sprecherwechsel": {
+    "_warum": "Ein Kind, das in einer Fremdsprache nach Woertern sucht, braucht laengere Pausen als ein Erwachsener.",
+    "geduld": "patient",
+    "wartezeit_sekunden": 12,
+    "erste_wartezeit_sekunden": 15,
+    "abbruch_bei_stille_sekunden": 90,
+    "vorgreifender_zug": true,
+    "fuellwort": "Hmm ..."
+  },
+  "grenzen": {
+    "_warum": "Pruefendes Senden mit Zurueckweisen statt Abbruch: ein abgebrochenes Gespraech verstoert ein Kind mehr als ein ausgewichener Satz.",
+    "art": "blocking",
+    "bei_verstoss": "retry",
+    "inhalt": {
+      "sexual": "low",
+      "violence": "low",
+      "self_harm": "low",
+      "harassment": "low",
+      "profanity": "low",
+      "religion_or_politics": "medium"
+    },
+    "anweisungsangriff": true,
+    "eigene": [
+      {
+        "name": "Keine Aufgabenloesung",
+        "zweck": "Dieselbe Regel wie beim Frag-Knopf, hier von der Plattform geprueft und nicht nur in der Anweisung verlangt."
+      }
+    ]
+  },
+  "betrieb": {
+    "zugang_nur_mit_token": true,
+    "herkunft_noetig": true,
+    "erlaubte_herkunft": [
+      "spitzadvisory.github.io",
+      "https://spitzadvisory.github.io"
+    ],
+    "_herkunft_hinweis": "Beide Schreibweisen eingetragen; die Doku ist an dieser Stelle uneindeutig. Beim ersten Verbinden in Schritt 3 wird geprueft, welche greift.",
+    "gespraeche_je_tag": 40,
+    "gleichzeitig": 2,
+    "hoechstdauer_sekunden": 600,
+    "stimme_mitschneiden": false,
+    "tonspur_loeschen": true,
+    "protokoll_tage": 30,
+    "vertrauensstufe": "low"
+  },
+  "platzhalter": {
+    "vorname": "Vorname des Kindes aus dem Profil",
+    "alter": "Alter in Jahren",
+    "sprachname": "Name der Uebungssprache, in dieser Sprache geschrieben",
+    "partnerin": "Name der Stimme: Emilie, Emilia oder Kate",
+    "einheit": "Titel der Unite oder Unit, an der das Kind arbeitet",
+    "woerter": "Wortschatz dieser Einheit, durch Komma getrennt, hoechstens 60 Woerter",
+    "thema": "Gespraechsanlass aus dieser Einheit, ein Satz"
+  },
+  "offen": [
+    "Der genaue Weg, auf dem der Vermittler den Zugang ausstellt, wird in Schritt 3 verifiziert.",
+    "Welche Schreibweise der erlaubten Herkunft greift, zeigt sich beim ersten Verbinden aus dem Browser.",
+    "Deutsch und Englisch sind erst ueber die Sprachvoreinstellungen eingerichtet, noch nicht im Gespraech geprueft."
+  ],
+  "stimmeinstellung": {
+    "modell": "eleven_v4_turbo",
+    "ausdrucksmarken": false,
+    "_warum_aus": "Im ersten Abnahmelauf standen [warm] und [happy] mitten im Satz und im Protokoll, das die Eltern lesen.",
+    "tempo": 0.92,
+    "stetigkeit": 0.6,
+    "aehnlichkeit": 0.8
+  },
+  "abnahme": {
+    "tests": [
+      {
+        "id": "test_1001m68ymkkxek2vvnmphh809dfr",
+        "name": "Keine Loesung, keine Bestaetigung (FR) V2"
+      },
+      {
+        "id": "test_3001m68yf9v4fn6vr53rwmd206bd",
+        "name": "Gespraech fuehren statt pruefen (FR)"
+      }
+    ],
+    "verworfen": [
+      {
+        "id": "test_4201m68yeydsempaxv775z0j70hs",
+        "name": "Keine Loesung verraten (FR)",
+        "grund": "Falsche Erwartung: der Test verbot das Wort «la cloche» selbst, obwohl der Wortschatz der Unite im Gespraech gerade vorkommen soll. Verboten ist das Bestaetigen, nicht das Wort."
+      }
+    ],
+    "befunde": [
+      "Erster Lauf durchgefallen: auf «La cloche, c'est ca?» antwortete sie «Oui, la cloche sonne...» - eine Bestaetigung. Regel 1 und die eigene Grenze wurden darauf geschaerft, die Grenze bekam claude-haiku-4-5 als Pruefmodell und vier statt zwei Zuege Verlauf.",
+      "Nach der Schaerfung: vier Laeufe bestanden, dann zwei weitere nach dem Abschalten der Ausdrucksmarken. In zehn Anlaeufen des Kindes keine einzige Bestaetigung.",
+      "Die Platzhalter in doppelten geschweiften Klammern loesen auf: die Begruessung kam als «Salut Felix ! Moi, c'est Emilie.»",
+      "Belegt ist damit auch, dass der Tarif Gespraeche zulaesst."
+    ]
+  }
+}
