@@ -1402,7 +1402,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V81';
+const APPVER='V82';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -3567,6 +3567,29 @@ function fragBox(R,Q,it,gesperrt,antwortNehmen){
    Aufgabentypen, die ohne Bild auskommen. Alles mit Figur, Karte,
    Stellenrechnung oder Schreibuebung bleibt draussen: dort ist das Bild
    oder die Schreibweise die Aufgabe. */
+/* ---------- Bildschirm wach halten ----------
+   Safari haelt die Seite an, sobald der Bildschirm sperrt - im Hoermodus
+   mitten im Gespraech. Seit iOS und iPadOS 16.4 darf eine Seite das
+   verhindern, solange sie sichtbar ist. Die Sperre faellt beim Wegschalten
+   von selbst weg; darum wird sie beim Zurueckkommen neu geholt. Aeltere
+   Geraete koennen das nicht - dort bleibt es beim alten Verhalten. */
+let WACH=null, WACHGEWOLLT=false;
+function wachMoeglich(){try{return !!(navigator.wakeLock&&navigator.wakeLock.request);}catch(_){return false;}}
+async function wachAn(){
+ WACHGEWOLLT=true;
+ if(!wachMoeglich()||WACH)return !!WACH;
+ try{
+  WACH=await navigator.wakeLock.request('screen');
+  WACH.addEventListener('release',()=>{WACH=null;});
+  return true;
+ }catch(_){WACH=null;return false;}}
+function wachAus(){
+ WACHGEWOLLT=false;
+ try{if(WACH)WACH.release();}catch(_){}
+ WACH=null;}
+document.addEventListener('visibilitychange',()=>{
+ if(WACHGEWOLLT&&document.visibilityState==='visible')wachAn();});
+
 const HOERTYPEN=['single','multi','input','num'];
 function hoerbarItem(it){
  if(!it||HOERTYPEN.indexOf(it.type)<0)return false;
@@ -3666,7 +3689,7 @@ function renderHoeren(R,Q){
   laeuft=false;};
 
  knopf.addEventListener('click',()=>{
-  tonFreigeben();
+  tonFreigeben();wachAn();
   if(laeuft){ /* laufende Aufnahme beenden, sonst wartet sie auf Stille */
    if(stopper)try{stopper();}catch(_){}
    else{vorlesenHalt();laeuft=false;knopfSetzen('',t('hoerStart'));}
@@ -3677,7 +3700,7 @@ function renderHoeren(R,Q){
   if(laeuft)return;
   laeuft=true;await vorlesen();knopfSetzen('',t('hoerStart'));laeuft=false;});
 
- screen(topbar(R.game.title,{back:()=>{weg=true;vorlesenHalt();finishRun(R,true);}}),
+ screen(topbar(R.game.title,{back:()=>{weg=true;vorlesenHalt();wachAus();finishRun(R,true);}}),
   h('main',{class:'page'},hud(R),
    h('div',{class:'card'},h('div',{class:'hoerBox'},
     satzEl,frage,wahl,knopf,stand,gehoertEl,
@@ -4320,6 +4343,7 @@ function onAnswer(R,Q,given,correct,fb){
 }
 async function finishRun(R,aborted){
  if(R.ended)return;R.ended=true;clearInterval(R.timer);S.onEnter=null;
+ wachAus();
  if(!R.answers.length)return viewRunSetup(R.players[0],R.game,R.sel);
  const results=R.players.map((p,i)=>{const a=R.answers.filter(x=>x.player===p.id&&!x.joke);const c=a.filter(x=>x.correct).length;const lv=levelOf(st(p.id).xp);
   return{p,i,answered:a.length,correct:c,acc:a.length?c/a.length:0,score:R.score[i],best:R.best[i],newBadges:[],unlocked:[],levelBefore:lv,levelAfter:lv};});

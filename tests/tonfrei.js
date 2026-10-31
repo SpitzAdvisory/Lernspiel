@@ -59,6 +59,48 @@ const srv=http.createServer((q,s)=>{s.writeHead(200,{'Content-Type':'text/html'}
   pruef('Beide bekommen den Ton',!!c1&&!!c2);
   window.fetch=echt2;
 
+  /* Der Bildschirm bleibt im Hoermodus wach. Die echte Sperre kann nur
+     das Geraet geben; geprueft wird, dass sie richtig angefordert,
+     freigegeben und nach dem Wegschalten neu geholt wird. */
+  pruef('Die Moeglichkeit wird erkannt, nicht angenommen',
+   typeof wachMoeglich==='function');
+  let geholt=0,frei=0;
+  const echteSperre=navigator.wakeLock;
+  let letzte=null;
+  Object.defineProperty(navigator,'wakeLock',{configurable:true,value:{
+   request:async(art)=>{geholt++;
+    letzte={art:art,hoerer:[],
+     release:async()=>{frei++;letzte.hoerer.forEach(f=>f());},
+     addEventListener:(n,f)=>{if(n==='release')letzte.hoerer.push(f);}};
+    return letzte;}}});
+
+  await wachAn();
+  pruef('Die Sperre wird angefordert',geholt===1,'geholt: '+geholt);
+  pruef('Und zwar fuer den Bildschirm',letzte&&letzte.art==='screen',letzte&&letzte.art);
+  await wachAn();
+  pruef('Ein zweiter Anlauf holt sie nicht doppelt',geholt===1,'geholt: '+geholt);
+
+  /* Wegschalten gibt die Sperre frei; beim Zurueckkommen wird sie neu geholt */
+  letzte.hoerer.forEach(f=>f());
+  document.dispatchEvent(new Event('visibilitychange'));
+  await warte(60);
+  pruef('Nach dem Zurueckkommen wird sie neu geholt',geholt===2,'geholt: '+geholt);
+
+  wachAus();
+  await warte(40);
+  pruef('Am Ende wird sie freigegeben',frei===1,'frei: '+frei);
+  document.dispatchEvent(new Event('visibilitychange'));
+  await warte(60);
+  pruef('Danach wird sie nicht mehr geholt',geholt===2,'geholt: '+geholt);
+
+  /* Ohne Unterstuetzung laeuft alles weiter, nur ohne Sperre */
+  Object.defineProperty(navigator,'wakeLock',{configurable:true,value:undefined});
+  let ohne=null;
+  try{ ohne=await wachAn(); }catch(e){ ohne='Ausnahme: '+e.message; }
+  pruef('Ohne Unterstuetzung wirft nichts',ohne===false,String(ohne));
+  wachAus();
+  Object.defineProperty(navigator,'wakeLock',{configurable:true,value:echteSperre});
+
   return aus;});
  let f=0;
  r.forEach(x=>{if(x[0]==='FAIL')f++;console.log('  '+x[0]+'  '+x[1]+(x[2]?'   '+x[2]:''));});
