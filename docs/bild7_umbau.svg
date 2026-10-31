@@ -1,0 +1,55 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 680' width='1040' height='680' font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Umbau der Auslieferung'>
+<rect width='1040' height='680' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Auslieferung und Sicherung nach dem Umbau</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Grün ist neu. Weiss bleibt, wie es ist. Rot gestrichelt ist der Handgriff, der entfällt.</text>
+<rect x='56' y='132' width='170' height='72' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='141' y='164' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Werkstatt</text>
+<text x='141' y='184' font-size='12' fill='#6B7B8E' text-anchor='middle'>index.html, worker.js</text>
+<rect x='300' y='132' width='190' height='72' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='395' y='164' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>GitHub  main</text>
+<text x='395' y='184' font-size='12' fill='#6B7B8E' text-anchor='middle'>eine Ablage für beides</text>
+<line x1='230' y1='168' x2='296' y2='168' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='263' y='156' font-size='12' fill='#6B7B8E' text-anchor='middle'>Schub</text>
+<rect x='300' y='240' width='190' height='96' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='395' y='266' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>GitHub Actions</text>
+<text x='395' y='290' font-size='13' fill='#6B7B8E' text-anchor='middle'>480 Prüfungen,</text>
+<text x='395' y='310' font-size='13' fill='#6B7B8E' text-anchor='middle'>dann ausliefern</text>
+<text x='395' y='330' font-size='13' fill='#6B7B8E' text-anchor='middle'>ohne Handgriff</text>
+<line x1='395' y1='208' x2='395' y2='236' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='620' y='132' width='200' height='72' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='720' y='164' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>GitHub Pages</text>
+<text x='720' y='184' font-size='12' fill='#6B7B8E' text-anchor='middle'>die App beim Kind</text>
+<rect x='620' y='252' width='200' height='72' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='720' y='284' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Cloudflare Worker</text>
+<text x='720' y='304' font-size='12' fill='#6B7B8E' text-anchor='middle'>der Vermittler</text>
+<line x1='494' y1='282' x2='616' y2='186' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='494' y1='292' x2='616' y2='288' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<path d='M 141 208 L 141 372 L 720 372 L 720 330' fill='none' stroke='#C46060' stroke-width='2.2' stroke-dasharray='6 5'/>
+<circle cx='430' cy='372' r='15' fill='#F7F9FC' stroke='#C46060' stroke-width='2.2'/>
+<line x1='424' y1='366' x2='436' y2='378' stroke='#C46060' stroke-width='2.4'/>
+<line x1='436' y1='366' x2='424' y2='378' stroke='#C46060' stroke-width='2.4'/>
+<text x='456' y='394' font-size='12.5' fill='#C46060'>heute: Einfügen über die Zwischenablage, von Hand, bei jeder Änderung</text>
+<line x1='56' y1='424' x2='986' y2='424' stroke='#C8D3DE' stroke-width='1.5'/>
+<text x='56' y='454' font-size='16' font-weight='700' fill='#0A2D56'>Die Spielstände</text>
+<rect x='56' y='476' width='180' height='62' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='146' y='503' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>iPad, iPhone</text>
+<text x='146' y='523' font-size='12' fill='#6B7B8E' text-anchor='middle'>über Dropbox</text>
+<rect x='56' y='552' width='180' height='62' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='146' y='579' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>PC</text>
+<text x='146' y='599' font-size='12' fill='#6B7B8E' text-anchor='middle'>in den Ordner</text>
+<rect x='360' y='500' width='210' height='88' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<text x='465' y='540' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Dropbox Apps</text>
+<text x='465' y='560' font-size='12' fill='#6B7B8E' text-anchor='middle'>alle Protokolle, zentral</text>
+<line x1='240' y1='507' x2='356' y2='528' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='240' y1='583' x2='356' y2='560' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='700' y='500' width='210' height='88' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='805' y='526' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>OneDrive Archiv</text>
+<text x='805' y='550' font-size='13' fill='#6B7B8E' text-anchor='middle'>wöchentlich, datiert,</text>
+<text x='805' y='570' font-size='13' fill='#6B7B8E' text-anchor='middle'>von selbst</text>
+<line x1='574' y1='544' x2='696' y2='544' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='360' y='608' font-size='12.5' fill='#6B7B8E'>steht heute</text>
+<text x='700' y='608' font-size='12.5' font-weight='600' fill='#0A2D56'>neu</text>
+<rect x='56' y='630' width='930' height='40' rx='10' fill='white' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='656' font-size='13' fill='#6B7B8E'>Nach dem Umbau braucht eine neue Fassung einen Handgriff statt dreier, und die Spielstände sichern sich ohne Zutun.</text>
+</svg>

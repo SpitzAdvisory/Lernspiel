@@ -1,0 +1,81 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 660' width='1040' height='660' font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Weg einer gesprochenen Antwort'>
+<rect width='1040' height='660' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Der Weg einer gesprochenen Antwort</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Das Kind sagt «rufen». Sechs Schritte bis zum Urteil.</text>
+<rect x='56' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<circle cx='80' cy='146' r='14' fill='#0A2D56'/>
+<text x='80' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>1</text>
+<text x='127' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Mikrofon</text>
+<text x='127' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>Safari nimmt auf,</text>
+<text x='127' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>rund 3 Sekunden</text>
+<line x1='200' y1='182' x2='216' y2='182' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='218' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<circle cx='242' cy='146' r='14' fill='#0A2D56'/>
+<text x='242' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>2</text>
+<text x='289' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Vermittler</text>
+<text x='289' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>schickt den Ton</text>
+<text x='289' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>an ElevenLabs</text>
+<line x1='362' y1='182' x2='378' y2='182' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='380' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<circle cx='404' cy='146' r='14' fill='#0A2D56'/>
+<text x='404' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>3</text>
+<text x='451' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>ElevenLabs</text>
+<text x='451' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>schreibt mit:</text>
+<text x='451' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>«Rufen»</text>
+<line x1='524' y1='182' x2='540' y2='182' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='542' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<circle cx='566' cy='146' r='14' fill='#0A2D56'/>
+<text x='566' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>4</text>
+<text x='613' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Putzen</text>
+<text x='613' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>Klammern weg,</text>
+<text x='613' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>klein, ohne Zeichen</text>
+<line x1='686' y1='182' x2='702' y2='182' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='704' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<circle cx='728' cy='146' r='14' fill='#0A2D56'/>
+<text x='728' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>5</text>
+<text x='775' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Vergleich</text>
+<text x='775' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>Wort für Wort,</text>
+<text x='775' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>dann nach Klang</text>
+<line x1='848' y1='182' x2='864' y2='182' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='866' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<circle cx='890' cy='146' r='14' fill='#0A2D56'/>
+<text x='890' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>6</text>
+<text x='937' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Urteil</text>
+<text x='937' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>richtig — und</text>
+<text x='937' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>wird vorgelesen</text>
+<line x1='56' y1='262' x2='360' y2='262' stroke='#C8D3DE' stroke-width='1.5'/>
+<line x1='380' y1='262' x2='522' y2='262' stroke='#4FB8B0' stroke-width='1.5'/>
+<line x1='542' y1='262' x2='982' y2='262' stroke='#C8D3DE' stroke-width='1.5'/>
+<text x='56' y='282' font-size='12.5' fill='#6B7B8E'>auf dem Gerät</text>
+<text x='380' y='282' font-size='12.5' fill='#6B7B8E'>im Netz</text>
+<text x='542' y='282' font-size='12.5' fill='#6B7B8E'>wieder auf dem Gerät — ab hier urteilt das iPad selbst</text>
+<rect x='56' y='318' width='450' height='206' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='348' font-size='15' font-weight='700' fill='#0A2D56'>Schritt 4 und 5 im Einzelnen</text>
+<text x='78' y='382' font-size='12.5' fill='#6B7B8E'>gehört</text>
+<text x='244' y='382' font-size='14' fill='#4FB8B0'>&#8594;</text>
+<text x='272' y='382' font-size='13' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>[stöhnt] Rufen!</text>
+<text x='78' y='416' font-size='12.5' fill='#6B7B8E'>Klammern weg</text>
+<text x='244' y='416' font-size='14' fill='#4FB8B0'>&#8594;</text>
+<text x='272' y='416' font-size='13' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>Rufen!</text>
+<text x='78' y='450' font-size='12.5' fill='#6B7B8E'>klein, ohne Zeichen</text>
+<text x='244' y='450' font-size='14' fill='#4FB8B0'>&#8594;</text>
+<text x='272' y='450' font-size='13' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>rufen</text>
+<text x='78' y='484' font-size='12.5' fill='#6B7B8E'>Vergleich mit «rufen»</text>
+<text x='272' y='484' font-size='13' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>gleich — richtig</text>
+<rect x='546' y='318' width='436' height='206' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='568' y='348' font-size='15' font-weight='700' fill='#0A2D56'>Wenn die Schreibweise nicht passt</text>
+<text x='568' y='372' font-size='12.5' fill='#6B7B8E'>Beide Wörter werden auf ihren Klang reduziert.</text>
+<text x='568' y='406' font-size='13.5' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>viel</text>
+<text x='630' y='406' font-size='14' fill='#4FB8B0'>&#8594;</text>
+<text x='660' y='406' font-size='13.5' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>fil</text>
+<text x='568' y='436' font-size='13.5' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>fiel</text>
+<text x='630' y='436' font-size='14' fill='#4FB8B0'>&#8594;</text>
+<text x='660' y='436' font-size='13.5' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>fil</text>
+<text x='568' y='478' font-size='12.5' fill='#6B7B8E'>Gleicher Klang — die gesprochene Antwort gilt.</text>
+<text x='568' y='500' font-size='12.5' fill='#6B7B8E'>Beim Tippen gilt diese Milde nicht.</text>
+<rect x='56' y='548' width='926' height='84' rx='12' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='576' font-size='13.5' font-weight='700' fill='#0A2D56'>Gemessene Zeiten</text>
+<text x='78' y='600' font-size='13' fill='#6B7B8E'>Mitschrift, also Schritt 2 und 3: 0,6 bis 1,0 Sekunden. Vorlesen beim ersten Mal rund 2,9 Sekunden,</text>
+<text x='78' y='620' font-size='13' fill='#6B7B8E'>danach aus dem Zwischenspeicher sofort. Schritt 4 bis 6 brauchen keine Verbindung.</text>
+</svg>

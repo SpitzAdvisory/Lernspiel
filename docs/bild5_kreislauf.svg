@@ -1,0 +1,65 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 680' width='1040' height='680' font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Kreislauf einer Aufgabe'>
+<rect width='1040' height='680' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Der Kreislauf einer Aufgabe</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Alles unten geschieht auf dem Gerät. Die App fragt dabei nichts im Netz ab.</text>
+<rect x='56' y='116' width='220' height='128' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='166' y='142' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Profil des Kindes</text>
+<text x='166' y='166' font-size='13' fill='#6B7B8E' text-anchor='middle'>Felix, Valentin,</text>
+<text x='166' y='186' font-size='13' fill='#6B7B8E' text-anchor='middle'>Johannes</text>
+<text x='166' y='206' font-size='13' fill='#6B7B8E' text-anchor='middle'>gewählte Themen</text>
+<text x='166' y='226' font-size='13' fill='#6B7B8E' text-anchor='middle'>Schwierigkeitsgrad</text>
+<rect x='316' y='116' width='220' height='128' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='426' y='142' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Aufgabenbauer</text>
+<text x='426' y='166' font-size='13' fill='#6B7B8E' text-anchor='middle'>baut die Frage neu,</text>
+<text x='426' y='186' font-size='13' fill='#6B7B8E' text-anchor='middle'>nicht aus einer Liste</text>
+<text x='426' y='206' font-size='13' fill='#6B7B8E' text-anchor='middle'>Zahlen und Wörter</text>
+<text x='426' y='226' font-size='13' fill='#6B7B8E' text-anchor='middle'>werden gewürfelt</text>
+<rect x='576' y='116' width='220' height='128' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<text x='686' y='142' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Die Aufgabe</text>
+<text x='686' y='166' font-size='13' fill='#6B7B8E' text-anchor='middle'>Frage, Antwort,</text>
+<text x='686' y='186' font-size='13' fill='#6B7B8E' text-anchor='middle'>Auswahl, Typ</text>
+<text x='686' y='206' font-size='13' fill='#6B7B8E' text-anchor='middle'>Merkmale wie</text>
+<text x='686' y='226' font-size='13' fill='#6B7B8E' text-anchor='middle'>«hier bitte tippen»</text>
+<rect x='836' y='116' width='152' height='128' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='912' y='142' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Darstellung</text>
+<text x='912' y='166' font-size='13' fill='#6B7B8E' text-anchor='middle'>Knöpfe oder</text>
+<text x='912' y='186' font-size='13' fill='#6B7B8E' text-anchor='middle'>Tastenfeld</text>
+<text x='912' y='206' font-size='13' fill='#6B7B8E' text-anchor='middle'>Vorlesen 🔈</text>
+<line x1='280' y1='180' x2='312' y2='180' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='540' y1='180' x2='572' y2='180' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='800' y1='180' x2='832' y2='180' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='576' y='320' width='220' height='140' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='686' y='346' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Antwort des Kindes</text>
+<text x='686' y='370' font-size='13' fill='#6B7B8E' text-anchor='middle'>Tippen auf einen Knopf</text>
+<text x='686' y='390' font-size='13' fill='#6B7B8E' text-anchor='middle'>oder Sprechen</text>
+<text x='686' y='410' font-size='13' fill='#6B7B8E' text-anchor='middle'>Sprechen zählt nicht,</text>
+<text x='686' y='430' font-size='13' fill='#6B7B8E' text-anchor='middle'>wo die Schreibung</text>
+<text x='686' y='450' font-size='13' fill='#6B7B8E' text-anchor='middle'>selbst die Aufgabe ist</text>
+<path d='M 912 248 L 912 288 L 686 288' fill='none' stroke='#0A2D56' stroke-width='2.2'/>
+<line x1='686' y1='288' x2='686' y2='314' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='316' y='320' width='220' height='140' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='426' y='346' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Urteil</text>
+<text x='426' y='370' font-size='13' fill='#6B7B8E' text-anchor='middle'>Wort für Wort,</text>
+<text x='426' y='390' font-size='13' fill='#6B7B8E' text-anchor='middle'>dann nach Klang</text>
+<text x='426' y='410' font-size='13' fill='#6B7B8E' text-anchor='middle'>Lob oder Berichtigung</text>
+<text x='426' y='430' font-size='13' fill='#6B7B8E' text-anchor='middle'>bei Fehlern eine</text>
+<text x='426' y='450' font-size='13' fill='#6B7B8E' text-anchor='middle'>Erklärung vom Vermittler</text>
+<line x1='572' y1='390' x2='540' y2='390' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='56' y='320' width='220' height='140' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='166' y='346' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Punkte und Protokoll</text>
+<text x='166' y='370' font-size='13' fill='#6B7B8E' text-anchor='middle'>Punkte sofort</text>
+<text x='166' y='390' font-size='13' fill='#6B7B8E' text-anchor='middle'>jede Antwort wird</text>
+<text x='166' y='410' font-size='13' fill='#6B7B8E' text-anchor='middle'>mitgeschrieben</text>
+<text x='166' y='430' font-size='13' fill='#6B7B8E' text-anchor='middle'>bleibt im Browser</text>
+<line x1='312' y1='390' x2='280' y2='390' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<path d='M 166 464 L 166 492 L 296 492 L 296 256' fill='none' stroke='#4FB8B0' stroke-width='2.2' stroke-dasharray='6 5'/>
+<line x1='296' y1='262' x2='296' y2='248' stroke='#4FB8B0' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='320' y='488' font-size='12.5' fill='#6B7B8E'>nächste Aufgabe — schwerer oder leichter, je nach Trefferquote</text>
+<rect x='56' y='518' width='932' height='136' rx='12' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='546' font-size='14' font-weight='700' fill='#0A2D56'>Die Spielarten verändern nur zwei Kästen</text>
+<text x='78' y='572' font-size='13' fill='#6B7B8E'>Kampf, Mathblatt, Tastenfeld, Nur-Hören und die anderen Spielarten tauschen die Darstellung und die Art</text>
+<text x='78' y='592' font-size='13' fill='#6B7B8E'>der Antwort aus. Aufgabenbauer, Urteil und Protokoll bleiben in allen Spielarten dieselben.</text>
+<text x='78' y='620' font-size='13' fill='#6B7B8E'>Daher wirkt eine Verbesserung am Urteil — etwa die Milde beim Klang — sofort in jeder Spielart.</text>
+<text x='78' y='640' font-size='13' fill='#6B7B8E'>Ein Fehler dort allerdings genauso. Deshalb die 480 Prüfungen, die bei jeder Fassung durchlaufen.</text>
+</svg>

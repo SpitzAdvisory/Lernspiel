@@ -1,0 +1,38 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 540' width='1040' height='540' font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Wo der Schluessel liegt'>
+<rect width='1040' height='540' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Der Schlüssel und die Tür</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Zwei Schutzlagen. Die erste hält den Schlüssel, die zweite hält Fremde draussen.</text>
+<rect x='56' y='136' width='222' height='96' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='167' y='180' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Browser des Kindes</text>
+<text x='167' y='200' font-size='12' fill='#6B7B8E' text-anchor='middle'>kein Schlüssel darin</text>
+<text x='167' y='254' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>jeder kann hineinsehen</text>
+<rect x='400' y='126' width='252' height='208' rx='16' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2.5'/>
+<text x='526' y='158' font-size='15.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Vermittler</text>
+<text x='526' y='178' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>Cloudflare Worker</text>
+<rect x='424' y='196' width='204' height='52' rx='10' fill='white' stroke='#4FB8B0' stroke-width='1.5'/>
+<text x='526' y='218' font-size='12.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Lage 1 — die Schlüssel</text>
+<text x='526' y='237' font-size='11.5' font-family="ui-monospace,Menlo,monospace" fill='#6B7B8E' text-anchor='middle'>ELEVEN_KEY  ANTHROPIC_KEY</text>
+<rect x='424' y='260' width='204' height='52' rx='10' fill='white' stroke='#C8D3DE' stroke-width='1.5'/>
+<text x='526' y='282' font-size='12.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Lage 2 — der Türsteher</text>
+<text x='526' y='301' font-size='11.5' fill='#6B7B8E' text-anchor='middle'>nur spitzadvisory.github.io</text>
+<rect x='764' y='136' width='222' height='96' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='875' y='180' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>ElevenLabs, Anthropic</text>
+<text x='875' y='200' font-size='12' fill='#6B7B8E' text-anchor='middle'>prüfen den Schlüssel</text>
+<line x1='282' y1='184' x2='396' y2='184' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='339' y='176' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>Anfrage ohne Schlüssel</text>
+<line x1='656' y1='184' x2='760' y2='184' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='708' y='176' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>Anfrage mit Schlüssel</text>
+<rect x='56' y='336' width='222' height='84' rx='14' fill='white' stroke='#C46060' stroke-width='2' stroke-dasharray='6 5'/>
+<text x='167' y='368' font-size='14.5' font-weight='700' fill='#C46060' text-anchor='middle'>fremde Webseite</text>
+<text x='167' y='388' font-size='12' fill='#6B7B8E' text-anchor='middle'>will auf Ihre Rechnung</text>
+<text x='167' y='406' font-size='12' fill='#6B7B8E' text-anchor='middle'>mitbenutzen</text>
+<line x1='282' y1='370' x2='396' y2='300' stroke='#C46060' stroke-width='2.2' stroke-dasharray='6 5'/>
+<circle cx='352' cy='326' r='15' fill='white' stroke='#C46060' stroke-width='2.2'/>
+<line x1='346' y1='320' x2='358' y2='332' stroke='#C46060' stroke-width='2.4'/>
+<line x1='358' y1='320' x2='346' y2='332' stroke='#C46060' stroke-width='2.4'/>
+<text x='290' y='428' font-size='12.5' fill='#C46060'>vom Türsteher abgewiesen</text>
+<rect x='56' y='450' width='930' height='64' rx='12' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='476' font-size='13.5' font-weight='700' fill='#0A2D56'>Folge</text>
+<text x='78' y='498' font-size='13' fill='#6B7B8E'>Selbst wer die ganze App herunterlädt, hat nichts in der Hand. Die Rechnung bleibt bei Ihnen und nur bei Ihnen.</text>
+</svg>

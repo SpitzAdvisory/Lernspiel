@@ -1,0 +1,53 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 700' width='1040' height='700' font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Die Sprachpartnerin'>
+<rect width='1040' height='700' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Die Sprachpartnerin — geplanter Ablauf</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Fünf Schritte. Schritt 1 und 2 stehen bereits, Schritt 3 bis 5 sind entworfen.</text>
+<rect x='56' y='120' width='180' height='88' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='146' y='160' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Kind drückt</text>
+<text x='146' y='180' font-size='12' fill='#6B7B8E' text-anchor='middle'>«Mit Emilie reden»</text>
+<rect x='300' y='116' width='200' height='96' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<text x='400' y='142' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Vermittler</text>
+<text x='400' y='166' font-size='13' fill='#6B7B8E' text-anchor='middle'>prüft das Tageskontingent</text>
+<text x='400' y='186' font-size='13' fill='#6B7B8E' text-anchor='middle'>gibt ein kurzlebiges</text>
+<text x='400' y='206' font-size='13' fill='#6B7B8E' text-anchor='middle'>Eintrittsbillett heraus</text>
+<line x1='240' y1='164' x2='296' y2='164' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='268' y='156' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>fragt</text>
+<rect x='570' y='116' width='270' height='216' rx='16' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2.5'/>
+<text x='705' y='146' font-size='15.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Emilie</text>
+<text x='705' y='166' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>ElevenLabs Agent, fertig gebaut</text>
+<rect x='592' y='182' width='226' height='60' rx='10' fill='white' stroke='#4FB8B0' stroke-width='1.5'/>
+<text x='705' y='204' font-size='12.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Zwölf harte Regeln</text>
+<text x='705' y='222' font-size='11.5' fill='#6B7B8E' text-anchor='middle'>keine Hausaufgaben, keine Bestätigung,</text>
+<text x='705' y='236' font-size='11.5' fill='#6B7B8E' text-anchor='middle'>Wortschatz der Unit im Gespräch</text>
+<rect x='592' y='254' width='226' height='60' rx='10' fill='white' stroke='#C8D3DE' stroke-width='1.5'/>
+<text x='705' y='276' font-size='12.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Zweiter Prüfer</text>
+<text x='705' y='294' font-size='11.5' fill='#6B7B8E' text-anchor='middle'>liest jede Antwort mit, bevor sie</text>
+<text x='705' y='308' font-size='11.5' fill='#6B7B8E' text-anchor='middle'>gesprochen wird; lässt neu formulieren</text>
+<line x1='504' y1='164' x2='566' y2='164' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='535' y='156' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>Billett</text>
+<path d='M 146 212 L 146 380 L 705 380 L 705 340' fill='none' stroke='#3D6A9A' stroke-width='2.4'/>
+<line x1='705' y1='348' x2='705' y2='336' stroke='#3D6A9A' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='300' y='402' font-size='13' fill='#3D6A9A'>Gespräch unmittelbar zwischen Gerät und Emilie — der Vermittler ist dann nicht mehr beteiligt</text>
+<rect x='880' y='120' width='110' height='88' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='935' y='160' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Protokoll</text>
+<text x='935' y='180' font-size='12' fill='#6B7B8E' text-anchor='middle'>Mitschrift</text>
+<line x1='844' y1='164' x2='876' y2='164' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='56' y='430' width='462' height='160' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='458' font-size='14.5' font-weight='700' fill='#0A2D56'>Steht bereits</text>
+<text x='78' y='482' font-size='12.5' fill='#6B7B8E'>Der Agent ist gebaut und in drei Sprachen eingerichtet.</text>
+<text x='78' y='504' font-size='12.5' fill='#6B7B8E'>Die zwölf Regeln sind geschrieben und erprobt.</text>
+<text x='78' y='526' font-size='12.5' fill='#6B7B8E'>Der erste Versuch scheiterte: Emilie bestätigte eine</text>
+<text x='78' y='548' font-size='12.5' fill='#6B7B8E'>Antwort mit «Oui». Regel und Prüfer wurden geschärft,</text>
+<text x='78' y='570' font-size='12.5' fill='#6B7B8E'>danach 22 Züge ohne einen einzigen Verstoss.</text>
+<rect x='542' y='430' width='448' height='160' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='564' y='458' font-size='14.5' font-weight='700' fill='#0A2D56'>Noch zu bauen</text>
+<text x='564' y='482' font-size='12.5' fill='#6B7B8E'>Die Billettausgabe im Vermittler, mit Tageskontingent.</text>
+<text x='564' y='504' font-size='12.5' fill='#6B7B8E'>Der Bildschirm in der App.</text>
+<text x='564' y='526' font-size='12.5' fill='#6B7B8E'>Die Ablage der Mitschriften neben den Protokollen.</text>
+<text x='564' y='548' font-size='12.5' fill='#6B7B8E'>Stichproben an den Regeln, bevor die Kinder dürfen.</text>
+<text x='564' y='570' font-size='12.5' fill='#6B7B8E'>Freigabe zuerst für einen Sohn, dann für alle.</text>
+<rect x='56' y='612' width='934' height='68' rx='12' fill='white' stroke='#C46060' stroke-width='2'/>
+<text x='78' y='640' font-size='13.5' font-weight='700' fill='#0A2D56'>Das Tageskontingent ist kein Beiwerk</text>
+<text x='78' y='662' font-size='13' fill='#6B7B8E'>Ein offenes Gespräch kostet nach Minuten. Ohne Obergrenze im Vermittler kann ein vergessenes iPad in der Tasche eine Rechnung erzeugen.</text>
+</svg>

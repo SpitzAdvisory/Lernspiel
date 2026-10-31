@@ -1,0 +1,67 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 640' width='1040' height='640' font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Uebersicht der Teile'>
+<rect width='1040' height='640' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Die Teile und wo sie liegen</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Von links nach rechts: Kind, Auslieferung, App, Vermittler, bezahlte Dienste.</text>
+<text x='130' y='112' font-size='13' font-weight='700' fill='#3D6A9A' text-anchor='middle'>BEIM KIND</text>
+<rect x='50' y='130' width='160' height='66' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='130' y='159' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>iPad</text>
+<text x='130' y='179' font-size='12' fill='#6B7B8E' text-anchor='middle'>Safari</text>
+<rect x='50' y='212' width='160' height='66' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='130' y='241' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>iPhone</text>
+<text x='130' y='261' font-size='12' fill='#6B7B8E' text-anchor='middle'>Safari</text>
+<rect x='50' y='294' width='160' height='66' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='130' y='323' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>PC</text>
+<text x='130' y='343' font-size='12' fill='#6B7B8E' text-anchor='middle'>Chrome, Edge</text>
+<text x='350' y='112' font-size='13' font-weight='700' fill='#3D6A9A' text-anchor='middle'>AUSLIEFERUNG</text>
+<rect x='260' y='130' width='180' height='230' rx='16' fill='white' stroke='#3D6A9A' stroke-width='2.5'/>
+<text x='350' y='160' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>GitHub Pages</text>
+<text x='350' y='180' font-size='12' fill='#6B7B8E' text-anchor='middle'>die Adresse im Safari</text>
+<rect x='278' y='198' width='144' height='62' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='350' y='225' font-size='14' font-weight='600' fill='#0A2D56' text-anchor='middle'>index.html</text>
+<text x='350' y='245' font-size='11' fill='#6B7B8E' text-anchor='middle'>1,2 MB</text>
+<rect x='278' y='274' width='144' height='62' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='350' y='301' font-size='14' font-weight='600' fill='#0A2D56' text-anchor='middle'>audio/</text>
+<text x='350' y='321' font-size='11' fill='#6B7B8E' text-anchor='middle'>4857 mp3</text>
+<line x1='214' y1='163' x2='256' y2='245' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='214' y1='245' x2='256' y2='245' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='214' y1='327' x2='256' y2='245' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='235' y='380' font-size='12' fill='#6B7B8E' text-anchor='middle'>laden</text>
+<text x='600' y='112' font-size='13' font-weight='700' fill='#3D6A9A' text-anchor='middle'>LÄUFT IM BROWSER</text>
+<rect x='510' y='130' width='180' height='230' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='600' y='156' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Die App</text>
+<text x='600' y='180' font-size='13' fill='#6B7B8E' text-anchor='middle'>Spiele und Aufgaben</text>
+<text x='600' y='200' font-size='13' fill='#6B7B8E' text-anchor='middle'>Punkte und Protokoll</text>
+<text x='600' y='220' font-size='13' fill='#6B7B8E' text-anchor='middle'>Vorlesen</text>
+<text x='600' y='240' font-size='13' fill='#6B7B8E' text-anchor='middle'>Mikrofon</text>
+<text x='600' y='260' font-size='13' fill='#6B7B8E' text-anchor='middle'>alles Rechnen</text>
+<text x='600' y='280' font-size='13' fill='#6B7B8E' text-anchor='middle'>geschieht hier</text>
+<text x='600' y='300' font-size='13' fill='#6B7B8E' text-anchor='middle'>auf dem Gerät</text>
+<line x1='444' y1='245' x2='506' y2='245' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='850' y='112' font-size='13' font-weight='700' fill='#3D6A9A' text-anchor='middle'>NUR BEI BEDARF</text>
+<rect x='760' y='130' width='180' height='118' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<text x='850' y='156' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Vermittler</text>
+<text x='850' y='180' font-size='13' fill='#6B7B8E' text-anchor='middle'>Cloudflare Worker</text>
+<text x='850' y='200' font-size='13' fill='#6B7B8E' text-anchor='middle'>hält die Schlüssel</text>
+<text x='850' y='220' font-size='13' fill='#6B7B8E' text-anchor='middle'>/stt /tts /ocr /frage</text>
+<rect x='760' y='268' width='180' height='44' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='850' y='295' font-size='13' font-weight='600' fill='#0A2D56' text-anchor='middle'>ElevenLabs</text>
+<rect x='760' y='324' width='180' height='44' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='850' y='351' font-size='13' font-weight='600' fill='#0A2D56' text-anchor='middle'>Anthropic</text>
+<line x1='694' y1='210' x2='756' y2='196' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='725' y='195' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>fragt</text>
+<line x1='850' y1='250' x2='850' y2='264' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='850' y1='314' x2='850' y2='320' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='955' y='292' font-size='11.5' fill='#6B7B8E'>Hören</text>
+<text x='955' y='308' font-size='11.5' fill='#6B7B8E'>Sprechen</text>
+<text x='955' y='350' font-size='11.5' fill='#6B7B8E'>erklärt</text>
+<text x='955' y='366' font-size='11.5' fill='#6B7B8E'>Fehler</text>
+<rect x='50' y='420' width='940' height='84' rx='12' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='72' y='448' font-size='14' font-weight='700' fill='#0A2D56'>Ohne Netz geht fast alles weiter</text>
+<text x='72' y='472' font-size='13' fill='#6B7B8E'>Sobald die App geladen ist, laufen alle Spiele, alle Aufgaben und die Punktezählung ohne Verbindung.</text>
+<text x='72' y='492' font-size='13' fill='#6B7B8E'>Nur Mikrofon, neue Vorlesetexte und die Fehlererklärung brauchen den Vermittler.</text>
+<rect x='50' y='524' width='940' height='84' rx='12' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='72' y='552' font-size='14' font-weight='700' fill='#0A2D56'>Der wichtigste Punkt</text>
+<text x='72' y='576' font-size='13' fill='#6B7B8E'>Die Schlüssel für ElevenLabs und Anthropic liegen nur im Vermittler. Im Browser des Kindes liegt kein</text>
+<text x='72' y='596' font-size='13' fill='#6B7B8E'>Schlüssel, obwohl die ganze App dort offen einsehbar ist.</text>
+</svg>
