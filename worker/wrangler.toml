@@ -28,10 +28,20 @@ workers_dev = true
 # weiteren Namen. Kein neues Risiko, aber unnoetige Oberflaeche - aus.
 preview_urls = false
 
-# Noch nicht angelegt. Wird fuer die Tagesgrenze des Sprachagenten gebraucht.
-# [[kv_namespaces]]
-# binding = "ZAEHLER"
-# id = "<aus der Cloudflare-Oberflaeche>"
+# Der Zaehler fuer die Tagesgrenze. Am 31.10.2026 angelegt.
+# Die Kennung ist kein Geheimnis: ohne den API-Schluessel laesst sich damit
+# nichts anfangen. Cloudflare sieht genau diesen Weg vor.
+[[kv_namespaces]]
+binding = "ZAEHLER"
+id = "22501df105df40cca89ab6869556fced"
 
-# [vars]
-# TAGESGRENZE = "500"
+# Anfragen je Tag ueber alle vier Wege zusammen. Danach antwortet der
+# Vermittler bis Mitternacht mit 429.
+#
+# 2000 ist bewusst hoch angesetzt. Gemessen am Konto: 1653 Anfragen am
+# 30.10. und 2359 am 31.10. - darin stecken aber die Tonerzeugung und meine
+# eigenen Pruefläufe, die sich aus Cloudflares Zahlen nicht herausloesen
+# lassen. Die Grenze soll beim Spielen nie greifen und nur eine verhakte
+# Schleife stoppen. Nach einer Woche echtem Betrieb enger ziehen.
+[vars]
+TAGESGRENZE = "2000"
