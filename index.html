@@ -154,6 +154,20 @@ th,td{text-align:left;padding:8px;border-bottom:1px solid var(--grid);vertical-a
 dialog{border:2px solid var(--ink);border-radius:14px;max-width:680px;width:92vw;padding:20px}
 dialog::backdrop{background:rgba(31,58,147,.25)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--graphite);color:var(--white);padding:10px 18px;border-radius:10px;z-index:50;max-width:90vw}
+/* Das Band fuer neue Fassungen und Nachrichten. Es faehrt von oben ein,
+   nimmt die ganze Breite und bleibt stehen, bis es weggetippt wird. */
+.band{position:fixed;left:0;right:0;top:0;z-index:90;background:var(--mint);color:var(--midnight);
+ box-shadow:0 6px 22px rgba(5,26,54,.28);padding:14px 16px;display:flex;align-items:center;
+ gap:14px;flex-wrap:wrap;justify-content:center;animation:bandRein .42s cubic-bezier(.2,.9,.3,1.2)}
+.band .bandTxt{font:700 18px/1.3 system-ui,sans-serif;max-width:min(680px,80vw)}
+.band .bandIco{font-size:24px;line-height:1}
+.band .bandBtn{font:700 17px/1 system-ui,sans-serif;background:var(--midnight);color:#fff;border:0;
+ border-radius:12px;padding:13px 22px;cursor:pointer;animation:bandPuls 2.1s ease-in-out infinite}
+.band .bandZu{background:transparent;border:0;color:var(--midnight);font-size:22px;line-height:1;
+ cursor:pointer;padding:8px 10px;opacity:.65}
+@keyframes bandRein{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+@keyframes bandPuls{0%,100%{transform:scale(1)}50%{transform:scale(1.055)}}
+@media (prefers-reduced-motion:reduce){.band{animation:none}.band .bandBtn{animation:none}}
 .toast.err{background:var(--red)}
 .figwrap{position:relative;display:inline-block;max-width:100%;margin:4px 0 14px;line-height:0}
 .figwrap img{display:block;max-width:100%;max-height:48vh;border-radius:10px;border:2px solid var(--grid);background:#fff;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -275,6 +289,7 @@ lock_medium:'Frei ab 70 % in Leicht',lock_hard:'Frei ab 80 % in Mittel',adjust:'
 fixed:'Fest',ad_fixed:'Gleiches Niveau, zufällige Reihenfolge',opponent:'Gegner',needOpponent:'Für ein Duell braucht es einen zweiten Spieler.',start:'Los geht\'s',quit:'Beenden',
 hint_single:'Eine Antwort wählen',hint_multi:'Alle richtigen Antworten wählen',hint_order:'Tippe die Einträge in der richtigen Reihenfolge an. Nochmals tippen nimmt sie zurück.',
 hint_input:'Antwort eintippen – genaue Schreibweise, Gross-/Kleinschreibung zählt',check:'Prüfen',next:'Weiter',correct:'Richtig!',wrong:'Leider falsch',
+bandNeu:'Eine neue Fassung ist da: {v}',bandLaden:'Jetzt laden',bandZu:'Schliessen',
 rightAnswer:'Richtig ist: {a}',yourAnswer:'Deine Antwort: {a}',turnOf:'{name} ist dran',points:'Punkte',accuracy:'Treffer',bestStreak:'Beste Serie',streak:'Serie',
 newBadges:'Neue Abzeichen',levelUp:'Neue Stufe erreicht: {n}',unlocked:'Neu freigeschaltet: {d}',winner:'{name} gewinnt das Duell',draw:'Unentschieden',
 again:'Nochmal',otherGame:'Anderes Spiel',changePlayer:'Spieler wechseln',resultTitle:'Auswertung',timeUp:'Zeit abgelaufen',noItems:'Dieses Spiel hat noch keine Fragen.',
@@ -326,6 +341,7 @@ lock_medium:'Unlocks at 70 % on Easy',lock_hard:'Unlocks at 80 % on Medium',adju
 fixed:'Fixed',ad_fixed:'Same level, random order',opponent:'Opponent',needOpponent:'A duel needs a second player.',start:'Start',quit:'Quit',
 hint_single:'Choose one answer',hint_multi:'Choose all correct answers',hint_order:'Tap the items in the right order. Tap again to take one back.',
 hint_input:'Type the answer – exact spelling, capitalisation counts',check:'Check',next:'Next',correct:'Correct!',wrong:'Not quite',
+bandNeu:'A new version is here: {v}',bandLaden:'Load it now',bandZu:'Close',
 rightAnswer:'Correct answer: {a}',yourAnswer:'Your answer: {a}',turnOf:'{name}\'s turn',points:'Points',accuracy:'Accuracy',bestStreak:'Best streak',streak:'Streak',
 newBadges:'New badges',levelUp:'New level reached: {n}',unlocked:'Newly unlocked: {d}',winner:'{name} wins the duel',draw:'It\'s a draw',
 again:'Play again',otherGame:'Other game',changePlayer:'Change player',resultTitle:'Results',timeUp:'Time\'s up',noItems:'This game has no questions yet.',
@@ -484,6 +500,9 @@ T.fr.schriftRichtig="Bien écrit";
 T.en.schriftRichtig="Written correctly";
 T.de.schriftRichtig="Richtig geschrieben";
 T.fr.schriftPruefen="Vérifier";
+T.fr.bandNeu="Une nouvelle version est là : {v}";
+T.fr.bandLaden="Charger maintenant";
+T.fr.bandZu="Fermer";
 T.en.schriftPruefen="Check";
 T.de.schriftPruefen="Prüfen";
 T.fr.schriftGelesen="Lu";
@@ -1201,6 +1220,65 @@ function pad(n){return String(n).padStart(2,'0');}
 function ymd(d){return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());}
 function hms(d){return pad(d.getHours())+pad(d.getMinutes())+pad(d.getSeconds());}
 function fmtDate(iso){const d=new Date(iso);return d.toLocaleDateString({de:'de-CH',en:'en-GB',fr:'fr-CH'}[S.lang]||'de-CH')+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
+/* ---------- Nachrichtenband ----------
+   Die App fragt eine winzige Datei ab und vergleicht die Fassung mit der
+   eigenen. Ist dort eine neuere eingetragen oder steht ein Text darin,
+   faehrt oben ein Band ein.
+
+   Die Adresse ist absichtlich absolut: die Spielkopie in Dropbox laeuft
+   unter einer anderen Herkunft und soll dieselbe Nachricht sehen. GitHub
+   Pages erlaubt den Zugriff von aussen (access-control-allow-origin: *).
+
+   Mitten in einem Durchgang wird nichts gezeigt - ein Neuladen wuerde die
+   laufende Runde verwerfen. Das Band wartet bis zum naechsten Startschirm. */
+const NACHRICHT_URL='https://spitzadvisory.github.io/Lernspiel/nachricht.json';
+const NACHRICHT_TAKT=5*60*1000;
+let NACHRICHT_OFFEN=null, NACHRICHT_LAEUFT=false, NACHRICHT_ZULETZT=0;
+function nachrichtWeggetippt(schluessel){
+ try{return localStorage.getItem('spitz.band')===schluessel;}catch(_){return false;}}
+function nachrichtMerken(schluessel){
+ try{localStorage.setItem('spitz.band',schluessel);}catch(_){}}
+async function nachrichtHolen(){
+ if(NACHRICHT_LAEUFT)return;
+ if(Date.now()-NACHRICHT_ZULETZT<30000)return;
+ NACHRICHT_LAEUFT=true;NACHRICHT_ZULETZT=Date.now();
+ try{
+  const r=await fetch(NACHRICHT_URL+'?t='+Date.now(),{cache:'no-store'});
+  if(!r.ok)return;
+  const d=await r.json();
+  const txt=d&&d.text?(d.text[S.lang]||d.text.de||''):'';
+  if(txt&&txt.trim()){
+   NACHRICHT_OFFEN={art:'text',txt:txt.trim(),schluessel:'t:'+(d.stand||txt)};
+  }else if(d&&d.fassung&&d.fassung!==APPVER){
+   NACHRICHT_OFFEN={art:'fassung',fassung:d.fassung,schluessel:'v:'+d.fassung};
+  }
+  nachrichtZeigen();
+ }catch(_){ /* kein Netz, kein Band - still bleiben */ }
+ finally{NACHRICHT_LAEUFT=false;}
+}
+function nachrichtZeigen(){
+ const n=NACHRICHT_OFFEN;
+ if(!n||document.querySelector('.band'))return;
+ if(nachrichtWeggetippt(n.schluessel)){NACHRICHT_OFFEN=null;return;}
+ /* Nicht mitten im Spiel. */
+ if(S.run&&!S.run.ended)return;
+ const zu=()=>{nachrichtMerken(n.schluessel);NACHRICHT_OFFEN=null;el.remove();};
+ const kinder=[h('span',{class:'bandIco','aria-hidden':'true'},n.art==='fassung'?'✨':'💬'),
+  h('span',{class:'bandTxt'},n.art==='fassung'?t('bandNeu',{v:n.fassung}):n.txt)];
+ if(n.art==='fassung')kinder.push(h('button',{class:'bandBtn',type:'button',onclick:()=>{
+  nachrichtMerken(n.schluessel);
+  const b=location.href.split('?')[0].split('#')[0];
+  location.replace(b+'?v='+encodeURIComponent(n.fassung));}},t('bandLaden')));
+ kinder.push(h('button',{class:'bandZu',type:'button','aria-label':t('bandZu'),onclick:zu},'×'));
+ const el=h('div',{class:'band',role:'status','aria-live':'polite'},kinder);
+ document.body.append(el);
+}
+function nachrichtStarten(){
+ nachrichtHolen();
+ setInterval(()=>{if(document.visibilityState==='visible')nachrichtHolen();},NACHRICHT_TAKT);
+ document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible')nachrichtHolen();});
+}
 function toast(msg,err){const el=h('div',{class:'toast'+(err?' err':''),role:'status'},msg);document.body.append(el);setTimeout(()=>el.remove(),err?6000:2600);}
 async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
 function levelOf(xp){return Math.floor(Math.sqrt((xp||0)/50))+1;}
@@ -1399,6 +1477,7 @@ async function saveGame(g){g.updatedAt=new Date().toISOString();await S.store.wr
 async function init(){
  try{await IDB.open();}catch(e){screen(h('div',{class:'page'},h('p',{},t('err',{e:e.message}))));return;}
  S.lang=(await IDB.get('kv','lang'))||(LANGS.find(l=>(navigator.language||'de').startsWith(l))||'en');applyLang();
+ nachrichtStarten();
  if(PLAY_ONLY)return initPlay();
  const mode=await IDB.get('kv','storeMode');
  if(mode==='folder'){const hd=await IDB.get('kv','dirHandle');
@@ -1409,7 +1488,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V84';
+const APPVER='V85';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1459,6 +1538,7 @@ function viewSetPassword(){
 /* ================= player side ================= */
 function viewHome(noRefresh){
  S.admin=false;
+ setTimeout(nachrichtZeigen,0);        /* was waehrend des Spiels wartete */
  const re=()=>viewHome(true);
  const extra=PLAY_ONLY?h('button',{class:'btn ghost small',title:t('sync'),'aria-label':t('sync'),onclick:()=>{S.lastRefresh=0;viewHome();}},'↻'):null;
  screen(topbar(t('appTitle'),{rerender:re,extra}),
