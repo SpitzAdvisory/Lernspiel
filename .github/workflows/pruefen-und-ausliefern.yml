@@ -24,7 +24,11 @@ jobs:
 
   pruefen:
     name: 520 Pruefungen
-    runs-on: ubuntu-latest
+    # Festgeheftet, nicht ubuntu-latest: am 31.10.2026 zeigte sich, dass
+    # ubuntu-latest bereits Ubuntu 26.04 ist und Playwright 1.56 dort keine
+    # Abhaengigkeiten einrichten kann. Der Laeufer wird mit Playwright
+    # zusammen angehoben, nicht einzeln.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
