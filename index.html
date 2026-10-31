@@ -355,6 +355,12 @@ T.en.spielZielKloetze="Goal: {n} blocks";
 T.de.spielZielKloetze="Ziel: {n} Klötze";
 T.fr.spielZielTreffer="But : {n} touches";
 T.en.spielZielTreffer="Goal: {n} hits";
+T.de.spielZielLeben="Bring den Lebensbalken auf null: {n} Treffer.";
+T.en.spielZielLeben="Empty the health bar: {n} hits.";
+T.fr.spielZielLeben="Vide la barre de vie : {n} coups.";
+T.de.spielZielTore="Schiesse {n} Tore, bevor der Gegner es tut.";
+T.en.spielZielTore="Score {n} goals before your opponent does.";
+T.fr.spielZielTore="Marque {n} buts avant ton adversaire.";
 T.de.spielZielTreffer="Ziel: {n} Treffer";
 T.fr.spielWieder="Encore";
 T.en.spielWieder="Again";
@@ -1713,15 +1719,29 @@ function emoji(c,z,x,y,gr){c.font=gr+'px serif';c.textAlign='center';c.textBasel
 function zaehler(c,txt,w){c.font='700 18px system-ui';c.textAlign='left';c.textBaseline='top';
  c.fillStyle='#0B2545';c.fillText(txt,12,10);}
 
+/* Lebensbalken. Zwei davon nebeneinander machen aus einem Spiel einen
+   Kampf: man sieht, wie es steht, und das treibt an. */
+function balken(c,x,y,b,hoehe,anteil,farbe,beschriftung,schrift){
+ c.fillStyle='#FFFFFF';c.strokeStyle='#0B2545';c.lineWidth=2;
+ c.beginPath();c.rect(x,y,b,hoehe);c.fill();c.stroke();
+ c.fillStyle=farbe;
+ const w=Math.max(0,Math.min(1,anteil))*(b-4);
+ if(w>0){c.beginPath();c.rect(x+2,y+2,w,hoehe-4);c.fill();}
+ if(beschriftung){c.fillStyle=schrift||'#0B2545';c.font='700 13px system-ui';
+  c.textAlign='left';c.textBaseline='middle';c.fillText(beschriftung,x,y-10);}
+}
+function herzen(c,x,y,n,max){c.font='18px serif';c.textAlign='left';c.textBaseline='top';
+ c.fillText('❤️'.repeat(Math.max(0,n))+'🤍'.repeat(Math.max(0,max-n)),x,y);}
+
 /* ---------- 1. Fliegen klatschen ---------- */
 spiel('fliegen',
  ['Fliegen klatschen','Swat the flies','Chasser les mouches'],
  ['Der Kuchen steht auf dem Tisch, und die halbe Fliegenwelt hat davon gehört. Klatsch sie weg.',
   'The cake is on the table and half the fly population has heard about it. Swat them.',
   'Le gâteau est sur la table et la moitié des mouches du pays est au courant. Chasse-les.'],
- st=>({n:[8,12,16][st-1],art:'treffer',zeit:30}),
+ st=>({n:[8,14,20][st-1],art:'treffer',zeit:30}),
  (platz,o)=>{
-  const ziel=o.ziel||[8,12,16][o.stufe-1],dauer=o.dauer||30000;
+  const ziel=o.ziel||[8,14,20][o.stufe-1],dauer=o.dauer||30000;
   const F=spielFeld(platz,{hoehe:340});
   const fliegen=[];let punkte=0,weg=0,naechste=0;
   const neu=()=>{const lebt=1800-o.stufe*260;
@@ -1755,9 +1775,9 @@ spiel('toast',
  ['Der Toaster hat zu viel Kraft. Fang das Brot mit dem Teller - Bananenschalen lieber nicht.',
   'The toaster is far too strong. Catch the bread with the plate - skip the banana peels.',
   'Le grille-pain est trop puissant. Attrape le pain avec l’assiette, évite les peaux de banane.'],
- st=>({n:[6,9,12][st-1],art:'treffer',zeit:35}),
+ st=>({n:[6,11,16][st-1],art:'treffer',zeit:35}),
  (platz,o)=>{
-  const ziel=o.ziel||[6,9,12][o.stufe-1],dauer=o.dauer||35000;
+  const ziel=o.ziel||[6,11,16][o.stufe-1],dauer=o.dauer||35000;
   const F=spielFeld(platz,{hoehe:340});
   let tx=0,punkte=0,naechste=0;const dinge=[];
   F.zug=x=>{tx=x;};F.tipp=x=>{tx=x;};
@@ -1826,6 +1846,191 @@ spiel('turm',
   return F;});
 
 /* ---------- Der Schirm, auf dem ein Spiel laeuft ---------- */
+/* ---------- 4. Drachenkampf ----------
+   Der Drache hat einen Lebensbalken, das Kind drei Herzen. Treffen kann
+   man ihn nur, wenn er das Maul aufreisst - sonst prallt der Schlag ab.
+   Dazwischen fliegen Feuerbaelle, die der Schild abfangen muss. */
+spiel('drache',
+ ['Drachenkampf','Dragon duel','Combat du dragon'],
+ ['Der Drache hat einen dicken Panzer. Schlag zu, wenn er das Maul aufreisst, und fang seine Feuerbälle mit dem Schild.',
+  'The dragon is thickly armoured. Strike when it opens its jaws, and block its fireballs with your shield.',
+  'Le dragon est bien cuirassé. Frappe quand il ouvre la gueule et bloque ses boules de feu avec le bouclier.'],
+ st=>({n:[6,9,13][st-1],art:'leben',zeit:60}),
+ (platz,o)=>{
+  const stufe=o.stufe||1;
+  const voll=o.ziel||[6,9,13][stufe-1], dauer=o.dauer||60000;
+  const F=spielFeld(platz,{hoehe:380});
+  let hp=voll, herz=3, schild=0, offen=0, naechsteOeffnung=0, naechsterBall=0, prellt=0;
+  const baelle=[]; let dx=0.055+stufe*0.022;
+  let drache={x:0,y:84,v:(0.05+stufe*0.03)};
+  F.zug=(x)=>{schild=x;};
+  F.tipp=(x,y)=>{
+   const jetzt=performance.now();
+   if(jetzt<prellt)return;
+   if(Math.abs(x-drache.x)<56&&Math.abs(y-drache.y)<52){
+    if(jetzt<offen){hp=Math.max(0,hp-1);offen=0;}
+    else{prellt=jetzt+520;}
+   }
+  };
+  F.takt=()=>{
+   const jetzt=performance.now(), rest=Math.max(0,dauer-(jetzt-F.t0));
+   if(!drache.x)drache.x=F.w/2;
+   drache.x+=drache.v*F.dt;
+   if(drache.x<70||drache.x>F.w-70)drache.v*=-1;
+   if(jetzt>naechsteOeffnung){offen=jetzt+(760-stufe*120);naechsteOeffnung=jetzt+(1700-stufe*280);}
+   if(jetzt>naechsterBall){naechsterBall=jetzt+(1250-stufe*230);
+    baelle.push({x:drache.x,y:drache.y+40,v:dx*(0.9+Math.random()*0.4)});}
+   const c=F.c;c.clearRect(0,0,F.w,F.h);
+   c.fillStyle='#EAF4FF';c.fillRect(0,0,F.w,F.h);
+   /* Schild */
+   if(!schild)schild=F.w/2;
+   const sy=F.h-40;
+   emoji(c,'🛡️',schild,sy,46);
+   /* Baelle */
+   for(let i=baelle.length-1;i>=0;i--){const b=baelle[i];
+    b.y+=b.v*F.dt;
+    if(b.y>sy-22&&b.y<sy+22&&Math.abs(b.x-schild)<34){baelle.splice(i,1);continue;}
+    if(b.y>F.h){baelle.splice(i,1);herz--;continue;}
+    emoji(c,'🔥',b.x,b.y,30);}
+   /* Drache */
+   emoji(c,jetzt<offen?'🐲':'🐉',drache.x,drache.y,jetzt<offen?76:64);
+   if(jetzt<prellt)emoji(c,'🛡️',drache.x,drache.y-46,28);
+   balken(c,12,30,F.w-24,16,hp/voll,'#E4572E','🐉 '+hp+' / '+voll);
+   herzen(c,12,54,herz,3);
+   c.fillStyle='#0B2545';c.font='700 15px system-ui';c.textAlign='right';c.textBaseline='top';
+   c.fillText('⏱ '+Math.ceil(rest/1000)+' s',F.w-12,56);
+   if(hp<=0){F.ende();o.fertig(true,voll);return;}
+   if(herz<=0||rest<=0){F.ende();o.fertig(false,voll-hp);return;}};
+  F.zustand=()=>({hp,voll,herz,baelle:baelle.length,offen:performance.now()<offen});
+  return F;});
+
+/* ---------- 5. Raumschlacht ----------
+   Wellen von Gesteinsbrocken, danach ein Brocken mit eigenem Balken.
+   Das Schiff folgt dem Finger und schiesst von selbst. */
+spiel('raum',
+ ['Raumschlacht','Space battle','Bataille spatiale'],
+ ['Steuere das Schiff mit dem Finger. Es schiesst von selbst - du musst nur zielen und ausweichen. Zum Schluss kommt der grosse Brocken.',
+  'Steer the ship with your finger. It fires by itself - you only aim and dodge. The big rock comes last.',
+  'Pilote le vaisseau avec le doigt. Il tire tout seul : vise et esquive. Le gros bloc arrive à la fin.'],
+ st=>({n:[8,13,18][st-1],art:'treffer',zeit:70}),
+ (platz,o)=>{
+  const stufe=o.stufe||1;
+  const noetig=o.ziel||[8,13,18][stufe-1], dauer=o.dauer||70000;
+  const F=spielFeld(platz,{hoehe:400});
+  let schiff=0, treffer=0, herz=3, naechste=0, naechsterSchuss=0;
+  let bossHp=0, bossVoll=4+stufe*3, boss=null;
+  const brocken=[], schuesse=[];
+  F.zug=(x)=>{schiff=x;};
+  F.tipp=(x)=>{schiff=x;};
+  F.takt=()=>{
+   const jetzt=performance.now(), rest=Math.max(0,dauer-(jetzt-F.t0));
+   if(!schiff)schiff=F.w/2;
+   const sy=F.h-36;
+   if(jetzt>naechsterSchuss){naechsterSchuss=jetzt+(330-stufe*55);
+    schuesse.push({x:schiff,y:sy-26});}
+   if(!boss&&treffer>=noetig){boss={x:F.w/2,v:0.07+stufe*0.035,y:72};bossHp=bossVoll;}
+   if(!boss&&jetzt>naechste){naechste=jetzt+(760-stufe*145);
+    brocken.push({x:30+Math.random()*(F.w-60),y:-20,v:0.045+stufe*0.025+Math.random()*0.03});}
+   const c=F.c;c.clearRect(0,0,F.w,F.h);
+   c.fillStyle='#0B1C33';c.fillRect(0,0,F.w,F.h);
+   c.fillStyle='#FFFFFF';
+   for(let i=0;i<26;i++){const sx=(i*73)%F.w, sy2=(i*131+Math.floor(jetzt/40))%F.h;
+    c.fillRect(sx,sy2,2,2);}
+   for(let i=schuesse.length-1;i>=0;i--){const s=schuesse[i];
+    s.y-=0.55*F.dt;
+    if(s.y<-10){schuesse.splice(i,1);continue;}
+    c.fillStyle='#FFD166';c.fillRect(s.x-2,s.y,4,12);}
+   for(let i=brocken.length-1;i>=0;i--){const b=brocken[i];
+    b.y+=b.v*F.dt;
+    let weg=false;
+    for(let k=schuesse.length-1;k>=0;k--){const s=schuesse[k];
+     if(Math.abs(s.x-b.x)<26&&Math.abs(s.y-b.y)<26){schuesse.splice(k,1);weg=true;treffer++;break;}}
+    if(weg){brocken.splice(i,1);continue;}
+    if(b.y>sy-24&&Math.abs(b.x-schiff)<30){brocken.splice(i,1);herz--;continue;}
+    if(b.y>F.h+20){brocken.splice(i,1);continue;}
+    emoji(c,'☄️',b.x,b.y,34);}
+   if(boss){
+    boss.x+=boss.v*F.dt;
+    if(boss.x<60||boss.x>F.w-60)boss.v*=-1;
+    for(let k=schuesse.length-1;k>=0;k--){const s=schuesse[k];
+     if(Math.abs(s.x-boss.x)<46&&Math.abs(s.y-boss.y)<40){schuesse.splice(k,1);bossHp--;}}
+    emoji(c,'🪨',boss.x,boss.y,86);
+    balken(c,12,30,F.w-24,16,bossHp/bossVoll,'#E4572E','🪨 '+bossHp+' / '+bossVoll,'#FFFFFF');
+   }else{
+    balken(c,12,30,F.w-24,16,treffer/noetig,'#2EC4B6','☄️ '+treffer+' / '+noetig,'#FFFFFF');
+   }
+   emoji(c,'🚀',schiff,sy,40);
+   herzen(c,12,54,herz,3);
+   c.fillStyle='#FFFFFF';c.font='700 15px system-ui';c.textAlign='right';c.textBaseline='top';
+   c.fillText('⏱ '+Math.ceil(rest/1000)+' s',F.w-12,56);
+   if(boss&&bossHp<=0){F.ende();o.fertig(true,treffer);return;}
+   if(herz<=0||rest<=0){F.ende();o.fertig(false,treffer);return;}};
+  F.zustand=()=>({treffer,noetig,herz,boss:!!boss,bossHp,bossVoll});
+  return F;});
+
+/* ---------- 6. Mauerduell ----------
+   Zwei Schlaeger, ein Ball, und der Gegner wird mit jeder Stufe wacher.
+   Wer zuerst genug Tore hat, gewinnt. */
+spiel('duell',
+ ['Mauerduell','Wall duel','Duel de murs'],
+ ['Du unten, der Gegner oben. Lass den Ball nicht durch - und schiess ihn an ihm vorbei.',
+  'You at the bottom, your opponent at the top. Keep the ball out and slip it past them.',
+  'Toi en bas, l’adversaire en haut. Ne laisse pas passer la balle et glisse-la derrière lui.'],
+ st=>({n:[3,4,5][st-1],art:'tore',zeit:0}),
+ (platz,o)=>{
+  const stufe=o.stufe||1;
+  const noetig=o.ziel||[3,4,5][stufe-1];
+  const F=spielFeld(platz,{hoehe:400});
+  const br=()=>Math.max(54,Math.min(96,(F.w||320)*0.22));
+  let ich=0, gegner=0, meine=0, seine=0;
+  let b={x:0,y:0,vx:0,vy:0}, warten=0;
+  const anstoss=(nachUnten)=>{
+   b.x=F.w/2;b.y=(72+F.h-28)/2;
+   const v=0.17+stufe*0.045;
+   const w=(Math.random()*0.7-0.35);
+   b.vx=v*Math.sin(w);b.vy=(nachUnten?1:-1)*v*Math.cos(w);
+   warten=performance.now()+700;};
+  F.zug=(x)=>{ich=x;};
+  F.tipp=(x)=>{ich=x;};
+  F.takt=()=>{
+   const jetzt=performance.now();
+   if(!F.w)return;
+   if(!b.x){anstoss(Math.random()<0.5);}
+   if(!ich)ich=F.w/2;
+   /* Gegner: zielt mit Verzoegerung und einem Fehler, der mit der Stufe schrumpft */
+   const ziel=b.x+(Math.random()-0.5)*(120-stufe*28);
+   const tempo=(0.14+stufe*0.07);
+   gegner=gegner||F.w/2;
+   gegner+=Math.max(-tempo*F.dt,Math.min(tempo*F.dt,ziel-gegner));
+   gegner=Math.max(br()/2,Math.min(F.w-br()/2,gegner));
+   const c=F.c;c.clearRect(0,0,F.w,F.h);
+   c.fillStyle='#EAF4FF';c.fillRect(0,0,F.w,F.h);
+   c.fillStyle='#FFFFFF';c.fillRect(0,0,F.w,56);
+   c.strokeStyle='#C9DCF0';c.lineWidth=2;c.setLineDash([8,8]);
+   const mitte=(72+F.h-28)/2;
+   c.beginPath();c.moveTo(0,mitte);c.lineTo(F.w,mitte);c.stroke();c.setLineDash([]);
+   const oben=72, unten=F.h-28;
+   if(jetzt>warten){
+    b.x+=b.vx*F.dt;b.y+=b.vy*F.dt;
+    if(b.x<10){b.x=10;b.vx*=-1;}
+    if(b.x>F.w-10){b.x=F.w-10;b.vx*=-1;}
+    if(b.vy>0&&b.y>unten-12&&b.y<unten+12&&Math.abs(b.x-ich)<br()/2){
+     b.y=unten-12;b.vy*=-1.04;b.vx+=(b.x-ich)*0.004;}
+    if(b.vy<0&&b.y<oben+12&&b.y>oben-12&&Math.abs(b.x-gegner)<br()/2){
+     b.y=oben+12;b.vy*=-1.04;b.vx+=(b.x-gegner)*0.004;}
+    if(b.y<-16){meine++;anstoss(true);}
+    if(b.y>F.h+16){seine++;anstoss(false);}
+   }
+   c.fillStyle='#2EC4B6';c.fillRect(ich-br()/2,unten-6,br(),12);
+   c.fillStyle='#E4572E';c.fillRect(gegner-br()/2,oben-6,br(),12);
+   emoji(c,'⚽',b.x,b.y,26);
+   balken(c,12,28,(F.w-32)/2,16,seine/noetig,'#E4572E','🤖 '+seine+' / '+noetig);
+   balken(c,F.w/2+4,28,(F.w-32)/2,16,meine/noetig,'#2EC4B6','🙂 '+meine+' / '+noetig);
+   if(meine>=noetig){F.ende();o.fertig(true,meine);return;}
+   if(seine>=noetig){F.ende();o.fertig(false,meine);return;}};
+  F.zustand=()=>({meine,seine,noetig,ball:{x:b.x,y:b.y}});
+  return F;});
+
 function spielSchirm(R){
  const sp=SPIELE[Math.floor(Math.random()*SPIELE.length)];
  const i=Math.max(0,LANGS.indexOf(S.lang));
@@ -1858,7 +2063,8 @@ function spielSchirm(R){
    h('div',{class:'card stack'},
     h('h2',{style:'margin:0'},'🎮 '+sp.n[i]),
     h('p',{class:'muted',style:'margin:0'},sp.kurz[i]),
-    h('p',{style:'margin:0;font-weight:700'},t(z.art==='kloetze'?'spielZielKloetze':'spielZielTreffer',{n:z.n})
+    h('p',{style:'margin:0;font-weight:700'},
+      t(z.art==='kloetze'?'spielZielKloetze':z.art==='leben'?'spielZielLeben':z.art==='tore'?'spielZielTore':'spielZielTreffer',{n:z.n})
       +(z.zeit?' · '+t('spielZeit',{n:z.zeit}):'')),
     platz,ergebnis,
     h('div',{class:'row',style:'gap:10px;margin-top:4px'},losB,weiterB))));
