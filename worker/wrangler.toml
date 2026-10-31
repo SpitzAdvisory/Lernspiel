@@ -1,19 +1,30 @@
 # Bauplan des Vermittlers fuer die selbsttaetige Auslieferung.
 #
-# Die Schluessel ELEVEN_KEY und ANTHROPIC_KEY stehen NICHT hier. Sie liegen
-# als Secrets im Cloudflare-Konto und ueberdauern jede Auslieferung.
+# Stand in der Cloudflare-Oberflaeche, nachgesehen am 31.10.2026:
 #
-# OFFEN: ob der Worker heute eine KV-Bindung ZAEHLER traegt, ist hier nicht
-# bekannt. Traegt er eine und steht sie nicht in dieser Datei, entfernt die
-# erste selbsttaetige Auslieferung sie - die Tagesgrenze liefe dann still ins
-# Leere. Vor der ersten Auslieferung wird das in der Cloudflare-Oberflaeche
-# nachgesehen und hier eingetragen.
+#   Secrets    ANTHROPIC_KEY, ELEVEN_KEY        bleiben bei jeder Auslieferung
+#   Bindings   keine ("No connected bindings")
+#   Variable   ElevenLabs = <Hexkette>          wird vom Worker nirgends gelesen
+#
+# Daraus folgt zweierlei.
+#
+# Erstens: die Tagesgrenze laeuft heute ins Leere. Der Quelltext prueft
+# env.ZAEHLER, und diese KV-Bindung gibt es nicht. Vor dem Sprachagenten
+# muss sie angelegt und hier eingetragen werden.
+#
+# Zweitens: die Variable ElevenLabs ist ein Ueberbleibsel. Kein env.ElevenLabs
+# im Quelltext. Ob eine Auslieferung mit dieser Datei sie entfernt, ist nicht
+# gesichert - die Cloudflare-Dokumentation aeussert sich dazu nicht eindeutig.
+# Sauberer Weg: in der Oberflaeche loeschen, bevor zum ersten Mal selbsttaetig
+# ausgeliefert wird. Haelt sie einen Schluessel im Klartext, gehoert er ohnehin
+# ersetzt und als Secret abgelegt.
 
 name = "spitz-lernen"
 main = "worker.js"
 compatibility_date = "2026-10-25"
 workers_dev = true
 
+# Noch nicht angelegt. Wird fuer die Tagesgrenze des Sprachagenten gebraucht.
 # [[kv_namespaces]]
 # binding = "ZAEHLER"
 # id = "<aus der Cloudflare-Oberflaeche>"
