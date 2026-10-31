@@ -1342,7 +1342,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V75';
+const APPVER='V76';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -3198,15 +3198,51 @@ function aufgabeText(R,Q,it){
 /* Gesprochene Antworten werden nach Woertern verglichen, nicht nach
    Zeichen: Satzzeichen, Gross- und Kleinschreibung und ein vorangestellter
    Artikel duerfen nicht ueber richtig oder falsch entscheiden. */
+function wortFolge(s){
+ return String(s).toLowerCase().normalize('NFC').replace(/ß/g,'ss')
+  .replace(/[^a-zàâäçéèêëîïôöùûü0-9]+/g,' ').trim().split(' ').filter(Boolean);}
+const ZAHLGLEICH={'i':'1','ii':'2','iii':'3','iv':'4','v':'5',
+ 'eins':'1','ein':'1','zwei':'2','drei':'3','vier':'4','fuenf':'5',
+ 'one':'1','two':'2','three':'3','four':'4','five':'5',
+ 'un':'1','deux':'2','trois':'3','quatre':'4','cinq':'5',
+ '1':'1','2':'2','3':'3','4':'4','5':'5'};
+function tokGleich(a,b){
+ if(a===b)return true;
+ const x=ZAHLGLEICH[a],y=ZAHLGLEICH[b];
+ return !!x&&x===y;}
 function antwortGleich(a,b){
- const n=s=>String(s).toLowerCase().normalize('NFC').replace(/ß/g,'ss')
-  .replace(/[^a-zàâäçéèêëîïôöùûü0-9]+/g,' ').replace(/^(der|die|das|den|dem|ein|eine|the|a|an|le|la|les|un|une) /,'').trim();
- return n(a)===n(b)&&n(a)!=='';}
+ const wa=wortFolge(a),wb=wortFolge(b);
+ const ohne=w=>(w.length>1&&/^(der|die|das|den|dem|ein|eine|the|a|an|le|la|les|un|une)$/.test(w[0]))?w.slice(1):w;
+ const x=ohne(wa),y=ohne(wb);
+ if(x.length===0||x.length!==y.length)return false;
+ for(let i=0;i<x.length;i++)if(!tokGleich(x[i],y[i]))return false;
+ return true;}
+/* Kinder antworten in Saetzen: «es hat ein Akkusativobjekt und es ist
+   transitiv». Gesucht wird darum, ob die Wortfolge einer Auswahl im
+   Gesagten vorkommt - auf Wortebene, damit «transitiv» nicht in
+   «intransitiv» hineinpasst. Wird mehr als eine genannt, zaehlt die
+   letzte: wer sich verbessert, tut das am Ende des Satzes. */
+function findeImSatz(gesagt,auswahl){
+ const w=wortFolge(gesagt);
+ if(!w.length)return null;
+ let besteStelle=-1,bestes=null;
+ for(const a of auswahl){
+  const z=wortFolge(a.text);
+  if(!z.length)continue;
+  for(let i=0;i+z.length<=w.length;i++){
+   let passt=true;
+   for(let k=0;k<z.length;k++)if(!tokGleich(w[i+k],z[k])){passt=false;break;}
+   if(passt&&i>=besteStelle){besteStelle=i;bestes=a;}
+  }
+ }
+ return bestes;}
+/* Eine Frage ist, was ein Fragezeichen traegt oder mit einem Fragewort
+   beginnt. Die Laenge des Satzes sagt darueber nichts - daran ist die
+   erste Fassung gescheitert. */
 function wirktWieFrage(s){
  const x=String(s).trim();
  if(/\?\s*$/.test(x))return true;
- if(/^(wie|was|warum|weshalb|wieso|wer|wo|wann|welche|kannst|kann|hilf|ich\s+weiss|ich\s+verstehe|erklär|erklaer|how|what|why|who|where|when|which|can|help|i\s+don|comment|pourquoi|qui|quoi|aide|peux)\b/i.test(x))return true;
- return x.split(/\s+/).length>5;}
+ return /^(wie|was|warum|weshalb|wieso|wer|wo|wann|welche[rsnm]?|kannst|kann|koennen|könnten|hilf|hilfst|erklär|erklaer|verstehe\s+ich|ich\s+weiss\s+nicht|ich\s+verstehe\s+nicht|how|what|why|who|where|when|which|can|could|help|i\s+don|i\s+do\s+not|comment|pourquoi|qui|quoi|quel|aide|peux|peux-tu)\b/i.test(x);}
 
 function fragBox(R,Q,it,gesperrt,antwortNehmen){
  const spr=(S.lang&&TUTORNAME[S.lang])?S.lang:'de';
@@ -3680,17 +3716,18 @@ function renderQuestion(R,Q){
   const roh=String(text||'').trim();
   if(!roh)return false;
   if(wahlKnoepfe.length){
-   const tr=wahlKnoepfe.find(x=>antwortGleich(x.text,roh));
-   if(tr&&!tr.b.disabled){tr.b.click();return 'gewaehlt';}
+   const offen=wahlKnoepfe.filter(x=>!x.b.disabled);
+   const tr=offen.find(x=>antwortGleich(x.text,roh))||findeImSatz(roh,offen);
+   if(tr){tr.b.click();return 'gewaehlt';}
    return false;}
   if(it.type==='input'||it.type==='num'){
    const feld=area.querySelector('input.answerbox');
    if(!feld)return false;
    const ziele=[it.answer].concat(it.accept||[]).filter(Boolean);
-   const passt=ziele.some(z=>antwortGleich(z,roh));
-   const kurz=roh.split(/\s+/).length<=4;
+   const passt=ziele.some(z=>antwortGleich(z,roh))||!!findeImSatz(roh,ziele.map(z=>({text:z})));
+   const kurz=wortFolge(roh).length<=4;
    if(!passt&&!kurz)return false;
-   feld.value=passt?String(it.answer):roh;
+   feld.value=passt?String(it.answer):String(roh).trim();
    try{feld.focus({preventScroll:true});}catch(_){}
    return 'eingetragen';}
   return false;};

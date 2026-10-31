@@ -197,8 +197,64 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   pruef('Leeres gilt nicht',!antwortGleich('','')); 
   pruef('Fragezeichen macht eine Frage',wirktWieFrage('Was ist das?'));
   pruef('Fragewort macht eine Frage',wirktWieFrage('Wie fange ich an'));
-  pruef('Ein langer Satz gilt als Frage',wirktWieFrage('ich weiss wirklich nicht was ich hier machen soll'));
   pruef('Ein Wort ist keine Frage',!wirktWieFrage('intransitiv'));
+  pruef('Ich weiss nicht ist eine Frage',wirktWieFrage('ich weiss nicht wie das geht'));
+  /* Daran ist die erste Fassung gescheitert: ein ausformulierter
+     Antwortsatz wurde seiner Laenge wegen zu Emilia geschickt. */
+  pruef('Ein langer Antwortsatz ist keine Frage',
+   !wirktWieFrage('Es hat ein Akkusativobjekt und es ist transitiv'));
+  pruef('Zahlwort gleich roemische Ziffer',antwortGleich('Konjunktiv zwei','Konjunktiv II'));
+  pruef('Zahlwoerter bleiben unterscheidbar',!antwortGleich('Konjunktiv eins','Konjunktiv II'));
+
+  /* ---------- 9d. Die Antwort steht mitten im Satz ---------- */
+  const AUSW=[{text:'reflexiv'},{text:'transitiv'},{text:'intransitiv'}];
+  const imSatz=t=>{const x=findeImSatz(t,AUSW);return x?x.text:null;};
+  pruef('Antwort im ganzen Satz wird gefunden',
+   imSatz('Es hat ein Akkusativobjekt und es ist transitiv')==='transitiv',
+   imSatz('Es hat ein Akkusativobjekt und es ist transitiv'));
+  pruef('Transitiv steckt nicht in intransitiv',
+   imSatz('Ich glaube das ist intransitiv')==='intransitiv',
+   imSatz('Ich glaube das ist intransitiv'));
+  pruef('Die letzte Nennung zaehlt',
+   imSatz('transitiv, nein, intransitiv')==='intransitiv',
+   imSatz('transitiv, nein, intransitiv'));
+  pruef('Ohne Treffer kein Treffer',imSatz('Ich habe keine Ahnung')===null);
+  const ROEM=[{text:'Konjunktiv I'},{text:'Konjunktiv II'},{text:'Indikativ'}];
+  const r2=findeImSatz('ich denke das ist Konjunktiv zwei',ROEM);
+  pruef('Gesprochene Ziffer trifft die roemische',r2&&r2.text==='Konjunktiv II',r2&&r2.text);
+  const r3=findeImSatz('das ist sicher Indikativ',ROEM);
+  pruef('Mehrwortauswahl trifft einwortig',r3&&r3.text==='Indikativ',r3&&r3.text);
+
+  /* Im Fragenschirm: der gesprochene Satz drueckt den Knopf */
+  const RD={id:'td',players:[TEST_PLAYER],game:DE_GAME,mode:'learn',diff:'medium',adaptive:false,
+   started:new Date(),pool:[],used:new Set(),answers:[],score:[0],streak:[0],best:[0],lives:3,
+   level:1,up:0,down:0,q:0,masteries:{[TEST_PLAYER.id]:{}},timer:null,ended:false,target:12,
+   retry:[],extra:0,gen:true,topics:null,cards:new Set(),sub:null,wcur:{},jokes:[],jokeAt:Infinity};
+  S.run=RD;
+  let gewaehlt=null,versuche=0;
+  for(versuche=0;versuche<60&&!gewaehlt;versuche++){
+   const itD=genItem(mtopic('de-objekt'),1,{});
+   const QD=prepare(itD,'medium');QD.t0=performance.now();
+   if(!QD.opts||!QD.opts.length)continue;
+   RD.cur=QD;renderQuestion(RD,QD);
+   await warte(40);
+   const ziel=QD.opts.find(o=>o.ok);
+   if(!ziel)continue;
+   const kn=[...document.querySelectorAll('.page button')]
+    .find(x=>/mit Emilia sprechen/.test(x.textContent));
+   if(!kn)continue;
+   rufe=[];
+   gehoert='Also ich finde es ist '+ziel.text+' weil man danach fragen kann';
+   kn.click();
+   const traf=await warteAuf(()=>[...document.querySelectorAll('.page button')]
+    .some(x=>x.textContent.trim()===ziel.text&&x.disabled),2000);
+   gewaehlt={ziel:ziel.text,traf:traf,anEmilia:rufe.some(x=>x.weg==='frage')};
+  }
+  pruef('Eine Aufgabe mit Auswahl war erreichbar',!!gewaehlt,'Versuche: '+versuche);
+  pruef('Der gesprochene Satz waehlt die Antwort',gewaehlt&&gewaehlt.traf,
+   gewaehlt?JSON.stringify(gewaehlt):'keine Aufgabe');
+  pruef('Dabei geht nichts an Emilia',gewaehlt&&!gewaehlt.anEmilia,
+   gewaehlt?JSON.stringify(gewaehlt.anEmilia):'');
 
   /* ---------- 10. Im Fragenschirm ---------- */
   const R={id:'t',players:[TEST_PLAYER],game:MATH_GAME,mode:'learn',diff:'medium',adaptive:false,
