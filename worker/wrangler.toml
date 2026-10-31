@@ -4,23 +4,20 @@
 #
 #   Secrets             ANTHROPIC_KEY, ELEVEN_KEY   bleiben bei jeder Auslieferung
 #   Bindings            keine ("No connected bindings")
-#   Variable            ElevenLabs = <Hexkette>     wird vom Worker nirgends gelesen
 #   Compatibility date  2026-10-28                  unten uebernommen
 #   Compatibility flags keine
 #   Cache               Disabled
 #
-# Daraus folgt zweierlei.
+# Der Quelltext wurde Zeile fuer Zeile gegen den laufenden Worker geprueft:
+# alle 256 Zeilen wortgleich. Die erste selbsttaetige Auslieferung aendert
+# am Verhalten also nichts.
 #
-# Erstens: die Tagesgrenze laeuft heute ins Leere. Der Quelltext prueft
-# env.ZAEHLER, und diese KV-Bindung gibt es nicht. Vor dem Sprachagenten
-# muss sie angelegt und hier eingetragen werden.
+# Erledigt am 31.10.2026: die Variable "ElevenLabs" lag im Klartext und
+# wurde von keiner Zeile gelesen. Von Urs geloescht. Danach geprueft:
+# /tts antwortet 200 mit audio/mpeg, /unbekannt ohne Herkunft 403.
 #
-# Zweitens: die Variable ElevenLabs ist ein Ueberbleibsel. Kein env.ElevenLabs
-# im Quelltext. Ob eine Auslieferung mit dieser Datei sie entfernt, ist nicht
-# gesichert - die Cloudflare-Dokumentation aeussert sich dazu nicht eindeutig.
-# Sauberer Weg: in der Oberflaeche loeschen, bevor zum ersten Mal selbsttaetig
-# ausgeliefert wird. Haelt sie einen Schluessel im Klartext, gehoert er ohnehin
-# ersetzt und als Secret abgelegt.
+# Offen: die Tagesgrenze laeuft ins Leere. Der Quelltext prueft env.ZAEHLER,
+# und diese KV-Bindung gibt es nicht. Vor dem Sprachagenten anzulegen.
 
 name = "spitz-lernen"
 main = "worker.js"
