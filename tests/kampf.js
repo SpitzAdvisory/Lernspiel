@@ -77,8 +77,17 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   let z2=s2.F.zustand();
   pruef('Raum: Zaehler startet bei null',z2.treffer===0&&z2.herz===3,JSON.stringify(z2));
   pruef('Raum: noch kein Brocken-Gegner',z2.boss===false);
+  /* Ohne Steuern trifft das Schiff nur durch Zufall. Hier zielt es auf den
+     naechsten Brocken - damit wird auch F.zug mitgeprueft. */
+  const zielen=async(F,ms)=>{const bis=Date.now()+ms;
+   while(Date.now()<bis){const z=F.zustand();
+    if(z.boss)return true;
+    const b=(z.brocken||[]).sort((p,q)=>q.y-p.y)[0];
+    if(b)F.zug(b.x);
+    await warte(25);}
+   return !!F.zustand().boss;};
   pruef('Raum: der grosse Brocken kommt nach genug Treffern',
-   await warteAuf(()=>s2.F.zustand().boss===true,25000),JSON.stringify(s2.F.zustand()));
+   await zielen(s2.F,30000),JSON.stringify(s2.F.zustand()));
   pruef('Raum: er hat einen eigenen Balken',s2.F.zustand().bossVoll>0,s2.F.zustand().bossVoll);
   s2.F.ende();
 
