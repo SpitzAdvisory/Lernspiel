@@ -106,6 +106,11 @@ input.penfield{min-height:62px;font-size:1.45rem;padding:10px 14px}
 table.spec{border-collapse:collapse;width:100%;font-size:.95rem}table.spec th{text-align:left;vertical-align:top;color:var(--muted);font-weight:600;padding:3px 12px 3px 0;white-space:nowrap}table.spec td{padding:3px 0}
 details.card summary{cursor:pointer;font-weight:700}
 .prompt{font-size:1.45rem;line-height:1.35;margin:0 0 6px;font-weight:700;white-space:pre-line}
+/* Der zu untersuchende Satz ist Material, keine Anweisung - er bekommt
+   darum ein eigenes Gesicht und steht ueber der Frage. */
+.beispiel{font:600 1.3rem/1.45 Georgia,'Iowan Old Style','Times New Roman',serif;
+ color:var(--ink);background:rgba(46,196,182,.10);border-left:5px solid var(--mint);
+ border-radius:0 10px 10px 0;padding:12px 16px;margin:0 0 14px;white-space:pre-line}
 .hint{font-size:.9rem;color:var(--muted);margin-bottom:16px}
 .opts{display:flex;flex-direction:column;gap:10px}
 .opt{border:2px solid var(--ink);border-radius:12px;background:var(--white);padding:12px 16px;text-align:left;font-size:1.1rem;min-height:52px}
@@ -870,12 +875,18 @@ T.fr.help="Aide";
 T.de.helpOf="Hilfe {n}/{m}";
 T.en.helpOf="Help {n}/{m}";
 T.fr.helpOf="Aide {n}/{m}";
-T.de.fragAn="{name} fragen";
-T.en.fragAn="Ask {name}";
-T.fr.fragAn="Demander à {name}";
+T.de.fragAn="mit {name} sprechen";
+T.en.fragAn="talk to {name}";
+T.fr.fragAn="parler à {name}";
 T.de.fragAus="Fertig";
 T.en.fragAus="Done";
 T.fr.fragAus="Terminé";
+T.de.fragAntwortGut="Als Antwort genommen.";
+T.en.fragAntwortGut="Taken as your answer.";
+T.fr.fragAntwortGut="Pris comme réponse.";
+T.de.fragEingetragen="Eingetragen. Jetzt auf «Prüfen» tippen.";
+T.en.fragEingetragen="Filled in. Now tap «Check».";
+T.fr.fragEingetragen="Inscrit. Touche « Vérifier ».";
 T.de.fragHoert="Ich höre zu …";
 T.en.fragHoert="Listening …";
 T.fr.fragHoert="J’écoute …";
@@ -1331,7 +1342,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V58';
+const APPVER='V75';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -3184,12 +3195,25 @@ function aufgabeText(R,Q,it){
  return teile.filter(x=>x&&String(x).trim()).join(' | ').slice(0,600);
 }
 
-function fragBox(R,Q,it,gesperrt){
+/* Gesprochene Antworten werden nach Woertern verglichen, nicht nach
+   Zeichen: Satzzeichen, Gross- und Kleinschreibung und ein vorangestellter
+   Artikel duerfen nicht ueber richtig oder falsch entscheiden. */
+function antwortGleich(a,b){
+ const n=s=>String(s).toLowerCase().normalize('NFC').replace(/ß/g,'ss')
+  .replace(/[^a-zàâäçéèêëîïôöùûü0-9]+/g,' ').replace(/^(der|die|das|den|dem|ein|eine|the|a|an|le|la|les|un|une) /,'').trim();
+ return n(a)===n(b)&&n(a)!=='';}
+function wirktWieFrage(s){
+ const x=String(s).trim();
+ if(/\?\s*$/.test(x))return true;
+ if(/^(wie|was|warum|weshalb|wieso|wer|wo|wann|welche|kannst|kann|hilf|ich\s+weiss|ich\s+verstehe|erklär|erklaer|how|what|why|who|where|when|which|can|help|i\s+don|comment|pourquoi|qui|quoi|aide|peux)\b/i.test(x))return true;
+ return x.split(/\s+/).length>5;}
+
+function fragBox(R,Q,it,gesperrt,antwortNehmen){
  const spr=(S.lang&&TUTORNAME[S.lang])?S.lang:'de';
  const name=TUTORNAME[spr];
  const box=h('div',{style:'margin:10px 0;display:none'});
- const gehoert=h('p',{class:'small muted',style:'margin:6px 0 0','aria-live':'polite'});
- const antw=h('p',{class:'hand',style:'font-size:1.2rem;line-height:1.3;margin:6px 0 0','aria-live':'polite'});
+ const gehoert=h('p',{style:'margin:8px 0 0;font-size:1.35rem;line-height:1.35;color:var(--muted);word-break:break-word','aria-live':'polite'});
+ const antw=h('p',{class:'hand',style:'font-size:1.35rem;line-height:1.35;margin:8px 0 0','aria-live':'polite'});
  let laeuft=false,stopper=null;
  const b=micKnopf(t('fragAn',{name:name}),t('fragAus'),()=>los(),()=>{
   if(stopper)try{stopper();}catch(_){}});
@@ -3197,13 +3221,24 @@ function fragBox(R,Q,it,gesperrt){
   if(laeuft||(gesperrt&&gesperrt())){if(b.setzeAn)b.setzeAn(false);return;}
   laeuft=true;antw.textContent='';gehoert.textContent='\u25CF '+t('fragHoert');
   let frage='',fehler=null;
-  try{ frage=await hoerFrei({halten:true,lang:SRLANG[spr],
+  /* Die Aufnahme endet, sobald es still wird. Der zweite Druck bleibt
+     moeglich, ist aber nicht mehr noetig - das war der langsame Teil. */
+  try{ frage=await hoerFrei({lang:SRLANG[spr],
    aufAktiv:f=>{stopper=f;}},STTCODE[spr]); }
   catch(e){ fehler=(e&&e.message)||'fehler'; }
   stopper=null;if(b.setzeAn)b.setzeAn(false);
   if(fehler){laeuft=false;gehoert.textContent=hoerText(fehler);return;}
   if(!frage){laeuft=false;gehoert.textContent=t('fragNichts');return;}
   gehoert.textContent='\u00AB\u202F'+frage+'\u202F\u00BB';
+  /* Zuerst die Frage der Aufgabe: klingt es nach einer Antwort und passt
+     es, wird es als Antwort genommen. Sonst geht es an die Begleitung. */
+  if(antwortNehmen&&!wirktWieFrage(frage)){
+   const was=antwortNehmen(frage);
+   if(was){antw.style.color='var(--green)';
+    antw.textContent=t(was==='eingetragen'?'fragEingetragen':'fragAntwortGut');
+    laeuft=false;return;}
+  }
+  antw.style.color='';
   antw.textContent=t('fragDenkt',{name:name});
   try{
    const prox=await vermittler();
@@ -3233,9 +3268,10 @@ function renderQuestion(R,Q){
  const attempt=(given,ok,nOpts,markWrong,markFinal)=>{if(done||R.ended)return;
   if(!ok&&!it.joke&&nOpts>2&&!Q.tried){Q.tried=true;Q.second=true;Q.firstGiven=given;markWrong&&markWrong();retryMsg.textContent=t('tryAgain');return;}
   submit(given,ok,markFinal);};
+ const wahlKnoepfe=[];
  if(it.type==='single'){
   area.append(h('div',{class:'opts'},Q.opts.map(o=>{const b=h('button',{class:'opt',onclick:()=>attempt(o.text,o.ok,Q.opts.length,()=>{b.classList.add('bad');b.disabled=true;},()=>{b.classList.add(o.ok?'ok':'bad');
-   area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.opts[k].ok)x.classList.add('ok');});})},o.text);return b;})));
+   area.querySelectorAll('.opt').forEach((x,k)=>{if(Q.opts[k].ok)x.classList.add('ok');});})},o.text);wahlKnoepfe.push({b,text:o.text});return b;})));
  }else if(it.type==='multi'){
   const chosen=new Set();const btns=Q.opts.map((o,k)=>{const b=h('button',{class:'opt','aria-pressed':'false',onclick:()=>{chosen.has(k)?chosen.delete(k):chosen.add(k);b.setAttribute('aria-pressed',String(chosen.has(k)));}},o.text);return b;});
   const go=()=>{if(!chosen.size)return;const ok=Q.opts.every((o,k)=>o.ok===chosen.has(k));
@@ -3635,13 +3671,38 @@ function renderQuestion(R,Q){
   const hb=h('button',{class:'btn ghost small',type:'button',title:t('helpCost')},'💡 '+t('help'));
   hb.addEventListener('click',()=>{if(done||Q.hintsUsed>=it.hints.length)return;ol.style.display='';ol.append(h('li',{},it.hints[Q.hintsUsed++]));
    hb.textContent='💡 '+t('helpOf',{n:Q.hintsUsed,m:it.hints.length});if(Q.hintsUsed>=it.hints.length)hb.disabled=true;});helpEl=h('div',{style:'margin:10px 0'},hb,ol);}
+ /* Was gesprochen wurde, geht zuerst an die Aufgabe. Trifft es eine
+    Auswahl, gilt sie als angetippt. Bei Schreibaufgaben wird es ins Feld
+    gesetzt, aber nicht abgeschickt - eine verhoerte Silbe darf nicht als
+    falsche Antwort zaehlen. Alles andere geht an die Begleitung. */
+ const antwortNehmen=(text)=>{
+  if(done||R.ended)return false;
+  const roh=String(text||'').trim();
+  if(!roh)return false;
+  if(wahlKnoepfe.length){
+   const tr=wahlKnoepfe.find(x=>antwortGleich(x.text,roh));
+   if(tr&&!tr.b.disabled){tr.b.click();return 'gewaehlt';}
+   return false;}
+  if(it.type==='input'||it.type==='num'){
+   const feld=area.querySelector('input.answerbox');
+   if(!feld)return false;
+   const ziele=[it.answer].concat(it.accept||[]).filter(Boolean);
+   const passt=ziele.some(z=>antwortGleich(z,roh));
+   const kurz=roh.split(/\s+/).length<=4;
+   if(!passt&&!kurz)return false;
+   feld.value=passt?String(it.answer):roh;
+   try{feld.focus({preventScroll:true});}catch(_){}
+   return 'eingetragen';}
+  return false;};
  /* Bei 'speak' und 'handwrite' gehoert das Mikrofon schon der Aufgabe.
     Zwei Aufnahmen auf einem Schirm verwirren mehr, als sie helfen. */
- const fragEl=(it.type==='speak'||Q.joke||it.joke)?null:fragBox(R,Q,it,()=>R.ended);
+ const fragEl=(it.type==='speak'||Q.joke||it.joke)?null:fragBox(R,Q,it,()=>R.ended,antwortNehmen);
  const pen=penOn(R.players[curIdx(R)])&&it.type!=='handwrite'&&blattSpiel(R.game);
  const pad=pen?scratchPad({height:it.type==='map'?240:300}):null;if(pad)Q.pad=pad;
  const padBox=pad?h('details',{class:'padbox',open:true},h('summary',{},'🖊 '+t('padTitle')),pad.el):null;
- screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre,it.spr||'fr')):null,
+ screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},
+   it.satz?h('p',{class:'beispiel'},it.satz):null,
+   h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre,it.spr||'fr')):null,
    it.nat?sndBtn(it.nat,true,it.natSpr||'de'):null),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,helpEl,fragEl,retryMsg,fb),padBox));
  if(pen)area.querySelectorAll('input[type=text],input[type=number]').forEach(i=>{i.classList.add('penfield');
   i.setAttribute('autocomplete','off');i.setAttribute('autocorrect','off');i.setAttribute('autocapitalize','off');i.setAttribute('spellcheck','false');
@@ -3781,12 +3842,24 @@ function onAnswer(R,Q,given,correct,fb){
  if(R.mode==='timed'){S.onEnter=null;setTimeout(proceed,correct?550:(joke?1800:1400));}
  else{
   const nb=h('button',{class:'btn'},t('next'));nb.addEventListener('click',proceed);
+  /* War die Antwort richtig, gibt es nichts nachzulesen - dann traegt der
+     Schirm von selbst weiter. Bei einem Fehler bleibt er stehen, damit die
+     richtige Antwort gelesen werden kann. Ein Tastendruck oder ein Tippen
+     bricht das Warten ab. */
+  let weiterLauf=null;
+  const vonSelbst=()=>{
+   if(!correct||joke||it.sprich||R.mode==='timed')return;
+   weiterLauf=setTimeout(()=>{weiterLauf=null;proceed();},1200);
+   const halt=()=>{if(weiterLauf){clearTimeout(weiterLauf);weiterLauf=null;}
+    document.removeEventListener('pointerdown',halt,true);};
+   document.addEventListener('pointerdown',halt,true);
+  };
   /* Jede Vokabelaufgabe endet damit, den Ausdruck laut zu sagen. Weiter geht
      es erst, wenn er richtig ankommt. Nach drei vergeblichen Anlaeufen oeffnet
      sich der Weg trotzdem - ein stummes Mikrofon darf das Spiel nicht anhalten. */
   if(it.sprich&&!joke&&it.type!=='speak'&&hoerMoeglich()){
    fb.append(sprechSchritt(it,nb,()=>{S.onEnter=proceed;setTimeout(()=>nb.focus(),30);},R,i));
-  }else{fb.append(nb);S.onEnter=proceed;setTimeout(()=>nb.focus(),30);}
+  }else{fb.append(nb);S.onEnter=proceed;setTimeout(()=>nb.focus(),30);vonSelbst();}
  }
 }
 async function finishRun(R,aborted){
@@ -7705,8 +7778,9 @@ detopic('de-selbst',7,2,['Vollverb, Hilfsverb, Modalverb','Full, auxiliary, moda
  ['Vollverb','Hilfsverb','Modalverb'],
  lv=>{const w=DESEL[Math.floor(Math.random()*DESEL.length)];
   const N={V:D('Vollverb','full verb','verbe plein'),H:D('Hilfsverb','auxiliary','auxiliaire'),M:D('Modalverb','modal verb','verbe modal')};
-  const it=choiceItem(w[0]+'\n'+D('Was ist «'+w[1]+'» hier?','What is «'+w[1]+'» here?','Qu’est « '+w[1]+' » ici ?'),
+  const it=choiceItem(D('Was ist «'+w[1]+'» hier?','What is «'+w[1]+'» here?','Qu’est « '+w[1]+' » ici ?'),
    N[w[2]],Object.keys(N).filter(k=>k!==w[2]).map(k=>N[k]));
+  it.satz=w[0];
   return steps(it,[D('Steht ein zweites Verb im Infinitiv daneben? Dann ist es ein Modalverb.','Is there a second verb in the infinitive? Then it is a modal.','Y a-t-il un second verbe à l’infinitif ? Alors c’est un modal.'),
    w[1]+': '+N[w[2]]]);});
 
@@ -7729,8 +7803,9 @@ detopic('de-objekt',7,2,['Transitiv, intransitiv, reflexiv','Transitive, intrans
  ['transitiv','intransitiv','reflexiv','Akkusativobjekt'],
  lv=>{const w=DEOBJ[Math.floor(Math.random()*DEOBJ.length)];
   const N={T:D('transitiv','transitive','transitif'),I:D('intransitiv','intransitive','intransitif'),R:D('reflexiv','reflexive','réfléchi')};
-  const it=choiceItem(w[0]+'\n'+D('Wie wird das Verb hier gebraucht?','How is the verb used here?','Comment le verbe est-il employé ici ?'),
+  const it=choiceItem(D('Wie wird das Verb hier gebraucht?','How is the verb used here?','Comment le verbe est-il employé ici ?'),
    N[w[1]],Object.keys(N).filter(k=>k!==w[1]).map(k=>N[k]));
+  it.satz=w[0];
   return steps(it,[D('Frage «wen oder was?». Gibt es eine Antwort im Akkusativ?','Ask «whom or what?». Is there an accusative answer?','Demande « qui ou quoi ? ». Y a-t-il un accusatif ?'),
    N[w[1]]]);});
 
@@ -7757,8 +7832,9 @@ detopic('de-tempus',7,2,['Zeitform erkennen','Name the tense','Reconnaître le t
   const bau=nimmZus?zusammen[Math.floor(Math.random()*3)]:einfach[Math.floor(Math.random()*3)];
   const f=bau(w);
   const alle=['Präsens','Präteritum','Perfekt','Plusquamperfekt','Futur I','Futur II'];
-  const it=choiceItem(f.s+'\n'+D('In welcher Zeitform steht das Verb?','Which tense is the verb in?','À quel temps est le verbe ?'),
+  const it=choiceItem(D('In welcher Zeitform steht das Verb?','Which tense is the verb in?','À quel temps est le verbe ?'),
    f.t,shuffle(alle.filter(x=>x!==f.t)).slice(0,3));
+  it.satz=f.s;
   return steps(it,[D('Steht ein zweites Verb dabei? Dann ist die Zeitform zusammengesetzt.','Is there a second verb? Then the tense is compound.','Y a-t-il un second verbe ? Alors le temps est composé.'),
    D('werden + Infinitiv ist Futur I, werden + Partizip + haben/sein ist Futur II.','werden + infinitive is future I; werden + participle + haben/sein is future II.','werden + infinitif = futur I ; werden + participe + haben/sein = futur II.'),
    f.s+' → '+f.t]);});
@@ -7776,8 +7852,9 @@ detopic('de-modus',7,2,['Modus bestimmen','Name the mood','Reconnaître le mode'
  ['Indikativ','Konjunktiv I','Konjunktiv II','Imperativ'],
  lv=>{const w=DEMOD[Math.floor(Math.random()*DEMOD.length)];
   const alle=['Indikativ','Konjunktiv I','Konjunktiv II','Imperativ'];
-  const it=choiceItem('«'+w[0]+'»\n'+D('In welchem Modus steht die Form?','Which mood is this form in?','À quel mode est cette forme ?'),
+  const it=choiceItem(D('In welchem Modus steht die Form?','Which mood is this form in?','À quel mode est cette forme ?'),
    w[1],shuffle(alle.filter(x=>x!==w[1])).slice(0,2));
+  it.satz='«'+w[0]+'»';
   return steps(it,[D('Endet die Form auf -e oder -est, obwohl man das normal nicht sagt? Dann Konjunktiv.','An unusual -e or -est ending points to the subjunctive.','Une terminaison inhabituelle indique le subjonctif.'),
    w[0]+': '+w[1]]);});
 
@@ -7796,8 +7873,9 @@ detopic('de-passiv',7,2,['Aktiv oder Passiv','Active or passive','Actif ou passi
   'À l’actif le sujet agit. Au passif, werden plus participe, avec worden au passé.'],
  ['Aktiv','Passiv','Handlungsrichtung'],
  lv=>{const w=DEPAS[Math.floor(Math.random()*DEPAS.length)];
-  const it=choiceItem(w[0]+'\n'+D('Aktiv oder Passiv?','Active or passive?','Actif ou passif ?'),
+  const it=choiceItem(D('Aktiv oder Passiv?','Active or passive?','Actif ou passif ?'),
    w[1]==='A'?'Aktiv':'Passiv',[w[1]==='A'?'Passiv':'Aktiv']);
+  it.satz=w[0];
   return steps(it,[D('Steht eine Form von werden mit einem Partizip zusammen? Dann Passiv.','A form of werden with a participle means passive.','Une forme de werden avec un participe : passif.'),
    w[0]+' → '+(w[1]==='A'?'Aktiv':'Passiv')]);});
 
@@ -7816,8 +7894,9 @@ detopic('de-teile',7,2,['Vorsilbe oder Verbzusatz','Prefix or separable part','P
  ['Vorsilbe','Verbzusatz','trennbar','untrennbar'],
  lv=>{const w=DETEI[Math.floor(Math.random()*DETEI.length)];
   const N={V:D('Vorsilbe','prefix','préfixe'),Z:D('Verbzusatz','separable part','particule')};
-  const it=choiceItem('«'+w[0]+'»\n'+D('Vorsilbe oder Verbzusatz?','Prefix or separable part?','Préfixe ou particule ?'),
+  const it=choiceItem(D('Vorsilbe oder Verbzusatz?','Prefix or separable part?','Préfixe ou particule ?'),
    N[w[1]],[N[w[1]==='V'?'Z':'V']]);
+  it.satz='«'+w[0]+'»';
   return steps(it,[D('Sag den Satz im Präsens: «Er …». Rutscht der vordere Teil ans Ende?','Say it in the present: does the front part move to the end?','Dis-le au présent : la partie avant va-t-elle à la fin ?'),
    w[0]+': '+N[w[1]]]);});
 
@@ -7883,8 +7962,8 @@ OWU.forEach(u=>{
    if(lv>=3){
     const l=owLuecke(w);
     if(l){
-     const it={type:'input',prompt:D('Setze das passende Wort ein:','Fill in the missing word:','Complète avec le mot qui manque :')+'\n'+l+'\n('+w[1]+')',
-      answer:w[0],accept:[w[0].toLowerCase()],en:true,sound:w[0],spr:'en'};
+     const it={type:'input',prompt:D('Setze das passende Wort ein:','Fill in the missing word:','Complète avec le mot qui manque :')+'\n('+w[1]+')',
+      satz:l,answer:w[0],accept:[w[0].toLowerCase()],en:true,sound:w[0],spr:'en'};
      return steps(it,[D('Das deutsche Wort steht in Klammern.','The German word is in brackets.','Le mot allemand est entre parenthèses.'),w[0]]);}
    }
    if(lv>=2){

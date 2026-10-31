@@ -78,13 +78,13 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   document.body.append(box);
   pruef('Knopf erscheint mit Vermittler',await warteAuf(()=>box.style.display===''),box.style.display);
   const knopf=box.querySelector('button');
-  pruef('Knopf heisst nach der Stimme',/Emilia/.test(knopf.textContent),knopf.textContent.trim());
+  pruef('Knopf lädt zum Sprechen ein',/mit Emilia sprechen/.test(knopf.textContent),knopf.textContent.trim());
 
   knopf.click();
   pruef('Aufnahme laeuft an',await warteAuf(()=>rufe.some(x=>x.weg==='stt')));
   const stt=rufe.find(x=>x.weg==='stt');
   pruef('Deutscher Erkennungscode',stt&&stt.code==='deu',stt&&stt.code);
-  pruef('Aufnahme haelt bis zum zweiten Druck',stt&&stt.halten===true);
+  pruef('Aufnahme endet von selbst, ohne zweiten Druck',!stt.halten,JSON.stringify(stt.halten));
   pruef('Frage geht an den Vermittler',await warteAuf(()=>rufe.some(x=>x.weg==='frage')));
   const fr=rufe.find(x=>x.weg==='frage');
   pruef('Gehoerte Frage geht mit',fr&&fr.inhalt.frage===gehoert,fr&&fr.inhalt.frage);
@@ -156,6 +156,49 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   await warte(200);
   pruef('Nach dem Ende der Runde nimmt der Knopf nichts auf',!rufe.length,JSON.stringify(rufe));
   bz.remove();
+
+  /* ---------- 9b. Die gesprochene Antwort zählt ---------- */
+  rufe=[];
+  const genommen=[];
+  const bx2=fragBox({},{},{type:'single',prompt:'p'},()=>false,
+   txt=>{genommen.push(txt);return /intransitiv/i.test(txt)?'gewaehlt':false;});
+  document.body.append(bx2);
+  await warteAuf(()=>bx2.style.display==='');
+  const kn2=bx2.querySelector('button');
+  gehoert='intransitiv';
+  kn2.click();
+  pruef('Die Antwort wird der Aufgabe angeboten',
+   await warteAuf(()=>genommen.length>0),JSON.stringify(genommen));
+  pruef('Passt sie, wird sie als Antwort genommen',
+   await warteAuf(()=>/Als Antwort genommen/.test(bx2.textContent)),bx2.textContent.slice(0,90));
+  pruef('Dann geht nichts an die Begleitung',!rufe.some(x=>x.weg==='frage'));
+
+  /* Eine echte Frage geht weiterhin an Emilia */
+  rufe=[];genommen.length=0;
+  gehoert='Wie finde ich das heraus?';
+  kn2.click();
+  pruef('Eine Frage geht an die Begleitung',
+   await warteAuf(()=>rufe.some(x=>x.weg==='frage')),JSON.stringify(rufe.map(x=>x.weg)));
+  pruef('Und wird nicht als Antwort angeboten',genommen.length===0,JSON.stringify(genommen));
+
+  /* Passt die Antwort nicht zur Auswahl, hilft Emilia */
+  rufe=[];genommen.length=0;
+  gehoert='blau';
+  kn2.click();
+  pruef('Unpassendes geht an die Begleitung',
+   await warteAuf(()=>rufe.some(x=>x.weg==='frage')),JSON.stringify(rufe.map(x=>x.weg)));
+  bx2.remove();
+
+  /* ---------- 9c. Vergleich und Frageerkennung ---------- */
+  pruef('Gross und klein egal',antwortGleich('Intransitiv','intransitiv'));
+  pruef('Satzzeichen egal',antwortGleich('intransitiv.','intransitiv'));
+  pruef('Artikel davor egal',antwortGleich('das Tagebuch','Tagebuch'));
+  pruef('Verschiedene Wörter bleiben verschieden',!antwortGleich('transitiv','intransitiv'));
+  pruef('Leeres gilt nicht',!antwortGleich('','')); 
+  pruef('Fragezeichen macht eine Frage',wirktWieFrage('Was ist das?'));
+  pruef('Fragewort macht eine Frage',wirktWieFrage('Wie fange ich an'));
+  pruef('Ein langer Satz gilt als Frage',wirktWieFrage('ich weiss wirklich nicht was ich hier machen soll'));
+  pruef('Ein Wort ist keine Frage',!wirktWieFrage('intransitiv'));
 
   /* ---------- 10. Im Fragenschirm ---------- */
   const R={id:'t',players:[TEST_PLAYER],game:MATH_GAME,mode:'learn',diff:'medium',adaptive:false,

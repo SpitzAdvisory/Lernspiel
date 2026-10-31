@@ -26,8 +26,11 @@ const hQ=pruefsumme(quelle), hW=pruefsumme(path.join(WEB,'app.html'));
 if(hQ!==hW){console.error('Kopie stimmt nicht: '+hQ+' gegen '+hW);process.exit(2);}
 
 let schlecht=0;
+/* Die Versionsnummer steht im Kopf der App und wurde schon einmal
+   vergessen - sie gehoert darum in jede Ausgabe. */
+const ver=(fs.readFileSync(quelle,'utf8').match(/const APPVER='([^']+)'/)||[])[1]||'?';
 console.log('Pruefe '+dateien.length+' Dateien gegen '+path.basename(quelle)+' ('+
- (fs.statSync(quelle).size/1024|0)+' KB, '+hQ+')\n');
+ (fs.statSync(quelle).size/1024|0)+' KB, '+hQ+', '+ver+')\n');
 for(const f of dateien){
  let ausgabe='';
  try{ausgabe=execFileSync('node',[path.join(D,f)],{encoding:'utf8',timeout:240000,cwd:D});}
