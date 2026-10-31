@@ -1402,7 +1402,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V82';
+const APPVER='V83';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -2252,6 +2252,11 @@ spiel('geister',
   const F=spielFeld(platz,{hoehe:400});
   const sicht=[150,118,92][st-1];          /* Lichtkreis: enger mit der Stufe */
   const halten=[500,700,900][st-1];        /* so lange muss das Licht bleiben */
+  /* Sichtbarkeit der Geister ausserhalb des Lichts. Zuvor fest 0.45 Deckkraft
+     unter 0.90 Schwarz - zusammen rund vier Prozent, fuer einen Siebenjaehrigen
+     auf einem hellen Zimmer-iPad zu wenig. Stufe 3 bleibt wie gehabt. */
+  const grund=[0.62,0.52,0.45][st-1];      /* Deckkraft ohne Licht */
+  const dunkel=[0.82,0.86,0.90][st-1];     /* Schwaerze am Rand */
   const bossVoll=4+st*2;
   let lx=0,ly=0,geloest=0,herz=3,naechster=0,boss=null,bossHp=0,puls=0,naechsterSchlag=0;
   let ersterDa=false;
@@ -2300,7 +2305,7 @@ spiel('geister',
     if(g.licht>=halten){geister.splice(i,1);geloest++;FX.treffer();continue;}
     if(g.y>laterne-14){geister.splice(i,1);herz--;puls=jetzt+700;FX.schreck();continue;}
     const schwanken=Math.sin(jetzt/260+g.wackel)*5;
-    c.globalAlpha=0.45+0.55*Math.min(1,g.licht/halten);
+    c.globalAlpha=grund+(1-grund)*Math.min(1,g.licht/halten);
     emoji(c,g.hetzt?'💀':'👻',g.x+schwanken,g.y,g.hetzt?40:44);
     c.globalAlpha=1;
     if(g.licht>0){
@@ -2321,7 +2326,7 @@ spiel('geister',
    const g2=c.createRadialGradient(lx,ly,0,lx,ly,sicht);
    g2.addColorStop(0,'rgba(0,0,0,0)');
    g2.addColorStop(0.55,'rgba(8,3,16,0.28)');
-   g2.addColorStop(1,'rgba(8,3,16,0.90)');
+   g2.addColorStop(1,'rgba(8,3,16,'+dunkel+')');
    c.fillStyle=g2;c.fillRect(0,0,F.w,F.h);
    /* Schreck: der Rand pocht, wenn etwas durchkommt */
    if(jetzt<puls){c.strokeStyle='rgba(228,87,46,'+(0.25+0.45*Math.random())+')';
