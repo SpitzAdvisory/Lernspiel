@@ -276,9 +276,10 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    jokes:[],jokeAt:Infinity,spielAt:Infinity};
   S.run=R9;
   const seite=()=>{const p=document.querySelector('.page');return p?p.textContent:'';};
-  const tippAufgabe=async(nr)=>{
+  const tippAufgabe=async(nr,nurTippen)=>{
    const it={type:'input',prompt:'Wie heisst der Infinitiv zu «gerufen»?',answer:'rufen',
     id:'tipp'+nr,difficulty:1,rounds:1};
+   if(nurTippen)it.tippen=true;
    const QQ=prepare(it,'medium');QQ.t0=performance.now();R9.ended=false;R9.cur=QQ;
    renderQuestion(R9,QQ);
    await warteAuf(()=>[...document.querySelectorAll('.page button')]
@@ -317,6 +318,24 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   pruef('Falsch Verstandenes wird nur eingetragen',a3.feld.value==='Ruhen',a3.feld.value);
   pruef('Falsch Verstandenes wird nicht abgeschickt',!/Richtig|Leider falsch/i.test(seite()),seite().slice(0,80));
   pruef('Dazu die Meldung «So verstanden»',/So verstanden/.test(seite()));
+
+  /* Bei einer Schreibaufgabe zaehlt das gesprochene Wort nicht:
+     dort ist die Schreibweise die Uebung. */
+  let a4=await tippAufgabe(4,true);
+  rufe=[];gehoert='rufen';
+  a4.knopf.click();
+  await warte(700);
+  pruef('Schreibaufgabe nimmt das gesprochene Wort nicht',a4.feld.value==='',a4.feld.value);
+  pruef('Schreibaufgabe schickt nichts ab',!/Richtig|Leider falsch/i.test(seite()),seite().slice(0,70));
+  pruef('Schreibaufgabe weist auf das Tippen hin',
+   /Hier bitte tippen/.test(seite()),seite().slice(0,70));
+  pruef('Schreibaufgabe fragt dafuer nicht die Begleitung',!rufe.some(x=>x.weg==='frage'));
+
+  /* Eine echte Frage geht auch dort an Emilia */
+  rufe=[];gehoert='Wie finde ich den Infinitiv?';
+  a4.knopf.click();
+  pruef('Bei Schreibaufgaben hilft Emilia weiterhin',
+   await warteAuf(()=>rufe.some(x=>x.weg==='frage'),2500),JSON.stringify(rufe.map(x=>x.weg)));
 
   /* ---------- 10. Im Fragenschirm ---------- */
   const R={id:'t',players:[TEST_PLAYER],game:MATH_GAME,mode:'learn',diff:'medium',adaptive:false,

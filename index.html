@@ -884,6 +884,9 @@ T.fr.fragAus="Terminé";
 T.de.fragAntwortGut="Als Antwort genommen.";
 T.en.fragAntwortGut="Taken as your answer.";
 T.fr.fragAntwortGut="Pris comme réponse.";
+T.de.fragNurTippen="Hier bitte tippen - die Schreibweise ist die Aufgabe.";
+T.en.fragNurTippen="Type it here - the spelling is the exercise.";
+T.fr.fragNurTippen="Ici, écris la réponse - l'orthographe est l'exercice.";
 T.de.fragEingetragen="So verstanden. Zum Abschicken auf «Prüfen» tippen.";
 T.en.fragEingetragen="Heard it like this. Tap «Check» to send it.";
 T.fr.fragEingetragen="Compris ainsi. Touche « Vérifier » pour envoyer.";
@@ -1342,7 +1345,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V77';
+const APPVER='V78';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -3277,8 +3280,8 @@ function fragBox(R,Q,it,gesperrt,antwortNehmen){
      es, wird es als Antwort genommen. Sonst geht es an die Begleitung. */
   if(antwortNehmen&&!wirktWieFrage(frage)){
    const was=antwortNehmen(frage);
-   if(was){antw.style.color='var(--green)';
-    antw.textContent=t(was==='eingetragen'?'fragEingetragen':'fragAntwortGut');
+   if(was){antw.style.color=was==='tippen'?'var(--muted)':'var(--green)';
+    antw.textContent=t(was==='tippen'?'fragNurTippen':was==='eingetragen'?'fragEingetragen':'fragAntwortGut');
     laeuft=false;return;}
   }
   antw.style.color='';
@@ -3727,6 +3730,10 @@ function renderQuestion(R,Q){
    const tr=offen.find(x=>antwortGleich(x.text,roh))||findeImSatz(roh,offen);
    if(tr){tr.b.click();return 'gewaehlt';}
    return false;}
+  /* Bei den Schreibaufgaben ist die Schreibweise selbst die Uebung.
+     Ein gesprochenes Wort nimmt sie dem Kind ab, darum zaehlt es dort
+     nicht als Antwort - fragen darf es Emilia weiterhin. */
+  if(it.tippen)return 'tippen';
   if(it.type==='input'||it.type==='num'){
    const felder=area.querySelectorAll('input.answerbox');
    const feld=felder[0];
@@ -7696,7 +7703,7 @@ detopic('de-stamm',7,1,['Stammformen schreiben','Principal parts - writing','For
  ['Stammformen','Präteritum','Partizip Perfekt'],
  lv=>{const v=dvPick();
   if(lv>=3){
-   const it={type:'input',prompt:D('Nenne Präteritum und Partizip Perfekt von «'+v[0]+'».',
+   const it={type:'input',tippen:true,prompt:D('Nenne Präteritum und Partizip Perfekt von «'+v[0]+'».',
      'Give the past tense and past participle of «'+v[0]+'».',
      'Donne le prétérit et le participe passé de « '+v[0]+' ».'),
     answer:v[1]+' – '+v[2],
@@ -7705,7 +7712,7 @@ detopic('de-stamm',7,1,['Stammformen schreiben','Principal parts - writing','For
     D('Das Partizip Perfekt beginnt meist mit ge-.','The past participle usually starts with ge-.','Le participe commence souvent par ge-.'),
     v[0]+' – '+v[1]+' – '+v[2]]);}
   const partizip=lv===2||Math.random()<.5;
-  const it={type:'input',
+  const it={type:'input',tippen:true,
    prompt:partizip?D('Wie heisst das Partizip Perfekt von «'+v[0]+'»?','What is the past participle of «'+v[0]+'»?','Quel est le participe passé de « '+v[0]+' » ?')
                   :D('Wie heisst das Präteritum von «'+v[0]+'»? (3. Person Singular)','What is the past tense of «'+v[0]+'»? (third person singular)','Quel est le prétérit de « '+v[0]+' » ? (3e pers. sing.)'),
    answer:partizip?v[2]:v[1]};
@@ -7741,7 +7748,7 @@ detopic('de-stamm-rueck',7,1,['Vom Partizip zum Infinitiv','From participle to i
  lv=>{const v=dvPick();
   const ausPart=lv===1||Math.random()<.5;
   const form=ausPart?v[2]:v[1];
-  const it={type:'input',
+  const it={type:'input',tippen:true,
    prompt:D('Wie heisst der Infinitiv zu «'+form+'»?','What is the infinitive of «'+form+'»?','Quel est l’infinitif de « '+form+' » ?'),
    answer:v[0]};
   return steps(it,[D('Der Infinitiv endet auf -en oder -n.','The infinitive ends in -en or -n.','L’infinitif se termine par -en ou -n.'),
@@ -7755,7 +7762,7 @@ detopic('de-praesens',7,1,['Präsens: die Du-Form','Present: the you-form','Pré
  ['e/i-Wechsel','Umlaut','Präsens'],
  lv=>{const v=lv===1?dvPick():dvMit(x=>/[äöü]|^[a-zäöü]*i/.test(x[3])&&x[3].indexOf(' ')<0);
   const w=v||dvPick();
-  const it={type:'input',
+  const it={type:'input',tippen:true,
    prompt:D('Setze ein: du … («'+w[0]+'»)','Fill in: you … («'+w[0]+'»)','Complète : tu … (« '+w[0]+' »)'),
    answer:w[3]};
   return steps(it,[D('Achte auf den Stammvokal - er wechselt manchmal.','Watch the stem vowel - it sometimes changes.','Attention à la voyelle du radical : elle change parfois.'),
@@ -8074,7 +8081,7 @@ owtopic('ow-zahlen',7,2,['Open World · Numbers','Open World · Numbers','Open W
     p[1],shuffle(OWZ.filter(x=>x[0]!==p[0])).slice(0,3).map(x=>x[1]));
    return steps(it,[p[0]+' = '+p[1]]);}
   const ordnung=lv===3||Math.random()<.5;
-  const it={type:'input',
+  const it={type:'input',tippen:true,
    prompt:ordnung?D('Wie heisst die Ordnungszahl zu ','What is the ordinal for ','Quel est l’ordinal de ')+p[0]+'? ('+p[3]+')'
                  :D('Schreibe die Zahl ','Write the number ','Écris le nombre ')+p[0]+D(' als Wort.',' as a word.',' en toutes lettres.'),
    answer:ordnung?p[2]:p[1],

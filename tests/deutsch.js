@@ -106,6 +106,26 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    pruef('Die richtige Form wird angenommen',inp.style.borderColor.indexOf('green')>=0||
     getComputedStyle(inp).borderColor!=='',inp.style.borderColor);
   }
+  /* Die Schreibweise ist bei diesen drei Themen die Uebung. Ihre
+     Aufgaben muessen darum gegen gesprochene Antworten gesperrt sein. */
+  const schreibThemen=['de-stamm','de-stamm-rueck','de-praesens'];
+  const wahlThemen=['de-objekt','de-tempus','de-modus','de-passiv','de-selbst'];
+  let ohneFlagge=[],falscheFlagge=[];
+  for(const id of schreibThemen){
+   const tp=mtopic(id);
+   for(let lv=1;lv<=3;lv++)for(let k=0;k<8;k++){
+    const x=genItem(tp,lv,{});
+    if(x&&x.type==='input'&&!x.tippen)ohneFlagge.push(id+' lv'+lv);}}
+  for(const id of wahlThemen){
+   const tp=mtopic(id);
+   for(let lv=1;lv<=3;lv++)for(let k=0;k<8;k++){
+    const x=genItem(tp,lv,{});
+    if(x&&x.tippen)falscheFlagge.push(id+' lv'+lv);}}
+  pruef('Alle Schreibaufgaben sind gegen Sprechen gesperrt',!ohneFlagge.length,
+   ohneFlagge.slice(0,4).join(', '));
+  pruef('Auswahlaufgaben bleiben offen fuers Sprechen',!falscheFlagge.length,
+   falscheFlagge.slice(0,4).join(', '));
+
   return aus;});
  let f=0;
  r.forEach(x=>{if(x[0]==='FAIL')f++;console.log('  '+x[0]+'  '+x[1]+(x[2]?'   '+x[2]:''));});
