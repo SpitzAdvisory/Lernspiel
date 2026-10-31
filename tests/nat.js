@@ -78,7 +78,12 @@ const namen=manifest.map(x=>x.file);
    if(!it||!it.nat||!it.sound)continue;
    const Q=prepare(it,'medium');Q.t0=performance.now();R.cur=Q;R.ended=false;renderQuestion(R,Q);
    const knoepfe=[...document.querySelectorAll('.prompt .sndb')];
-   pruef('Zwei Lautsprecher an der Frage',knoepfe.length===2,knoepfe.length);
+   /* Zwei Wortknoepfe fuer Franzoesisch und Muttersprache, dazu seit V80
+      der Knopf, der die ganze Aufgabe vorliest. */
+   const woerter=knoepfe.filter(x=>x.textContent.indexOf('\u{1F50A}')>=0);
+   const leser=knoepfe.filter(x=>x.textContent.indexOf('\u{1F508}')>=0);
+   pruef('Zwei Wortknoepfe an der Frage',woerter.length===2,woerter.length);
+   pruef('Dazu ein Knopf fuer die ganze Aufgabe',leser.length===1,leser.length);
    gezeigt=true;
   }
   pruef('Eine solche Aufgabe wurde gezeigt',gezeigt);
