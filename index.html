@@ -884,9 +884,9 @@ T.fr.fragAus="Terminé";
 T.de.fragAntwortGut="Als Antwort genommen.";
 T.en.fragAntwortGut="Taken as your answer.";
 T.fr.fragAntwortGut="Pris comme réponse.";
-T.de.fragEingetragen="Eingetragen. Jetzt auf «Prüfen» tippen.";
-T.en.fragEingetragen="Filled in. Now tap «Check».";
-T.fr.fragEingetragen="Inscrit. Touche « Vérifier ».";
+T.de.fragEingetragen="So verstanden. Zum Abschicken auf «Prüfen» tippen.";
+T.en.fragEingetragen="Heard it like this. Tap «Check» to send it.";
+T.fr.fragEingetragen="Compris ainsi. Touche « Vérifier » pour envoyer.";
 T.de.fragHoert="Ich höre zu …";
 T.en.fragHoert="Listening …";
 T.fr.fragHoert="J’écoute …";
@@ -1342,7 +1342,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V76';
+const APPVER='V77';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -2324,7 +2324,7 @@ function nextQuestion(R){
  const k=R.retry.findIndex(r=>r.due<=R.q&&(R.mode!=='duel'||r.player===pi));
  if(k>=0){const r=R.retry.splice(k,1)[0];item=r.item;retry=r.count;if(item.gen)item=genItem(mtopic(item.topic),Math.max(1,R.level-1),R.game.gen)||item;}
  else if(R.q>=R.spielAt&&SPIELE.length){R.spielAt=R.q+6+Math.floor(Math.random()*5);return spielSchirm(R);}
- else{item=pickItem(R);R.used.add(item.id);if(item.slot){const tp=mtopic(item.topic);const lv=R.adaptive?R.level:DIFF_LEVEL[R.diff];
+ else{item=pickItem(R);if(!item)return finishRun(R,true);R.used.add(item.id);if(item.slot){const tp=mtopic(item.topic);const lv=R.adaptive?R.level:DIFF_LEVEL[R.diff];
    item=genItem(tp,lv,R.game.gen);if(!item)return nextQuestion(R);
    if(R.mode==='learn'&&(!R.cards.has(tp.id)||R.q===3||R.q===7)){const first=!R.cards.has(tp.id);R.cards.add(tp.id);const it0=item;
     return viewTopicCard(tp,{lv,opts:R.game.gen,back:()=>finishRun(R,true),next:()=>{const Q=prepare(it0,R.diff);Q.t0=performance.now();renderQuestion(R,Q);},noCard:!first});}}}
@@ -3198,6 +3198,12 @@ function aufgabeText(R,Q,it){
 /* Gesprochene Antworten werden nach Woertern verglichen, nicht nach
    Zeichen: Satzzeichen, Gross- und Kleinschreibung und ein vorangestellter
    Artikel duerfen nicht ueber richtig oder falsch entscheiden. */
+/* Scribe schreibt Nebengeraeusche in Klammern: «[stöhnt]», «(laughs)»,
+   «[Musik]». Das ist keine Antwort. Ohne diese Reinigung landete ein
+   Raeuspern als Loesungswort im Feld und kostete einen Punkt. */
+function sauberGehoert(s){
+ return String(s||'').replace(/[\[\(\{][^\]\)\}]*[\]\)\}]/g,' ')
+  .replace(/\s+/g,' ').trim();}
 function wortFolge(s){
  return String(s).toLowerCase().normalize('NFC').replace(/ß/g,'ss')
   .replace(/[^a-zàâäçéèêëîïôöùûü0-9]+/g,' ').trim().split(' ').filter(Boolean);}
@@ -3264,6 +3270,7 @@ function fragBox(R,Q,it,gesperrt,antwortNehmen){
   catch(e){ fehler=(e&&e.message)||'fehler'; }
   stopper=null;if(b.setzeAn)b.setzeAn(false);
   if(fehler){laeuft=false;gehoert.textContent=hoerText(fehler);return;}
+  frage=sauberGehoert(frage);
   if(!frage){laeuft=false;gehoert.textContent=t('fragNichts');return;}
   gehoert.textContent='\u00AB\u202F'+frage+'\u202F\u00BB';
   /* Zuerst die Frage der Aufgabe: klingt es nach einer Antwort und passt
@@ -3721,14 +3728,21 @@ function renderQuestion(R,Q){
    if(tr){tr.b.click();return 'gewaehlt';}
    return false;}
   if(it.type==='input'||it.type==='num'){
-   const feld=area.querySelector('input.answerbox');
+   const felder=area.querySelectorAll('input.answerbox');
+   const feld=felder[0];
    if(!feld)return false;
    const ziele=[it.answer].concat(it.accept||[]).filter(Boolean);
    const passt=ziele.some(z=>antwortGleich(z,roh))||!!findeImSatz(roh,ziele.map(z=>({text:z})));
    const kurz=wortFolge(roh).length<=4;
    if(!passt&&!kurz)return false;
+   /* Gesprochenes kennt keine Grossschreibung. Trifft das Wort, wird die
+      Schreibweise der Aufgabe eingesetzt - sonst scheitert «Rufen» an
+      einer Regel, die nur fuer Getipptes gedacht ist. */
    feld.value=passt?String(it.answer):String(roh).trim();
    try{feld.focus({preventScroll:true});}catch(_){}
+   if(passt&&felder.length===1&&typeof S.onEnter==='function'){
+    const ab=S.onEnter;setTimeout(()=>{if(!done&&!R.ended)ab();},250);
+    return 'gewaehlt';}
    return 'eingetragen';}
   return false;};
  /* Bei 'speak' und 'handwrite' gehoert das Mikrofon schon der Aufgabe.

@@ -256,6 +256,68 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   pruef('Dabei geht nichts an Emilia',gewaehlt&&!gewaehlt.anEmilia,
    gewaehlt?JSON.stringify(gewaehlt.anEmilia):'');
 
+  /* ---------- 9e. Nebengeraeusche und getippte Antworten ---------- */
+  pruef('Klammermarke wird entfernt',sauberGehoert('[stöhnt]')==='',
+   JSON.stringify(sauberGehoert('[stöhnt]')));
+  pruef('Runde Klammer ebenso',sauberGehoert('(laughs)')==='');
+  pruef('Marke mitten im Satz faellt weg',
+   sauberGehoert('das ist [Husten] transitiv')==='das ist transitiv',
+   sauberGehoert('das ist [Husten] transitiv'));
+  pruef('Gewoehnlicher Text bleibt unberuehrt',
+   sauberGehoert('  rufen  ')==='rufen');
+
+  /* Eine echte Auswahl, damit das selbsttaetige Weitergehen nach einer
+     richtigen Antwort denselben Weg nimmt wie im Spiel. */
+  const R9={id:'t9',players:[TEST_PLAYER],game:DE_GAME,mode:'learn',diff:'medium',adaptive:false,
+   started:new Date(),pool:gameUnits(DE_GAME).map(id=>({id,topic:id,difficulty:2,slot:true})),
+   used:new Set(),answers:[],score:[0],streak:[0],best:[0],lives:3,
+   level:1,up:0,down:0,q:0,masteries:{[TEST_PLAYER.id]:{}},timer:null,ended:false,target:99,
+   retry:[],extra:0,gen:true,topics:gameUnits(DE_GAME),cards:new Set(),sub:null,wcur:{},
+   jokes:[],jokeAt:Infinity,spielAt:Infinity};
+  S.run=R9;
+  const seite=()=>{const p=document.querySelector('.page');return p?p.textContent:'';};
+  const tippAufgabe=async(nr)=>{
+   const it={type:'input',prompt:'Wie heisst der Infinitiv zu «gerufen»?',answer:'rufen',
+    id:'tipp'+nr,difficulty:1,rounds:1};
+   const QQ=prepare(it,'medium');QQ.t0=performance.now();R9.ended=false;R9.cur=QQ;
+   renderQuestion(R9,QQ);
+   await warteAuf(()=>[...document.querySelectorAll('.page button')]
+    .some(x=>/mit Emilia sprechen/.test(x.textContent)),3000);
+   return {feld:document.querySelector('input.answerbox'),
+    knopf:[...document.querySelectorAll('.page button')]
+     .find(x=>/mit Emilia sprechen/.test(x.textContent))};};
+
+  /* Gesprochenes kennt keine Grossschreibung: «Rufen» muss «rufen» treffen */
+  let a1=await tippAufgabe(1);
+  rufe=[];gehoert='Rufen';
+  a1.knopf.click();
+  const gut=await warteAuf(()=>/Richtig/i.test(seite()),2500);
+  pruef('Gross geschriebenes Gehoertes trifft die kleine Loesung',gut,seite().slice(0,80));
+  pruef('Dabei steht die Schreibweise der Aufgabe im Feld',a1.feld.value==='rufen',a1.feld.value);
+  pruef('Und nichts ging an die Begleitung',!rufe.some(x=>x.weg==='frage'));
+  /* Das selbsttaetige Weitergehen auslaufen lassen, sonst legt es sich
+     ueber die naechste Pruefaufgabe. */
+  await warte(1600);
+
+  /* Eine Klammermarke darf nie als Antwort gelten */
+  let a2=await tippAufgabe(2);
+  rufe=[];gehoert='[stöhnt]';
+  a2.knopf.click();
+  await warte(700);
+  pruef('Nebengeraeusch kommt nicht ins Feld',a2.feld.value==='',a2.feld.value);
+  pruef('Nebengeraeusch wird als nichts gehoert gemeldet',/Nichts gehört/.test(seite()));
+  pruef('Nebengeraeusch wird nicht abgeschickt',!/Richtig|Leider falsch/i.test(seite()),seite().slice(0,80));
+  pruef('Nebengeraeusch geht auch nicht an die Begleitung',!rufe.some(x=>x.weg==='frage'));
+
+  /* Falsch verstanden: eintragen ja, abschicken nein */
+  let a3=await tippAufgabe(3);
+  rufe=[];gehoert='Ruhen';
+  a3.knopf.click();
+  await warte(700);
+  pruef('Falsch Verstandenes wird nur eingetragen',a3.feld.value==='Ruhen',a3.feld.value);
+  pruef('Falsch Verstandenes wird nicht abgeschickt',!/Richtig|Leider falsch/i.test(seite()),seite().slice(0,80));
+  pruef('Dazu die Meldung «So verstanden»',/So verstanden/.test(seite()));
+
   /* ---------- 10. Im Fragenschirm ---------- */
   const R={id:'t',players:[TEST_PLAYER],game:MATH_GAME,mode:'learn',diff:'medium',adaptive:false,
    started:new Date(),pool:[],used:new Set(),answers:[],score:[0],streak:[0],best:[0],lives:3,
