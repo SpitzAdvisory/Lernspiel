@@ -2,9 +2,12 @@
 #
 # Stand in der Cloudflare-Oberflaeche, nachgesehen am 31.10.2026:
 #
-#   Secrets    ANTHROPIC_KEY, ELEVEN_KEY        bleiben bei jeder Auslieferung
-#   Bindings   keine ("No connected bindings")
-#   Variable   ElevenLabs = <Hexkette>          wird vom Worker nirgends gelesen
+#   Secrets             ANTHROPIC_KEY, ELEVEN_KEY   bleiben bei jeder Auslieferung
+#   Bindings            keine ("No connected bindings")
+#   Variable            ElevenLabs = <Hexkette>     wird vom Worker nirgends gelesen
+#   Compatibility date  2026-10-28                  unten uebernommen
+#   Compatibility flags keine
+#   Cache               Disabled
 #
 # Daraus folgt zweierlei.
 #
@@ -21,7 +24,7 @@
 
 name = "spitz-lernen"
 main = "worker.js"
-compatibility_date = "2026-10-25"
+compatibility_date = "2026-10-28"
 workers_dev = true
 
 # Noch nicht angelegt. Wird fuer die Tagesgrenze des Sprachagenten gebraucht.
