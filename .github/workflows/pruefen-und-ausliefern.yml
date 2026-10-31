@@ -4,9 +4,10 @@
 # Dieser Arbeitslauf ersetzt den Handgriff am Vermittler: das Einfuegen des
 # Worker-Quelltextes ueber die Zwischenablage in die Cloudflare-Oberflaeche.
 #
-# Ohne das Geheimnis CLOUDFLARE_API_TOKEN laeuft nur die Pruefung. Die
-# Auslieferung wird uebersprungen und meldet das auch. Nichts geht kaputt,
-# solange das Geheimnis fehlt.
+# Die Pruefung laeuft bei jedem Schub. Die Auslieferung des Vermittlers
+# laeuft NUR auf Knopfdruck (workflow_dispatch) und nur, wenn das Geheimnis
+# CLOUDFLARE_API_TOKEN hinterlegt ist. Ein gewoehnlicher Schub beruehrt die
+# laufende Anlage damit nicht.
 
 name: Pruefen und ausliefern
 
@@ -53,7 +54,13 @@ jobs:
   ausliefern:
     name: Vermittler ausliefern
     needs: pruefen
-    if: github.event_name != 'pull_request'
+    # Nur auf ausdrueckliches Ausloesen von Hand, nicht bei jedem Schub.
+    # Grund: eine Auslieferung greift in die laufende Anlage ein, die die
+    # Kinder benutzen. Solange hier workflow_dispatch steht, geschieht das
+    # nur, wenn jemand den Knopf drueckt. Auf push umzustellen ist eine
+    # Zeile - erst nach der ersten erfolgreichen Auslieferung und nur auf
+    # Ansage.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
