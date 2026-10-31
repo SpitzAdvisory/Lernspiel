@@ -17,6 +17,11 @@
   --paper:#F7F9FC; --grid:#C8D3DE; --ink:#0A2D56; --ink-soft:#DCEEEC;
   --red:#C46060; --mark:#DCEEEC; --graphite:#3F4A5C; --green:#3A8F6C;
   --muted:#6B7B8E; --white:#FFFFFF; --mint:#4FB8B0; --steel:#3D6A9A; --midnight:#051A36;
+  /* Stellenwerte. Dreierzyklus wie die Stellenwerttafel E Z H | T ZT HT:
+     der Tausender traegt die Farbe des Einers, weil er der Einer der
+     naechsten Gruppe ist. Gruen und Rot bleiben frei - sie gehoeren dem
+     Kaestchenrand fuer richtig und falsch. */
+  --einer:#4FB8B0; --zehner:#3D6A9A; --hunderter:#D99A3C;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -202,7 +207,9 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
 .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 3px;font-size:.9em}.frac span:first-child{border-bottom:2px solid currentColor;padding:0 3px}
 .keypad{display:grid;grid-template-columns:repeat(3,64px);gap:8px;margin-top:12px}.key{height:56px;min-width:56px;border:2px solid var(--ink);border-radius:12px;background:var(--white);font-size:1.4rem;font-weight:700;color:var(--ink)}
 .zgrid{display:inline-grid;gap:2px 0;margin:4px 0 0;justify-items:center;align-items:end}
+.zscroll{max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;padding-bottom:2px}
 .znach{padding-left:10px;white-space:nowrap}
+.zstelle{font:700 calc(var(--zb)*.44)/1 system-ui,sans-serif;letter-spacing:.04em;padding-bottom:3px;align-self:end}
 .zcell{display:flex;align-items:flex-end;justify-content:center}
 .zfix{font:700 calc(var(--zb)*.78)/1.1 ui-monospace,monospace,system-ui;color:var(--ink);padding:2px 0}
 /* Das Rechenzeichen steht allein und muss nicht in der Zifferbreite
@@ -1402,7 +1409,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V83';
+const APPVER='V84';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -3162,11 +3169,15 @@ const PADVIS=[280,440,620,860];
    ohnehin als Handflaeche abgewiesen. */
 function padFingerGet(){try{return localStorage.getItem('spitz.padfinger')!=='0';}catch(_){return true;}}
 function padFingerSet(v){try{localStorage.setItem('spitz.padfinger',v?'1':'0');}catch(_){}}
-const ZBOX=[64,88,112,140,176];
-function zboxGet(){try{const v=parseInt(localStorage.getItem('spitz.zbox'),10);if(ZBOX.indexOf(v)>=0)return v;}catch(_){}
- return ZBOX[2];}
+/* 46 ist nur fuer sehr breite Gitter da - die Divisionstreppe hochkant.
+   Von Hand waehlbar sind erst die Groessen darueber. */
+const ZBOX=[46,64,88,112,140,176];
+const ZBOX_VORGABE=112;          /* unveraendert, trotz der neuen Notgroesse */
+const ZBOX_WAEHLBAR=ZBOX.filter(v=>v>=64);
+function zboxGet(){try{const v=parseInt(localStorage.getItem('spitz.zbox'),10);if(ZBOX_WAEHLBAR.indexOf(v)>=0)return v;}catch(_){}
+ return ZBOX_VORGABE;}
 function zboxSet(v){try{localStorage.setItem('spitz.zbox',String(v));}catch(_){}}
-function zboxNext(v){const i=ZBOX.indexOf(v);return ZBOX[(i<0?2:i+1)%ZBOX.length];}
+function zboxNext(v){const i=ZBOX_WAEHLBAR.indexOf(v);return ZBOX_WAEHLBAR[(i<0?2:i+1)%ZBOX_WAEHLBAR.length];}
 function padTouchDa(){try{return ('ontouchstart' in window)||navigator.maxTouchPoints>0;}catch(_){return false;}}
 function padVisGet(d){try{const v=parseInt(localStorage.getItem('spitz.padvis'),10);if(PADVIS.indexOf(v)>=0)return v;}catch(_){}
  return PADVIS[1];}
@@ -3788,18 +3799,22 @@ function renderQuestion(R,Q){
    const d=Math.min(3,window.devicePixelRatio||1);
    if(z.cv.width!==Math.round(r.width*d)){z.cv.width=Math.round(r.width*d);z.cv.height=Math.round(r.height*d);}
    const c=z.cv.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,r.width,r.height);
-   if(z.ziffer!=null){c.fillStyle=INK;c.textAlign='center';c.textBaseline='middle';
+   /* Die Ziffer traegt die Farbe ihrer Stelle - getippt wie geschrieben.
+      Der Kaestchenrand bleibt davon unberuehrt; er gehoert richtig und
+      falsch. */
+   const tinte=z.farbe||INK;
+   if(z.ziffer!=null){c.fillStyle=tinte;c.textAlign='center';c.textBaseline='middle';
     c.font='700 '+Math.round(r.height*.68)+'px ui-monospace,monospace';
     c.fillText(String(z.ziffer),r.width/2,r.height/2+1);return;}
-   c.strokeStyle=INK;c.lineCap='round';c.lineJoin='round';
+   c.strokeStyle=tinte;c.lineCap='round';c.lineJoin='round';
    c.lineWidth=Math.max(2.4,r.width/(z.klein?16:20));
    for(const st of z.striche){c.beginPath();
     for(let i=0;i<st.length;i++){const p=st[i];i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]);}
     if(st.length===1)c.lineTo(st[0][0]+.1,st[0][1]);c.stroke();}};
-  const feld=(klein,soll,art,spalte)=>{
+  const feld=(klein,soll,art,spalte,farbe)=>{
    const cv=h('canvas',{class:'zcv'});
    const el=h('div',{class:'zbox'+(klein?' klein':''),tabindex:'0',role:'button'},cv);
-   const z={el,cv,klein,soll,art,spalte,striche:[],ziffer:null};
+   const z={el,cv,klein,soll,art,spalte,farbe,striche:[],ziffer:null};
    let cur=null;
    const pos=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top];};
    cv.addEventListener('pointerdown',e=>{if(done||R.ended)return;waehle(z);
@@ -3820,40 +3835,98 @@ function renderQuestion(R,Q){
    {art:'klein',z:(G.ueb||[]).map((v,i)=>G.offenUeb&&G.offenUeb[i]?v:undefined)},
    {art:'strich'},{art:'feld',erg:true,z:G.erg}];
   const mitNach=zeilen.some(r=>r.nach);
+  /* Welche Spalte traegt welchen Stellenwert? Ohne eigene Angabe gilt das
+     Uebliche: ganz rechts die Einer, nach links aufsteigend. Die Division
+     bringt eine eigene Liste mit, weil dort rechts vom Gleichheitszeichen
+     der Quotient steht - mit eigenen Stellen. */
+  const stellen=G.stellen||Array.from({length:N},(_,i)=>N-1-i);
+  const farbeVon=(i,zeile)=>stelleFarbe(zeile&&zeile.stellenZ&&zeile.stellenZ[i]!==undefined
+   ?zeile.stellenZ[i]:stellen[i]);
   const zellen=[];const leer=(r,c)=>h('div',{class:'zcell',style:'grid-row:'+r+';grid-column:'+c});
   const ergF=[];
+  /* Kopfzeile mit E, Z, H - sie benennt, was die Farben zeigen. */
+  const kopfHoch=G.kopf?1:0;
+  if(G.kopf)for(let i=0;i<N;i++){
+   const k=stellen[i];if(k==null)continue;
+   zellen.push(h('div',{class:'zcell zstelle',style:'grid-row:1;grid-column:'+(i+2)+';color:'+stelleFarbe(k)},stelleName(k)));}
   zeilen.forEach((zeile,ri)=>{
-   const r=ri+1;
+   const r=ri+1+kopfHoch;
    if(zeile.art==='strich'){
-    zellen.push(h('div',{class:'zline',style:'grid-row:'+r+';grid-column:1 / span '+(N+1)}));
+    /* Ohne Angabe ueber die ganze Breite - so rechnen Addition und
+       Multiplikation. Die Division zieht kurze Striche unter jede
+       Subtraktion; dafuer von und bis. */
+    const von=zeile.von==null?0:zeile.von, bis=zeile.bis==null?N:zeile.bis;
+    const sp=zeile.von==null?'1 / span '+(N+1):(von+2)+' / span '+(bis-von);
+    zellen.push(h('div',{class:'zline',style:'grid-row:'+r+';grid-column:'+sp}));
     return;}
    if(zeile.op)zellen.push(h('div',{class:'zcell zop',style:'grid-row:'+r+';grid-column:1'},zeile.op));
    for(let i=0;i<N;i++){
     const v=zeile.z?zeile.z[i]:undefined;
+    /* fix[i] gesetzt: diese eine Spalte steht fest, unabhaengig von der
+       Art der Zeile. So traegt eine Zeile zugleich feste Zeichen und
+       Kaestchen. */
+    if(zeile.fix&&zeile.fix[i]!=null&&zeile.fix[i]!==''){
+     const t=String(zeile.fix[i]);
+     const f=/^[0-9]$/.test(t)?farbeVon(i,zeile):INK;
+     zellen.push(h('div',{class:'zcell zfix',style:'grid-row:'+r+';grid-column:'+(i+2)+';color:'+f},t));
+     continue;}
     if(zeile.art==='fest'){
-     zellen.push(h('div',{class:'zcell zfix',style:'grid-row:'+r+';grid-column:'+(i+2)},
-      v==null?'':String(v)));continue;}
+     const txt=v==null?'':String(v);
+     /* Rechenzeichen behalten die Schriftfarbe, Ziffern bekommen ihre Stelle. */
+     const f=/^[0-9]$/.test(txt)?farbeVon(i,zeile):INK;
+     zellen.push(h('div',{class:'zcell zfix',style:'grid-row:'+r+';grid-column:'+(i+2)+';color:'+f},
+      txt));continue;}
     /* undefined heisst: hier steht nichts. null in einer Kaestchenzeile
        heisst: ein Kaestchen, das leer bleiben muss - beim Uebertrag ist
        genau das die Aufgabe. */
     if(v===undefined){zellen.push(leer(r,i+2));continue;}
     if(zeile.art==='feld'&&v===null){if(zeile.erg)ergF.push(null);zellen.push(leer(r,i+2));continue;}
-    const z=feld(zeile.art==='klein',v,zeile.art==='klein'?'ueb':'erg',i);
+    const z=feld(zeile.art==='klein',v,zeile.art==='klein'?'ueb':'erg',i,farbeVon(i,zeile));
     if(zeile.erg)ergF.push(z);
     zellen.push(h('div',{class:'zcell',style:'grid-row:'+r+';grid-column:'+(i+2)},z.el));}
    if(zeile.nach)zellen.push(h('div',{class:'zcell zfix znach',
-    style:'grid-row:'+r+';grid-column:'+(N+2)},zeile.nach));});
+    style:'grid-row:'+r+';grid-column:'+(N+2)+';color:'+INK},zeile.nach));});
   let zb=zboxGet();
   /* Mehr Zeilen und Spalten brauchen kleinere Kaestchen - sonst steht die
      Rechnung halb ausserhalb der Karte. */
-  const eng=Math.max(0,(N-4))+Math.max(0,(zeilen.length-5));
+  const schmalN=(G.schmal||[]).length;
+  const eng=Math.max(0,(N-schmalN/2-4))+Math.max(0,(zeilen.length+kopfHoch-5));
   for(let k=0;k<eng;k++){const i=ZBOX.indexOf(zb);if(i>0)zb=ZBOX[i-1];}
   const gitterEl=h('div',{class:'zgrid'},zellen);
+  const gitterRahmen=h('div',{class:'zscroll'},gitterEl);
   const stelleGroesse=()=>{
    gitterEl.style.setProperty('--zb',zb+'px');
-   gitterEl.style.gridTemplateColumns='auto repeat('+N+','+(zb+10)+'px)'+(mitNach?' auto':'');
+   /* Doppelpunkt, Gleichheitszeichen, das R und die Rinne fuer das
+      Minuszeichen brauchen keine Kaestchenbreite. Ohne diese Verschmaelerung
+      ist die Divisionstreppe breiter als ein iPad quer. */
+   const schmal=G.schmal||[];
+   const breiten=[];
+   for(let i=0;i<N;i++)breiten.push((schmal.indexOf(i)>=0?Math.round(zb*0.56):zb+10)+'px');
+   gitterEl.style.gridTemplateColumns='auto '+breiten.join(' ')+(mitNach?' auto':'');
    felder.forEach(z=>{z.cv.width=0;setTimeout(()=>malen(z),0);});};
   stelleGroesse();
+  /* Die Schaetzung oben kennt die Karte nicht und faellt bei der
+     Divisionstreppe auf die kleinste Stufe zurueck, auch wo reichlich Platz
+     ist. Sobald das Gitter im Dokument haengt, wird darum wirklich gemessen:
+     erst so weit vergroessern wie es passt, sonst verkleinern bis es passt. */
+  const passt=()=>{
+   const el=gitterRahmen.parentElement;
+   const platz=el?el.clientWidth:0;
+   if(!platz)return null;                       /* noch nicht messbar */
+   return gitterEl.scrollWidth<=platz;};
+  const einpassen=()=>{
+   let p=passt();
+   if(p===null)return;
+   const hoechstens=zboxGet();                  /* nie groesser als gewaehlt */
+   for(let k=0;k<ZBOX.length;k++){
+    p=passt();
+    if(p===false){const i=ZBOX.indexOf(zb);if(i<=0)break;zb=ZBOX[i-1];stelleGroesse();continue;}
+    const i=ZBOX.indexOf(zb);
+    if(i<0||i+1>=ZBOX.length||ZBOX[i+1]>hoechstens)break;
+    const alt=zb;zb=ZBOX[i+1];stelleGroesse();
+    if(passt()===false){zb=alt;stelleGroesse();break;}
+   }};
+  requestAnimationFrame(einpassen);
   const status=h('p',{class:'small muted',style:'margin:8px 0 0;min-height:1.3em','aria-live':'polite'});
   const tasten=h('div',{class:'keypad'},
    ['7','8','9','4','5','6','1','2','3'].map(k=>h('button',{class:'key',type:'button',onclick:()=>{
@@ -3910,7 +3983,7 @@ function renderQuestion(R,Q){
   pruefB.addEventListener('click',go);
   area.append(h('div',{class:'row',style:'gap:10px;align-items:center;margin:0 0 6px'},
     h('span',{class:'small muted'},t('stellenHinweis')),groesseB),
-   gitterEl,status,tasten,h('div',{style:'margin-top:14px'},pruefB));
+   gitterRahmen,status,tasten,h('div',{style:'margin-top:14px'},pruefB));
   S.onEnter=go;
  }else if(it.type==='numline'){let nl;
   /* Bei gerastetem Strahl landet jeder Tipp auf einem Rasterpunkt. Eine
@@ -4455,6 +4528,13 @@ function sameNum(a,b){return a&&b&&Math.abs(a.re-b.re)<1e-9&&Math.abs(a.im-b.im)
 function svgBox(w,hh,cls){return sv('svg',{viewBox:`0 0 ${w} ${hh}`,class:'mfig'+(cls?' '+cls:''),role:'img',style:`max-width:${Math.round(Math.min(520,w*1.25))}px`});}
 function stx(x,y,s,a){const e=sv('text',Object.assign({x,y,'text-anchor':'middle','font-size':16,fill:'#2F3437','font-family':'inherit'},a||{}));e.textContent=s;return e;}
 const INK='#0A2D56',RED='#C46060',GRN='#3A8F6C',MARK='#DCEEEC',GRID='#DDE5EE';
+/* Stellenfarben, zyklisch ueber drei. stelleFarbe(k) nimmt den Stellenindex
+   von rechts: 0 = Einer, 1 = Zehner, 2 = Hunderter, 3 = Tausender (wieder
+   wie Einer). null heisst: diese Spalte traegt keinen Stellenwert. */
+const STELLENFARBE=['#4FB8B0','#3D6A9A','#D99A3C'];
+const STELLENNAME=['E','Z','H','T','ZT','HT','M','ZM','HM'];
+function stelleFarbe(k){return k==null?INK:STELLENFARBE[k%3];}
+function stelleName(k){return k==null?'':(STELLENNAME[k]||'');}
 function figDots(n,scatter){const s=svgBox(420,scatter?180:110);
  if(scatter){const pts=[];let g=0;while(pts.length<n&&g++<4000){const x=ri(20,400),y=ri(20,160);if(pts.every(p=>Math.hypot(p[0]-x,p[1]-y)>30))pts.push([x,y]);}
   pts.forEach(p=>s.append(sv('circle',{cx:p[0],cy:p[1],r:11,fill:RED})));return s;}
@@ -4562,86 +4642,176 @@ function stellenGitter(a,b,op){
   ]};
 }
 
-/* Schriftliche Multiplikation.
-   Einstelliger Faktor: eine Ergebniszeile mit Uebertragskaestchen - der
-   Uebertrag kann hier groesser als eins sein.
-   Zweistelliger Faktor: zwei Teilprodukte und darunter die Summe. Die
-   Uebertraege bleiben dort weg, sonst wird das Blatt unleserlich; dafuer
-   gibt es den Schreibblock daneben. */
+/* Schriftliche Multiplikation in der Schreibweise der Schweizer
+   Primarschule. Zwei Regeln vom Blatt bestimmen die Anordnung:
+
+   - Bei einem zweistelligen Faktor wird ZUERST mit den Zehnern gerechnet,
+     dann mit den Einern. Jedes Teilresultat beginnt eine Spalte weiter
+     rechts.
+   - Die letzte Ziffer eines Teilresultats steht immer unter der Ziffer,
+     mit der man gerade malrechnet.
+
+   Daraus folgt die Spalteneinteilung: der zweite Faktor steht ganz rechts,
+   das Resultat richtet sich an seiner Einerstelle aus. Der erste Faktor
+   steht links davon und ist darum NICHT stellengleich mit dem Resultat -
+   seine Ziffern tragen ihre Farbe aus der eigenen Zahl, nicht aus der
+   Spalte. Dafuer gibt es stellenZ.
+
+   Die Uebertraege stehen in einer kleinen Zeile ueber dem Teilresultat,
+   jeweils in der Spalte, in der sie dazugezaehlt werden.                 */
+function malUebertraege(a,d,N,endSp){
+ /* Uebertraege beim Malnehmen von a mit der einzelnen Ziffer d.
+    Der Uebertrag steht in der Spalte, in der er addiert wird. */
+ const sa=String(a), ueb=new Array(N).fill(undefined);
+ let trag=0;
+ for(let k=sa.length-1;k>=0;k--){
+  const prod=(+sa[k])*d+trag;
+  trag=Math.floor(prod/10);
+  const spalte=endSp-(sa.length-1-k);
+  if(trag&&k>0)ueb[spalte-1]=trag;
+ }
+ return ueb;
+}
 function malGitter(a,b){
  const res=a*b;
- const sb=String(b);
- if(sb.length===1){
-  const breite=String(res).length;
-  const da=zifferFeld(a,breite), db=zifferFeld(b,breite);
-  const ueb=new Array(breite).fill(null);
-  const za=zifferFeld(a,breite);
-  let trag=0;
-  for(let i=breite-1;i>=0;i--){
-   const d=za[i]||0;
-   const p=d*b+trag;
-   trag=Math.floor(p/10);
-   if(trag&&i>0)ueb[i-1]=trag;
+ const sa=String(a), L=sa.length;
+ const sb=String(b), M=sb.length;
+ const sr=String(res), P=sr.length;
+ /* Keine leere Spalte links: der erste Faktor steht am Rand. */
+ const N=Math.max(L+M+1,P);
+ const spEins=N-1;                 /* Einerspalte: unter der letzten Ziffer von b */
+ const spMalZ=N-M-1;               /* das Malzeichen */
+ const spAEnd=spMalZ-1;            /* letzte Ziffer des ersten Faktors */
+
+ const leerZ=()=>new Array(N).fill(undefined);
+ const schreib=(z,text,endSp)=>{const t=String(text);
+  for(let i=0;i<t.length;i++)z[endSp-t.length+1+i]=+t[i];return z;};
+
+ /* Spaltenstellen: rechts die Einer, nach links aufsteigend. Die Spalten
+    links des Malzeichens tragen keinen Stellenwert der Rechnung. */
+ const stellen=new Array(N).fill(null);
+ for(let i=0;i<N;i++){const k=spEins-i;if(k>=0&&i>spAEnd-L)stellen[i]=k;}
+ for(let i=0;i<=spAEnd;i++)stellen[i]=null;
+ for(let i=spMalZ+1;i<=spEins;i++)stellen[i]=spEins-i;
+ for(let i=N-P;i<=spEins;i++)stellen[i]=spEins-i;
+
+ /* Kopfzeile: erster Faktor, Malzeichen, zweiter Faktor - alles fest.
+    Der erste Faktor bekommt seine Stellen aus der eigenen Zahl. */
+ const kopf=schreib(leerZ(),sa,spAEnd);
+ kopf[spMalZ]='·';
+ for(let i=0;i<M;i++)kopf[spMalZ+1+i]=+sb[i];
+ const stellenZ=new Array(N).fill(undefined);
+ for(let i=0;i<L;i++)stellenZ[spAEnd-L+1+i]=L-1-i;
+
+  const zeilen=[{art:'fest',z:kopf,stellenZ}];
+ const erg=schreib(leerZ(),sr,spEins);
+
+ if(M===1){
+  zeilen.push({art:'klein',z:malUebertraege(a,+sb[0],N,spEins)});
+  zeilen.push({art:'strich'});
+  zeilen.push({art:'feld',erg:true,z:erg});
+ }else{
+  /* Zehner zuerst, dann Einer - jedes Teilresultat endet unter der Ziffer,
+     mit der gerechnet wird. */
+  const teil=[];
+  for(let i=0;i<M;i++){
+   const d=+sb[i], endSp=spMalZ+1+i, wert=a*d;
+   teil.push(wert);
+   zeilen.push({art:'klein',z:malUebertraege(a,d,N,endSp)});
+   zeilen.push({art:'feld',z:schreib(leerZ(),wert,endSp)});
   }
-  const offenUeb=ueb.map((v,i)=>i<breite-1&&v!=null);
-  const erg=zifferFeld(res,breite);
-  return{op:'·',a,b,res,breite,da,db,erg,ueb,
-   offenErg:erg.map(d=>d!==null),offenUeb,
-   zeilen:[
-    {art:'fest',z:da},
-    {art:'fest',op:'·',z:db},
-    {art:'klein',z:ueb.map((v,i)=>offenUeb[i]?v:undefined)},
-    {art:'strich'},
-    {art:'feld',erg:true,z:erg}
-   ]};
+  zeilen.push({art:'strich'});
+  zeilen.push({art:'feld',erg:true,z:erg});
+  var teilErg=teil;
  }
- /* zweistelliger Faktor */
- const einer=+sb[1], zehner=+sb[0];
- const t1=a*einer, t2=a*zehner;          /* t2 steht um eine Stelle versetzt */
- const breite=Math.max(String(res).length,String(t1).length,String(t2).length+1);
- const da=zifferFeld(a,breite), db=zifferFeld(b,breite);
- const z1=zifferFeld(t1,breite);
- const z2r=zifferFeld(t2,breite-1);      /* um eins nach links geschoben */
- const z2=z2r.concat([null]);
- const erg=zifferFeld(res,breite);
- return{op:'·',a,b,res,breite,da,db,erg,teil:[t1,t2],
-  offenErg:erg.map(d=>d!==null),offenUeb:new Array(breite).fill(false),ueb:new Array(breite).fill(null),
-  zeilen:[
-   {art:'fest',z:da},
-   {art:'fest',op:'·',z:db},
-   {art:'strich'},
-   {art:'feld',z:z1},
-   {art:'feld',z:z2},
-   {art:'strich'},
-   {art:'feld',erg:true,z:erg}
-  ]};
+
+ const offenErg=erg.map(d=>typeof d==='number');
+ return{op:'·',a,b,res,breite:N,stellen,kopf:false,
+  schmal:[spMalZ],
+  da:kopf,db:zifferFeld(b,N),erg:erg.map(v=>typeof v==='number'?v:null),
+  ueb:new Array(N).fill(null),offenErg,offenUeb:new Array(N).fill(false),
+  teil:typeof teilErg==='undefined'?null:teilErg,
+  zeilen};
 }
 
-/* Schriftliche Division mit einstelligem Teiler, in der Schreibweise mit
-   mitgefuehrtem Rest: ueber jeder Stelle steht der Rest, der aus der
-   vorherigen uebrig blieb. */
+/* Schriftliche Division in der Schreibweise der Schweizer Primarschule:
+   Dividend, Doppelpunkt, Divisor, Gleichheitszeichen und Quotient stehen in
+   einer Zeile. Darunter die Subtraktionstreppe - je Stufe das Produkt, ein
+   kurzer Strich, dann der Rest und die heruntergeholte Ziffer.
+
+   Vier Dinge je Runde, wie auf dem Blatt: teilen, malrechnen, subtrahieren,
+   herunterholen.
+
+   Spalten:  0            Platz fuer das Minuszeichen
+             1 .. L       Dividend
+             L+1          :
+             L+2 .. +M    Divisor
+             L+M+2        =
+             danach       Quotient, bei Rest zusaetzlich R und der Rest     */
 function geteiltGitter(a,b){
- const sa=String(a), breite=sa.length;
- const da=zifferFeld(a,breite);
- const rest=new Array(breite).fill(null);
- let r=0;
- for(let i=0;i<breite;i++){
-  const wert=r*10+(da[i]||0);
-  r=wert%b;
-  if(i+1<breite)rest[i+1]=r;         /* Rest steht ueber der naechsten Stelle */
- }
+ const sa=String(a), L=sa.length;
+ const sb=String(b), M=sb.length;
  const res=Math.floor(a/b), schluss=a%b;
- const ergF=zifferFeld(res,breite);
- const offenRest=rest.map(v=>v!=null);
- return{op:':',a,b,res,schluss,breite,da,db:zifferFeld(b,breite),erg:ergF,ueb:rest,
-  offenErg:ergF.map(d=>d!==null),offenUeb:offenRest,
-  zeilen:[
-   {art:'klein',z:rest.map(v=>v==null?undefined:v)},
-   {art:'fest',z:da,nach:' : '+b+' ='},
-   {art:'strich'},
-   {art:'feld',erg:true,z:ergF}
-  ]};
+ const sq=String(res), Q=sq.length;
+ const sr=String(schluss), Rl=schluss>0?1+sr.length:0;
+ const spDoppel=L+1, spDiv=L+2, spGleich=L+M+2, spQuo=spGleich+1, spR=spQuo+Q;
+ const N=spQuo+Q+Rl;
+
+ const stellen=new Array(N).fill(null);
+ for(let i=0;i<L;i++)stellen[1+i]=L-1-i;
+ for(let j=0;j<Q;j++)stellen[spQuo+j]=Q-1-j;
+
+ const leerZ=()=>new Array(N).fill(undefined);
+ const schreib=(z,text,endSpalte)=>{const t=String(text);
+  for(let i=0;i<t.length;i++)z[endSpalte-t.length+1+i]=+t[i];return z;};
+
+ /* Kopfzeile: Dividend, Doppelpunkt, Divisor und Gleichheitszeichen stehen
+    fest; der Quotient dahinter sind Kaestchen. Beides in derselben Zeile,
+    genau wie auf dem Blatt. */
+ const fest=leerZ();
+ for(let i=0;i<L;i++)fest[1+i]=+sa[i];
+ fest[spDoppel]=':';
+ for(let i=0;i<M;i++)fest[spDiv+i]=+sb[i];
+ fest[spGleich]='=';
+ if(schluss>0)fest[spR]='R';
+ const quo=leerZ();
+ for(let j=0;j<Q;j++)quo[spQuo+j]=+sq[j];
+ if(schluss>0)for(let i=0;i<sr.length;i++)quo[spR+1+i]=+sr[i];
+
+ const zeilen=[{art:'feld',erg:true,z:quo,fix:fest}];
+
+ /* Die Treppe: je Stufe teilen, malrechnen, subtrahieren, herunterholen. */
+ const zwischen=[], teilErg=[];
+ let rest=0, gestartet=false, ersteGruppe=null, ersteSpalte=null;
+ for(let i=0;i<L;i++){
+  const wert=rest*10+(+sa[i]);
+  /* Passt der Teiler noch nicht hinein, nimmt man eine Ziffer mehr dazu -
+     so wie auf dem Blatt. Eine Stufe mit dem Ergebnis 0 gaebe es dort nie,
+     und im Quotienten stuende eine fuehrende Null. */
+  if(!gestartet&&wert<b&&i<L-1){rest=wert;continue;}
+  if(!gestartet){gestartet=true;ersteGruppe=wert;ersteSpalte=1+i;}
+  const q=Math.floor(wert/b), prod=q*b;
+  const endSp=1+i, sp=String(prod), vonSp=endSp-sp.length+1;
+  const minus=leerZ(); minus[vonSp-1]='−';
+  zeilen.push({art:'feld',z:schreib(leerZ(),sp,endSp),fix:minus});
+  zeilen.push({art:'strich',von:vonSp,bis:endSp+1});
+  rest=wert-prod;
+  teilErg.push(q); if(i<L-1)zwischen.push(rest);
+  const zr=schreib(leerZ(),String(rest),endSp);
+  if(i<L-1)zr[endSp+1]=+sa[i+1];        /* die naechste Ziffer herunterholen */
+  zeilen.push({art:'feld',z:zr});
+ }
+
+ const schmal=[0,spDoppel,spGleich];
+ if(schluss>0)schmal.push(spR);
+ const ergF=quo.map(v=>typeof v==='number'?v:null);
+ return{op:':',a,b,res,schluss,breite:N,stellen,kopf:true,schmal,zwischen,teilErg,
+  ersteGruppe,ersteSpalte,
+  da:fest,db:zifferFeld(b,N),erg:ergF,ueb:new Array(N).fill(null),
+  offenErg:ergF.map(d=>d!==null),offenUeb:new Array(N).fill(false),
+  zeilen};
 }
+
 /* ---------- item helpers ---------- */
 function numItem(prompt,val,o){o=o||{};const ans=typeof val==='object'?val:{re:val,im:0};
  return Object.assign({type:'num',prompt,ans,answer:o.answer||fmtN(ans.re),keys:o.keys||''},o);}
@@ -4871,9 +5041,9 @@ topic('m3-stellen',3,1,['Schriftlich rechnen mit Kästchen','Column arithmetic w
    X('Dann die nächste Spalte, immer von rechts nach links.','Then the next column, always right to left.','Puis la colonne suivante, toujours de droite à gauche.'),
    a+' '+g.op+' '+b+' = '+g.res]);});
 topic('m4-malschriftlich',4,1,['Schriftlich malnehmen','Column multiplication','Multiplication posée'],
- ['Ziffer für Ziffer von rechts nach links. Was über neun hinausgeht, kommt als Übertrag ins kleine Kästchen links daneben - hier kann dort auch eine 2 oder eine 4 stehen, nicht nur eine 1. Bei einem zweistelligen Faktor rechnest du zweimal und zählst die beiden Zeilen zusammen; die zweite Zeile beginnt eine Stelle weiter links.',
-  'Digit by digit, right to left. Anything above nine becomes a carry in the small box to its left - here it can be a 2 or a 4, not only a 1. With a two-digit factor you work twice and add the two rows; the second row starts one place further left.',
-  'Chiffre par chiffre, de droite à gauche. Ce qui dépasse neuf devient une retenue dans la petite case à gauche : ici ce peut être 2 ou 4, pas seulement 1. Avec un facteur à deux chiffres, tu calcules deux fois et tu additionnes les deux lignes ; la seconde commence une place plus à gauche.'],
+ ['Ziffer für Ziffer von rechts nach links. Was über neun hinausgeht, kommt als Übertrag ins kleine Kästchen - und zwar in die Spalte, in der er dazugezählt wird; dort kann auch eine 2 oder eine 4 stehen, nicht nur eine 1. Bei einem zweistelligen Faktor rechnest du zuerst mit den Zehnern, dann mit den Einern. Die letzte Ziffer eines Teilresultats steht immer unter der Ziffer, mit der du gerade malrechnest. Am Schluss zählst du die beiden Zeilen zusammen.',
+  'Digit by digit, right to left. Anything above nine becomes a carry in the small box, in the column where it will be added; it can be a 2 or a 4, not only a 1. With a two-digit factor you work with the tens first, then the ones. The last digit of a partial result always sits under the digit you are multiplying with. Finally you add the two rows.',
+  'Chiffre par chiffre, de droite à gauche. Ce qui dépasse neuf devient une retenue dans la petite case, dans la colonne où elle sera ajoutée ; ce peut être 2 ou 4, pas seulement 1. Avec un facteur à deux chiffres, tu calcules d’abord avec les dizaines, puis avec les unités. Le dernier chiffre d’un résultat partiel se place toujours sous le chiffre avec lequel tu multiplies. Enfin, tu additionnes les deux lignes.'],
  ['product','factor','carry'],
  lv=>{
   let a,b;
@@ -4889,16 +5059,19 @@ topic('m4-malschriftlich',4,1,['Schriftlich malnehmen','Column multiplication','
    X('Schreibe die letzte Ziffer hin, den Rest als Übertrag ins kleine Kästchen links daneben.','Write the last digit down and the rest as a carry in the small box to its left.','Écris le dernier chiffre et le reste comme retenue dans la petite case à gauche.'),
    X('Dann die nächste Stelle - und den Übertrag nicht vergessen.','Then the next place - and do not forget the carry.','Puis la place suivante, sans oublier la retenue.'),
    a+' · '+b+' = '+g.res]);
+  const zehner=Math.floor(b/10), einer=b%10;
   return steps(it,[
-   X('Rechne zuerst ','First work out ','Calcule d’abord ')+a+' · '+(b%10)+' = '+(a*(b%10))+'.',
-   X('Dann ','Then ','Puis ')+a+' · '+Math.floor(b/10)+' = '+(a*Math.floor(b/10))+X(' - eine Stelle weiter links hinschreiben.',' - write it one place further left.',' - écris-le une place plus à gauche.'),
+   X('Zuerst die Zehner: ','First the tens: ','D’abord les dizaines : ')+a+' · '+zehner+' = '+(a*zehner)+
+    X('. Die letzte Ziffer kommt unter die ','. The last digit goes under the ','. Le dernier chiffre va sous le ')+zehner+'.',
+   X('Dann die Einer: ','Then the ones: ','Puis les unités : ')+a+' · '+einer+' = '+(a*einer)+
+    X('. Diese Zeile endet eine Spalte weiter rechts, unter der ','. This row ends one column further right, under the ','. Cette ligne finit une colonne plus à droite, sous le ')+einer+'.',
    X('Zum Schluss die beiden Zeilen zusammenzählen.','Finally add the two rows.','Enfin, additionne les deux lignes.'),
    a+' · '+b+' = '+g.res]);});
 
 topic('m4-geteiltschriftlich',4,1,['Schriftlich teilen','Column division','Division posée'],
- ['Von links nach rechts. Du teilst die erste Ziffer, schreibst das Ergebnis hin und trägst den Rest klein über die nächste Ziffer. Dann nimmst du Rest und nächste Ziffer zusammen und teilst wieder.',
-  'Left to right. Divide the first digit, write the answer, and carry the remainder in small above the next digit. Then take remainder and next digit together and divide again.',
-  'De gauche à droite. Tu divises le premier chiffre, tu écris le résultat et tu notes le reste en petit au-dessus du chiffre suivant. Puis tu prends le reste et le chiffre suivant ensemble et tu divises de nouveau.'],
+ ['Von links nach rechts, immer Ziffer für Ziffer. In jeder Runde machst du dieselben vier Dinge: teilen - wie oft passt der Teiler hinein? Malrechnen - Ergebnis mal Teiler. Subtrahieren - abziehen. Herunterholen - die nächste Ziffer nach unten holen. Dann beginnt alles wieder von vorne. Was übrig bleibt, muss immer kleiner sein als der Teiler.',
+  'Left to right, digit by digit. Each round you do the same four things: divide - how often does the divisor fit? Multiply - result times divisor. Subtract. Bring down the next digit. Then it starts again. What is left over must always be smaller than the divisor.',
+  'De gauche à droite, chiffre par chiffre. À chaque tour, les mêmes quatre gestes : diviser - combien de fois le diviseur entre-t-il ? Multiplier - résultat fois diviseur. Soustraire. Abaisser le chiffre suivant. Puis on recommence. Le reste doit toujours être plus petit que le diviseur.'],
  ['quotient','divisor','remainder'],
  lv=>{
   const stellen=lv===1?2:lv===2?3:4;
@@ -4910,17 +5083,35 @@ topic('m4-geteiltschriftlich',4,1,['Schriftlich teilen','Column division','Divis
    a=q*b;
    if(String(a).length!==stellen)continue;
    g=geteiltGitter(a,b);
-   /* Ohne mitgefuehrten Rest ist nichts zu ueben. */
-   if(lv===1||g.ueb.some(x=>x))break;}
+   /* Geht jede Stufe glatt auf, ist nichts zu ueben: es braucht mindestens
+      einen Zwischenrest, der heruntergeholt werden muss. */
+   if(lv===1||g.zwischen.some(x=>x>0))break;}
   const it={type:'stellen',gitter:g,answer:String(g.res),
    prompt:X('Rechne schriftlich. Fülle die Kästchen.','Work it out in columns. Fill in the boxes.','Pose le calcul. Remplis les cases.')};
-  const d1=+String(a)[0];
+  /* Die Schritte fuehren eine Runde vollstaendig vor - teilen, malrechnen,
+     subtrahieren, herunterholen - und zwar an der ersten Stufe, die wirklich
+     einen Rest hinterlaesst. Daran haengt das Verfahren. */
+  const sa=String(a);
+  /* Nicht die erste Ziffer, sondern die erste Gruppe, in die der Teiler
+     wirklich hineinpasst - bei 32 : 8 ist das die 32, nicht die 3. */
+  const d1=g.ersteGruppe, q1=Math.floor(d1/b), p1=q1*b, r1=d1-p1;
+  const naechsteSp=g.ersteSpalte;            /* 1-basiert ueber dem Dividenden */
+  const zweiteZiffer=naechsteSp<sa.length?+sa[naechsteSp]:null;
+  const w2=r1*10+(zweiteZiffer==null?0:zweiteZiffer), q2=Math.floor(w2/b);
   return steps(it,[
-   X('Beginne links: ','Start on the left: ','Commence à gauche : ')+d1+' : '+b+' = '+Math.floor(d1/b)+
-    (d1%b?X(', Rest ',', remainder ',', reste ')+(d1%b):''),
-   X('Den Rest klein über die nächste Ziffer schreiben.','Write the remainder in small above the next digit.','Écris le reste en petit au-dessus du chiffre suivant.'),
-   X('Dann Rest und nächste Ziffer zusammen teilen.','Then divide remainder and next digit together.','Puis divise le reste et le chiffre suivant ensemble.'),
-   a+' : '+b+' = '+g.res]);});
+   (d1>+sa[0]?X('Die ','The ','Le ')+sa[0]+X(' ist zu klein für die ',' is too small for ',' est trop petit pour le ')+b+
+     X(' - nimm zwei Ziffern zusammen: ',' - take two digits together: ',' : prends deux chiffres ensemble : ')+d1+'. ':'')+
+   X('Teilen: wie oft passt die ','Divide: how often does ','Diviser : combien de fois le ')+b+
+    X(' in die ',' fit into ',' entre-t-il dans le ')+d1+'? '+q1+X('-mal. Die ','. Write ','. Écris ')+q1+
+    X(' kommt ins Resultat.',' in the result.',' dans le résultat.'),
+   X('Malrechnen und subtrahieren: ','Multiply and subtract: ','Multiplier et soustraire : ')+q1+' · '+b+' = '+p1+
+    ', '+d1+' − '+p1+' = '+r1+'.',
+   zweiteZiffer==null?null
+    :X('Herunterholen: die ','Bring down: the ','Abaisser : le ')+zweiteZiffer+
+      X(' nach unten holen, das gibt ',' comes down, that makes ',' descend, cela donne ')+w2+
+      X('. Dann wieder von vorne: ','. Then start again: ','. Puis on recommence : ')+w2+' : '+b+' = '+q2+'.',
+   X('Was übrig bleibt, muss kleiner sein als ','What is left must be smaller than ','Le reste doit être plus petit que ')+b+'.',
+   a+' : '+b+' = '+g.res+(g.schluss?X(' Rest ',' remainder ',' reste ')+g.schluss:'')]);});
 
 topic('m3-mult',3,1,['Multiplizieren','Multiplying','Multiplier'],
  ['Mit Zehnerzahlen rechnest du wie im Einmaleins und hängst eine 0 an: 4 · 30 = 4 · 3 · 10 = 120.','With tens you use the times table and add a 0: 4 · 30 = 4 · 3 · 10 = 120.','Avec des dizaines, utilise les tables et ajoute un 0 : 4 · 30 = 4 · 3 · 10 = 120.'],['product','factor'],
@@ -5043,8 +5234,22 @@ function genArith(lv,o){const sets=(o.sets&&o.sets.length?o.sets:['nat']);const 
 const GSM=[["Marin and his neighbour Nancy each eat 4 apples a day. How many apples do they eat together in 30 days?", "Marin und seine Nachbarin Nancy essen jeden Tag je 4 Äpfel. Wie viele Äpfel essen die beiden zusammen in 30 Tagen?", "Marin et sa voisine Nancy mangent chacun 4 pommes par jour. Combien de pommes mangent-ils ensemble en 30 jours ?", ["4+4", "30*8"], [8, 240], 240], ["A pet shop had 6 cages of rodents. 3 of the cages have 10 hamsters each and the other 3 have 5 guinea pigs each. How many rodents did the pet shop have in total?", "Eine Tierhandlung hat 6 Käfige mit Nagetieren. In 3 Käfigen sind je 10 Hamster, in den anderen 3 je 5 Meerschweinchen. Wie viele Nagetiere sind es insgesamt?", "Une animalerie a 6 cages de rongeurs. 3 cages contiennent chacune 10 hamsters et les 3 autres 5 cochons d’Inde chacune. Combien de rongeurs y a-t-il en tout ?", ["3*10", "3*5", "30+15"], [30, 15, 45], 45], ["Charlie had 10 stickers. He bought 21 stickers in a shop and got 23 stickers for his birthday. Then he gave 9 stickers to his sister and used 28 to decorate a card. How many stickers does Charlie have left?", "Charlie hatte 10 Sticker. Er kaufte 21 Sticker in einem Laden und bekam 23 zum Geburtstag. Dann schenkte er seiner Schwester 9 Sticker und klebte 28 auf eine Karte. Wie viele Sticker hat Charlie noch?", "Charlie avait 10 autocollants. Il en a acheté 21 dans un magasin et en a reçu 23 pour son anniversaire. Ensuite, il en a donné 9 à sa sœur et en a collé 28 sur une carte. Combien d’autocollants lui reste-t-il ?", ["10+21+23", "9+28", "54-37"], [54, 37, 17], 17], ["Ryan plants 2 flowers a day in his garden. After 15 days, how many flowers does he have if 5 did not grow?", "Ryan pflanzt jeden Tag 2 Blumen in seinem Garten. Wie viele Blumen hat er nach 15 Tagen, wenn 5 nicht gewachsen sind?", "Ryan plante 2 fleurs par jour dans son jardin. Combien de fleurs a-t-il après 15 jours, si 5 n’ont pas poussé ?", ["2*15", "30-5"], [30, 25], 25], ["Gretchen has gold and silver coins. There are 30 more gold coins than silver coins. If she has 70 gold coins, how many coins does she have in total?", "Gretchen hat Gold- und Silbermünzen. Sie hat 30 Goldmünzen mehr als Silbermünzen. Sie hat 70 Goldmünzen. Wie viele Münzen hat sie insgesamt?", "Gretchen a des pièces d’or et d’argent. Elle a 30 pièces d’or de plus que de pièces d’argent. Elle a 70 pièces d’or. Combien de pièces a-t-elle en tout ?", ["70-30", "70+40"], [40, 110], 110], ["Tom gets his car washed 4 times a month. Each wash costs 15 francs. How much does he pay in a year?", "Tom lässt sein Auto 4-mal im Monat waschen. Eine Wäsche kostet 15 Franken. Wie viel bezahlt er in einem Jahr?", "Tom fait laver sa voiture 4 fois par mois. Un lavage coûte 15 francs. Combien paie-t-il en un an ?", ["4*12", "48*15"], [48, 720], 720], ["Jan has three times as many pets as Marcia. Marcia has two more pets than Cindy. If Cindy has four pets, how many pets do the three have in total?", "Jan hat dreimal so viele Haustiere wie Marcia. Marcia hat zwei Haustiere mehr als Cindy. Cindy hat vier Haustiere. Wie viele Haustiere haben die drei zusammen?", "Jan a trois fois plus d’animaux que Marcia. Marcia a deux animaux de plus que Cindy. Cindy a quatre animaux. Combien d’animaux les trois ont-ils en tout ?", ["4+2", "3*6", "4+6+18"], [6, 18, 28], 28], ["Bill starts on the 3rd floor. He takes the lift up to the floor that is 4 times his starting floor plus 6. Which floor is Bill on now?", "Bill startet im 3. Stock. Er fährt mit dem Lift in den Stock, der 4-mal so hoch ist wie sein Startstock, plus 6. In welchem Stock ist Bill jetzt?", "Bill part du 3e étage. Il prend l’ascenseur jusqu’à l’étage qui vaut 4 fois son étage de départ plus 6. À quel étage est Bill maintenant ?", ["3*4", "12+6"], [12, 18], 18], ["Bailey starts with some money. Then she gets 5 francs of pocket money every week for 8 weeks. At the end she has 100 francs. How much money did she start with?", "Bailey hat etwas Geld. Dann bekommt sie 8 Wochen lang jede Woche 5 Franken Taschengeld. Am Schluss hat sie 100 Franken. Wie viel Geld hatte sie am Anfang?", "Bailey a un peu d’argent. Ensuite, elle reçoit 5 francs d’argent de poche chaque semaine pendant 8 semaines. À la fin, elle a 100 francs. Combien d’argent avait-elle au début ?", ["5*8", "100-40"], [40, 60], 60], ["After changing schools, Amy made 20 more friends than Lily. Lily made 50 friends. How many friends do Lily and Amy have together?", "Nach dem Schulwechsel fand Amy 20 Freundinnen und Freunde mehr als Lily. Lily fand 50. Wie viele Freundinnen und Freunde haben Lily und Amy zusammen?", "Après avoir changé d’école, Amy s’est fait 20 amis de plus que Lily. Lily s’est fait 50 amis. Combien d’amis Lily et Amy ont-elles ensemble ?", ["50+20", "70+50"], [70, 120], 120], ["Cody eats three times as many biscuits as Amir. If Amir eats 5 biscuits, how many biscuits do they eat together?", "Cody isst dreimal so viele Kekse wie Amir. Amir isst 5 Kekse. Wie viele Kekse essen die beiden zusammen?", "Cody mange trois fois plus de biscuits qu’Amir. Amir mange 5 biscuits. Combien de biscuits mangent-ils ensemble ?", ["5*3", "15+5"], [15, 20], 20], ["On Tuesday, Peter wants to exercise twice as long as on Sunday and Monday together. On Sunday he exercised for 23 minutes, on Monday for 16 minutes. How many minutes must he exercise on Tuesday?", "Am Dienstag will Peter doppelt so lange trainieren wie am Sonntag und Montag zusammen. Am Sonntag trainierte er 23 Minuten, am Montag 16 Minuten. Wie viele Minuten muss er am Dienstag trainieren?", "Mardi, Peter veut s’entraîner deux fois plus longtemps que dimanche et lundi réunis. Dimanche, il s’est entraîné 23 minutes et lundi 16 minutes. Combien de minutes doit-il s’entraîner mardi ?", ["23+16", "39*2"], [39, 78], 78], ["Joseph spent 500 francs in May. In June he spent 60 francs less. How much did he spend in the two months together?", "Joseph gab im Mai 500 Franken aus. Im Juni gab er 60 Franken weniger aus. Wie viel gab er in den beiden Monaten zusammen aus?", "Joseph a dépensé 500 francs en mai. En juin, il a dépensé 60 francs de moins. Combien a-t-il dépensé en tout pendant ces deux mois ?", ["500-60", "500+440"], [440, 940], 940], ["Martin weighs 55 kg. Carl weighs 16 kg more than Martin. Christian weighs 8 kg more than Carl. Harry weighs 5 kg less than Christian. How much does Harry weigh, in kg?", "Martin wiegt 55 kg. Carl wiegt 16 kg mehr als Martin. Christian wiegt 8 kg mehr als Carl. Harry wiegt 5 kg weniger als Christian. Wie viele kg wiegt Harry?", "Martin pèse 55 kg. Carl pèse 16 kg de plus que Martin. Christian pèse 8 kg de plus que Carl. Harry pèse 5 kg de moins que Christian. Combien de kg pèse Harry ?", ["55+16", "71+8", "79-5"], [71, 79, 74], 74], ["A tower is built from 4 blue blocks, twice as many yellow blocks and some red blocks. The tower has 32 blocks in total. How many red blocks are there?", "Ein Turm besteht aus 4 blauen Klötzen, doppelt so vielen gelben Klötzen und einigen roten Klötzen. Insgesamt sind es 32 Klötze. Wie viele rote Klötze sind es?", "Une tour est faite de 4 cubes bleus, de deux fois plus de cubes jaunes et de quelques cubes rouges. Il y a 32 cubes en tout. Combien y a-t-il de cubes rouges ?", ["4*2", "32-4-8"], [8, 20], 20], ["Patricia has 30 roses. She gives 24 roses to her mother. Then she buys 15 more. How many roses does she have now?", "Patricia hat 30 Rosen. Sie schenkt ihrer Mutter 24 Rosen. Dann kauft sie 15 neue. Wie viele Rosen hat sie jetzt?", "Patricia a 30 roses. Elle en offre 24 à sa mère. Puis elle en achète 15 de plus. Combien de roses a-t-elle maintenant ?", ["30-24", "6+15"], [6, 21], 21], ["Harold sleeps 10 hours a night. He works 2 hours less than he sleeps, and he walks his dog for 1 hour every day. How many hours of free time does he have left in a day?", "Harold schläft jede Nacht 10 Stunden. Er arbeitet 2 Stunden weniger, als er schläft, und geht jeden Tag 1 Stunde mit dem Hund spazieren. Wie viele Stunden Freizeit bleiben ihm pro Tag?", "Harold dort 10 heures par nuit. Il travaille 2 heures de moins qu’il ne dort et promène son chien 1 heure par jour. Combien d’heures de temps libre lui reste-t-il par jour ?", ["10-2", "10+8+1", "24-19"], [8, 19, 5], 5], ["Mum bought a set of flower pots for 19 francs and a bag of soil for 26 francs. At the till she used a voucher for 7 francs. How much did she pay?", "Mama kaufte Blumentöpfe für 19 Franken und einen Sack Erde für 26 Franken. An der Kasse löste sie einen Gutschein über 7 Franken ein. Wie viel bezahlte sie?", "Maman a acheté des pots de fleurs pour 19 francs et un sac de terreau pour 26 francs. À la caisse, elle a utilisé un bon de 7 francs. Combien a-t-elle payé ?", ["19+26", "45-7"], [45, 38], 38], ["James is building 4 tables. Each table has 4 legs and each leg needs 2 screws. He has 40 screws. How many screws will he have left over?", "James baut 4 Tische. Jeder Tisch hat 4 Beine und jedes Bein braucht 2 Schrauben. Er hat 40 Schrauben. Wie viele Schrauben bleiben übrig?", "James assemble 4 tables. Chaque table a 4 pieds et chaque pied a besoin de 2 vis. Il a 40 vis. Combien de vis lui restera-t-il ?", ["4*2", "8*4", "40-32"], [8, 32, 8], 8], ["Carmen has 100 francs. Samantha has 25 francs more than Carmen, and Daisy has 50 francs more than Samantha. How much do the three girls have together?", "Carmen hat 100 Franken. Samantha hat 25 Franken mehr als Carmen, und Daisy hat 50 Franken mehr als Samantha. Wie viel Geld haben die drei zusammen?", "Carmen a 100 francs. Samantha a 25 francs de plus que Carmen, et Daisy 50 francs de plus que Samantha. Combien d’argent les trois filles ont-elles ensemble ?", ["100+25", "125+50", "100+125+175"], [125, 175, 400], 400], ["Tommy sells brownies for 3 francs a piece and cheesecake for 4 francs a slice. He sells 43 brownies and 23 slices of cheesecake. How much money does he raise?", "Tommy verkauft Brownies für 3 Franken das Stück und Käsekuchen für 4 Franken das Stück. Er verkauft 43 Brownies und 23 Stück Käsekuchen. Wie viel Geld nimmt er ein?", "Tommy vend des brownies 3 francs la pièce et du gâteau au fromage 4 francs la part. Il vend 43 brownies et 23 parts de gâteau. Combien d’argent récolte-t-il ?", ["43*3", "23*4", "129+92"], [129, 92, 221], 221], ["Joelle has 5 orchids and 4 daisies on her balcony. Each orchid has 5 petals and each daisy has 10 petals. How many more petals do the daisies have than the orchids?", "Joelle hat 5 Orchideen und 4 Margeriten auf dem Balkon. Jede Orchidee hat 5 Blütenblätter, jede Margerite 10. Wie viele Blütenblätter haben die Margeriten mehr als die Orchideen?", "Joëlle a 5 orchidées et 4 marguerites sur son balcon. Chaque orchidée a 5 pétales et chaque marguerite 10. Combien de pétales les marguerites ont-elles de plus que les orchidées ?", ["5*5", "4*10", "40-25"], [25, 40, 15], 15], ["Lloyd earns 10 francs an hour for maths tutoring. He tutored for 5 hours in the first week and 8 hours in the second. How much did he earn in the two weeks?", "Lloyd verdient mit Nachhilfe in Mathe 10 Franken pro Stunde. In der ersten Woche gab er 5 Stunden, in der zweiten 8 Stunden. Wie viel verdiente er in den zwei Wochen?", "Lloyd gagne 10 francs de l’heure en donnant des cours de maths. Il a donné 5 heures la première semaine et 8 heures la deuxième. Combien a-t-il gagné en deux semaines ?", ["5+8", "13*10"], [13, 130], 130], ["Lindsay is doing the laundry. There are 50 socks to wash. She washes 10 pairs of socks and 15 single socks. How many socks has she missed?", "Lindsay wäscht Wäsche. 50 Socken müssen gewaschen werden. Sie wäscht 10 Paar Socken und 15 einzelne Socken. Wie viele Socken hat sie vergessen?", "Lindsay fait la lessive. Il y a 50 chaussettes à laver. Elle lave 10 paires de chaussettes et 15 chaussettes seules. Combien de chaussettes a-t-elle oubliées ?", ["10*2", "20+15", "50-35"], [20, 35, 15], 15], ["Violetta wants to buy crayons in 5 different colours and has 20 francs with her. One crayon costs 2 francs. How much change does she get?", "Violetta will Farbstifte in 5 verschiedenen Farben kaufen und hat 20 Franken dabei. Ein Farbstift kostet 2 Franken. Wie viel Rückgeld bekommt sie?", "Violetta veut acheter des crayons de 5 couleurs différentes et a 20 francs sur elle. Un crayon coûte 2 francs. Combien lui rend-on ?", ["5*2", "20-10"], [10, 10], 10], ["Carlos rents a canoe for 30 francs an hour and Benji rents a raft for 18 francs an hour. Carlos uses the canoe for 3 hours and Benji the raft for 5 hours. How much do they pay altogether?", "Carlos mietet ein Kanu für 30 Franken pro Stunde und Benji ein Floss für 18 Franken pro Stunde. Carlos fährt 3 Stunden, Benji 5 Stunden. Wie viel bezahlen sie zusammen?", "Carlos loue un canoë à 30 francs l’heure et Benji un radeau à 18 francs l’heure. Carlos l’utilise 3 heures et Benji 5 heures. Combien paient-ils en tout ?", ["30*3", "18*5", "90+90"], [90, 90, 180], 180], ["Sarah has 9 books. Joseph had twice as many books as Sarah, but he lost 2 of them. How many books does Joseph have now?", "Sarah hat 9 Bücher. Joseph hatte doppelt so viele Bücher wie Sarah, hat aber 2 verloren. Wie viele Bücher hat Joseph jetzt?", "Sarah a 9 livres. Joseph en avait deux fois plus que Sarah, mais il en a perdu 2. Combien de livres Joseph a-t-il maintenant ?", ["9*2", "18-2"], [18, 16], 16], ["Nick had twice as many sweets as George. Then George ate 5 sweets and now has 3 left. How many sweets does Nick have?", "Nick hatte doppelt so viele Bonbons wie George. Dann ass George 5 Bonbons und hat jetzt noch 3. Wie viele Bonbons hat Nick?", "Nick avait deux fois plus de bonbons que George. Puis George en a mangé 5 et il lui en reste 3. Combien de bonbons Nick a-t-il ?", ["5+3", "2*8"], [8, 16], 16], ["Caroline is three times as old as Ben. Ben is twice as old as Chris. If Chris is 4, how old is Caroline?", "Caroline ist dreimal so alt wie Ben. Ben ist doppelt so alt wie Chris. Chris ist 4 Jahre alt. Wie alt ist Caroline?", "Caroline a trois fois l’âge de Ben. Ben a deux fois l’âge de Chris. Chris a 4 ans. Quel âge a Caroline ?", ["4*2", "8*3"], [8, 24], 24], ["Jennifer bought 12 oranges at the market. She gave each of her three daughters 2 oranges and her son 3 oranges. How many oranges does she have left?", "Jennifer kaufte 12 Orangen auf dem Markt. Jede ihrer drei Töchter bekam 2 Orangen und ihr Sohn 3 Orangen. Wie viele Orangen bleiben ihr?", "Jennifer a acheté 12 oranges au marché. Elle a donné 2 oranges à chacune de ses trois filles et 3 à son fils. Combien d’oranges lui reste-t-il ?", ["3*2", "6+3", "12-9"], [6, 9, 3], 3]];
 /* ================= Mathematik Klassen 4-6 ================= */
 /* ---- more illustrations ---- */
-function figColMul(a,b){const sa=String(a),w=sa.length+3;const s=svgBox(40+w*36,110);const put=(str,row,off)=>{for(let i=0;i<str.length;i++)s.append(stx(40+(w-str.length-off+i)*36+18,36+row*40,str[i],{'font-size':28,'font-family':'ui-monospace,monospace'}));};
- put(sa+' · '+b,0,0);s.append(sv('line',{x1:10,y1:52,x2:40+w*36,y2:52,stroke:INK,'stroke-width':3}));return s;}
+/* Die Aufgabenzeile zum Kopfrechnen. Jede Ziffer traegt die Farbe ihrer
+   Stelle - dieselbe Zuordnung wie im Kaestchengitter, damit das Kind sie
+   ueberall wiedererkennt. Das Malzeichen bleibt in der Schriftfarbe. */
+function figColMul(a,b){
+ const sa=String(a), sb=String(b), text=sa+' · '+sb;
+ const w=sa.length+3;const s=svgBox(40+w*36,110);
+ /* Stelle je Zeichen: innerhalb jeder Zahl von rechts gezaehlt. */
+ const stelleVon=k=>{
+  if(k<sa.length)return sa.length-1-k;
+  if(k<sa.length+3)return null;
+  const j=k-(sa.length+3);return sb.length-1-j;};
+ for(let i=0;i<text.length;i++){
+  const f=stelleFarbe(stelleVon(i));
+  s.append(stx(40+(w-text.length+i)*36+18,36,text[i],
+   {'font-size':28,'font-family':'ui-monospace,monospace',fill:/[0-9]/.test(text[i])?f:INK}));}
+ s.append(sv('line',{x1:10,y1:52,x2:40+w*36,y2:52,stroke:INK,'stroke-width':3}));return s;}
 function figPVT(n,cols){/* place-value table */ const L={M:['M','M','M'],HT:['HT','HTh','CM'],ZT:['ZT','TTh','DM'],T:['T','Th','M'],H:['H','H','C'],Z:['Z','T','D'],E:['E','O','U']};
  const i=Math.max(0,LANGS.indexOf(S.lang));const digits=String(n).padStart(cols.length,' ');const cw=58;const s=svgBox(cols.length*cw+4,94);
  cols.forEach((c,k)=>{s.append(sv('rect',{x:2+k*cw,y:2,width:cw,height:40,fill:'#F7F9FC',stroke:INK,'stroke-width':1.5}),sv('rect',{x:2+k*cw,y:42,width:cw,height:50,fill:'#fff',stroke:INK,'stroke-width':1.5}),
@@ -5142,7 +5347,7 @@ topic('m4-written',4,1,['Schriftlich addieren und subtrahieren bis 100 000','Col
   const res=plus?a+b:a-b;const it=numItem(X('Rechne schriftlich.','Work it out in columns.','Pose le calcul.'),res,{fig:()=>figColumns(a,b,plus?'+':'−')});
   const est=Math.round(a/1000)*1000,esb=Math.round(b/1000)*1000;return steps(it,[X('Überschlag: ','Estimate: ','Estimation : ')+fmtN(est)+(plus?' + ':' − ')+fmtN(esb)+' ≈ '+fmtN(plus?est+esb:est-esb)+'.',X('Beginne bei den Einern und arbeite nach links. Übertrag nicht vergessen.','Start with the ones and work left. Don’t forget the carry.','Commence par les unités et avance vers la gauche. N’oublie pas la retenue.'),fmtN(a)+(plus?' + ':' − ')+fmtN(b)+' = '+fmtN(res)]);});
 topic('m4-mult',4,1,['Schriftlich multiplizieren mit einer Ziffer','Written multiplication by one digit','Multiplication posée par un chiffre'],
- ['Multipliziere jede Stelle von rechts nach links und addiere den Übertrag: 347 · 6 = 7 · 6, dann 4 · 6 + Übertrag, dann 3 · 6 + Übertrag.','Multiply each place from right to left and add the carry: 347 · 6 = 7 · 6, then 4 · 6 + carry, then 3 · 6 + carry.','Multiplie chaque position de droite à gauche et ajoute la retenue : 347 · 6 = 7 · 6, puis 4 · 6 + retenue, puis 3 · 6 + retenue.'],['product','carry'],
+ ['Multipliziere jede Stelle von rechts nach links und addiere den Übertrag: 347 · 6 = 7 · 6, dann 4 · 6 + Übertrag, dann 3 · 6 + Übertrag. Der Übertrag gehört in die Spalte, in der er dazugezählt wird.','Multiply each place from right to left and add the carry: 347 · 6 = 7 · 6, then 4 · 6 + carry, then 3 · 6 + carry. The carry belongs in the column where it is added.','Multiplie chaque position de droite à gauche et ajoute la retenue : 347 · 6 = 7 · 6, puis 4 · 6 + retenue, puis 3 · 6 + retenue. La retenue va dans la colonne où elle est ajoutée.'],['product','carry'],
  lv=>{const a=ri(lv===1?12:lv===2?100:1000,lv===1?99:lv===2?999:9999),b=ri(2,9);const it=numItem(X('Rechne schriftlich: ','Work it out: ','Pose le calcul : ')+fmtN(a)+' · '+b,a*b,{fig:()=>figColMul(a,b)});
   return steps(it,[X('Beginne rechts: ','Start on the right: ','Commence à droite : ')+a%10+' · '+b+' = '+(a%10)*b+'.',X('Dann die Zehner mal ','Then the tens times ','Puis les dizaines fois ')+b+X(' und den Übertrag dazu.',', plus the carry.',', plus la retenue.'),fmtN(a)+' · '+b+' = '+fmtN(a*b)]);});
 topic('m4-div',4,1,['Dividieren durch eine Ziffer','Dividing by one digit','Diviser par un chiffre'],
@@ -5269,7 +5474,7 @@ topic('m5-fracsame',5,1,['Gleichnamige Brüche und Bruchteile','Like fractions a
   const k=ri(1,d-1),m=ri(2,lv===1?5:12);const it=numItem(fracStr(k,d)+X(' von ',' of ',' de ')+d*m+' = ?',k*m);
   return steps(it,[X('Zuerst durch den Nenner: ','First divide by the denominator: ','D’abord divise par le dénominateur : ')+d*m+' : '+d+' = '+m+'.',X('Dann mal den Zähler: ','Then times the numerator: ','Puis multiplie par le numérateur : ')+m+' · '+k+'.',String(k*m)]);});
 topic('m5-mult',5,1,['Schriftlich multiplizieren mit mehreren Ziffern','Long multiplication','Multiplication posée à plusieurs chiffres'],
- ['Multipliziere mit jeder Ziffer des zweiten Faktors einzeln, rücke jede Zeile um eine Stelle ein und addiere am Schluss.','Multiply by each digit of the second factor separately, shift each row one place and add at the end.','Multiplie par chaque chiffre du deuxième facteur séparément, décale chaque ligne d’une position et additionne à la fin.'],['product'],
+ ['Multipliziere mit jeder Ziffer des zweiten Faktors einzeln - mit den Zehnern zuerst, dann mit den Einern. Die letzte Ziffer eines Teilresultats steht unter der Ziffer, mit der du gerade malrechnest; jede Zeile endet also eine Spalte weiter rechts als die vorige. Am Schluss zählst du alle Zeilen zusammen.','Multiply by each digit of the second factor separately - the tens first, then the ones. The last digit of a partial result sits under the digit you are multiplying with, so each row ends one column further right than the one before. Finally add all the rows.','Multiplie par chaque chiffre du deuxième facteur séparément : d’abord les dizaines, puis les unités. Le dernier chiffre d’un résultat partiel se place sous le chiffre avec lequel tu multiplies ; chaque ligne finit donc une colonne plus à droite que la précédente. Enfin, additionne toutes les lignes.'],['product'],
  lv=>{const a=ri(lv===1?12:100,lv===1?99:999),b=ri(12,lv===3?999:99);const it=numItem(X('Rechne schriftlich: ','Work it out: ','Pose le calcul : ')+fmtN(a)+' · '+fmtN(b),a*b,{fig:()=>figColMul(a,b)});
   const bz=b-b%10;return steps(it,[X('Überschlag: ','Estimate: ','Estimation : ')+fmtN(Math.round(a/10)*10)+' · '+fmtN(Math.round(b/10)*10)+' ≈ '+fmtN(Math.round(a/10)*10*Math.round(b/10)*10)+'.',fmtN(a)+' · '+fmtN(bz)+' = '+fmtN(a*bz)+X(' und ',' and ',' et ')+fmtN(a)+' · '+b%10+' = '+fmtN(a*(b%10))+'.',fmtN(a*bz)+' + '+fmtN(a*(b%10))+' = '+fmtN(a*b)]);});
 topic('m5-div',5,1,['Schriftlich dividieren','Long division','Division posée'],

@@ -23,17 +23,23 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    const g=malGitter(a,b);
    if(g.res!==a*b)fehler++;
    if(String(a*b)!==g.erg.filter(d=>d!==null).join(''))fehler++;
-   if(g.ueb.some(x=>x))mitUeb++;
-   /* Der Uebertrag muss der Rechnung entsprechen */
-   const za=String(a).padStart(g.breite,'0').split('').map(Number);
+   /* Die Uebertraege stehen seit der Schulschreibweise in einer kleinen
+      Zeile ueber dem Teilresultat, jeweils in der Spalte, in der sie
+      dazugezaehlt werden. */
+   const klein=g.zeilen.find(z=>z.art==='klein');
+   if(!klein){fehler++;continue;}
+   if(klein.z.some(v=>v!==undefined))mitUeb++;
+   const sa=String(a), spEins=g.breite-1;
    let trag=0,schlecht=false;
-   for(let i=g.breite-1;i>=0;i--){
-    const p=za[i]*b+trag; trag=Math.floor(p/10);
-    if(i>0&&g.offenUeb[i-1]&&g.ueb[i-1]!==(trag||null))schlecht=true;}
+   for(let k=sa.length-1;k>=0;k--){
+    const prod=(+sa[k])*b+trag; trag=Math.floor(prod/10);
+    const spalte=spEins-(sa.length-1-k);
+    const soll=(trag&&k>0)?trag:undefined;
+    if(klein.z[spalte-1]!==soll)schlecht=true;}
    if(schlecht)fehler++;
   }
   pruef('Multiplikation stimmt über 4000 Proben',fehler===0,'Fehler: '+fehler);
-  pruef('Überträge kommen vor',mitUeb>3000,mitUeb+' von 4000');
+  pruef('Überträge kommen vor und stehen in der richtigen Spalte',mitUeb>3000,mitUeb+' von 4000');
 
   /* ---- Multiplikation, zweistelliger Faktor ---- */
   let f2=0;
@@ -41,9 +47,21 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    const a=100+Math.floor(Math.random()*900), b=10+Math.floor(Math.random()*90);
    const g=malGitter(a,b);
    if(g.res!==a*b)f2++;
-   if(!g.teil||g.teil[0]!==a*(b%10)||g.teil[1]!==a*Math.floor(b/10))f2++;
+   /* Das Blatt der Schule rechnet ZUERST mit den Zehnern, dann mit den
+      Einern - die umgekehrte Reihenfolge waere ein Rueckschritt. */
+   if(!g.teil||g.teil[0]!==a*Math.floor(b/10)||g.teil[1]!==a*(b%10))f2++;
    if(String(a*b)!==g.erg.filter(d=>d!==null).join(''))f2++;
-   if(g.zeilen.filter(z=>z.art==='strich').length!==2)f2++;
+   /* Ein einziger Strich, unmittelbar vor der Summe. */
+   if(g.zeilen.filter(z=>z.art==='strich').length!==1)f2++;
+   if(g.zeilen[g.zeilen.length-2].art!=='strich')f2++;
+   /* Die letzte Ziffer eines Teilresultats steht unter der Ziffer, mit der
+      gerechnet wird. */
+   const felder=g.zeilen.filter(z=>z.art==='feld');
+   const spMal=g.breite-2-1;             /* Malzeichen: vor den zwei Ziffern von b */
+   for(let i=0;i<2;i++){
+    const z=felder[i].z;
+    let letzte=-1; for(let c=0;c<g.breite;c++) if(typeof z[c]==='number') letzte=c;
+    if(letzte!==spMal+1+i)f2++;}
   }
   pruef('Zweistelliger Faktor: Teilprodukte und Summe stimmen',f2===0,'Fehler: '+f2);
 
@@ -57,17 +75,28 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    if(g.res!==a/b)f3++;
    if(String(a/b)!==g.erg.filter(d=>d!==null).join(''))f3++;
    if(g.schluss!==0)f3++;
-   if(g.ueb.some(x=>x))mitRest++;
-   /* Rest je Stelle nachrechnen */
-   const za=String(a).split('').map(Number);
-   let rr=0,schlecht=false;
-   for(let i=0;i<za.length;i++){
-    const wert=rr*10+za[i]; rr=wert%b;
-    if(i+1<za.length&&g.ueb[i+1]!==rr)schlecht=true;}
+   if(g.zwischen.some(x=>x>0))mitRest++;
+   /* Die Treppe Stufe fuer Stufe nachrechnen: teilen, malrechnen,
+      subtrahieren, herunterholen. Und es darf keine Stufe geben, die mit
+      dem Ergebnis 0 beginnt - die Schule nimmt dann eine Ziffer mehr. */
+   const sa=String(a);
+   let rr=0,gestartet=false,schlecht=false;
+   const erwartet=[];
+   for(let i=0;i<sa.length;i++){
+    const wert=rr*10+(+sa[i]);
+    if(!gestartet&&wert<b&&i<sa.length-1){rr=wert;continue;}
+    gestartet=true;
+    const q=Math.floor(wert/b);
+    erwartet.push(q); rr=wert-q*b;}
+   if(erwartet.join('')!==String(a/b))schlecht=true;
+   if(g.teilErg.join(',')!==erwartet.join(','))schlecht=true;
+   if(g.teilErg[0]===0&&g.res>0)schlecht=true;
+   /* So viele Striche wie Stufen. */
+   if(g.zeilen.filter(z=>z.art==='strich').length!==erwartet.length)schlecht=true;
    if(schlecht)f3++;
   }
-  pruef('Division stimmt über 4000 Proben',f3===0,'Fehler: '+f3);
-  pruef('Mitgeführte Reste kommen vor',mitRest>2500,mitRest+' von 4000');
+  pruef('Division: Treppe stimmt über 4000 Proben',f3===0,'Fehler: '+f3);
+  pruef('Zwischenreste zum Herunterholen kommen vor',mitRest>2500,mitRest+' von 4000');
   const ohne=geteiltGitter(840,4);
   pruef('Glatte Division ohne Rest',ohne.res===210&&ohne.schluss===0,ohne.res+' Rest '+ohne.schluss);
 
@@ -96,11 +125,23 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   await new Promise(r=>setTimeout(r,120));
   const kaesten=[...document.querySelectorAll('.zbox')];
   const G=it.gitter;
+  /* Die Sollwerte in genau der Reihenfolge, in der der Zeichner die
+     Kaestchen anlegt: Zeile fuer Zeile, darin Spalte fuer Spalte. Feste
+     Zellen (fix) ueberspringt er, und in einer Ergebniszeile heisst null
+     "hier steht nichts". */
   const soll=[];
-  for(let i=0;i<G.breite;i++)if(G.offenUeb[i])soll.push(G.ueb[i]);
-  for(let i=0;i<G.breite;i++)if(G.offenErg[i])soll.push(G.erg[i]);
+  for(const z of G.zeilen){
+   if(z.art!=='feld'&&z.art!=='klein')continue;
+   for(let i=0;i<G.breite;i++){
+    if(z.fix&&z.fix[i]!=null&&z.fix[i]!=='')continue;
+    const v=z.z?z.z[i]:undefined;
+    if(v===undefined)continue;
+    if(z.art==='feld'&&v===null)continue;
+    soll.push(v);}}
   pruef('Teilen: so viele Kästchen wie Sollwerte',kaesten.length===soll.length,
    kaesten.length+' / '+soll.length);
+  pruef('Teilen: die Treppe bringt mehr Kästchen als der Quotient Ziffern hat',
+   kaesten.length>String(G.res).length,kaesten.length+' Kästchen, Quotient '+G.res);
   const taste=z=>[...document.querySelectorAll('.keypad .key')].find(k=>k.textContent.trim()===String(z));
   kaesten.forEach((el,k)=>{el.focus();const t=taste(soll[k]);if(t)t.click();});
   const pb=[...document.querySelectorAll('button')].find(b=>/^(Prüfen|Check|Vérifier)/.test(b.textContent.trim()));
