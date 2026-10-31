@@ -1402,7 +1402,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V80';
+const APPVER='V81';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -3346,15 +3346,23 @@ function vorlesenHalt(){try{const el=vorleser();el.pause();}catch(_){}VORLESEN_L
 /* Gibt zurueck, wann der Satz zu Ende gesprochen ist. Der Hoermodus
    haengt daran: erst sprechen, dann zuhoeren - sonst hoert das Mikrofon
    die eigene Stimme. */
-async function sprich(text,spr){
+/* Holen und Abspielen sind getrennt: ein Satz, den der Vermittler erst
+   erzeugen muss, braucht beim ersten Mal rund drei Sekunden. Der
+   Hoerschirm startet das Holen, sobald er entsteht, und wartet erst
+   beim Sprechen darauf - damit faellt die Wartezeit mit dem Aufbau und
+   dem Fingerdruck zusammen statt danach zu stehen. */
+const TONLAUF={};
+function tonBesorgen(text,spr){
  const roh=String(text||'').trim();
- if(!roh||MIKROAN)return false;
+ if(!roh)return Promise.resolve(null);
  spr=spr||S.lang||'de';
  const satz=lesbar(roh,spr);
  const schl=fnv1a(spr+'|'+satz);
- let b=await tonHolen(schl);
- if(b==='nix')b=null;
- if(!b){
+ if(TONLAUF[schl])return TONLAUF[schl];
+ const p=(async()=>{
+  let b=await tonHolen(schl);
+  if(b==='nix')return null;
+  if(b)return b;
   try{const r=await fetch(audioUrl(roh,spr),{cache:'force-cache'});
    if(r.ok){const bb=await r.blob();if(bb&&bb.size>400)b=bb;}}catch(_){}
   if(!b){
@@ -3367,9 +3375,19 @@ async function sprich(text,spr){
     }
    }catch(_){}
   }
-  if(b)await tonLegen(schl,b); else await tonLegen(schl,'nix');
- }
- if(!b)return ttsBrowser(satz,spr);
+  await tonLegen(schl,b||'nix');
+  return b||null;
+ })();
+ TONLAUF[schl]=p;
+ p.then(()=>{delete TONLAUF[schl];},()=>{delete TONLAUF[schl];});
+ return p;}
+async function sprich(text,spr){
+ const roh=String(text||'').trim();
+ if(!roh||MIKROAN)return false;
+ spr=spr||S.lang||'de';
+ let b=null;
+ try{ b=await tonBesorgen(roh,spr); }catch(_){}
+ if(!b)return ttsBrowser(lesbar(roh,spr),spr);
  return await tonSpielen(b);
 }
 /* Was vorgelesen wird: Beispielsatz, Aufgabe, dann die Auswahl mit Zahlen
@@ -3593,6 +3611,10 @@ function renderHoeren(R,Q){
  const nochmal=h('button',{class:'btn ghost'},'🔈 '+t('hoerNochmal'));
  let stopper=null,laeuft=false;
 
+ const satzZumLesen=vorleseText(R,Q,it);
+ /* Noch vor dem ersten Fingerdruck holen: die Wartezeit faellt damit in
+    den Aufbau des Schirms. */
+ try{tonBesorgen(satzZumLesen,spr);}catch(_){}
  const erwartet=[];
  try{
   if(Q.opts)Q.opts.forEach((o,i)=>{erwartet.push(o.text);erwartet.push(z[i]||String(i+1));});
@@ -3615,12 +3637,15 @@ function renderHoeren(R,Q){
  const vorlesen=async()=>{
   if(weg||done||R.ended)return false;
   knopfSetzen('liest',t('hoerLiest'));stand.textContent=t('hoerLiest');
-  await sprich(vorleseText(R,Q,it),spr);
+  await sprich(satzZumLesen,spr);
   return !weg&&!done&&!R.ended;};
 
  const zuhoeren=async()=>{
   if(weg||done||R.ended)return;
   knopfSetzen('hoert',t('hoerHalt'));stand.textContent=t('hoerSprich');
+  /* Beide Urteile holen, waehrend das Kind spricht. */
+  try{tonBesorgen(t('correct'),spr);
+   tonBesorgen(t('wrong')+'. '+t('rightAnswer',{a:answerText(it)}),spr);}catch(_){}
   let gesagt='',panne=null;
   try{ gesagt=await hoerFrei({lang:SRLANG[spr],begriffe:erwartet,
    aufAktiv:f=>{stopper=f;}},STTCODE[spr]); }

@@ -32,6 +32,33 @@ const srv=http.createServer((q,s)=>{s.writeHead(200,{'Content-Type':'text/html'}
   await Promise.race([p,warte(2500)]);
   window.fetch=echt;
   pruef('Ohne Vermittler kehrt das Vorlesen zurueck',fertig);
+
+  /* Ein Satz wird genau einmal geholt: der zweite Aufruf nimmt den
+     Zwischenspeicher und ruehrt das Netz nicht an. */
+  await IDB.set('kv','proxyUrl','https://vermittler.example/');
+  let rufe=0;
+  const echt2=window.fetch;
+  window.fetch=async(u,o)=>{
+   const url=String(u);
+   if(/vermittler\.example\/tts$/.test(url)){rufe++;
+    return {ok:true,status:200,blob:async()=>new Blob([new Uint8Array(2000)],{type:'audio/mpeg'})};}
+   if(/audio\//.test(url))return {ok:false,status:404};
+   return echt2(u,o);};
+  const satz='Ein Satz, den es nirgends gibt '+Date.now();
+  const b1=await tonBesorgen(satz,'de');
+  const b2=await tonBesorgen(satz,'de');
+  pruef('Der Satz wird geholt',!!b1&&b1.size>400,b1&&b1.size);
+  pruef('Beim zweiten Mal aus dem Geraet',rufe===1,'Netzrufe: '+rufe);
+  pruef('Und es ist derselbe Ton',!!b2&&b2.size===b1.size);
+
+  /* Zwei Aufrufe gleichzeitig teilen sich einen Netzruf. */
+  const satz2='Noch einer '+Date.now();
+  rufe=0;
+  const [c1,c2]=await Promise.all([tonBesorgen(satz2,'de'),tonBesorgen(satz2,'de')]);
+  pruef('Gleichzeitige Aufrufe holen nur einmal',rufe===1,'Netzrufe: '+rufe);
+  pruef('Beide bekommen den Ton',!!c1&&!!c2);
+  window.fetch=echt2;
+
   return aus;});
  let f=0;
  r.forEach(x=>{if(x[0]==='FAIL')f++;console.log('  '+x[0]+'  '+x[1]+(x[2]?'   '+x[2]:''));});
