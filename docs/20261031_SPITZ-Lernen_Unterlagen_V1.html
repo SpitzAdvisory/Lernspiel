@@ -1,0 +1,1326 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPITZ Lernen — Unterlagen</title>
+<style>
+:root{--ink:#0A2D56;--mut:#5A6B7D;--mint:#4FB8B0;--line:#DCE4EC;--soft:#F4F7FA}
+*{box-sizing:border-box}
+body{margin:0;background:var(--soft);color:var(--ink);
+ font:16px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:40px 24px}
+header .w{max-width:980px;margin:0 auto}
+header h1{margin:0;font-size:30px;letter-spacing:-.01em}
+header p{margin:8px 0 0;opacity:.78;font-size:15px}
+nav{max-width:980px;margin:28px auto 0;padding:0 24px}
+nav ol{background:#fff;border:1px solid var(--line);border-radius:12px;margin:0;padding:18px 18px 18px 40px}
+nav li{margin:4px 0}
+nav a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--mint)}
+main{max-width:980px;margin:0 auto;padding:28px 24px 72px}
+section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px 36px;margin:0 0 28px}
+h1{font-size:25px;margin:0 0 6px;letter-spacing:-.01em}
+h2{font-size:19px;margin:34px 0 10px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 6px}
+section>h1+p{color:var(--mut);font-size:14px;margin-top:0}
+p{margin:12px 0}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14.5px}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600}
+code{background:var(--soft);padding:1px 5px;border-radius:4px;
+ font:13.5px ui-monospace,SFMono-Regular,Menlo,monospace}
+pre{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto}
+pre code{background:none;padding:0}
+figure{margin:22px 0;text-align:center}
+figure svg{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px}
+ul,ol{padding-left:22px}
+li{margin:5px 0}
+em{color:var(--mut);font-style:normal;font-size:14px}
+@media print{body{background:#fff}section{break-inside:auto;border:0;padding:0;margin:0 0 20px}
+ header{background:#fff;color:var(--ink);padding:0 0 16px}nav{display:none}figure svg{border:0}}
+</style></head><body>
+<header><div class="w"><h1>SPITZ Lernen — Unterlagen</h1>
+<p>Stand 31. Oktober 2026 · Fassung V82 · drei Dokumente, sieben Zeichnungen</p></div></header>
+<nav><ol><li><a href='#t1'>1. Stand und Sicherung</a></li><li><a href='#t2'>2. Architektur von heute</a></li><li><a href='#t3'>3. Architektur nach dem Umbau</a></li></ol></nav>
+<main><section id='t1'><h1>Stand und Sicherung</h1>
+<p><strong>SPITZ Lernen · 31. Oktober 2026 · V82</strong></p>
+<p>Dieses Papier hält fest, was es gibt, wo es liegt, und wie sich jede frühere
+Fassung zurückholen lässt. Alle Zahlen darin sind gemessen, nicht geschätzt.</p>
+<hr />
+<h2>1. Bestandsaufnahme</h2>
+<table>
+<thead>
+<tr>
+<th>Teil</th>
+<th>Umfang</th>
+<th>Ablage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Die App</td>
+<td>eine Datei, 1,18 MB</td>
+<td><code>index.html</code> im Repository</td>
+</tr>
+<tr>
+<td>Tondateien</td>
+<td>4857 Stück</td>
+<td><code>audio/</code> im Repository</td>
+</tr>
+<tr>
+<td>Prüfungen</td>
+<td>26 Dateien, rund 480 Prüfungen</td>
+<td><code>tests/</code> im Repository</td>
+</tr>
+<tr>
+<td>Vermittler</td>
+<td>1 Datei, 255 Zeilen</td>
+<td><code>worker/worker.js</code>, läuft bei Cloudflare</td>
+</tr>
+<tr>
+<td>Sprachpartnerin</td>
+<td>2 Dateien</td>
+<td><code>agent/</code>, läuft bei ElevenLabs</td>
+</tr>
+<tr>
+<td>Spielstände der Kinder</td>
+<td>161 Protokolle, 3 Profile</td>
+<td>nur auf dem PC, jetzt auch im Archiv</td>
+</tr>
+</tbody>
+</table>
+<p>Die App ist <strong>eine einzige HTML-Datei ohne Bauschritt</strong>. Diese eine Datei ist die
+ganze Anwendung: keine Abhängigkeiten, kein Übersetzen, kein Installieren.
+Das ist die wichtigste Eigenschaft für die Wiederherstellung.</p>
+<hr />
+<h2>2. Die vier Sicherungsorte</h2>
+<p><strong>Vier Orte, drei davon unabhängig voneinander.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Ort</th>
+<th>Inhalt</th>
+<th>Reicht allein?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GitHub <code>SpitzAdvisory/Lernspiel</code></td>
+<td>alles ausser den Spielständen, ganze Geschichte</td>
+<td><strong>ja</strong></td>
+</tr>
+<tr>
+<td>Dropbox <code>usp\Lernspiel Source</code></td>
+<td>die letzten acht Masterdateien, Vermittler, Datendateien, französischer Ton</td>
+<td>nein, nur jüngere Stände</td>
+</tr>
+<tr>
+<td>OneDrive <code>Ablage\_Archive\Lernspiel</code></td>
+<td>45 ältere Masterdateien ab V51, seit heute die Spielstände</td>
+<td>nein, nur Momentaufnahmen</td>
+</tr>
+<tr>
+<td>Dropbox <code>Apps\Lernspiel-Spitz</code></td>
+<td>die laufende Spielkopie samt Profilen und Protokollen</td>
+<td>nein, das ist der Betrieb, keine Sicherung</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Das Repository ist die eigentliche Sicherung.</strong> Es enthält jede Fassung seit
+dem 24. Oktober mit ihrer vollständigen Geschichte. Die anderen Orte sind
+Bequemlichkeit und Rückfallebene.</p>
+<h3>Neu gesichert am 31. Oktober</h3>
+<p>Die Spielstände der Kinder — 161 Protokolle seit dem 19. September und die
+Profile — lagen bis heute <strong>nur</strong> im laufenden Spielordner. Sie sind das
+Einzige, was sich nicht nachbauen lässt; alles andere entsteht notfalls neu.
+Sie liegen jetzt als
+<code>20261031_SPITZ-Lernen_Spielstaende_V1.zip</code> im privaten Archiv,
+164 Dateien, 357 KB, fehlerfrei geprüft.</p>
+<hr />
+<h2>3. Eine frühere Fassung zurückholen</h2>
+<p>Jede Fassung ist über ihren Commit-Schlüssel erreichbar. Ein Befehl genügt:</p>
+<p><code>git clone https://github.com/SpitzAdvisory/Lernspiel.git
+cd Lernspiel
+git archive 2244016 index.html | tar -x</code></p>
+<p>Danach liegt <code>index.html</code> in der Fassung V79 im Ordner. Die Datei lässt sich
+unverändert in den Spielordner kopieren — sie braucht nichts weiter.</p>
+<p>Erprobt am 31. Oktober: V76, V79 und V80 wurden so zurückgeholt und trugen
+die erwartete Grösse und Kennung.</p>
+<h3>Eine Stolperstelle</h3>
+<p>Die Versionsangabe <strong>in der Datei</strong> ist als Schlüssel untauglich. Von V59 bis
+V74 stand dort fälschlich <code>V58</code>; der Fehler wurde erst bei V75 bemerkt. Eine
+Fassung aus diesem Bereich trägt in der Datei also die falsche Nummer. Verlässlich ist allein der Commit-Schlüssel aus der Tabelle unten.</p>
+<h3>Versionsmarken</h3>
+<p>Marken (<code>git tag</code>) wären bequemer als Schlüssel, lassen sich aus dieser
+Arbeitsumgebung aber nicht setzen: der Proxy weist sowohl <code>git push --tags</code>
+als auch den Schreibzugriff auf die Markenschnittstelle mit 403 ab. Das ist
+eine Schranke der Umgebung, keine Ihres Repositorys. Die Tabelle leistet
+dasselbe.</p>
+<hr />
+<h2>4. Alle Fassungen</h2>
+<table>
+<thead>
+<tr>
+<th>Fassung</th>
+<th>Commit</th>
+<th>Datum</th>
+<th>Was dazukam</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>—</td>
+<td><code>14dade8</code></td>
+<td>2026-10-24</td>
+<td>Add files via upload</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>428850b</code></td>
+<td>2026-10-24</td>
+<td>Französische Aussprache: 1246 MP3-Dateien für den dis-donc-Wortschatz</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>917a83c</code></td>
+<td>2026-10-24</td>
+<td>Sprechaufgaben: Franzoesisch mit Spracherkennung</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>bf1a028</code></td>
+<td>2026-10-24</td>
+<td>Pruefungsaufgaben 3, 6, 7 und 10: ganze Bildfiguren pruefen</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>ff1cb26</code></td>
+<td>2026-10-24</td>
+<td>Pruefungsaufgabe 10: alle drei Figuren</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>c7853ed</code></td>
+<td>2026-10-24</td>
+<td>Pruefungsaufgabe 5b: Billard ueber zwei Banden</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>193cb55</code></td>
+<td>2026-10-25</td>
+<td>Fuenf Korrekturen am franzoesischen Teil und am Schreibblatt</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>857c4e7</code></td>
+<td>2026-10-25</td>
+<td>dis donc 7 und 8 nach Lernzielen gegliedert</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>e9c889c</code></td>
+<td>2026-10-25</td>
+<td>Sieben fehlende Aussprache-Clips ergaenzt</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>5c46b4d</code></td>
+<td>2026-10-25</td>
+<td>Zahlenstrahl wertete Nachbarzahlen als richtig; Zuhoeren auf Whisper</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>65cfb27</code></td>
+<td>2026-10-25</td>
+<td>Kein Ton mehr nach gesperrtem Autostart; Aussprache wird Pflicht</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>9d50e78</code></td>
+<td>2026-10-25</td>
+<td>Sprechen: Knopf halten statt Stille erraten</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>1f7b38c</code></td>
+<td>2026-10-25</td>
+<td>Richtig gesprochene Vokabeln wurden abgelehnt: qc und qn</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>594f2cb</code></td>
+<td>2026-10-25</td>
+<td>Eigene Tastatur fuer Schreibaufgaben; Systemtastatur blieb aus</td>
+</tr>
+<tr>
+<td>V43</td>
+<td><code>5879430</code></td>
+<td>2026-10-25</td>
+<td>Aufnahmekette ohne MediaRecorder, Modell 22 MB, Fehlerursachen benannt</td>
+</tr>
+<tr>
+<td>V44</td>
+<td><code>876e630</code></td>
+<td>2026-10-25</td>
+<td>Rueckfall auf die Erkennung des Browsers, Ueberspringen mit Preis</td>
+</tr>
+<tr>
+<td>V45</td>
+<td><code>101aa26</code></td>
+<td>2026-10-25</td>
+<td>Widerspruch zwischen Gehoertem und Statuszeile behoben</td>
+</tr>
+<tr>
+<td>V46</td>
+<td><code>0fe74e1</code></td>
+<td>2026-10-25</td>
+<td>Schreibaufgaben mit einem Ausdruck statt fuenf</td>
+</tr>
+<tr>
+<td>V47</td>
+<td><code>24aab76</code></td>
+<td>2026-10-25</td>
+<td>Der Kasten mit dem Gehoerten steht immer da</td>
+</tr>
+<tr>
+<td>V48</td>
+<td><code>61f861b</code></td>
+<td>2026-10-25</td>
+<td>Urteil in Worten, Versionsangabe, Sprachen ohne Schreibblatt</td>
+</tr>
+<tr>
+<td>V49</td>
+<td><code>cb9e4a7</code></td>
+<td>2026-10-25</td>
+<td>Weiter nur bei richtiger Aussprache, keine Selbstbeurteilung</td>
+</tr>
+<tr>
+<td>V50</td>
+<td><code>6be8aa9</code></td>
+<td>2026-10-25</td>
+<td>ElevenLabs Scribe, Handschrifterkennung, Mikrofon gegen Lautsprecher</td>
+</tr>
+<tr>
+<td>V51</td>
+<td><code>c4837e3</code></td>
+<td>2026-10-25</td>
+<td>Vermittler statt Schluessel im Geraet</td>
+</tr>
+<tr>
+<td>V52</td>
+<td><code>30a5f36</code></td>
+<td>2026-10-26</td>
+<td>Werkzeugwahl eindeutig, abgewiesener Finger nennt den Grund</td>
+</tr>
+<tr>
+<td>V56</td>
+<td><code>19480f0</code></td>
+<td>2026-10-28</td>
+<td>schriftliches Rechnen mit Kaestchen (Addition, Subtraktion)</td>
+</tr>
+<tr>
+<td>V57</td>
+<td><code>4edf02d</code></td>
+<td>2026-10-28</td>
+<td>Spielpause statt Scherzfragen, dazu die stehende Regressionspruefung</td>
+</tr>
+<tr>
+<td>V58</td>
+<td><code>52763d3</code></td>
+<td>2026-10-30</td>
+<td>Tonschicht mit Sprache statt fest auf Franzoesisch</td>
+</tr>
+<tr>
+<td>V59</td>
+<td><code>f6f88de</code></td>
+<td>2026-10-30</td>
+<td>Frag-Knopf - das Kind spricht, die Lernbegleitung antwortet</td>
+</tr>
+<tr>
+<td>V60</td>
+<td><code>3dd99ae</code></td>
+<td>2026-10-30</td>
+<td>Vermittleradresse in der App statt auf jedem Geraet</td>
+</tr>
+<tr>
+<td>V61</td>
+<td><code>e726529</code></td>
+<td>2026-10-30</td>
+<td>Lautsprecher auch auf der Muttersprachseite der Vokabelkarten</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>66a261a</code></td>
+<td>2026-10-30</td>
+<td>Deutsche Aussprache: 1567 Klaenge, gesprochen von Emilia</td>
+</tr>
+<tr>
+<td>V62</td>
+<td><code>dcceb2c</code></td>
+<td>2026-10-30</td>
+<td>Abkuerzungen im gesprochenen Deutsch ausschreiben</td>
+</tr>
+<tr>
+<td>V63</td>
+<td><code>5b8fa2a</code></td>
+<td>2026-10-30</td>
+<td>dis donc auch auf Englisch</td>
+</tr>
+<tr>
+<td>V64</td>
+<td><code>f63743b</code></td>
+<td>2026-10-31</td>
+<td>drei Kampfspiele, steilere Stufung, englische Aussprache</td>
+</tr>
+<tr>
+<td>V65</td>
+<td><code>f63743b</code></td>
+<td>2026-10-31</td>
+<td>drei Kampfspiele, steilere Stufung, englische Aussprache</td>
+</tr>
+<tr>
+<td>V66</td>
+<td><code>2979d92</code></td>
+<td>2026-10-31</td>
+<td>schriftliches Malnehmen und Teilen im Kaestchengitter</td>
+</tr>
+<tr>
+<td>V67</td>
+<td><code>2979d92</code></td>
+<td>2026-10-31</td>
+<td>schriftliches Malnehmen und Teilen im Kaestchengitter</td>
+</tr>
+<tr>
+<td>V68</td>
+<td><code>73d8554</code></td>
+<td>2026-10-31</td>
+<td>Modul «Verben im Fokus» nach dem Flade-Dossier</td>
+</tr>
+<tr>
+<td>V69</td>
+<td><code>73d8554</code></td>
+<td>2026-10-31</td>
+<td>Modul «Verben im Fokus» nach dem Flade-Dossier</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>0e71896</code></td>
+<td>2026-10-31</td>
+<td>Durchgang Mathematik 4-9 auf iPad-Breite als stehende Pruefung</td>
+</tr>
+<tr>
+<td>V70</td>
+<td><code>9e2969f</code></td>
+<td>2026-10-31</td>
+<td>Modul «Open World 1»</td>
+</tr>
+<tr>
+<td>V71</td>
+<td><code>edb47ff</code></td>
+<td>2026-10-31</td>
+<td>Kuerbisnacht und Klang in allen Spielen</td>
+</tr>
+<tr>
+<td>V72</td>
+<td><code>edb47ff</code></td>
+<td>2026-10-31</td>
+<td>Kuerbisnacht und Klang in allen Spielen</td>
+</tr>
+<tr>
+<td>V73</td>
+<td><code>edb47ff</code></td>
+<td>2026-10-31</td>
+<td>Kuerbisnacht und Klang in allen Spielen</td>
+</tr>
+<tr>
+<td>V74</td>
+<td><code>edb47ff</code></td>
+<td>2026-10-31</td>
+<td>Kuerbisnacht und Klang in allen Spielen</td>
+</tr>
+<tr>
+<td>V75</td>
+<td><code>3cef2c9</code></td>
+<td>2026-10-31</td>
+<td>mit Emilia sprechen - die Antwort zaehlt</td>
+</tr>
+<tr>
+<td>V76</td>
+<td><code>08c090f</code></td>
+<td>2026-10-31</td>
+<td>die gesprochene Antwort darf in einem Satz stehen</td>
+</tr>
+<tr>
+<td>V77</td>
+<td><code>a2e2397</code></td>
+<td>2026-10-31</td>
+<td>Nebengeraeusche sind keine Antwort</td>
+</tr>
+<tr>
+<td>V78</td>
+<td><code>359b57c</code></td>
+<td>2026-10-31</td>
+<td>bei Schreibaufgaben zaehlt nur Getipptes</td>
+</tr>
+<tr>
+<td>V79</td>
+<td><code>2244016</code></td>
+<td>2026-10-31</td>
+<td>lautgleiche Schreibungen zaehlen</td>
+</tr>
+<tr>
+<td>V80</td>
+<td><code>d9c037b</code></td>
+<td>2026-10-31</td>
+<td>Vorlesen in allen Modulen, Modus «Nur Hoeren»</td>
+</tr>
+<tr>
+<td>V81</td>
+<td><code>d603afb</code></td>
+<td>2026-10-31</td>
+<td>der Ton wird geholt, waehrend der Schirm entsteht</td>
+</tr>
+<tr>
+<td>—</td>
+<td><code>b3a9332</code></td>
+<td>2026-10-31</td>
+<td>Sprachagent Schritt 2: Sprachpartnerin angelegt und abgenommen</td>
+</tr>
+<tr>
+<td>V82</td>
+<td><code>f603464</code></td>
+<td>2026-10-31</td>
+<td>der Bildschirm bleibt im Hoermodus wach</td>
+</tr>
+</tbody>
+</table>
+<p>Fassungen <strong>V53 bis V55</strong> haben das Repository nie erreicht; sie entstanden und
+wurden überholt, bevor ein Commit fällig war. <strong>V1 bis V42</strong> liegen vor dem
+Repository; Teile davon finden sich im OneDrive-Archiv ab V51.</p>
+<hr />
+<h2>5. Zwei Punkte, die eine Entscheidung brauchen</h2>
+<p><strong>Das Repository ist öffentlich.</strong> Jeder kann es lesen. Darin stehen keine
+Fortschrittsdaten und keine Profile, aber die Vornamen Felix, Valentin und
+Johannes erscheinen in drei Kommentaren und Notizen. Zusammen mit dem
+Kontonamen <em>SpitzAdvisory</em> sind sie zuordenbar. Zwei Wege: die Vornamen aus
+den Kommentaren nehmen, oder das Repository auf privat stellen. Das ist Ihre
+Entscheidung, nicht meine.</p>
+<p><strong>Die Spielstände wachsen weiter.</strong> Die heutige Sicherung ist eine
+Momentaufnahme. Ohne Wiederholung veraltet sie. Eine wiederkehrende Aufgabe,
+die den Ordner wöchentlich ins Archiv zieht, wäre der saubere Abschluss.</p>
+<hr />
+<p><em>Erstellt am 31. Oktober 2026. Alle Angaben am laufenden System gemessen.</em></p></section><section id='t2'><h1>SPITZ Lernen — die Architektur von heute</h1>
+<p>Stand 31. Oktober 2026 · Fassung V82 · geschrieben für den Leser ohne Vorkenntnisse</p>
+<hr />
+<h2>1. Zweck dieses Dokuments</h2>
+<p>Die App wird seit dem Sommer Stück für Stück gebaut. Dieses Dokument hält fest, wie sie
+heute aufgebaut ist, in gewöhnlichen Worten und mit Bildern. Ein zweites Dokument
+beschreibt danach den geplanten Umbau.</p>
+<p>Alle Zahlen hier sind am laufenden Programm gemessen, nicht geschätzt.</p>
+<hr />
+<h2>2. Die Teile und wo sie liegen</h2>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 640'   font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Uebersicht der Teile'>
+<rect width='1040' height='640' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Die Teile und wo sie liegen</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Von links nach rechts: Kind, Auslieferung, App, Vermittler, bezahlte Dienste.</text>
+<text x='130' y='112' font-size='13' font-weight='700' fill='#3D6A9A' text-anchor='middle'>BEIM KIND</text>
+<rect x='50' y='130' width='160' height='66' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='130' y='159' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>iPad</text>
+<text x='130' y='179' font-size='12' fill='#6B7B8E' text-anchor='middle'>Safari</text>
+<rect x='50' y='212' width='160' height='66' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='130' y='241' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>iPhone</text>
+<text x='130' y='261' font-size='12' fill='#6B7B8E' text-anchor='middle'>Safari</text>
+<rect x='50' y='294' width='160' height='66' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='130' y='323' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>PC</text>
+<text x='130' y='343' font-size='12' fill='#6B7B8E' text-anchor='middle'>Chrome, Edge</text>
+<text x='350' y='112' font-size='13' font-weight='700' fill='#3D6A9A' text-anchor='middle'>AUSLIEFERUNG</text>
+<rect x='260' y='130' width='180' height='230' rx='16' fill='white' stroke='#3D6A9A' stroke-width='2.5'/>
+<text x='350' y='160' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>GitHub Pages</text>
+<text x='350' y='180' font-size='12' fill='#6B7B8E' text-anchor='middle'>die Adresse im Safari</text>
+<rect x='278' y='198' width='144' height='62' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='350' y='225' font-size='14' font-weight='600' fill='#0A2D56' text-anchor='middle'>index.html</text>
+<text x='350' y='245' font-size='11' fill='#6B7B8E' text-anchor='middle'>1,2 MB</text>
+<rect x='278' y='274' width='144' height='62' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='350' y='301' font-size='14' font-weight='600' fill='#0A2D56' text-anchor='middle'>audio/</text>
+<text x='350' y='321' font-size='11' fill='#6B7B8E' text-anchor='middle'>4857 mp3</text>
+<line x1='214' y1='163' x2='256' y2='245' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='214' y1='245' x2='256' y2='245' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='214' y1='327' x2='256' y2='245' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='235' y='380' font-size='12' fill='#6B7B8E' text-anchor='middle'>laden</text>
+<text x='600' y='112' font-size='13' font-weight='700' fill='#3D6A9A' text-anchor='middle'>LÄUFT IM BROWSER</text>
+<rect x='510' y='130' width='180' height='230' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='600' y='156' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Die App</text>
+<text x='600' y='180' font-size='13' fill='#6B7B8E' text-anchor='middle'>Spiele und Aufgaben</text>
+<text x='600' y='200' font-size='13' fill='#6B7B8E' text-anchor='middle'>Punkte und Protokoll</text>
+<text x='600' y='220' font-size='13' fill='#6B7B8E' text-anchor='middle'>Vorlesen</text>
+<text x='600' y='240' font-size='13' fill='#6B7B8E' text-anchor='middle'>Mikrofon</text>
+<text x='600' y='260' font-size='13' fill='#6B7B8E' text-anchor='middle'>alles Rechnen</text>
+<text x='600' y='280' font-size='13' fill='#6B7B8E' text-anchor='middle'>geschieht hier</text>
+<text x='600' y='300' font-size='13' fill='#6B7B8E' text-anchor='middle'>auf dem Gerät</text>
+<line x1='444' y1='245' x2='506' y2='245' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='850' y='112' font-size='13' font-weight='700' fill='#3D6A9A' text-anchor='middle'>NUR BEI BEDARF</text>
+<rect x='760' y='130' width='180' height='118' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<text x='850' y='156' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Vermittler</text>
+<text x='850' y='180' font-size='13' fill='#6B7B8E' text-anchor='middle'>Cloudflare Worker</text>
+<text x='850' y='200' font-size='13' fill='#6B7B8E' text-anchor='middle'>hält die Schlüssel</text>
+<text x='850' y='220' font-size='13' fill='#6B7B8E' text-anchor='middle'>/stt /tts /ocr /frage</text>
+<rect x='760' y='268' width='180' height='44' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='850' y='295' font-size='13' font-weight='600' fill='#0A2D56' text-anchor='middle'>ElevenLabs</text>
+<rect x='760' y='324' width='180' height='44' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='850' y='351' font-size='13' font-weight='600' fill='#0A2D56' text-anchor='middle'>Anthropic</text>
+<line x1='694' y1='210' x2='756' y2='196' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='725' y='195' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>fragt</text>
+<line x1='850' y1='250' x2='850' y2='264' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='850' y1='314' x2='850' y2='320' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='955' y='292' font-size='11.5' fill='#6B7B8E'>Hören</text>
+<text x='955' y='308' font-size='11.5' fill='#6B7B8E'>Sprechen</text>
+<text x='955' y='350' font-size='11.5' fill='#6B7B8E'>erklärt</text>
+<text x='955' y='366' font-size='11.5' fill='#6B7B8E'>Fehler</text>
+<rect x='50' y='420' width='940' height='84' rx='12' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='72' y='448' font-size='14' font-weight='700' fill='#0A2D56'>Ohne Netz geht fast alles weiter</text>
+<text x='72' y='472' font-size='13' fill='#6B7B8E'>Sobald die App geladen ist, laufen alle Spiele, alle Aufgaben und die Punktezählung ohne Verbindung.</text>
+<text x='72' y='492' font-size='13' fill='#6B7B8E'>Nur Mikrofon, neue Vorlesetexte und die Fehlererklärung brauchen den Vermittler.</text>
+<rect x='50' y='524' width='940' height='84' rx='12' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='72' y='552' font-size='14' font-weight='700' fill='#0A2D56'>Der wichtigste Punkt</text>
+<text x='72' y='576' font-size='13' fill='#6B7B8E'>Die Schlüssel für ElevenLabs und Anthropic liegen nur im Vermittler. Im Browser des Kindes liegt kein</text>
+<text x='72' y='596' font-size='13' fill='#6B7B8E'>Schlüssel, obwohl die ganze App dort offen einsehbar ist.</text>
+</svg>
+</figure>
+<p>Vier Orte sind beteiligt:</p>
+<table>
+<thead>
+<tr>
+<th>Ort</th>
+<th>Was dort liegt</th>
+<th>Wer bezahlt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gerät des Kindes</td>
+<td>nichts Dauerhaftes ausser Punkten und Protokoll</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GitHub Pages</td>
+<td>die App und 4857 Tondateien</td>
+<td>kostenlos</td>
+</tr>
+<tr>
+<td>Cloudflare Worker</td>
+<td>die Schlüssel und vier Durchreichen</td>
+<td>kostenlos im Rahmen</td>
+</tr>
+<tr>
+<td>ElevenLabs, Anthropic</td>
+<td>Hören, Sprechen, Fehlererklärung</td>
+<td>nach Verbrauch</td>
+</tr>
+</tbody>
+</table>
+<p>Die ganze App ist <strong>eine einzige Datei</strong>: <code>index.html</code>, 1 205 646 Bytes, 8954 Zeilen,
+405 Funktionen. Kein Bauschritt, keine Bibliothek, kein Gerüst. Ein Doppelklick
+genügt, und das Programm läuft.</p>
+<hr />
+<h2>3. Der Kreislauf einer Aufgabe</h2>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 680'   font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Kreislauf einer Aufgabe'>
+<rect width='1040' height='680' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Der Kreislauf einer Aufgabe</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Alles unten geschieht auf dem Gerät. Die App fragt dabei nichts im Netz ab.</text>
+<rect x='56' y='116' width='220' height='128' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='166' y='142' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Profil des Kindes</text>
+<text x='166' y='166' font-size='13' fill='#6B7B8E' text-anchor='middle'>Felix, Valentin,</text>
+<text x='166' y='186' font-size='13' fill='#6B7B8E' text-anchor='middle'>Johannes</text>
+<text x='166' y='206' font-size='13' fill='#6B7B8E' text-anchor='middle'>gewählte Themen</text>
+<text x='166' y='226' font-size='13' fill='#6B7B8E' text-anchor='middle'>Schwierigkeitsgrad</text>
+<rect x='316' y='116' width='220' height='128' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='426' y='142' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Aufgabenbauer</text>
+<text x='426' y='166' font-size='13' fill='#6B7B8E' text-anchor='middle'>baut die Frage neu,</text>
+<text x='426' y='186' font-size='13' fill='#6B7B8E' text-anchor='middle'>nicht aus einer Liste</text>
+<text x='426' y='206' font-size='13' fill='#6B7B8E' text-anchor='middle'>Zahlen und Wörter</text>
+<text x='426' y='226' font-size='13' fill='#6B7B8E' text-anchor='middle'>werden gewürfelt</text>
+<rect x='576' y='116' width='220' height='128' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<text x='686' y='142' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Die Aufgabe</text>
+<text x='686' y='166' font-size='13' fill='#6B7B8E' text-anchor='middle'>Frage, Antwort,</text>
+<text x='686' y='186' font-size='13' fill='#6B7B8E' text-anchor='middle'>Auswahl, Typ</text>
+<text x='686' y='206' font-size='13' fill='#6B7B8E' text-anchor='middle'>Merkmale wie</text>
+<text x='686' y='226' font-size='13' fill='#6B7B8E' text-anchor='middle'>«hier bitte tippen»</text>
+<rect x='836' y='116' width='152' height='128' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='912' y='142' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Darstellung</text>
+<text x='912' y='166' font-size='13' fill='#6B7B8E' text-anchor='middle'>Knöpfe oder</text>
+<text x='912' y='186' font-size='13' fill='#6B7B8E' text-anchor='middle'>Tastenfeld</text>
+<text x='912' y='206' font-size='13' fill='#6B7B8E' text-anchor='middle'>Vorlesen 🔈</text>
+<line x1='280' y1='180' x2='312' y2='180' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='540' y1='180' x2='572' y2='180' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='800' y1='180' x2='832' y2='180' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='576' y='320' width='220' height='140' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='686' y='346' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Antwort des Kindes</text>
+<text x='686' y='370' font-size='13' fill='#6B7B8E' text-anchor='middle'>Tippen auf einen Knopf</text>
+<text x='686' y='390' font-size='13' fill='#6B7B8E' text-anchor='middle'>oder Sprechen</text>
+<text x='686' y='410' font-size='13' fill='#6B7B8E' text-anchor='middle'>Sprechen zählt nicht,</text>
+<text x='686' y='430' font-size='13' fill='#6B7B8E' text-anchor='middle'>wo die Schreibung</text>
+<text x='686' y='450' font-size='13' fill='#6B7B8E' text-anchor='middle'>selbst die Aufgabe ist</text>
+<path d='M 912 248 L 912 288 L 686 288' fill='none' stroke='#0A2D56' stroke-width='2.2'/>
+<line x1='686' y1='288' x2='686' y2='314' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='316' y='320' width='220' height='140' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='426' y='346' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Urteil</text>
+<text x='426' y='370' font-size='13' fill='#6B7B8E' text-anchor='middle'>Wort für Wort,</text>
+<text x='426' y='390' font-size='13' fill='#6B7B8E' text-anchor='middle'>dann nach Klang</text>
+<text x='426' y='410' font-size='13' fill='#6B7B8E' text-anchor='middle'>Lob oder Berichtigung</text>
+<text x='426' y='430' font-size='13' fill='#6B7B8E' text-anchor='middle'>bei Fehlern eine</text>
+<text x='426' y='450' font-size='13' fill='#6B7B8E' text-anchor='middle'>Erklärung vom Vermittler</text>
+<line x1='572' y1='390' x2='540' y2='390' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='56' y='320' width='220' height='140' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='166' y='346' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Punkte und Protokoll</text>
+<text x='166' y='370' font-size='13' fill='#6B7B8E' text-anchor='middle'>Punkte sofort</text>
+<text x='166' y='390' font-size='13' fill='#6B7B8E' text-anchor='middle'>jede Antwort wird</text>
+<text x='166' y='410' font-size='13' fill='#6B7B8E' text-anchor='middle'>mitgeschrieben</text>
+<text x='166' y='430' font-size='13' fill='#6B7B8E' text-anchor='middle'>bleibt im Browser</text>
+<line x1='312' y1='390' x2='280' y2='390' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<path d='M 166 464 L 166 492 L 296 492 L 296 256' fill='none' stroke='#4FB8B0' stroke-width='2.2' stroke-dasharray='6 5'/>
+<line x1='296' y1='262' x2='296' y2='248' stroke='#4FB8B0' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='320' y='488' font-size='12.5' fill='#6B7B8E'>nächste Aufgabe — schwerer oder leichter, je nach Trefferquote</text>
+<rect x='56' y='518' width='932' height='136' rx='12' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='546' font-size='14' font-weight='700' fill='#0A2D56'>Die Spielarten verändern nur zwei Kästen</text>
+<text x='78' y='572' font-size='13' fill='#6B7B8E'>Kampf, Mathblatt, Tastenfeld, Nur-Hören und die anderen Spielarten tauschen die Darstellung und die Art</text>
+<text x='78' y='592' font-size='13' fill='#6B7B8E'>der Antwort aus. Aufgabenbauer, Urteil und Protokoll bleiben in allen Spielarten dieselben.</text>
+<text x='78' y='620' font-size='13' fill='#6B7B8E'>Daher wirkt eine Verbesserung am Urteil — etwa die Milde beim Klang — sofort in jeder Spielart.</text>
+<text x='78' y='640' font-size='13' fill='#6B7B8E'>Ein Fehler dort allerdings genauso. Deshalb die 480 Prüfungen, die bei jeder Fassung durchlaufen.</text>
+</svg>
+</figure>
+<p>Entscheidend ist der zweite Kasten. Die Aufgaben stehen nicht in einer Liste, sondern
+werden bei jedem Durchgang neu gewürfelt. Dadurch kann ein Kind dasselbe Thema
+zwanzigmal spielen, ohne dieselbe Aufgabe zweimal zu sehen.</p>
+<p>Der Nachteil davon: ein Fehler im Aufgabenbauer erzeugt nicht eine falsche Aufgabe,
+sondern eine ganze Gattung falscher Aufgaben. Deshalb die 480 Prüfungen in 27 Dateien,
+die vor jeder Auslieferung durchlaufen.</p>
+<hr />
+<h2>4. Der Umfang in Zahlen</h2>
+<table>
+<thead>
+<tr>
+<th>Bereich</th>
+<th style="text-align: right;">Themen</th>
+<th>Beispiel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mathematik und Geometrie</td>
+<td style="text-align: right;">190</td>
+<td>«Anzahlen bis 20», «Mittelsenkrechte»</td>
+</tr>
+<tr>
+<td>Französisch Wortschatz</td>
+<td style="text-align: right;">61</td>
+<td>«Begrüssung und Höflichkeit»</td>
+</tr>
+<tr>
+<td>Medien und Informatik</td>
+<td style="text-align: right;">33</td>
+<td>«Eingabe und Ausgabe»</td>
+</tr>
+<tr>
+<td>Französisch Grammatik</td>
+<td style="text-align: right;">20</td>
+<td>«être – sein»</td>
+</tr>
+<tr>
+<td>Deutsch</td>
+<td style="text-align: right;">13</td>
+<td>«Stammformen schreiben»</td>
+</tr>
+<tr>
+<td>Englisch Open World</td>
+<td style="text-align: right;">10</td>
+<td>«Unit 1: Going places»</td>
+</tr>
+<tr>
+<td><strong>Summe</strong></td>
+<td style="text-align: right;"><strong>327</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Dazu kommen 76 deutsche Verben mit ihren Stammformen und die Tondateien: 4857 mp3 in
+drei Sprachen, zusammen 100 MB.</p>
+<p>Die Oberfläche spricht Deutsch, Englisch und Französisch. Der Lernstoff selbst immer
+nur seine eigene Sprache.</p>
+<p>Sechs Spielarten stehen zur Wahl: der gewöhnliche Durchgang, Lernen, Zeitspiel,
+Überleben, Zweikampf und seit V80 das reine Hören ohne Hinsehen.</p>
+<hr />
+<h2>5. Der Weg einer gesprochenen Antwort</h2>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 660'   font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Weg einer gesprochenen Antwort'>
+<rect width='1040' height='660' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Der Weg einer gesprochenen Antwort</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Das Kind sagt «rufen». Sechs Schritte bis zum Urteil.</text>
+<rect x='56' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<circle cx='80' cy='146' r='14' fill='#0A2D56'/>
+<text x='80' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>1</text>
+<text x='127' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Mikrofon</text>
+<text x='127' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>Safari nimmt auf,</text>
+<text x='127' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>rund 3 Sekunden</text>
+<line x1='200' y1='182' x2='216' y2='182' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='218' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<circle cx='242' cy='146' r='14' fill='#0A2D56'/>
+<text x='242' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>2</text>
+<text x='289' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Vermittler</text>
+<text x='289' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>schickt den Ton</text>
+<text x='289' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>an ElevenLabs</text>
+<line x1='362' y1='182' x2='378' y2='182' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='380' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<circle cx='404' cy='146' r='14' fill='#0A2D56'/>
+<text x='404' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>3</text>
+<text x='451' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>ElevenLabs</text>
+<text x='451' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>schreibt mit:</text>
+<text x='451' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>«Rufen»</text>
+<line x1='524' y1='182' x2='540' y2='182' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='542' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<circle cx='566' cy='146' r='14' fill='#0A2D56'/>
+<text x='566' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>4</text>
+<text x='613' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Putzen</text>
+<text x='613' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>Klammern weg,</text>
+<text x='613' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>klein, ohne Zeichen</text>
+<line x1='686' y1='182' x2='702' y2='182' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='704' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<circle cx='728' cy='146' r='14' fill='#0A2D56'/>
+<text x='728' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>5</text>
+<text x='775' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Vergleich</text>
+<text x='775' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>Wort für Wort,</text>
+<text x='775' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>dann nach Klang</text>
+<line x1='848' y1='182' x2='864' y2='182' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='866' y='120' width='142' height='122' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<circle cx='890' cy='146' r='14' fill='#0A2D56'/>
+<text x='890' y='151' font-size='13' font-weight='700' fill='white' text-anchor='middle'>6</text>
+<text x='937' y='184' font-size='14.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Urteil</text>
+<text x='937' y='206' font-size='12' fill='#6B7B8E' text-anchor='middle'>richtig — und</text>
+<text x='937' y='222' font-size='12' fill='#6B7B8E' text-anchor='middle'>wird vorgelesen</text>
+<line x1='56' y1='262' x2='360' y2='262' stroke='#C8D3DE' stroke-width='1.5'/>
+<line x1='380' y1='262' x2='522' y2='262' stroke='#4FB8B0' stroke-width='1.5'/>
+<line x1='542' y1='262' x2='982' y2='262' stroke='#C8D3DE' stroke-width='1.5'/>
+<text x='56' y='282' font-size='12.5' fill='#6B7B8E'>auf dem Gerät</text>
+<text x='380' y='282' font-size='12.5' fill='#6B7B8E'>im Netz</text>
+<text x='542' y='282' font-size='12.5' fill='#6B7B8E'>wieder auf dem Gerät — ab hier urteilt das iPad selbst</text>
+<rect x='56' y='318' width='450' height='206' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='348' font-size='15' font-weight='700' fill='#0A2D56'>Schritt 4 und 5 im Einzelnen</text>
+<text x='78' y='382' font-size='12.5' fill='#6B7B8E'>gehört</text>
+<text x='244' y='382' font-size='14' fill='#4FB8B0'>&#8594;</text>
+<text x='272' y='382' font-size='13' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>[stöhnt] Rufen!</text>
+<text x='78' y='416' font-size='12.5' fill='#6B7B8E'>Klammern weg</text>
+<text x='244' y='416' font-size='14' fill='#4FB8B0'>&#8594;</text>
+<text x='272' y='416' font-size='13' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>Rufen!</text>
+<text x='78' y='450' font-size='12.5' fill='#6B7B8E'>klein, ohne Zeichen</text>
+<text x='244' y='450' font-size='14' fill='#4FB8B0'>&#8594;</text>
+<text x='272' y='450' font-size='13' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>rufen</text>
+<text x='78' y='484' font-size='12.5' fill='#6B7B8E'>Vergleich mit «rufen»</text>
+<text x='272' y='484' font-size='13' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>gleich — richtig</text>
+<rect x='546' y='318' width='436' height='206' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='568' y='348' font-size='15' font-weight='700' fill='#0A2D56'>Wenn die Schreibweise nicht passt</text>
+<text x='568' y='372' font-size='12.5' fill='#6B7B8E'>Beide Wörter werden auf ihren Klang reduziert.</text>
+<text x='568' y='406' font-size='13.5' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>viel</text>
+<text x='630' y='406' font-size='14' fill='#4FB8B0'>&#8594;</text>
+<text x='660' y='406' font-size='13.5' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>fil</text>
+<text x='568' y='436' font-size='13.5' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>fiel</text>
+<text x='630' y='436' font-size='14' fill='#4FB8B0'>&#8594;</text>
+<text x='660' y='436' font-size='13.5' font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill='#0A2D56'>fil</text>
+<text x='568' y='478' font-size='12.5' fill='#6B7B8E'>Gleicher Klang — die gesprochene Antwort gilt.</text>
+<text x='568' y='500' font-size='12.5' fill='#6B7B8E'>Beim Tippen gilt diese Milde nicht.</text>
+<rect x='56' y='548' width='926' height='84' rx='12' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='576' font-size='13.5' font-weight='700' fill='#0A2D56'>Gemessene Zeiten</text>
+<text x='78' y='600' font-size='13' fill='#6B7B8E'>Mitschrift, also Schritt 2 und 3: 0,6 bis 1,0 Sekunden. Vorlesen beim ersten Mal rund 2,9 Sekunden,</text>
+<text x='78' y='620' font-size='13' fill='#6B7B8E'>danach aus dem Zwischenspeicher sofort. Schritt 4 bis 6 brauchen keine Verbindung.</text>
+</svg>
+</figure>
+<p>Dieser Weg hat uns im Oktober drei Fassungen gekostet, und zwar an zwei Stellen, die
+im Bild harmlos aussehen.</p>
+<p><strong>Schritt 3 liefert mehr als gesprochen wurde.</strong> ElevenLabs schreibt auch
+Geräusche mit und setzt sie in eckige Klammern. Ein Räuspern wurde so zu <code>[stöhnt]</code>
+und landete als Antwort im Feld. Behoben an beiden Enden: die App wirft Klammern weg,
+und der Vermittler verlangt diese Zusätze gar nicht mehr.</p>
+<p><strong>Schritt 5 war zu streng.</strong> «Fallen, viel gefallen» galt als falsch, weil das Kind
+«viel» sagte und «fiel» gemeint war. Beides klingt gleich; kein Spracherkenner der Welt
+trennt das. Seit V79 werden beide Wörter auf ihren Klang reduziert und erst dann
+verglichen. Geprüft an allen 304 Verbformen: nur drei Paare fallen dabei zusammen, und
+alle drei sind echte Gleichklinger.</p>
+<p>Beim Tippen gilt diese Milde nicht. Fünf Themen üben die Schreibweise selbst; dort
+nimmt die App gesprochene Antworten nicht an und sagt das auch.</p>
+<hr />
+<h2>6. Der Schlüssel und die Tür</h2>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 540'   font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Wo der Schluessel liegt'>
+<rect width='1040' height='540' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Der Schlüssel und die Tür</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Zwei Schutzlagen. Die erste hält den Schlüssel, die zweite hält Fremde draussen.</text>
+<rect x='56' y='136' width='222' height='96' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='167' y='180' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Browser des Kindes</text>
+<text x='167' y='200' font-size='12' fill='#6B7B8E' text-anchor='middle'>kein Schlüssel darin</text>
+<text x='167' y='254' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>jeder kann hineinsehen</text>
+<rect x='400' y='126' width='252' height='208' rx='16' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2.5'/>
+<text x='526' y='158' font-size='15.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Vermittler</text>
+<text x='526' y='178' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>Cloudflare Worker</text>
+<rect x='424' y='196' width='204' height='52' rx='10' fill='white' stroke='#4FB8B0' stroke-width='1.5'/>
+<text x='526' y='218' font-size='12.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Lage 1 — die Schlüssel</text>
+<text x='526' y='237' font-size='11.5' font-family="ui-monospace,Menlo,monospace" fill='#6B7B8E' text-anchor='middle'>ELEVEN_KEY  ANTHROPIC_KEY</text>
+<rect x='424' y='260' width='204' height='52' rx='10' fill='white' stroke='#C8D3DE' stroke-width='1.5'/>
+<text x='526' y='282' font-size='12.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Lage 2 — der Türsteher</text>
+<text x='526' y='301' font-size='11.5' fill='#6B7B8E' text-anchor='middle'>nur spitzadvisory.github.io</text>
+<rect x='764' y='136' width='222' height='96' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='875' y='180' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>ElevenLabs, Anthropic</text>
+<text x='875' y='200' font-size='12' fill='#6B7B8E' text-anchor='middle'>prüfen den Schlüssel</text>
+<line x1='282' y1='184' x2='396' y2='184' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='339' y='176' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>Anfrage ohne Schlüssel</text>
+<line x1='656' y1='184' x2='760' y2='184' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='708' y='176' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>Anfrage mit Schlüssel</text>
+<rect x='56' y='336' width='222' height='84' rx='14' fill='white' stroke='#C46060' stroke-width='2' stroke-dasharray='6 5'/>
+<text x='167' y='368' font-size='14.5' font-weight='700' fill='#C46060' text-anchor='middle'>fremde Webseite</text>
+<text x='167' y='388' font-size='12' fill='#6B7B8E' text-anchor='middle'>will auf Ihre Rechnung</text>
+<text x='167' y='406' font-size='12' fill='#6B7B8E' text-anchor='middle'>mitbenutzen</text>
+<line x1='282' y1='370' x2='396' y2='300' stroke='#C46060' stroke-width='2.2' stroke-dasharray='6 5'/>
+<circle cx='352' cy='326' r='15' fill='white' stroke='#C46060' stroke-width='2.2'/>
+<line x1='346' y1='320' x2='358' y2='332' stroke='#C46060' stroke-width='2.4'/>
+<line x1='358' y1='320' x2='346' y2='332' stroke='#C46060' stroke-width='2.4'/>
+<text x='290' y='428' font-size='12.5' fill='#C46060'>vom Türsteher abgewiesen</text>
+<rect x='56' y='450' width='930' height='64' rx='12' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='476' font-size='13.5' font-weight='700' fill='#0A2D56'>Folge</text>
+<text x='78' y='498' font-size='13' fill='#6B7B8E'>Selbst wer die ganze App herunterlädt, hat nichts in der Hand. Die Rechnung bleibt bei Ihnen und nur bei Ihnen.</text>
+</svg>
+</figure>
+<p>Die App liegt offen im Netz. Jeder kann sie herunterladen und hineinsehen. Deshalb
+steht kein Schlüssel darin.</p>
+<p>Beide Schutzlagen sind nötig. Die erste hält den Schlüssel aus dem Browser heraus.
+Die zweite verhindert, dass eine fremde Webseite den Vermittler als kostenlosen
+Dienst missbraucht.</p>
+<hr />
+<h2>7. Fassungen und Sicherung</h2>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 640'   font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Fassungen und Sicherung'>
+<rect width='1040' height='640' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Jede Fassung bleibt greifbar</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Eine neue Fassung geht an vier Orte. Aus dreien davon lässt sie sich zurückholen.</text>
+<rect x='56' y='126' width='200' height='116' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='156' y='152' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Werkstatt</text>
+<text x='156' y='176' font-size='13' fill='#6B7B8E' text-anchor='middle'>Arbeitsplatz von Claude</text>
+<text x='156' y='196' font-size='13' fill='#6B7B8E' text-anchor='middle'>index.html wird geändert</text>
+<text x='156' y='216' font-size='13' fill='#6B7B8E' text-anchor='middle'>und durchgeprüft</text>
+<rect x='390' y='114' width='246' height='62' rx='14' fill='#FFFFFF' stroke='#3D6A9A' stroke-width='2'/>
+<text x='513' y='141' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>GitHub  main</text>
+<text x='513' y='161' font-size='12' fill='#6B7B8E' text-anchor='middle'>54 Fassungen, einzeln</text>
+<rect x='390' y='194' width='246' height='62' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='513' y='221' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Dropbox Source</text>
+<text x='513' y='241' font-size='12' fill='#6B7B8E' text-anchor='middle'>die letzten acht</text>
+<rect x='390' y='274' width='246' height='62' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='513' y='301' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>OneDrive Archiv</text>
+<text x='513' y='321' font-size='12' fill='#6B7B8E' text-anchor='middle'>45 Fassungen ab V51</text>
+<rect x='390' y='354' width='246' height='62' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='513' y='381' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Dropbox Apps</text>
+<text x='513' y='401' font-size='12' fill='#6B7B8E' text-anchor='middle'>was die Kinder spielen</text>
+<line x1='260' y1='184' x2='386' y2='145' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='260' y1='184' x2='386' y2='225' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='260' y1='184' x2='386' y2='305' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='260' y1='184' x2='386' y2='385' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='752' y='114' width='234' height='62' rx='14' fill='#FFFFFF' stroke='#3D6A9A' stroke-width='2'/>
+<text x='869' y='141' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>GitHub Pages</text>
+<text x='869' y='161' font-size='12' fill='#6B7B8E' text-anchor='middle'>die Adresse im Safari</text>
+<line x1='640' y1='145' x2='748' y2='145' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='752' y='218' font-size='14' font-weight='700' fill='#0A2D56'>Zurückholen</text>
+<text x='752' y='242' font-size='12.5' fill='#6B7B8E'>GitHub: ein Befehl, jede der</text>
+<text x='752' y='260' font-size='12.5' fill='#6B7B8E'>54 Fassungen, in Sekunden.</text>
+<text x='752' y='288' font-size='12.5' fill='#6B7B8E'>Archiv und Dropbox:</text>
+<text x='752' y='306' font-size='12.5' fill='#6B7B8E'>Datei kopieren, fertig.</text>
+<text x='752' y='340' font-size='12.5' fill='#6B7B8E'>Die Spielkopie wird immer</text>
+<text x='752' y='358' font-size='12.5' fill='#6B7B8E'>überschrieben. Sie ist kein</text>
+<text x='752' y='376' font-size='12.5' fill='#6B7B8E'>Archiv.</text>
+<rect x='56' y='450' width='930' height='148' rx='12' fill='#FFFFFF' stroke='#C46060' stroke-width='2'/>
+<text x='78' y='480' font-size='14' font-weight='700' fill='#0A2D56'>Die Spielstände sind etwas anderes</text>
+<text x='78' y='506' font-size='13' fill='#6B7B8E'>Punkte, Protokolle und Profile der Kinder leben im Browser des jeweiligen Geräts und in der Spielkopie.</text>
+<text x='78' y='526' font-size='13' fill='#6B7B8E'>Keine Fassung der App kann diese Daten wiederherstellen. Löscht ein Kind die Browserdaten, sind die</text>
+<text x='78' y='546' font-size='13' fill='#6B7B8E'>Punkte dieses Geräts fort.</text>
+<text x='78' y='574' font-size='13' fill='#6B7B8E'>Stand 31. Oktober 2026 liegt eine Sicherung im OneDrive Archiv: 161 Protokolle seit dem 19. September</text>
+<text x='78' y='590' font-size='12.5' font-family="ui-monospace,Menlo,monospace" fill='#3D6A9A'>20261031_SPITZ-Lernen_Spielstaende_V1.zip</text>
+</svg>
+</figure>
+<p>Einzelheiten dazu im Dokument <code>20261031_SPITZ-Lernen_Stand-und-Sicherung_V1.md</code>:
+die Tabelle aller 54 Fassungen, der Befehl zum Zurückholen und die zwei offenen
+Punkte.</p>
+<hr />
+<h2>8. Die Rechnung der Bauweise</h2>
+<p>Eine einzige Datei ohne Bauschritt ist eine ungewöhnliche Wahl. Sie hat uns bisher
+mehr genützt als gekostet.</p>
+<p><strong>Dafür spricht:</strong></p>
+<ul>
+<li>Jede Fassung ist ein einziges Artefakt. Zurückholen heisst: eine Datei kopieren.</li>
+<li>Nichts kann veralten. Keine Abhängigkeit, kein Sicherheitsupdate, kein Bauwerkzeug,
+  das in zwei Jahren nicht mehr läuft.</li>
+<li>Die App läuft auch ohne Netz, sobald sie geladen ist.</li>
+<li>Ein Doppelklick auf die Datei genügt zum Prüfen.</li>
+</ul>
+<p><strong>Dagegen spricht:</strong></p>
+<ul>
+<li>8954 Zeilen in einer Datei sind unübersichtlich. Jede Änderung geschieht über
+  genaue Textersetzung mit Sicherungen, nicht über eine Entwicklungsumgebung.</li>
+<li>Die Datei wird bei jedem Aufruf ganz geladen: 1,2 MB. Über Mobilfunk merkbar,
+  im WLAN nicht.</li>
+<li>Teile lassen sich nicht einzeln austauschen. Eine Änderung am Urteil betrifft
+  sofort alle 327 Themen und alle sechs Spielarten.</li>
+</ul>
+<p>Der dritte Punkt ist der ernsteste. Er ist auch der Grund, warum die Prüfungen
+mitgewachsen sind: von einer Handvoll im August auf heute 480.</p>
+<hr />
+<h2>9. Grenzen im heutigen Stand</h2>
+<table>
+<thead>
+<tr>
+<th>Grenze</th>
+<th>Folge</th>
+<th>Behandelt im Umbau</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spielstände leben nur im Browser des Geräts</td>
+<td>Browserdaten löschen heisst Punkte verlieren</td>
+<td>ja</td>
+</tr>
+<tr>
+<td>Der Worker wird von Hand über die Zwischenablage eingespielt</td>
+<td>langsam, fehleranfällig</td>
+<td>ja</td>
+</tr>
+<tr>
+<td>Das Archiv hat keine Marken, nur Botschaften</td>
+<td>Zuordnung über eine Tabelle statt über einen Namen</td>
+<td>ja</td>
+</tr>
+<tr>
+<td>Kein Gesprächspartner zum Üben</td>
+<td>Sprechen bleibt Einzelwort-Antwort</td>
+<td>ja, Schritt 3 bis 6</td>
+</tr>
+<tr>
+<td>Die Verbenliste Teil 2 fehlt</td>
+<td>Flade-Stammformen unvollständig</td>
+<td>nein, wartet auf Sie</td>
+</tr>
+<tr>
+<td>Eine englische Vokabel ohne Beispielsatz: «distance»</td>
+<td>eine Aufgabe fehlt</td>
+<td>nein</td>
+</tr>
+<tr>
+<td>Die maschinell gebaute englische Spalte von dis donc</td>
+<td>ungeprüft durch eine Lehrperson</td>
+<td>nein</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>SPITZ Lernen · Urs Spitz · dieses Dokument gehört zum Satz der Unterlagen im
+Ordner <code>docs/</code> des Projektarchivs.</em></p></section><section id='t3'><h1>SPITZ Lernen — die Architektur nach dem Umbau</h1>
+<p>Stand 31. Oktober 2026 · Entwurf · Gegenstück zu <code>20261031_SPITZ-Lernen_Architektur-heute_V1.md</code></p>
+<hr />
+<h2>1. Zweck dieses Dokuments</h2>
+<p>Fünf Änderungen stehen an. Eine davon ist zur Hälfte gebaut, zwei warten auf Ihre
+Entscheidung, zwei sind reine Fleissarbeit.</p>
+<p>Das Grundgerüst bleibt unangetastet: eine Datei, kein Bauschritt, der Schlüssel im
+Vermittler. Die Gründe dafür stehen im ersten Dokument und sind nicht neu zu erörtern.</p>
+<hr />
+<h2>2. Die fünf Änderungen im Überblick</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Nr.</th>
+<th>Änderung</th>
+<th>Gewinn</th>
+<th>Stand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td>Sprachpartnerin zum Reden</td>
+<td>freies Sprechen statt Einzelwörtern</td>
+<td>halb gebaut</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td>Auslieferung ohne Handgriff</td>
+<td>ein Schub statt dreier Schritte</td>
+<td>wartet auf Entscheidung</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td>Spielstände sichern sich selbst</td>
+<td>Verlust wird unmöglich</td>
+<td>zu bauen</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td>Versionsmarken im Archiv</td>
+<td>Zurückholen über den Namen</td>
+<td>Umweg nötig</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td>PC bleibt wach, solange gearbeitet wird</td>
+<td>keine Unterbrechung mitten im Lauf</td>
+<td>wartet auf Entscheidung</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>3. Änderung 1 — die Sprachpartnerin</h2>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 700'   font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Die Sprachpartnerin'>
+<rect width='1040' height='700' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Die Sprachpartnerin — geplanter Ablauf</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Fünf Schritte. Schritt 1 und 2 stehen bereits, Schritt 3 bis 5 sind entworfen.</text>
+<rect x='56' y='120' width='180' height='88' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='146' y='160' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Kind drückt</text>
+<text x='146' y='180' font-size='12' fill='#6B7B8E' text-anchor='middle'>«Mit Emilie reden»</text>
+<rect x='300' y='116' width='200' height='96' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<text x='400' y='142' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>Vermittler</text>
+<text x='400' y='166' font-size='13' fill='#6B7B8E' text-anchor='middle'>prüft das Tageskontingent</text>
+<text x='400' y='186' font-size='13' fill='#6B7B8E' text-anchor='middle'>gibt ein kurzlebiges</text>
+<text x='400' y='206' font-size='13' fill='#6B7B8E' text-anchor='middle'>Eintrittsbillett heraus</text>
+<line x1='240' y1='164' x2='296' y2='164' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='268' y='156' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>fragt</text>
+<rect x='570' y='116' width='270' height='216' rx='16' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2.5'/>
+<text x='705' y='146' font-size='15.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Emilie</text>
+<text x='705' y='166' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>ElevenLabs Agent, fertig gebaut</text>
+<rect x='592' y='182' width='226' height='60' rx='10' fill='white' stroke='#4FB8B0' stroke-width='1.5'/>
+<text x='705' y='204' font-size='12.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Zwölf harte Regeln</text>
+<text x='705' y='222' font-size='11.5' fill='#6B7B8E' text-anchor='middle'>keine Hausaufgaben, keine Bestätigung,</text>
+<text x='705' y='236' font-size='11.5' fill='#6B7B8E' text-anchor='middle'>Wortschatz der Unit im Gespräch</text>
+<rect x='592' y='254' width='226' height='60' rx='10' fill='white' stroke='#C8D3DE' stroke-width='1.5'/>
+<text x='705' y='276' font-size='12.5' font-weight='700' fill='#0A2D56' text-anchor='middle'>Zweiter Prüfer</text>
+<text x='705' y='294' font-size='11.5' fill='#6B7B8E' text-anchor='middle'>liest jede Antwort mit, bevor sie</text>
+<text x='705' y='308' font-size='11.5' fill='#6B7B8E' text-anchor='middle'>gesprochen wird; lässt neu formulieren</text>
+<line x1='504' y1='164' x2='566' y2='164' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='535' y='156' font-size='12.5' fill='#6B7B8E' text-anchor='middle'>Billett</text>
+<path d='M 146 212 L 146 380 L 705 380 L 705 340' fill='none' stroke='#3D6A9A' stroke-width='2.4'/>
+<line x1='705' y1='348' x2='705' y2='336' stroke='#3D6A9A' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='300' y='402' font-size='13' fill='#3D6A9A'>Gespräch unmittelbar zwischen Gerät und Emilie — der Vermittler ist dann nicht mehr beteiligt</text>
+<rect x='880' y='120' width='110' height='88' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='935' y='160' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Protokoll</text>
+<text x='935' y='180' font-size='12' fill='#6B7B8E' text-anchor='middle'>Mitschrift</text>
+<line x1='844' y1='164' x2='876' y2='164' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='56' y='430' width='462' height='160' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='458' font-size='14.5' font-weight='700' fill='#0A2D56'>Steht bereits</text>
+<text x='78' y='482' font-size='12.5' fill='#6B7B8E'>Der Agent ist gebaut und in drei Sprachen eingerichtet.</text>
+<text x='78' y='504' font-size='12.5' fill='#6B7B8E'>Die zwölf Regeln sind geschrieben und erprobt.</text>
+<text x='78' y='526' font-size='12.5' fill='#6B7B8E'>Der erste Versuch scheiterte: Emilie bestätigte eine</text>
+<text x='78' y='548' font-size='12.5' fill='#6B7B8E'>Antwort mit «Oui». Regel und Prüfer wurden geschärft,</text>
+<text x='78' y='570' font-size='12.5' fill='#6B7B8E'>danach 22 Züge ohne einen einzigen Verstoss.</text>
+<rect x='542' y='430' width='448' height='160' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='564' y='458' font-size='14.5' font-weight='700' fill='#0A2D56'>Noch zu bauen</text>
+<text x='564' y='482' font-size='12.5' fill='#6B7B8E'>Die Billettausgabe im Vermittler, mit Tageskontingent.</text>
+<text x='564' y='504' font-size='12.5' fill='#6B7B8E'>Der Bildschirm in der App.</text>
+<text x='564' y='526' font-size='12.5' fill='#6B7B8E'>Die Ablage der Mitschriften neben den Protokollen.</text>
+<text x='564' y='548' font-size='12.5' fill='#6B7B8E'>Stichproben an den Regeln, bevor die Kinder dürfen.</text>
+<text x='564' y='570' font-size='12.5' fill='#6B7B8E'>Freigabe zuerst für einen Sohn, dann für alle.</text>
+<rect x='56' y='612' width='934' height='68' rx='12' fill='white' stroke='#C46060' stroke-width='2'/>
+<text x='78' y='640' font-size='13.5' font-weight='700' fill='#0A2D56'>Das Tageskontingent ist kein Beiwerk</text>
+<text x='78' y='662' font-size='13' fill='#6B7B8E'>Ein offenes Gespräch kostet nach Minuten. Ohne Obergrenze im Vermittler kann ein vergessenes iPad in der Tasche eine Rechnung erzeugen.</text>
+</svg>
+</figure>
+<p>Das Kind redet mit Emilie, Kate oder Emilia über das Thema der laufenden Unit. Keine
+Aufgaben, keine Noten, ein Gespräch.</p>
+<p><strong>Der schwierigste Teil ist bereits erledigt.</strong> Ein Sprachmodell, das mit einem Kind
+über Schulstoff spricht, will von Natur aus helfen. Es bestätigt, es lobt, es
+verbessert — und nimmt dem Kind damit genau die Arbeit ab, um die es geht. Der erste
+Versuch zeigte das sofort: auf «La cloche? C'est ça?» antwortete die Partnerin «Oui,
+la cloche sonne…». Die Regel war zu weich formuliert.</p>
+<p>Die Berichtigung bestand aus zwei Teilen. Die erste Regel verbietet jetzt jede Form
+der Bestätigung ausdrücklich, auch das zustimmende Wiederholen der Antwort. Zusätzlich
+liest ein zweites Modell jede Antwort mit, bevor sie gesprochen wird, und lässt neu
+formulieren, sobald eine Bestätigung darin steckt. Danach: 22 Züge ohne Verstoss.</p>
+<p>Der zweite Prüfer kostet etwa eine halbe Sekunde Verzögerung. Diesen Preis halte ich
+für richtig bezahlt: ein abrupt abgebrochenes Gespräch verstört ein Kind mehr als eine
+kurze Pause.</p>
+<p><strong>Das Tageskontingent ist der Grund, warum Schritt 3 vor Schritt 4 kommt.</strong> Ein
+Gespräch kostet nach Minuten. Der Bildschirm in der App darf erst entstehen, wenn der
+Vermittler die Obergrenze durchsetzt.</p>
+<hr />
+<h2>4. Änderung 2 — Auslieferung ohne Handgriff</h2>
+<figure><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1040 680'   font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role='img' aria-label='Umbau der Auslieferung'>
+<rect width='1040' height='680' fill='#F7F9FC'/>
+<defs><marker id='sp' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M 0 0 L 10 5 L 0 10 z' fill='#0A2D56'/></marker></defs>
+<text x='40' y='46' font-size='21' font-weight='700' fill='#0A2D56'>Auslieferung und Sicherung nach dem Umbau</text>
+<text x='40' y='70' font-size='13.5' fill='#6B7B8E'>Grün ist neu. Weiss bleibt, wie es ist. Rot gestrichelt ist der Handgriff, der entfällt.</text>
+<rect x='56' y='132' width='170' height='72' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='141' y='164' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Werkstatt</text>
+<text x='141' y='184' font-size='12' fill='#6B7B8E' text-anchor='middle'>index.html, worker.js</text>
+<rect x='300' y='132' width='190' height='72' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='395' y='164' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>GitHub  main</text>
+<text x='395' y='184' font-size='12' fill='#6B7B8E' text-anchor='middle'>eine Ablage für beides</text>
+<line x1='230' y1='168' x2='296' y2='168' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='263' y='156' font-size='12' fill='#6B7B8E' text-anchor='middle'>Schub</text>
+<rect x='300' y='240' width='190' height='96' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='395' y='266' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>GitHub Actions</text>
+<text x='395' y='290' font-size='13' fill='#6B7B8E' text-anchor='middle'>480 Prüfungen,</text>
+<text x='395' y='310' font-size='13' fill='#6B7B8E' text-anchor='middle'>dann ausliefern</text>
+<text x='395' y='330' font-size='13' fill='#6B7B8E' text-anchor='middle'>ohne Handgriff</text>
+<line x1='395' y1='208' x2='395' y2='236' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='620' y='132' width='200' height='72' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='720' y='164' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>GitHub Pages</text>
+<text x='720' y='184' font-size='12' fill='#6B7B8E' text-anchor='middle'>die App beim Kind</text>
+<rect x='620' y='252' width='200' height='72' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='720' y='284' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Cloudflare Worker</text>
+<text x='720' y='304' font-size='12' fill='#6B7B8E' text-anchor='middle'>der Vermittler</text>
+<line x1='494' y1='282' x2='616' y2='186' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='494' y1='292' x2='616' y2='288' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<path d='M 141 208 L 141 372 L 720 372 L 720 330' fill='none' stroke='#C46060' stroke-width='2.2' stroke-dasharray='6 5'/>
+<circle cx='430' cy='372' r='15' fill='#F7F9FC' stroke='#C46060' stroke-width='2.2'/>
+<line x1='424' y1='366' x2='436' y2='378' stroke='#C46060' stroke-width='2.4'/>
+<line x1='436' y1='366' x2='424' y2='378' stroke='#C46060' stroke-width='2.4'/>
+<text x='456' y='394' font-size='12.5' fill='#C46060'>heute: Einfügen über die Zwischenablage, von Hand, bei jeder Änderung</text>
+<line x1='56' y1='424' x2='986' y2='424' stroke='#C8D3DE' stroke-width='1.5'/>
+<text x='56' y='454' font-size='16' font-weight='700' fill='#0A2D56'>Die Spielstände</text>
+<rect x='56' y='476' width='180' height='62' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='146' y='503' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>iPad, iPhone</text>
+<text x='146' y='523' font-size='12' fill='#6B7B8E' text-anchor='middle'>über Dropbox</text>
+<rect x='56' y='552' width='180' height='62' rx='14' fill='#FFFFFF' stroke='#C8D3DE' stroke-width='2'/>
+<text x='146' y='579' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>PC</text>
+<text x='146' y='599' font-size='12' fill='#6B7B8E' text-anchor='middle'>in den Ordner</text>
+<rect x='360' y='500' width='210' height='88' rx='14' fill='#FFFFFF' stroke='#4FB8B0' stroke-width='2'/>
+<text x='465' y='540' font-size='15' font-weight='600' fill='#0A2D56' text-anchor='middle'>Dropbox Apps</text>
+<text x='465' y='560' font-size='12' fill='#6B7B8E' text-anchor='middle'>alle Protokolle, zentral</text>
+<line x1='240' y1='507' x2='356' y2='528' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<line x1='240' y1='583' x2='356' y2='560' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<rect x='700' y='500' width='210' height='88' rx='14' fill='#DCEEEC' stroke='#4FB8B0' stroke-width='2'/>
+<text x='805' y='526' font-size='15' font-weight='700' fill='#0A2D56' text-anchor='middle'>OneDrive Archiv</text>
+<text x='805' y='550' font-size='13' fill='#6B7B8E' text-anchor='middle'>wöchentlich, datiert,</text>
+<text x='805' y='570' font-size='13' fill='#6B7B8E' text-anchor='middle'>von selbst</text>
+<line x1='574' y1='544' x2='696' y2='544' stroke='#0A2D56' stroke-width='2.2' marker-end='url(#sp)'/>
+<text x='360' y='608' font-size='12.5' fill='#6B7B8E'>steht heute</text>
+<text x='700' y='608' font-size='12.5' font-weight='600' fill='#0A2D56'>neu</text>
+<rect x='56' y='630' width='930' height='40' rx='10' fill='white' stroke='#C8D3DE' stroke-width='2'/>
+<text x='78' y='656' font-size='13' fill='#6B7B8E'>Nach dem Umbau braucht eine neue Fassung einen Handgriff statt dreier, und die Spielstände sichern sich ohne Zutun.</text>
+</svg>
+</figure>
+<p>Heute braucht eine neue Fassung drei Schritte: die App nach GitHub schieben, die
+Spielkopie in Dropbox ersetzen, und den Vermittler von Hand über die Zwischenablage in
+die Cloudflare-Oberfläche einfügen. Der dritte Schritt ist der schlechteste. Er
+geschieht in einem Editor im Browser, er lässt sich nicht prüfen, und er hinterlässt
+keine Spur.</p>
+<p>Künftig liegt <code>worker.js</code> in derselben GitHub-Ablage wie die App. Ein Schub löst dort
+einen Arbeitslauf aus: 480 Prüfungen, und bei Erfolg geht die App an GitHub Pages und
+der Vermittler an Cloudflare.</p>
+<p><strong>Der Preis dafür:</strong> ein Cloudflare-Zugangsschlüssel muss als Geheimnis in GitHub
+hinterlegt werden. Dieser Schlüssel darf nur den einen Worker verändern dürfen, nichts
+sonst im Konto. Die Einrichtung geschieht in Ihrer Cloudflare-Oberfläche; den
+Schlüsselwert sehe ich dabei nicht und brauche ich auch nicht.</p>
+<hr />
+<h2>5. Änderung 3 — Spielstände sichern sich selbst</h2>
+<p>Punkte und Protokolle sind das einzige im ganzen Aufbau, das sich nicht wiederherstellen
+lässt. Jede Fassung der App liegt dreifach; die 161 Protokolle seit dem 19. September
+lagen bis heute nur einfach.</p>
+<p>Der Weg der Daten ist bereits gut: iPad und iPhone schreiben über Dropbox, der PC in
+den Ordner, der dasselbe Dropbox-Verzeichnis ist. Alles läuft zusammen. Es fehlt nur
+die datierte Kopie daneben.</p>
+<p>Vorgesehen ist ein wöchentlicher Lauf auf dem Dauer-PC, der den Spielordner als
+datiertes Archiv ablegt, nach dem gewohnten Schema
+<code>yyyymmdd_SPITZ-Lernen_Spielstaende_Vx.zip</code>. Die heutige Sicherung von Hand ist der
+erste Eintrag dieser Reihe.</p>
+<hr />
+<h2>6. Änderung 4 — Versionsmarken im Archiv</h2>
+<p>Marken in der Ablage wären der natürliche Weg, eine Fassung über ihren Namen
+zurückzuholen: <code>v76</code> statt eines Commit-Schlüssels. Ich habe 37 solche Marken lokal
+erzeugt; das Hochladen hat der Netzübergang dieser Arbeitsumgebung abgewiesen, sowohl
+über <code>git push --tags</code> als auch über die GitHub-Schnittstelle. Branches gehen durch,
+Marken nicht.</p>
+<p>Zwei Wege bleiben. Entweder Sie setzen die Marken einmalig selbst — ein Befehl, 37
+Marken, eine Minute. Oder es bleibt bei der Tabelle im Sicherungsdokument, die
+denselben Dienst tut und nur unbequemer ist.</p>
+<p>Mit Änderung 2 löst sich das nebenbei: ein Arbeitslauf in GitHub kann Marken setzen,
+weil er innerhalb von GitHub läuft und nicht durch diesen Netzübergang muss.</p>
+<hr />
+<h2>7. Änderung 5 — der PC bleibt wach, solange gearbeitet wird</h2>
+<p>Die Bildschirmsperre unterbricht lange Läufe auf dem Dauer-PC. Dauerhaft entsperrt
+soll der Rechner nicht sein.</p>
+<p>Vorgesehen ist ein Signal statt einer Dauerlösung: Ich lege beim Arbeiten eine
+Merkdatei in einen Ordner, den der PC sieht, und entferne sie am Ende. Eine Aufgabe
+auf dem PC hält den Bildschirm wach, solange diese Datei liegt, und lässt die Sperre
+sonst ihren gewohnten Lauf nehmen.</p>
+<p>Für das iPad ist dieselbe Frage seit V82 erledigt. Die Screen Wake Lock des Browsers
+hält den Bildschirm während eines Durchgangs wach und gibt ihn danach frei. Safari
+beherrscht das ab iOS 16.4; ältere Geräte verhalten sich wie bisher.</p>
+<p>Die eingangs erwogene Maussteuerung über Hot Corners trägt nicht. Hot Corners gibt es
+auf dem Mac; iPadOS kennt sie in dieser Form nicht, und auf Windows lösen sie keine
+Sperre aus.</p>
+<hr />
+<h2>8. Unverändertes</h2>
+<ul>
+<li>Eine einzige HTML-Datei, kein Bauschritt, keine Abhängigkeit.</li>
+<li>Die Schlüssel für ElevenLabs und Anthropic nur im Vermittler.</li>
+<li>Die Türsteherregel: nur die eigene Adresse darf den Vermittler nutzen.</li>
+<li>Die 480 Prüfungen vor jeder Auslieferung.</li>
+<li>Der Abgleich mit dem Lehrplan 21 bei jedem neuen Thema.</li>
+<li>Die Ablage der Spielstände über Dropbox mit dem Zugang des Benutzers selbst.</li>
+</ul>
+<hr />
+<h2>9. Offene Entscheidung</h2>
+<p>Die Änderungen 2 und 5 hängen an einer einzigen Antwort von Ihnen, weil beide etwas
+auf Ihren Geräten einrichten:</p>
+<ol>
+<li>Ein Cloudflare-Zugangsschlüssel als Geheimnis in GitHub, beschränkt auf den einen
+   Worker.</li>
+<li>Eine Aufgabe auf dem Dauer-PC, die auf die Merkdatei achtet.</li>
+</ol>
+<p>Ohne diese Antwort bleiben Auslieferung und Bildschirmsperre, wie sie heute sind. Die
+Änderungen 1, 3 und 4 laufen unabhängig davon weiter.</p>
+<hr />
+<h2>10. Vorgeschlagene Reihenfolge</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Schritt</th>
+<th>Inhalt</th>
+<th>Hängt ab von</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td>Billettausgabe und Tageskontingent im Vermittler</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td>Bildschirm der Sprachpartnerin in der App</td>
+<td>Schritt 1</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td>Stichproben an den Regeln, Ablage der Mitschriften</td>
+<td>Schritt 2</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td>Freigabe für einen Sohn, dann für alle</td>
+<td>Schritt 3</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td>Wöchentliche Sicherung der Spielstände</td>
+<td>—</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td>Auslieferung über GitHub Actions, Marken inbegriffen</td>
+<td>Ihre Antwort</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td>Bildschirmsperre des PC</td>
+<td>Ihre Antwort</td>
+</tr>
+</tbody>
+</table>
+<p>Die Schritte 1 bis 4 sind die gewichtigsten und beginnen sofort. Schritt 5 ist eine
+knappe Stunde Arbeit und kann dazwischenpassen.</p>
+<hr />
+<p><em>SPITZ Lernen · Urs Spitz · dieses Dokument gehört zum Satz der Unterlagen im
+Ordner <code>docs/</code> des Projektarchivs.</em></p></section></main></body></html>

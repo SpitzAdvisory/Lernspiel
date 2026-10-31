@@ -10,6 +10,7 @@ Dieser Ordner sammelt die Dokumente zur App. Dateien nach dem Schema
 | `20261031_SPITZ-Lernen_Stand-und-Sicherung_V1.md` | Bestand, die vier Sicherungsorte, Tabelle aller 54 Fassungen, Befehl zum Zurückholen |
 | `20261031_SPITZ-Lernen_Architektur-heute_V1.md` | Aufbau der App heute, in gewöhnlichen Worten, mit fünf Bildern |
 | `20261031_SPITZ-Lernen_Architektur-kuenftig_V1.md` | Die fünf geplanten Änderungen, mit zwei Bildern |
+| `20261031_SPITZ-Lernen_Unterlagen_V1.html` | Alle drei Dokumente in einer Datei, Bilder eingebettet, ohne Netz lesbar |
 
 ## Bilder
 
@@ -22,6 +23,18 @@ Dieser Ordner sammelt die Dokumente zur App. Dateien nach dem Schema
 | `bild5_kreislauf.svg` | Der Kreislauf einer Aufgabe |
 | `bild6_sprachpartnerin.svg` | Die Sprachpartnerin, geplanter Ablauf |
 | `bild7_umbau.svg` | Auslieferung und Sicherung nach dem Umbau |
+
+## Neu bauen
+
+Die HTML-Fassung entsteht aus den Markdown-Dateien und den Zeichnungen:
+
+```
+cd docs
+python3 bauen.py
+```
+
+Braucht `pip install markdown`. Nach einer Änderung an einem Dokument oder an
+einer Zeichnung neu laufen lassen.
 
 ## Lesereihenfolge
 
