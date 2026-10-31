@@ -455,6 +455,9 @@ T.en.sprechFalsch="Not right yet. Wanted: {a}";
 T.de.sprechFalsch="Noch nicht richtig. Gesucht: {a}";
 T.fr.sprechRichtig="Bien prononcé";
 T.en.sprechRichtig="Said correctly";
+T.de.sprechFehlt="Es fehlt noch: {a}";
+T.en.sprechFehlt="Still missing: {a}";
+T.fr.sprechFehlt="Il manque encore : {a}";
 T.de.sprechRichtig="Richtig gesprochen";
 T.fr.hoerImBrowser="L’écoute est faite par le navigateur. Le son va à son fournisseur.";
 T.en.hoerImBrowser="The browser does the listening. The audio goes to its provider.";
@@ -654,6 +657,15 @@ T.fr.frarea_1="Vocabulaire par unité et thème";
 T.de.frarea_2="Grammatik";
 T.en.frarea_2="Grammar";
 T.fr.frarea_2="Grammaire";
+T.de.de_title="Deutsch: Verben im Fokus";
+T.en.de_title="German: verbs in focus";
+T.fr.de_title="Allemand : le verbe";
+T.de.de_note="Die Theoriekapitel folgen dem Dossier «Verben im Fokus». Die Stammformen stammen aus der Verbenliste Teil 1 und reichen von «backen» bis «schreien»; Teil 2 fehlt noch.";
+T.en.de_note="The theory chapters follow the «Verben im Fokus» dossier. The principal parts come from part 1 of the verb list and run from «backen» to «schreien»; part 2 is not here yet.";
+T.fr.de_note="Les chapitres suivent le dossier « Verben im Fokus ». Les formes de base proviennent de la partie 1 de la liste, de « backen » à « schreien » ; la partie 2 manque encore.";
+T.de.de_sources="Grundlage: Theoriedossier «Verben im Fokus» und «Verbenliste: Stammformen (Teil 1)», Schuljahr 2026. Die Beispielsätze der Kapitel 1 bis 5 stammen aus dem Dossier; die übrigen Aufgaben wurden für dieses Programm geschrieben und sind nicht von einer Lehrperson geprüft.";
+T.en.de_sources="Based on the «Verben im Fokus» theory dossier and «Verbenliste: Stammformen (Teil 1)», school year 2026. The example sentences in chapters 1 to 5 come from the dossier; the remaining tasks were written for this program and have not been reviewed by a teacher.";
+T.fr.de_sources="D’après le dossier « Verben im Fokus » et « Verbenliste : Stammformen (Teil 1) », année scolaire 2026. Les phrases d’exemple des chapitres 1 à 5 proviennent du dossier ; les autres exercices ont été rédigés pour ce programme, sans relecture par un enseignant.";
 T.de.fr_note="Der Wortschatz der Jahre 7 bis 9 ist nach den Unités von «dis donc!» geordnet und entspricht dem Gesamtwortschatz Niveau G der jeweiligen Einheit. Die Jahre 5 und 6 sind nach Themen aufgebaut, weil für sie kein Lehrmittelzugang besteht.";
 T.en.fr_note="The vocabulary for years 7 to 9 follows the units of «dis donc!» and matches each unit’s full word list at level G. Years 5 and 6 are organised by theme, as no textbook access exists for them.";
 T.fr.fr_note="Le vocabulaire des années 7 à 9 suit les unités de « dis donc ! » et correspond au vocabulaire complet niveau G de chaque unité. Les années 5 et 6 sont organisées par thème, faute d’accès au moyen d’enseignement.";
@@ -1277,7 +1289,7 @@ function viewConnect(){screen(topbar(t('appTitle'),{rerender:viewConnect}),h('ma
 async function disconnectDbx(){if(!confirm(t('confirmDisconnect')))return;await IDB.del('kv','dbxRefresh');DBX.token=null;viewConnect();}
 async function updateSyncStatus(){const el=$('#syncstatus');if(!el||!PLAY_ONLY)return;const n=(await IDB.keys('outbox')).length;el.textContent=n?t('pending',{n}):'';}
 async function loadGames(){const out=[];for(const n of(await S.store.list('games')).filter(n=>n.endsWith('.json'))){try{const g=await S.store.read('games/'+n);if(g&&Array.isArray(g.items))out.push(g);}catch(e){console.warn(n,e);}}
- out.sort((a,b)=>a.title.localeCompare(b.title));return[MATH_GAME,GEO_GAME,FRV_GAME,FRG_GAME,IT_GAME].concat(out);}
+ out.sort((a,b)=>a.title.localeCompare(b.title));return[MATH_GAME,DE_GAME,GEO_GAME,FRV_GAME,FRG_GAME,IT_GAME].concat(out);}
 const TEST_PLAYER={id:'test',avatar:'🧪',unlockAll:true,pen:true,builtin:true};
 Object.defineProperty(TEST_PLAYER,'name',{get:()=>t('testPlayer'),enumerable:true});
 function withTest(list){return (list||[]).filter(p=>p.id!=='test').concat([TEST_PLAYER]);}
@@ -1444,7 +1456,7 @@ function sectionChooser(sel,re){
 }
 function topicChooser(p,g,sel,re){
  const gm=st(p.id).mastery[g.id]||{};const all=genTopics(g);const multiYear=new Set(all.map(x=>x.y)).size>1;const custom=!!g.gen.topics&&!multiYear;
- const isIT=g.gen.pool==='it';const isFR=g.id==='fr-vocab'||g.id==='fr-gram';
+ const isIT=g.gen.pool==='it';const isFR=g.id==='fr-vocab'||g.id==='fr-gram';const isDE=g.id==='de-verben';
  const yearsWith=new Set((g.gen.topics?g.gen.topics.map(mtopic).filter(Boolean):(isIT?ITT:MT)).map(x=>x.y));
  const AP=isIT?'itarea_':isFR?'frarea_':'area_';
  const shown=custom?all:all.filter(x=>x.y===sel.year);
@@ -1457,7 +1469,7 @@ function topicChooser(p,g,sel,re){
  return h('div',{class:'stack'},
   custom?null:h('div',{},h('h3',{},t('year')),h('div',{class:'years'},[1,2,3,4,5,6,7,8,9].map(y=>{const has=yearsWith.has(y);
    return h('button',{class:'choice','aria-pressed':String(sel.year===y),disabled:!has,style:sel.year===y?'background:var(--mark)':'',onclick:()=>{sel.year=y;sel.topics=new Set(all.filter(x=>x.y===y).map(x=>x.id));re();}},
-    h('b',{},t('yearN',{n:y})),has?null:h('span',{},t('comingSoon')));})),h('p',{class:'small muted'},t(isFR?'fr_note':g.id==='geo-kongruenz'?'geo_note':isIT?'itnote':'lp21note')),h('p',{class:'small muted'},t(isFR?'fr_sources':isIT?'itSources':'mathSources'))),
+    h('b',{},t('yearN',{n:y})),has?null:h('span',{},t('comingSoon')));})),h('p',{class:'small muted'},t(isDE?'de_note':isFR?'fr_note':g.id==='geo-kongruenz'?'geo_note':isIT?'itnote':'lp21note')),h('p',{class:'small muted'},t(isDE?'de_sources':isFR?'fr_sources':isIT?'itSources':'mathSources'))),
   h('div',{class:'row'},h('h3',{style:'margin:0'},t('topicsSel')+' ('+sel.topics.size+')'),h('span',{class:'sp'}),
    h('button',{class:'btn ghost small',onclick:()=>setAll(true)},t('allTopics')),h('button',{class:'btn ghost small',onclick:()=>setAll(false)},t('noTopics')),
    isFR?null:h('button',{class:'btn ghost small',onclick:()=>viewGlossary({back:re,topics:isIT?ITT:MT})},'📖 '+t('glossary'))),
@@ -2189,7 +2201,10 @@ function sag(text,spr,fehlt){
   weiter();}}
 function sndBtn(fr,pre,spr){const k=pre?'listen':'listenAfter';
  const b=h('button',{class:'btn ghost small sndb',type:'button','aria-label':t(k),title:t(k),
-  onclick:ev=>{ev.preventDefault();ev.stopPropagation();if(b.disabled)return;sag(fr,spr||'fr');}},'🔊');
+  onclick:ev=>{ev.preventDefault();ev.stopPropagation();if(b.disabled)return;
+   /* Fuer Deutsch und Englisch gibt es keine vorgefertigte Aufnahme der
+      Fragesaetze - Emilia und Kate sprechen sie ueber den Vermittler. */
+   if(spr&&spr!=='fr')tutorSprich(fr,spr);else sag(fr,spr||'fr');}},'🔊');
  if(!pre)b.disabled=true;
  return b;}
 
@@ -2684,6 +2699,24 @@ function hoerUrteil(varianten, ziel, akzept){
  return { ok: !!treffer, text: treffer || kand[0], abstand: d };
 }
 
+/* Deutsch wird nicht nach Lauten verglichen, sondern nach Woertern: bei
+   den Stammformen zaehlt, ob alle verlangten Formen gefallen sind, und
+   nicht, in welcher Reihenfolge oder mit welchen Fuellwoertern. */
+function normDe(s){return String(s).toLowerCase().normalize('NFC')
+ .replace(/ß/g,'ss').replace(/[^a-zäöü]+/g,' ').replace(/\s+/g,' ').trim();}
+function hoerUrteilDe(varianten, formen){
+ const kand=(varianten||[]).filter(Boolean);
+ if(!kand.length)return {ok:false,text:'',leer:true};
+ const soll=formen.map(normDe).filter(Boolean);
+ for(const v of kand){
+  const woerter=normDe(v).split(' ');
+  if(soll.every(f=>woerter.indexOf(f)>=0))return {ok:true,text:v,fehlt:[]};
+ }
+ const woerter=normDe(kand[0]).split(' ');
+ return {ok:false,text:kand[0],
+  fehlt:formen.filter(f=>woerter.indexOf(normDe(f))<0)};
+}
+
 /* Welcher Weg gilt? Entschieden wird vor der Aufnahme, nicht danach. */
 async function hoerWeg(melde){
  if(HOERWEG) return HOERWEG;
@@ -2706,22 +2739,25 @@ async function hoerWeg(melde){
 /* Hoeren und auf das Zielwort pruefen. */
 async function hoerPruefe(ziel, akzept, o){
  o = o || {};
+ const spr = o.spr || 'fr';
+ const code = spr === 'de' ? 'deu' : spr === 'en' ? 'eng' : 'fra';
+ const urteil = v => o.formen ? hoerUrteilDe(v, o.formen) : hoerUrteil(v, ziel, akzept);
  const weg = await hoerWeg(o.aufLadung);
  if(weg === 'browser'){
-  const b = await hoerBrowser(o);
-  return hoerUrteil(b.varianten, ziel, akzept);
+  const b = await hoerBrowser(Object.assign({ lang: SRLANG[spr] || 'fr-FR' }, o));
+  return urteil(b.varianten);
  }
  const { daten } = await hoerAufnahme(o);
  if(weg === 'eleven'){
   if(o.aufLadung) o.aufLadung(99,'','');
-  const text = await hoerScribe(daten);
-  return hoerUrteil(text ? [text] : [], ziel, akzept);
+  const text = await hoerScribe(daten, code);
+  return urteil(text ? [text] : []);
  }
  let r;
- try{ r = await HOER.p(daten, { language: 'fr', task: 'transcribe' }); }
+ try{ r = await HOER.p(daten, { language: spr, task: 'transcribe' }); }
  catch(e){ throw new Error('erkennung: ' + (e && e.message || e)); }
  const text = String((r && r.text) || '').trim();
- return hoerUrteil(text ? [text] : [], ziel, akzept);
+ return urteil(text ? [text] : []);
 }
 
 /* Freies Zuhoeren: ohne Zielwort, in der gewaehlten Sprache. Fuer den
@@ -3255,7 +3291,10 @@ function renderQuestion(R,Q){
    heard.style.borderColor=ok?'var(--green)':'var(--red)';
    wort.textContent='\u00ab\u202f'+text+'\u202f\u00bb';
    wort.style.color=ok?'var(--green)':'var(--ink)';
-   urteil.textContent=ok?('\u2713 '+t('sprechRichtig')):('\u2717 '+t('sprechFalsch',{a:it.answer}));
+   urteil.textContent=ok?('\u2713 '+t('sprechRichtig'))
+    :('\u2717 '+((window.__fehlt&&window.__fehlt.length)
+      ?t('sprechFehlt',{a:window.__fehlt.join(', ')})
+      :t('sprechFalsch',{a:it.answer})));
    urteil.style.color=ok?'var(--green)':'var(--red)';};
   const dots=h('p',{class:'small muted',style:'margin:6px 0 0;letter-spacing:3px;font-size:1.2rem'});
   const wegZeile=h('p',{class:'small muted',style:'margin:6px 0 0'});
@@ -3294,6 +3333,7 @@ function renderQuestion(R,Q){
     let r=null,fehler=null;
     try{
      r=await hoerPruefe(it.answer,it.accept,{halten:true,  /* Stopp kommt vom Knopf */
+      spr:it.spr||'fr',formen:it.formen||null,
       aufPegel:p=>{balken.style.width=Math.min(100,Math.round(p*100))+'%';
        if(laeuft&&hoerBereit())status.textContent='● '+t('speakListening');},
       aufAktiv:f=>{stopper=f;loslassen=f;},
@@ -3306,6 +3346,7 @@ function renderQuestion(R,Q){
      status.textContent=hoerText(fehler);
      return;}
     if(!r||r.leer){zeigeHeard('',false,true);status.textContent=t('speakNothing');return;}
+    window.__fehlt=r.fehlt||null;
     rundeFertig(r.ok,r.text);};
    weiter.addEventListener('click',()=>{if(done||R.ended||fertig)return;
     if(stopper)try{stopper();}catch(_){}
@@ -3374,13 +3415,15 @@ function renderQuestion(R,Q){
  const pen=penOn(R.players[curIdx(R)])&&it.type!=='handwrite'&&blattSpiel(R.game);
  const pad=pen?scratchPad({height:it.type==='map'?240:300}):null;if(pad)Q.pad=pad;
  const padBox=pad?h('details',{class:'padbox',open:true},h('summary',{},'🖊 '+t('padTitle')),pad.el):null;
- screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre)):null,
+ screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre,it.spr||'fr')):null,
    it.nat?sndBtn(it.nat,true,it.natSpr||'de'):null),figEl,h('div',{class:'hint'},t(it.type==='map'?'hint_map_'+it.map.task:'hint_'+it.type)),area,helpEl,fragEl,retryMsg,fb),padBox));
  if(pen)area.querySelectorAll('input[type=text],input[type=number]').forEach(i=>{i.classList.add('penfield');
   i.setAttribute('autocomplete','off');i.setAttribute('autocorrect','off');i.setAttribute('autocapitalize','off');i.setAttribute('spellcheck','false');
   const ph=i.getAttribute('placeholder');if(ph)i.addEventListener('input',()=>{if(i.value)i.removeAttribute('placeholder');else i.setAttribute('placeholder',ph);});});
- if(it.autoSound&&it.sound&&it.soundPre)setTimeout(()=>sayFr(it.sound,()=>{
-  if(sndEl){sndEl.classList.add('sndwait');sndEl.title=t('listenTap');}}),300);
+ if(it.autoSound&&it.sound&&it.soundPre)setTimeout(()=>{
+  if(it.spr&&it.spr!=='fr')tutorSprich(it.sound,it.spr);
+  else sayFr(it.sound,()=>{
+   if(sndEl){sndEl.classList.add('sndwait');sndEl.title=t('listenTap');}});},300);
  S.onEnter=keepEnter;
 }
 /* Ausspracheschritt: zeigt den Ausdruck, hoert zu, gibt erst dann frei. */
@@ -7132,7 +7175,7 @@ const FRG_GAME={id:'fr-gram',builtin:true,subject:'lang',kind:'lang',items:[],ge
 Object.defineProperty(FRG_GAME,'title',{get:()=>t('frg_title'),enumerable:true});
 
 const MATH_ARITH={id:'arith',y:0,a:1,n:['Freies Rechnen','Free arithmetic','Calcul libre'],c:['Rechnen mit den Zahlen und Rechenarten, die für dieses Spiel eingestellt sind.','Calculating with the numbers and operations set for this game.','Calculer avec les nombres et les opérations choisis pour ce jeu.'],terms:['sum','difference','product','quotient'],g:genArith};
-function mtopic(id){return id==='arith'?MATH_ARITH:(MT.find(x=>x.id===id)||ITT.find(x=>x.id===id)||FRTOPICS.find(x=>x.id===id)||FRG.find(x=>x.id===id));}
+function mtopic(id){return id==='arith'?MATH_ARITH:(MT.find(x=>x.id===id)||ITT.find(x=>x.id===id)||FRTOPICS.find(x=>x.id===id)||FRG.find(x=>x.id===id)||(typeof DET!=='undefined'?DET.find(x=>x.id===id):null));}
 function genItem(tp,lv,o){let it;for(let k=0;k<6;k++){try{it=tp.g(lv,o||{});break;}catch(e){console.warn(tp.id,e);}}if(!it)return null;
  it.id=tp.id;it.topic=tp.id;it.difficulty=lv;it.gen=true;return it;}
 /* ---------- glossary ---------- */
@@ -7204,6 +7247,384 @@ const GLOSS={tenframe:['Zehnerfeld','ten-frame','grille de dix','Ein Feld mit 2 
 Object.assign(GLOSS,GLOSS2,GLOSS3,GLOSS_IT,GLOSS_GEO,GLOSS_CON);
 function glossTerm(id){const g=GLOSS[id];if(!g)return null;const i=Math.max(0,LANGS.indexOf(S.lang));return{t:g[i],d:g[3+i]};}
 /* ---------- the built-in game ---------- */
+
+/* ================= Deutsch: Verben im Fokus =================
+   Nach dem Theoriedossier und der Verbenliste (Stammformen, Teil 1).
+   Die Beispielsaetze der Kapitel 1, 2 und 5 stammen aus dem Dossier
+   selbst; die Stammformen kommen aus der Liste. Teil 2 der Liste fehlt
+   noch, darum enden die Verben bei «schreien».                        */
+const DEV=[
+ ['backen','backte','gebacken','backst','h'],
+ ['befehlen','befahl','befohlen','befiehlst','h'],
+ ['beginnen','begann','begonnen','beginnst','h'],
+ ['beissen','biss','gebissen','beisst','h'],
+ ['belügen','belog','belogen','belügst','h'],
+ ['biegen','bog','gebogen','biegst',''],
+ ['binden','band','gebunden','bindest','h'],
+ ['bitten','bat','gebeten','bittest','h'],
+ ['blasen','blies','geblasen','bläst','h'],
+ ['bleiben','blieb','geblieben','bleibst','s'],
+ ['braten','briet','gebraten','brätst','h'],
+ ['brechen','brach','gebrochen','brichst',''],
+ ['brennen','brannte','gebrannt','brennst','h'],
+ ['bringen','brachte','gebracht','bringst','h'],
+ ['denken','dachte','gedacht','denkst','h'],
+ ['dringen','drang','gedrungen','dringst',''],
+ ['dürfen','durfte','gedurft','darfst','h'],
+ ['empfehlen','empfahl','empfohlen','empfiehlst','h'],
+ ['erlöschen','erlosch','erloschen','erlischst','s'],
+ ['essen','ass','gegessen','isst','h'],
+ ['fahren','fuhr','gefahren','fährst',''],
+ ['fallen','fiel','gefallen','fällst','s'],
+ ['fangen','fing','gefangen','fängst','h'],
+ ['finden','fand','gefunden','findest','h'],
+ ['fliegen','flog','geflogen','fliegst',''],
+ ['fliehen','floh','geflohen','fliehst','s'],
+ ['fliessen','floss','geflossen','fliesst','s'],
+ ['fressen','frass','gefressen','frisst','h'],
+ ['frieren','fror','gefroren','frierst',''],
+ ['geben','gab','gegeben','gibst','h'],
+ ['gehen','ging','gegangen','gehst','s'],
+ ['gelingen','gelang','gelungen','es gelingt','s'],
+ ['gelten','galt','gegolten','giltst','h'],
+ ['genesen','genas','genesen','genest','s'],
+ ['geniessen','genoss','genossen','geniesst','h'],
+ ['geschehen','geschah','geschehen','geschieht','s'],
+ ['gewinnen','gewann','gewonnen','gewinnst','h'],
+ ['giessen','goss','gegossen','giesst','h'],
+ ['graben','grub','gegraben','gräbst','h'],
+ ['greifen','griff','gegriffen','greifst','h'],
+ ['haben','hatte','gehabt','hast','h'],
+ ['halten','hielt','gehalten','hältst','h'],
+ ['hauen','haute','gehauen','haust','h'],
+ ['heissen','hiess','geheissen','heisst','h'],
+ ['helfen','half','geholfen','hilfst','h'],
+ ['kennen','kannte','gekannt','kennst','h'],
+ ['klingen','klang','geklungen','klingst','h'],
+ ['kommen','kam','gekommen','kommst','s'],
+ ['können','konnte','gekonnt','kannst','h'],
+ ['kriechen','kroch','gekrochen','kriechst','s'],
+ ['lassen','liess','gelassen','lässt','h'],
+ ['laufen','lief','gelaufen','läufst','s'],
+ ['lesen','las','gelesen','liest','h'],
+ ['liegen','lag','gelegen','liegst',''],
+ ['lügen','log','gelogen','lügst','h'],
+ ['messen','mass','gemessen','misst','h'],
+ ['mögen','mochte','gemocht','magst','h'],
+ ['müssen','musste','gemusst','musst','h'],
+ ['nehmen','nahm','genommen','nimmst','h'],
+ ['niesen','nieste','geniest','niest','h'],
+ ['pfeifen','pfiff','gepfiffen','pfeifst','h'],
+ ['raten','riet','geraten','rätst','h'],
+ ['reissen','riss','gerissen','reisst',''],
+ ['reiten','ritt','geritten','reitest',''],
+ ['rennen','rannte','gerannt','rennst','s'],
+ ['riechen','roch','gerochen','riechst','h'],
+ ['rufen','rief','gerufen','rufst','h'],
+ ['schieben','schob','geschoben','schiebst','h'],
+ ['schiessen','schoss','geschossen','schiesst',''],
+ ['schlafen','schlief','geschlafen','schläfst','h'],
+ ['schlagen','schlug','geschlagen','schlägst','h'],
+ ['schleichen','schlich','geschlichen','schleichst','s'],
+ ['schliessen','schloss','geschlossen','schliesst','h'],
+ ['schneiden','schnitt','geschnitten','schneidest','h'],
+ ['schreiben','schrieb','geschrieben','schreibst','h'],
+ ['schreien','schrie','geschrien','schreist','h']
+];
+const DET=[];
+function detopic(id,y,a,n,c,terms,g){DET.push({id,y,a,n,c,terms,g,de:true});}
+const dvPick=()=>DEV[Math.floor(Math.random()*DEV.length)];
+const dvMit=f=>{const a=DEV.filter(f);return a[Math.floor(Math.random()*a.length)];};
+/* D(de,en,fr): die Oberflaeche spricht drei Sprachen, der Lernstoff nur eine. */
+function D(de,en,fr){return S.lang==='en'?en:S.lang==='fr'?fr:de;}
+
+/* ---------- Stammformen schreiben ---------- */
+detopic('de-stamm',7,1,['Stammformen schreiben','Principal parts - writing','Formes de base - à écrire'],
+ ['Drei Formen machen ein Verb erkennbar: Infinitiv, Präteritum und Partizip Perfekt. Das Präteritum steht in der 3. Person Singular: er fuhr. Das Partizip Perfekt trägt bei den meisten Verben ein ge- am Anfang.',
+  'Three forms identify a verb: infinitive, past tense and past participle. The past tense is given in the third person singular. Most past participles start with ge-.',
+  'Trois formes identifient un verbe : infinitif, prétérit et participe passé. Le prétérit est à la troisième personne du singulier. La plupart des participes commencent par ge-.'],
+ ['Stammformen','Präteritum','Partizip Perfekt'],
+ lv=>{const v=dvPick();
+  if(lv>=3){
+   const it={type:'input',prompt:D('Nenne Präteritum und Partizip Perfekt von «'+v[0]+'».',
+     'Give the past tense and past participle of «'+v[0]+'».',
+     'Donne le prétérit et le participe passé de « '+v[0]+' ».'),
+    answer:v[1]+' – '+v[2],
+    accept:[v[1]+' - '+v[2],v[1]+' '+v[2],v[1]+', '+v[2],v[1]+' – '+v[2],v[1]+'/'+v[2]]};
+   return steps(it,[D('Das Präteritum steht in der 3. Person Singular: er …','The past tense is third person singular.','Le prétérit est à la 3e personne du singulier.'),
+    D('Das Partizip Perfekt beginnt meist mit ge-.','The past participle usually starts with ge-.','Le participe commence souvent par ge-.'),
+    v[0]+' – '+v[1]+' – '+v[2]]);}
+  const partizip=lv===2||Math.random()<.5;
+  const it={type:'input',
+   prompt:partizip?D('Wie heisst das Partizip Perfekt von «'+v[0]+'»?','What is the past participle of «'+v[0]+'»?','Quel est le participe passé de « '+v[0]+' » ?')
+                  :D('Wie heisst das Präteritum von «'+v[0]+'»? (3. Person Singular)','What is the past tense of «'+v[0]+'»? (third person singular)','Quel est le prétérit de « '+v[0]+' » ? (3e pers. sing.)'),
+   answer:partizip?v[2]:v[1]};
+  return steps(it,[partizip?D('Fast immer mit ge- am Anfang.','Almost always with ge- at the start.','Presque toujours avec ge- au début.')
+    :D('Nicht «ich», sondern «er»: er …','Not «I» but «he».','Pas « je » mais « il ».'),
+   v[0]+' – '+v[1]+' – '+v[2]]);});
+
+/* ---------- Stammformen sprechen ----------
+   Emilia fragt, das Kind antwortet laut. Beurteilt wird, ob alle drei
+   Formen gefallen sind - nicht, in welcher Reihenfolge. */
+detopic('de-stamm-sprechen',7,1,['Stammformen sprechen','Principal parts - aloud','Formes de base - à l’oral'],
+ ['Emilia nennt das Verb, du sagst die drei Stammformen laut: Infinitiv, Präteritum, Partizip Perfekt. Die Reihenfolge ist frei, es müssen nur alle drei kommen.',
+  'Emilia names the verb and you say the three principal parts aloud. The order is free; all three must be there.',
+  'Emilia nomme le verbe et tu dis les trois formes à voix haute. L’ordre est libre, les trois doivent y être.'],
+ ['Stammformen','Präteritum','Partizip Perfekt'],
+ lv=>{const v=dvPick();
+  const frage=D('Die Stammformen von '+v[0]+'.','The principal parts of '+v[0]+'.','Les formes de base de '+v[0]+'.');
+  const it={type:'speak',mode:'formen',spr:'de',rounds:1,difficulty:lv,
+   prompt:D('Sag die Stammformen von «'+v[0]+'» laut.','Say the principal parts of «'+v[0]+'» aloud.','Dis les formes de base de « '+v[0]+' » à voix haute.'),
+   sound:frage,soundPre:true,autoSound:true,
+   answer:v[0]+' – '+v[1]+' – '+v[2],
+   formen:[v[0],v[1],v[2]],
+   accept:[v[0]+' '+v[1]+' '+v[2]]};
+  return steps(it,[D('Erst der Infinitiv, dann das Präteritum, dann das Partizip.','Infinitive first, then past tense, then participle.','D’abord l’infinitif, puis le prétérit, puis le participe.'),
+   v[0]+' – '+v[1]+' – '+v[2]]);});
+
+/* ---------- Rueckweg: von der Form zum Infinitiv ---------- */
+detopic('de-stamm-rueck',7,1,['Vom Partizip zum Infinitiv','From participle to infinitive','Du participe à l’infinitif'],
+ ['Gegeben ist eine gebeugte Form. Gesucht ist das Verb in der Grundform.',
+  'You are given an inflected form. Name the verb in its base form.',
+  'On te donne une forme conjuguée. Donne le verbe à l’infinitif.'],
+ ['Infinitiv','Grundform'],
+ lv=>{const v=dvPick();
+  const ausPart=lv===1||Math.random()<.5;
+  const form=ausPart?v[2]:v[1];
+  const it={type:'input',
+   prompt:D('Wie heisst der Infinitiv zu «'+form+'»?','What is the infinitive of «'+form+'»?','Quel est l’infinitif de « '+form+' » ?'),
+   answer:v[0]};
+  return steps(it,[D('Der Infinitiv endet auf -en oder -n.','The infinitive ends in -en or -n.','L’infinitif se termine par -en ou -n.'),
+   form+' → '+v[0]]);});
+
+/* ---------- Praesens, 2. Person Singular ---------- */
+detopic('de-praesens',7,1,['Präsens: die Du-Form','Present: the you-form','Présent : la forme en tu'],
+ ['Bei einigen Verben wechselt der Stammvokal in der 2. und 3. Person Singular: e wird zu i, a wird zu ä. Darum heisst es «du sprichst» und «du fährst».',
+  'Some verbs change their stem vowel in the second and third person singular: e becomes i, a becomes ä.',
+  'Certains verbes changent de voyelle à la 2e et 3e personne du singulier : e devient i, a devient ä.'],
+ ['e/i-Wechsel','Umlaut','Präsens'],
+ lv=>{const v=lv===1?dvPick():dvMit(x=>/[äöü]|^[a-zäöü]*i/.test(x[3])&&x[3].indexOf(' ')<0);
+  const w=v||dvPick();
+  const it={type:'input',
+   prompt:D('Setze ein: du … («'+w[0]+'»)','Fill in: you … («'+w[0]+'»)','Complète : tu … (« '+w[0]+' »)'),
+   answer:w[3]};
+  return steps(it,[D('Achte auf den Stammvokal - er wechselt manchmal.','Watch the stem vowel - it sometimes changes.','Attention à la voyelle du radical : elle change parfois.'),
+   'du '+w[3]]);});
+
+
+/* ---------- Regelmaessig oder unregelmaessig ----------
+   Die Woerter stammen aus der Aufgabe in Kapitel 3 des Dossiers. */
+const DEREG=[
+ ['trennen','r'],['kennen','u'],['können','u'],['gönnen','r'],['braten','u'],
+ ['lächeln','r'],['fliegen','u'],['stossen','u'],['kraulen','r'],['schwimmen','u'],
+ ['stimmen','r'],['pfeifen','u'],['fressen','u'],['zeigen','r'],['schweigen','u'],
+ ['schmunzeln','r'],['gelten','u'],['schimpfen','r'],['kringeln','r'],['blöken','r'],
+ ['verzeihen','u'],['fahren','u'],['führen','r'],['drehen','r'],['sehen','u'],
+ ['gehen','u'],['stehen','u'],['versinken','u'],['versenken','r'],['denken','u'],
+ ['lenken','r'],['halten','u'],['schalten','r'],['halbieren','r'],['flüstern','r'],
+ ['rechnen','r'],['klingen','u'],['bringen','u']];
+detopic('de-art',7,2,['Regelmässig oder unregelmässig','Regular or irregular','Régulier ou irrégulier'],
+ ['Regelmässige (schwache) Verben behalten den Stammvokal und hängen im Präteritum -te an: lernen – lernte – gelernt. Unregelmässige (starke) Verben ändern den Stammvokal: finden – fand – gefunden.',
+  'Regular (weak) verbs keep the stem vowel and add -te: lernen – lernte – gelernt. Irregular (strong) verbs change it: finden – fand – gefunden.',
+  'Les verbes réguliers (faibles) gardent la voyelle et ajoutent -te. Les irréguliers (forts) la changent.'],
+ ['regelmässig','unregelmässig','schwach','stark'],
+ lv=>{const w=DEREG[Math.floor(Math.random()*DEREG.length)];
+  const r=D('regelmässig','regular','régulier'), u=D('unregelmässig','irregular','irrégulier');
+  const it=choiceItem(D('Ist «'+w[0]+'» regelmässig oder unregelmässig?','Is «'+w[0]+'» regular or irregular?','« '+w[0]+' » est-il régulier ou irrégulier ?'),
+   w[1]==='r'?r:u,[w[1]==='r'?u:r]);
+  return steps(it,[D('Bleibt der Stammvokal gleich? Dann regelmässig.','Does the stem vowel stay? Then regular.','La voyelle reste-t-elle ? Alors régulier.'),
+   w[0]+': '+(w[1]==='r'?r:u)]);});
+
+/* ---------- Bedeutungsgruppen (Kapitel 1.1) ---------- */
+const DEBED=[
+ ['lesen','t'],['essen','t'],['schreiben','t'],['sich waschen','t'],['rennen','t'],
+ ['tanzen','t'],['laufen','t'],
+ ['wachsen','v'],['einschlafen','v'],['fallen','v'],['hören','v'],['fühlen','v'],['verdauen','v'],
+ ['lieben','z'],['sitzen','z'],['bleiben','z'],['leben','z'],['schlafen','z'],
+ ['stehen','z'],['wohnen','z'],['glauben','z'],['hassen','z']];
+detopic('de-bedeutung',7,2,['Tätigkeit, Vorgang, Zustand','Action, process, state','Action, processus, état'],
+ ['Tätigkeitsverben: das Subjekt tut etwas. Vorgangsverben: am Subjekt geschieht etwas, ohne dass es das bestimmt. Zustandsverben: eine Lage, die bleibt.',
+  'Action verbs: the subject does something. Process verbs: something happens to the subject. State verbs: a situation that stays.',
+  'Verbes d’action : le sujet fait quelque chose. Verbes de processus : quelque chose arrive au sujet. Verbes d’état : une situation qui dure.'],
+ ['Tätigkeitsverb','Vorgangsverb','Zustandsverb'],
+ lv=>{const w=DEBED[Math.floor(Math.random()*DEBED.length)];
+  const N={t:D('Tätigkeitsverb','action verb','verbe d’action'),
+           v:D('Vorgangsverb','process verb','verbe de processus'),
+           z:D('Zustandsverb','state verb','verbe d’état')};
+  const it=choiceItem(D('Was für ein Verb ist «'+w[0]+'»?','What kind of verb is «'+w[0]+'»?','Quel type de verbe est « '+w[0]+' » ?'),
+   N[w[1]],Object.keys(N).filter(k=>k!==w[1]).map(k=>N[k]));
+  return steps(it,[D('Tut das Subjekt etwas, geschieht etwas an ihm, oder bleibt es, wie es ist?','Does the subject act, does something happen to it, or does it simply remain?','Le sujet agit-il, subit-il, ou reste-t-il ?'),
+   w[0]+': '+N[w[1]]]);});
+
+/* ---------- Voll-, Hilfs-, Modalverb (Kapitel 1.2) ---------- */
+const DESEL=[
+ ['Hugo hat sich für einen Kleinwagen entschieden.','entschieden','V'],
+ ['Hugo hat sich für einen Kleinwagen entschieden.','hat','H'],
+ ['Es würde mich sehr freuen, wenn ich mitfahren dürfte.','dürfte','M'],
+ ['Hast du den Ölstand kontrolliert?','Hast','H'],
+ ['Das soll wichtig sein.','soll','M'],
+ ['Wir wollen nicht an eine Panne denken.','wollen','M'],
+ ['Es passiert bestimmt nichts.','passiert','V'],
+ ['Möchtest du lieber einen Geländewagen?','Möchtest','M'],
+ ['Er liebt es, mit seinem alten Buick über Land zu fahren.','liebt','V'],
+ ['Kannst du die Steuerradschaltung bedienen?','Kannst','M'],
+ ['Das hatte ich damals in den USA gelernt.','hatte','H'],
+ ['Morgen muss ich früh aufstehen.','muss','M'],
+ ['Ich darf mich nicht wieder verschlafen.','darf','M'],
+ ['Ich bin genial.','bin','H']];
+detopic('de-selbst',7,2,['Vollverb, Hilfsverb, Modalverb','Full, auxiliary, modal verb','Verbe plein, auxiliaire, modal'],
+ ['Vollverben tragen den Sinn. Hilfsverben (haben, sein, werden) bilden Zeitformen und das Passiv. Modalverben (dürfen, können, mögen, müssen, sollen, wollen) stehen nie allein: sie brauchen ein zweites Verb im Infinitiv.',
+  'Full verbs carry the meaning. Auxiliaries (haben, sein, werden) build tenses and the passive. Modals never stand alone: they need a second verb in the infinitive.',
+  'Les verbes pleins portent le sens. Les auxiliaires forment les temps et le passif. Les modaux ne sont jamais seuls.'],
+ ['Vollverb','Hilfsverb','Modalverb'],
+ lv=>{const w=DESEL[Math.floor(Math.random()*DESEL.length)];
+  const N={V:D('Vollverb','full verb','verbe plein'),H:D('Hilfsverb','auxiliary','auxiliaire'),M:D('Modalverb','modal verb','verbe modal')};
+  const it=choiceItem(w[0]+'\n'+D('Was ist «'+w[1]+'» hier?','What is «'+w[1]+'» here?','Qu’est « '+w[1]+' » ici ?'),
+   N[w[2]],Object.keys(N).filter(k=>k!==w[2]).map(k=>N[k]));
+  return steps(it,[D('Steht ein zweites Verb im Infinitiv daneben? Dann ist es ein Modalverb.','Is there a second verb in the infinitive? Then it is a modal.','Y a-t-il un second verbe à l’infinitif ? Alors c’est un modal.'),
+   w[1]+': '+N[w[2]]]);});
+
+/* ---------- transitiv, intransitiv, reflexiv (Kapitel 1.3) ---------- */
+const DEOBJ=[
+ ['Lukas liest ein spannendes Buch.','T'],
+ ['Die Kinder schlafen tief.','I'],
+ ['Mia freut sich auf die Ferien.','R'],
+ ['Der Hund jagt die Katze.','T'],
+ ['Der kleine Junge lacht laut.','I'],
+ ['Ich erinnere mich an den Ausflug.','R'],
+ ['Manuela kocht Spaghetti.','T'],
+ ['Manuela liegt auf dem Sofa.','I'],
+ ['Ich wasche mich.','R'],
+ ['Manuela kocht heute Abend.','I']];
+detopic('de-objekt',7,2,['Transitiv, intransitiv, reflexiv','Transitive, intransitive, reflexive','Transitif, intransitif, réfléchi'],
+ ['Transitiv heisst: mit Akkusativobjekt. Intransitiv heisst: ohne Akkusativobjekt. Reflexiv heisst: Täter und Opfer sind dieselbe Person, das Reflexivpronomen zeigt darauf.',
+  'Transitive: with an accusative object. Intransitive: without one. Reflexive: subject and object are the same person.',
+  'Transitif : avec complément d’objet direct. Intransitif : sans. Réfléchi : sujet et objet sont la même personne.'],
+ ['transitiv','intransitiv','reflexiv','Akkusativobjekt'],
+ lv=>{const w=DEOBJ[Math.floor(Math.random()*DEOBJ.length)];
+  const N={T:D('transitiv','transitive','transitif'),I:D('intransitiv','intransitive','intransitif'),R:D('reflexiv','reflexive','réfléchi')};
+  const it=choiceItem(w[0]+'\n'+D('Wie wird das Verb hier gebraucht?','How is the verb used here?','Comment le verbe est-il employé ici ?'),
+   N[w[1]],Object.keys(N).filter(k=>k!==w[1]).map(k=>N[k]));
+  return steps(it,[D('Frage «wen oder was?». Gibt es eine Antwort im Akkusativ?','Ask «whom or what?». Is there an accusative answer?','Demande « qui ou quoi ? ». Y a-t-il un accusatif ?'),
+   N[w[1]]]);});
+
+/* ---------- Tempus (Kapitel 2.2) ----------
+   Gebildet aus den Stammformen. Zusammengesetzte Zeiten nur bei Verben,
+   deren Hilfsverb eindeutig ist. */
+detopic('de-tempus',7,2,['Zeitform erkennen','Name the tense','Reconnaître le temps'],
+ ['Sechs Zeitformen: Präsens, Präteritum, Perfekt, Plusquamperfekt, Futur I und Futur II. Vier davon sind zusammengesetzt - sie bestehen aus einer Form von sein, haben oder werden und einer infiniten Form.',
+  'Six tenses: present, past, perfect, past perfect, future I and future II. Four are compound: a form of sein, haben or werden plus an infinite form.',
+  'Six temps. Quatre sont composés : une forme de sein, haben ou werden et une forme infinie.'],
+ ['Tempus','Perfekt','Plusquamperfekt','Futur'],
+ lv=>{
+  const einfach=[
+   v=>({s:'Er '+v[1]+'.',t:'Präteritum'}),
+   v=>({s:'Du '+v[3]+'.',t:'Präsens'}),
+   v=>({s:'Er wird '+v[0]+'.',t:'Futur I'})];
+  const zusammen=[
+   v=>({s:'Er '+(v[4]==='s'?'ist':'hat')+' '+v[2]+'.',t:'Perfekt'}),
+   v=>({s:'Er '+(v[4]==='s'?'war':'hatte')+' '+v[2]+'.',t:'Plusquamperfekt'}),
+   v=>({s:'Er wird '+v[2]+' '+(v[4]==='s'?'sein':'haben')+'.',t:'Futur II'})];
+  const nimmZus=lv>=2&&Math.random()<.65;
+  const v=nimmZus?dvMit(x=>x[4]):dvPick();
+  const w=v||dvPick();
+  const bau=nimmZus?zusammen[Math.floor(Math.random()*3)]:einfach[Math.floor(Math.random()*3)];
+  const f=bau(w);
+  const alle=['Präsens','Präteritum','Perfekt','Plusquamperfekt','Futur I','Futur II'];
+  const it=choiceItem(f.s+'\n'+D('In welcher Zeitform steht das Verb?','Which tense is the verb in?','À quel temps est le verbe ?'),
+   f.t,shuffle(alle.filter(x=>x!==f.t)).slice(0,3));
+  return steps(it,[D('Steht ein zweites Verb dabei? Dann ist die Zeitform zusammengesetzt.','Is there a second verb? Then the tense is compound.','Y a-t-il un second verbe ? Alors le temps est composé.'),
+   D('werden + Infinitiv ist Futur I, werden + Partizip + haben/sein ist Futur II.','werden + infinitive is future I; werden + participle + haben/sein is future II.','werden + infinitif = futur I ; werden + participe + haben/sein = futur II.'),
+   f.s+' → '+f.t]);});
+
+/* ---------- Modus (Kapitel 2.3) ---------- */
+const DEMOD=[
+ ['du suchst','Indikativ'],['du suchest','Konjunktiv I'],['du suchtest','Konjunktiv II'],['Such!','Imperativ'],
+ ['du machst','Indikativ'],['du machest','Konjunktiv I'],['du machtest','Konjunktiv II'],['Mach!','Imperativ'],
+ ['du bist','Indikativ'],['du seist','Konjunktiv I'],['du wärest','Konjunktiv II'],['Sei!','Imperativ'],
+ ['Bring!','Imperativ'],['Sprich!','Imperativ'],['Lauf!','Imperativ']];
+detopic('de-modus',7,2,['Modus bestimmen','Name the mood','Reconnaître le mode'],
+ ['Indikativ ist die Normalform. Konjunktiv I steht in der indirekten Rede, Konjunktiv II drückt Unwirklichkeit aus. Der Imperativ befiehlt oder bittet.',
+  'Indicative is the normal form. Subjunctive I reports speech, subjunctive II expresses unreality. The imperative commands or asks.',
+  'L’indicatif est la forme normale. Le subjonctif I rapporte, le II exprime l’irréel. L’impératif ordonne.'],
+ ['Indikativ','Konjunktiv I','Konjunktiv II','Imperativ'],
+ lv=>{const w=DEMOD[Math.floor(Math.random()*DEMOD.length)];
+  const alle=['Indikativ','Konjunktiv I','Konjunktiv II','Imperativ'];
+  const it=choiceItem('«'+w[0]+'»\n'+D('In welchem Modus steht die Form?','Which mood is this form in?','À quel mode est cette forme ?'),
+   w[1],shuffle(alle.filter(x=>x!==w[1])).slice(0,2));
+  return steps(it,[D('Endet die Form auf -e oder -est, obwohl man das normal nicht sagt? Dann Konjunktiv.','An unusual -e or -est ending points to the subjunctive.','Une terminaison inhabituelle indique le subjonctif.'),
+   w[0]+': '+w[1]]);});
+
+/* ---------- Aktiv und Passiv (Kapitel 2.4) ---------- */
+const DEPAS=[
+ ['Robin wirft die Kreide.','A'],['Die Kreide wird geworfen.','P'],
+ ['Robin warf die Kreide.','A'],['Die Kreide wurde geworfen.','P'],
+ ['Robin hat die Kreide geworfen.','A'],['Die Kreide ist geworfen worden.','P'],
+ ['Robin hatte die Kreide geworfen.','A'],['Die Kreide war geworfen worden.','P'],
+ ['Robin wird die Kreide werfen.','A'],['Die Kreide wird geworfen werden.','P'],
+ ['Der Rückpass überraschte Sommer.','A'],['Sommer wurde vom Rückpass überrascht.','P'],
+ ['Man hat Sommer daraufhin ausgepfiffen.','A'],['Sommer ist daraufhin ausgepfiffen worden.','P']];
+detopic('de-passiv',7,2,['Aktiv oder Passiv','Active or passive','Actif ou passif'],
+ ['Im Aktiv handelt das Subjekt. Im Passiv geschieht etwas mit ihm. Das Passiv erkennt man an werden plus Partizip Perfekt - in der Vergangenheit kommt ein worden dazu.',
+  'In the active the subject acts. In the passive something happens to it: werden plus past participle, with worden added in the past.',
+  'À l’actif le sujet agit. Au passif, werden plus participe, avec worden au passé.'],
+ ['Aktiv','Passiv','Handlungsrichtung'],
+ lv=>{const w=DEPAS[Math.floor(Math.random()*DEPAS.length)];
+  const it=choiceItem(w[0]+'\n'+D('Aktiv oder Passiv?','Active or passive?','Actif ou passif ?'),
+   w[1]==='A'?'Aktiv':'Passiv',[w[1]==='A'?'Passiv':'Aktiv']);
+  return steps(it,[D('Steht eine Form von werden mit einem Partizip zusammen? Dann Passiv.','A form of werden with a participle means passive.','Une forme de werden avec un participe : passif.'),
+   w[0]+' → '+(w[1]==='A'?'Aktiv':'Passiv')]);});
+
+/* ---------- Vorsilbe oder Verbzusatz (Kapitel 4.3) ---------- */
+const DETEI=[
+ ['entfernen','V'],['verstellen','V'],['umfallen','Z'],['zuteilen','Z'],['durchfallen','Z'],
+ ['vornehmen','Z'],['unternehmen','V'],['vorstellen','Z'],['verhalten','V'],['untertauchen','Z'],
+ ['annehmen','Z'],['anhalten','Z'],['losfahren','Z'],['aushalten','Z'],['zerstören','V'],
+ ['zerhacken','V'],['untergehen','Z'],['übernehmen','V'],['durchhalten','Z'],['missverstehen','V'],
+ ['befehlen','V'],['ablehnen','Z'],['unterbrechen','V'],['anerkennen','Z'],['einfallen','Z'],
+ ['überbringen','V'],['wegschicken','Z']];
+detopic('de-teile',7,2,['Vorsilbe oder Verbzusatz','Prefix or separable part','Préfixe ou particule'],
+ ['Eine Vorsilbe bleibt in jeder Form vor dem Stamm: er überbringt die Nachricht. Ein Verbzusatz trennt sich ab: er schickt den Kurier weg. Die Probe: stelle den Satz ins Präsens und schau, ob der vordere Teil hinten landet.',
+  'A prefix stays attached in every form. A separable part detaches and moves to the end. Test it by putting the sentence into the present tense.',
+  'Un préfixe reste attaché. Une particule se détache et va à la fin. Mets la phrase au présent pour vérifier.'],
+ ['Vorsilbe','Verbzusatz','trennbar','untrennbar'],
+ lv=>{const w=DETEI[Math.floor(Math.random()*DETEI.length)];
+  const N={V:D('Vorsilbe','prefix','préfixe'),Z:D('Verbzusatz','separable part','particule')};
+  const it=choiceItem('«'+w[0]+'»\n'+D('Vorsilbe oder Verbzusatz?','Prefix or separable part?','Préfixe ou particule ?'),
+   N[w[1]],[N[w[1]==='V'?'Z':'V']]);
+  return steps(it,[D('Sag den Satz im Präsens: «Er …». Rutscht der vordere Teil ans Ende?','Say it in the present: does the front part move to the end?','Dis-le au présent : la partie avant va-t-elle à la fin ?'),
+   w[0]+': '+N[w[1]]]);});
+
+/* ---------- Grammatikbegriffe (Kapitel 6) ---------- */
+const DEBEG=[
+ ['Haben, sein und werden nennt man …','Hilfsverben',['Modalverben','Vollverben']],
+ ['Mögen, dürfen, sollen und müssen sind …','Modalverben',['Hilfsverben','Vollverben']],
+ ['Die Veränderung eines Verbs nach Person, Zahl und Zeit heisst …','Konjugation',['Deklination','Flexion der Nomen']],
+ ['Das Verb «laufen – lief – gelaufen» ist ein …','starkes Verb',['schwaches Verb','Hilfsverb']],
+ ['Das Verb «spielen – spielte – gespielt» ist ein …','schwaches Verb',['starkes Verb','Modalverb']],
+ ['Begriff für die grammatische Zeit','Tempus',['Modus','Numerus']],
+ ['Begriff für die grammatische Zahl','Numerus',['Tempus','Genus Verbi']],
+ ['Begriff für die Grundform des Verbs','Infinitiv',['Partizip I','Partizip II']],
+ ['Begriff für die finite Form','Personalform',['Infinitiv','Verbzusatz']],
+ ['Die infinite Verbform des Perfekts heisst …','Partizip II',['Partizip I','Imperativ']],
+ ['Die Verbform auf -d, oft als Adjektiv gebraucht, heisst …','Partizip I',['Partizip II','Infinitiv']],
+ ['Zeitform der Zukunft','Futur I',['Perfekt','Präteritum']],
+ ['Zeitform der Gegenwart','Präsens',['Präteritum','Perfekt']],
+ ['Zeitform der Vergangenheit, einfach gebildet','Präteritum',['Perfekt','Plusquamperfekt']],
+ ['Sinntragende Verben sind …','Vollverben',['Hilfsverben','Modalverben']],
+ ['Ausgangsformen, um ein Verb in Zeiten und Personen zu setzen','Stammformen',['Personalformen','Verbzusätze']]];
+detopic('de-begriffe',7,2,['Grammatikbegriffe','Grammar terms','Termes de grammaire'],
+ ['Die Begriffe aus Kapitel 6 des Dossiers. In der theoretischen Prüfung wird nach ihnen gefragt, nicht nach Beispielen.',
+  'The terms from chapter 6. The theory test asks for these, not for examples.',
+  'Les termes du chapitre 6. L’examen théorique porte sur eux.'],
+ ['Tempus','Numerus','Konjugation','Stammformen'],
+ lv=>{const w=DEBEG[Math.floor(Math.random()*DEBEG.length)];
+  const it=choiceItem(w[0],w[1],w[2]);
+  return steps(it,[D('Denk an die Liste aus Kapitel 6.','Think of the list in chapter 6.','Pense à la liste du chapitre 6.'),w[1]]);});
+
+const DE_GAME={id:'de-verben',builtin:true,subject:'lang',kind:'lang',items:[],gen:{topics:DET.map(x=>x.id)}};
+Object.defineProperty(DE_GAME,'title',{get:()=>t('de_title'),enumerable:true});
+
 const MATH_GAME={id:'math-lp21',builtin:true,subject:'math',kind:'math',items:[],gen:{topics:null}};
 Object.defineProperty(MATH_GAME,'title',{get:()=>t('math_title'),enumerable:true});
 function genTopics(g){return g.gen.topics?g.gen.topics.map(mtopic).filter(Boolean):(g.gen.pool==='it'?ITT:MT);}
