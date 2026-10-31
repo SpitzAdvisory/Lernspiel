@@ -11,7 +11,12 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
  const ctx=await b.newContext({viewport:{width:900,height:1000},hasTouch:true});
  const pg=await ctx.newPage();
  const perr=[];pg.on('pageerror',e=>perr.push(e.message));
- pg.on('console',m=>{if(m.type()==='error')perr.push('console: '+m.text());});
+ /* Die Stimme am Spielanfang ruft den Vermittler. Der laesst nur die
+    Seite auf GitHub Pages zu, nie diese Pruefumgebung - der Fehler gehoert
+    dazu und wird hier nicht als Seitenfehler gewertet. Die App faellt
+    darauf auf die Geraetestimme zurueck; das prueft ton.js. */
+ const egal=/workers\.dev|Access to fetch|Failed to fetch|CORS|Failed to load resource/i;
+ pg.on('console',m=>{if(m.type()==='error'&&!egal.test(m.text()))perr.push('console: '+m.text());});
  await pg.goto('http://127.0.0.1:8817/');
  await pg.waitForFunction(()=>typeof nextQuestion==='function'&&typeof SPIELE!=='undefined');
 

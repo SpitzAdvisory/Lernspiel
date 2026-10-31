@@ -20,8 +20,8 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   const warteAuf=async(f,ms)=>{const bis=Date.now()+(ms||6000);
    while(Date.now()<bis){if(f())return true;await warte(30);}return false;};
 
-  pruef('Sechs Spiele angemeldet',SPIELE.length===6,SPIELE.length+': '+SPIELE.map(s=>s.id).join(','));
-  for(const id of ['drache','raum','duell'])
+  pruef('Sieben Spiele angemeldet',SPIELE.length===7,SPIELE.length+': '+SPIELE.map(s=>s.id).join(','));
+  for(const id of ['drache','raum','duell','geister'])
    pruef('Spiel «'+id+'» da',!!SPIELE.find(s=>s.id===id));
 
   /* Jedes Spiel nennt seine Huerde fuer alle drei Stufen */
@@ -107,6 +107,56 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   const e3=s3.hol();
   pruef('Duell: der Ausgang ist eindeutig',e3&&typeof e3.g==='boolean',JSON.stringify(e3));
   s3.F.ende();
+
+  /* --- Kuerbisnacht --- */
+  const g1=SPIELE.find(x=>x.id==='geister');
+  pruef('Kürbisnacht: Ziel steigt mit der Stufe',
+   g1.ziel(1).n<g1.ziel(2).n&&g1.ziel(2).n<g1.ziel(3).n,
+   [1,2,3].map(st=>g1.ziel(st).n).join(','));
+
+  let n1=await spielen('geister',{stufe:1,ziel:2,dauer:60000});
+  await warte(200);
+  let z1=n1.F.zustand();
+  pruef('Kürbisnacht: drei Herzen, nichts gelöst',z1.herz===3&&z1.geloest===0,JSON.stringify({h:z1.herz,g:z1.geloest}));
+  pruef('Kürbisnacht: gleich ist ein Geist da',z1.geister.length>=1,z1.geister.length);
+  const weit=z1.sicht, haltenKurz=z1.halten;
+  n1.F.ende();
+
+  let n3=await spielen("geister",{stufe:3,ziel:2,dauer:60000});
+  await warte(200);
+  const zn=n3.F.zustand();
+  pruef('Kürbisnacht: auf Stufe 3 ist der Lichtkreis enger',zn.sicht<weit,zn.sicht+' statt '+weit);
+  pruef('Kürbisnacht: und das Licht muss länger bleiben',zn.halten>haltenKurz,zn.halten+' statt '+haltenKurz);
+  n3.F.ende();
+
+  /* Mit dem Licht auf dem Geist loest er sich auf */
+  let n2=await spielen('geister',{stufe:1,ziel:3,dauer:60000});
+  const geloest=await (async()=>{
+   const bis=Date.now()+20000;
+   while(Date.now()<bis){
+    const z=n2.F.zustand();
+    if(z.geloest>0)return true;
+    const g=z.geister[0];
+    if(g)n2.F.zug(g.x,g.y);
+    await warte(25);}
+   return n2.F.zustand().geloest>0;})();
+  pruef('Kürbisnacht: Licht auf dem Geist löst ihn auf',geloest,JSON.stringify(n2.F.zustand().geloest));
+  n2.F.ende();
+
+  /* Wer nichts tut, verliert Herzen */
+  let n4=await spielen('geister',{stufe:3,ziel:99,dauer:40000});
+  n4.F.zug(5,5);                       /* Laterne in die Ecke, weg von allem */
+  pruef('Kürbisnacht: ein durchgekommener Geist kostet ein Herz',
+   await warteAuf(()=>n4.F.zustand().herz<3,25000),JSON.stringify(n4.F.zustand().herz));
+  n4.F.ende();
+
+  /* --- Klang --- */
+  pruef('Elf Klangwirkungen angemeldet',Object.keys(FX).length===11,Object.keys(FX).length);
+  const vorher=klangDa();
+  pruef('Der Ton lässt sich abschalten',klangSchalter()===!vorher);
+  pruef('Und wieder an',klangSchalter()===vorher);
+  pruef('Kein Fehler beim Abspielen',(()=>{try{Object.values(FX).forEach(f=>f());return true;}catch(_){return false;}})());
+  pruef('Das Brummen lässt sich an- und abstellen',(()=>{try{droneAn();droneAus();return true;}catch(_){return false;}})());
 
   platz.remove();
   return aus;});
