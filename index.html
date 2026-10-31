@@ -1345,7 +1345,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V78';
+const APPVER='V79';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -2876,11 +2876,23 @@ async function vermittler(){
  if(/^https:\/\//.test(u))return u;
  return VERMITTLER_VORGABE;
 }
-async function hoerScribe(daten,code){
+/* Erwartete Woerter gehen als Vorsteuerung mit. Die Kodierung - ein Feld
+   je Begriff - ist am Dienst gemessen, nicht aus der Doku entnommen. */
+function begriffeSauber(liste){
+ const aus=[];
+ for(const x of (liste||[])){
+  const w=String(x||'').trim();
+  if(!w||w.length>50||w.split(/\s+/).length>5)continue;
+  if(aus.indexOf(w)<0)aus.push(w);
+  if(aus.length>=60)break;}
+ return aus;}
+async function hoerScribe(daten,code,begriffe){
  const prox=await vermittler();
  if(prox){
   const fd=new FormData();
   fd.append('language_code',code||'fra');
+  fd.append('tag_audio_events','false');
+  for(const k of begriffeSauber(begriffe))fd.append('keyterms',k);
   fd.append('file',wavAus(daten,16000),'aufnahme.wav');
   let r;
   try{ r=await fetch(prox+'/stt',{method:'POST',body:fd}); }
@@ -2897,7 +2909,9 @@ async function hoerScribe(daten,code){
  for(const modell of liste){
   const fd=new FormData();
   fd.append('model_id',modell);
-  fd.append('language_code','fra');
+  fd.append('language_code',code||'fra');
+  fd.append('tag_audio_events','false');
+  for(const k of begriffeSauber(begriffe))fd.append('keyterms',k);
   fd.append('file',wavAus(daten,16000),'aufnahme.wav');
   let r;
   try{ r=await fetch('https://api.elevenlabs.io/v1/speech-to-text',
@@ -2940,6 +2954,28 @@ function hoerUrteil(varianten, ziel, akzept){
    nicht, in welcher Reihenfolge oder mit welchen Fuellwoertern. */
 function normDe(s){return String(s).toLowerCase().normalize('NFC')
  .replace(/ß/g,'ss').replace(/[^a-zäöü]+/g,' ').replace(/\s+/g,' ').trim();}
+/* «fiel» und «viel» klingen im Deutschen gleich. Kein Erkenner kann sie
+   akustisch trennen, nur der Zusammenhang entscheidet - und der steht in
+   der Aufgabe. Darum wird nach dem Wortvergleich ein zweites Mal nach
+   Lauten verglichen. Gemessen an allen 304 Formen der Verbenliste treffen
+   dabei genau drei Paare zusammen (riet/ritt, fliehst/fliesst,
+   geniesst/geniest) - allesamt echte Homophone, die auch ein Mensch nur
+   am Sinn unterscheidet. */
+function lautDe(s){
+ let x=String(s).toLowerCase().normalize('NFC')
+  .replace(/ß/g,'ss').replace(/[^a-zäöü]/g,'');
+ x=x.replace(/sch/g,'S').replace(/chs/g,'ks').replace(/ch/g,'C')
+    .replace(/ph/g,'f').replace(/th/g,'t').replace(/ck/g,'k').replace(/qu/g,'kv')
+    .replace(/tz/g,'z').replace(/z/g,'ts')
+    .replace(/v/g,'f').replace(/w/g,'v').replace(/y/g,'i')
+    .replace(/eu/g,'oi').replace(/äu/g,'oi').replace(/ei/g,'ai')
+    .replace(/ie/g,'i')
+    .replace(/([aeiouäöü])h/g,'$1')            /* Dehnungs-h */
+    .replace(/([aeiouäöü])\1/g,'$1')           /* Doppelvokal */
+    .replace(/([bcdfgklmnprstvCS])\1/g,'$1')   /* Doppelkonsonant */
+    .replace(/(.)\1/g,'$1')
+    .replace(/ä/g,'e');
+ return x.replace(/d$/,'t').replace(/g$/,'k').replace(/b$/,'p');}
 function hoerUrteilDe(varianten, formen){
  const kand=(varianten||[]).filter(Boolean);
  if(!kand.length)return {ok:false,text:'',leer:true};
@@ -2948,9 +2984,17 @@ function hoerUrteilDe(varianten, formen){
   const woerter=normDe(v).split(' ');
   if(soll.every(f=>woerter.indexOf(f)>=0))return {ok:true,text:v,fehlt:[]};
  }
+ /* Zweiter Durchgang nach Lauten: das Kind hat richtig gesprochen, die
+    Erkennung hat nur anders geschrieben. */
+ const sollL=formen.map(lautDe).filter(Boolean);
+ for(const v of kand){
+  const laute=normDe(v).split(' ').map(lautDe);
+  if(sollL.every(f=>laute.indexOf(f)>=0))return {ok:true,text:v,fehlt:[],laut:true};
+ }
  const woerter=normDe(kand[0]).split(' ');
+ const laute=woerter.map(lautDe);
  return {ok:false,text:kand[0],
-  fehlt:formen.filter(f=>woerter.indexOf(normDe(f))<0)};
+  fehlt:formen.filter(f=>woerter.indexOf(normDe(f))<0&&laute.indexOf(lautDe(f))<0)};
 }
 
 /* Welcher Weg gilt? Entschieden wird vor der Aufnahme, nicht danach. */
@@ -2986,7 +3030,7 @@ async function hoerPruefe(ziel, akzept, o){
  const { daten } = await hoerAufnahme(o);
  if(weg === 'eleven'){
   if(o.aufLadung) o.aufLadung(99,'','');
-  const text = await hoerScribe(daten, code);
+  const text = await hoerScribe(daten, code, o.formen || [ziel].concat(akzept || []));
   return urteil(text ? [text] : []);
  }
  let r;
@@ -3006,7 +3050,7 @@ async function hoerFrei(o, code){
   return String((b.varianten && b.varianten[0]) || '').trim();
  }
  const { daten } = await hoerAufnahme(o);
- if(weg === 'eleven') return await hoerScribe(daten, code || 'fra');
+ if(weg === 'eleven') return await hoerScribe(daten, code || 'fra', o.begriffe);
  const kurz = code === 'deu' ? 'de' : code === 'eng' ? 'en' : 'fr';
  let r;
  try{ r = await HOER.p(daten, { language: kurz, task: 'transcribe' }); }
@@ -3268,7 +3312,16 @@ function fragBox(R,Q,it,gesperrt,antwortNehmen){
   let frage='',fehler=null;
   /* Die Aufnahme endet, sobald es still wird. Der zweite Druck bleibt
      moeglich, ist aber nicht mehr noetig - das war der langsame Teil. */
-  try{ frage=await hoerFrei({lang:SRLANG[spr],
+  /* Die Auswahl der Aufgabe steuert die Erkennung vor: wer «transitiv»
+     sagt, soll nicht «transsitiv» zurueckbekommen. */
+  const erwartet=[];
+  try{
+   if(Q&&Q.opts)Q.opts.forEach(o=>erwartet.push(o.text));
+   if(it&&it.answer)erwartet.push(String(it.answer));
+   if(it&&it.accept)it.accept.forEach(x=>erwartet.push(String(x)));
+   if(it&&it.formen)it.formen.forEach(x=>erwartet.push(String(x)));
+  }catch(_){}
+  try{ frage=await hoerFrei({lang:SRLANG[spr],begriffe:erwartet,
    aufAktiv:f=>{stopper=f;}},STTCODE[spr]); }
   catch(e){ fehler=(e&&e.message)||'fehler'; }
   stopper=null;if(b.setzeAn)b.setzeAn(false);

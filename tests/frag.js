@@ -337,6 +337,42 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   pruef('Bei Schreibaufgaben hilft Emilia weiterhin',
    await warteAuf(()=>rufe.some(x=>x.weg==='frage'),2500),JSON.stringify(rufe.map(x=>x.weg)));
 
+  /* ---------- 9f. Vorsteuerung der Erkennung ---------- */
+  pruef('Begriffe werden geputzt',
+   begriffeSauber(['  transitiv ','', 'x'.repeat(60),
+    'eins zwei drei vier fuenf sechs','reflexiv','transitiv']).join('|')
+   ==='transitiv|reflexiv',
+   begriffeSauber(['  transitiv ','','x'.repeat(60),
+    'eins zwei drei vier fuenf sechs','reflexiv','transitiv']).join('|'));
+  pruef('Leere Liste bleibt leer',begriffeSauber(null).length===0);
+  pruef('Die Liste bleibt kurz',begriffeSauber(
+   Array.from({length:200},(_,i)=>'w'+i)).length<=60);
+
+  /* Was an den Vermittler geht, wird am Netz geprueft */
+  let sttFelder=null;
+  const fetchVorher=window.fetch;
+  window.fetch=async(u,o)=>{
+   const url=String(u);
+   if(/vermittler\.example\/stt$/.test(url)&&o&&o.body&&o.body.getAll){
+    sttFelder={keyterms:o.body.getAll('keyterms'),
+     marken:o.body.get('tag_audio_events'),
+     sprache:o.body.get('language_code')};
+    return {ok:true,status:200,json:async()=>({text:'transitiv'})};}
+   return fetchVorher(u,o);};
+  const echteAufnahme=window.hoerAufnahme, echterWeg=HOERWEG;
+  window.hoerAufnahme=async()=>({daten:new Float32Array(1600)});
+  HOERWEG='eleven';
+  /* Der Test ersetzt hoerFrei weiter oben; hier zaehlt das echte. */
+  await echtesHoer({begriffe:['transitiv','intransitiv','reflexiv']},'deu').catch(()=>{});
+  pruef('Erwartete Woerter gehen an den Vermittler',
+   !!sttFelder&&sttFelder.keyterms.join()==='transitiv,intransitiv,reflexiv',
+   JSON.stringify(sttFelder));
+  pruef('Nebengeraeusch-Marken sind abgeschaltet',
+   !!sttFelder&&sttFelder.marken==='false',sttFelder&&sttFelder.marken);
+  pruef('Die Sprache geht richtig mit',
+   !!sttFelder&&sttFelder.sprache==='deu',sttFelder&&sttFelder.sprache);
+  window.hoerAufnahme=echteAufnahme;HOERWEG=echterWeg;window.fetch=fetchVorher;
+
   /* ---------- 10. Im Fragenschirm ---------- */
   const R={id:'t',players:[TEST_PLAYER],game:MATH_GAME,mode:'learn',diff:'medium',adaptive:false,
    started:new Date(),pool:[],used:new Set(),answers:[],score:[0],streak:[0],best:[0],lives:3,

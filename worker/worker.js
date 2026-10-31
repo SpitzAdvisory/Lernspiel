@@ -80,28 +80,59 @@ async function ueberGrenze(env) {
   return n > grenze;
 }
 
+/* Erwartete Woerter steuern die Erkennung vor. «fiel» und «viel» klingen
+   gleich; nur der Zusammenhang entscheidet, und den kennt die Aufgabe.
+   Die Kodierung der Liste ist nicht dokumentiert, darum zwei Fassungen:
+   wiederholte Felder zuerst, JSON als Rueckfall. Schlaegt beides fehl,
+   wird ohne Vorsteuerung erkannt - lieber ungesteuert als gar nicht. */
 async function zuhoeren(request, env, origin) {
   if (!env.ELEVEN_KEY) return antwort({ error: 'ELEVEN_KEY fehlt' }, 500, origin);
   const ein = await request.formData();
   const datei = ein.get('file');
   if (!datei) return antwort({ error: 'keine Datei' }, 400, origin);
+  const sprache = String(ein.get('language_code') || 'fra');
+  const marken = String(ein.get('tag_audio_events') || 'false') === 'true';
+  const begriffe = ein.getAll('keyterms')
+    .map(x => String(x).trim()).filter(Boolean)
+    .filter(x => x.length <= 50 && x.split(/\s+/).length <= 5)
+    .slice(0, 100);
+
+  const bauen = (modell, art) => {
+    const fd = new FormData();
+    fd.append('model_id', modell);
+    fd.append('language_code', sprache);
+    fd.append('tag_audio_events', marken ? 'true' : 'false');
+    fd.append('file', datei, 'aufnahme.wav');
+    if (art === 'wiederholt') for (const k of begriffe) fd.append('keyterms', k);
+    else if (art === 'json') fd.append('keyterms', JSON.stringify(begriffe));
+    return fd;
+  };
+  const senden = async (fd) => {
+    const r = await fetch('https://api.elevenlabs.io/v1/speech-to-text', {
+      method: 'POST', headers: { 'xi-api-key': env.ELEVEN_KEY }, body: fd });
+    const data = await r.json().catch(() => null);
+    let fehler = '';
+    if (!r.ok) {
+      fehler = (data && data.detail && (data.detail.message || data.detail)) || ('HTTP ' + r.status);
+      if (typeof fehler !== 'string') fehler = JSON.stringify(fehler);
+    }
+    return { r, data, fehler };
+  };
 
   let letzter = '';
   for (const modell of SCRIBE) {
-    const fd = new FormData();
-    fd.append('model_id', modell);
-    fd.append('language_code', String(ein.get('language_code') || 'fra'));
-    fd.append('file', datei, 'aufnahme.wav');
-    const r = await fetch('https://api.elevenlabs.io/v1/speech-to-text', {
-      method: 'POST',
-      headers: { 'xi-api-key': env.ELEVEN_KEY },
-      body: fd,
-    });
-    const data = await r.json().catch(() => null);
-    if (r.ok) return antwort({ text: String((data && data.text) || '').trim() }, 200, origin);
-    letzter = (data && data.detail && (data.detail.message || data.detail)) || ('HTTP ' + r.status);
-    if (typeof letzter !== 'string') letzter = JSON.stringify(letzter);
-    if (!/model/i.test(letzter)) break;   /* nur ein falscher Modellname lohnt den zweiten Versuch */
+    const arten = begriffe.length ? ['wiederholt', 'json', 'ohne'] : ['ohne'];
+    for (const art of arten) {
+      const { r, data, fehler } = await senden(bauen(modell, art));
+      if (r.ok) return antwort({
+        text: String((data && data.text) || '').trim(),
+        steuerung: begriffe.length ? art : 'ohne',
+      }, 200, origin);
+      letzter = fehler;
+      /* Nur ein Streit ueber die Begriffsliste lohnt die naechste Fassung. */
+      if (!/keyterm/i.test(letzter)) break;
+    }
+    if (!/model/i.test(letzter)) break;
   }
   return antwort({ error: String(letzter).slice(0, 200) }, 502, origin);
 }

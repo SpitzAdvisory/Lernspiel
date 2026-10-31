@@ -106,6 +106,53 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    pruef('Die richtige Form wird angenommen',inp.style.borderColor.indexOf('green')>=0||
     getComputedStyle(inp).borderColor!=='',inp.style.borderColor);
   }
+  /* ---------- Lautgleiche Schreibungen ----------
+     «fiel» und «viel» klingen gleich. Johannes sprach richtig, Scribe
+     schrieb «viel», und die Aufgabe galt als falsch. */
+  const F=['fallen','fiel','gefallen'];
+  pruef('Lautgleiches zaehlt als richtig',
+   hoerUrteilDe(['Fallen, viel gefallen'],F).ok===true);
+  pruef('Dabei wird der Lautweg vermerkt',
+   hoerUrteilDe(['Fallen, viel gefallen'],F).laut===true);
+  pruef('Richtig Geschriebenes bleibt richtig',
+   hoerUrteilDe(['fallen fiel gefallen'],F).ok===true);
+  pruef('Eine falsche Form bleibt falsch',
+   hoerUrteilDe(['fallen fällt gefallen'],F).ok===false);
+  pruef('Und die fehlende Form wird benannt',
+   hoerUrteilDe(['fallen fällt gefallen'],F).fehlt.join()==='fiel',
+   hoerUrteilDe(['fallen fällt gefallen'],F).fehlt.join());
+  pruef('Dehnungs-h faellt nicht ins Gewicht',
+   hoerUrteilDe(['nehmen nam genommen'],['nehmen','nahm','genommen']).ok===true);
+  pruef('Doppelkonsonant faellt nicht ins Gewicht',
+   hoerUrteilDe(['sitzen sas gesessen'],['sitzen','sass','gesessen']).ok===true);
+  pruef('Ohne Bezug bleibt es falsch',
+   hoerUrteilDe(['keine ahnung'],F).ok===false);
+
+  /* Die Lauttoleranz darf verschiedene Formen nicht verschmelzen.
+     Gemessen ueber alle Formen der Verbenliste; erlaubt sind nur echte
+     Homophone, die auch ein Mensch nur am Sinn unterscheidet. */
+  const echteHomophone=['rit','flist','genist'];
+  const karte={};
+  DEV.forEach(v=>[0,1,2,3].forEach(i=>{
+   if(!v[i])return;
+   const k=lautDe(v[i]);
+   (karte[k]=karte[k]||new Set()).add(v[i]);}));
+  const verschmolzen=Object.keys(karte)
+   .filter(k=>karte[k].size>1&&echteHomophone.indexOf(k)<0);
+  pruef('Die Lauttoleranz verschmilzt keine fremden Formen',
+   verschmolzen.length===0,
+   verschmolzen.map(k=>k+': '+[...karte[k]].join('/')).slice(0,4).join(' | '));
+
+  let innenGleich=[];
+  DEV.forEach(v=>{
+   const k=[lautDe(v[0]),lautDe(v[1]),lautDe(v[2])];
+   /* genesen und geschehen haben im Deutschen gleiche Infinitiv- und
+      Partizipform - das ist die Sprache, nicht der Vergleich. */
+   if(new Set(k).size<3&&['genesen','geschehen'].indexOf(v[0])<0)
+    innenGleich.push(v[0]);});
+  pruef('Die drei Stammformen bleiben unterscheidbar',innenGleich.length===0,
+   innenGleich.slice(0,4).join(', '));
+
   /* Die Schreibweise ist bei diesen drei Themen die Uebung. Ihre
      Aufgaben muessen darum gegen gesprochene Antworten gesperrt sein. */
   const schreibThemen=['de-stamm','de-stamm-rueck','de-praesens'];
