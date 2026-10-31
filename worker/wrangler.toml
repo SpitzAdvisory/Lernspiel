@@ -23,6 +23,10 @@ name = "spitz-lernen"
 main = "worker.js"
 compatibility_date = "2026-10-28"
 workers_dev = true
+# Der erste Lauf warnte: ohne diese Zeile schaltet wrangler zusaetzliche
+# Vorschau-Adressen frei. Jede davon ist derselbe Vermittler unter einem
+# weiteren Namen. Kein neues Risiko, aber unnoetige Oberflaeche - aus.
+preview_urls = false
 
 # Noch nicht angelegt. Wird fuer die Tagesgrenze des Sprachagenten gebraucht.
 # [[kv_namespaces]]
