@@ -197,9 +197,13 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
 .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 3px;font-size:.9em}.frac span:first-child{border-bottom:2px solid currentColor;padding:0 3px}
 .keypad{display:grid;grid-template-columns:repeat(3,64px);gap:8px;margin-top:12px}.key{height:56px;min-width:56px;border:2px solid var(--ink);border-radius:12px;background:var(--white);font-size:1.4rem;font-weight:700;color:var(--ink)}
 .zgrid{display:inline-grid;gap:2px 0;margin:4px 0 0;justify-items:center;align-items:end}
+.znach{padding-left:10px;white-space:nowrap}
 .zcell{display:flex;align-items:flex-end;justify-content:center}
-.zfix{font:700 calc(var(--zb)*.78)/1.1 ui-monospace,monospace;color:var(--ink);padding:2px 0}
-.zop{font:700 calc(var(--zb)*.78)/1.1 ui-monospace,monospace;color:var(--ink);padding:2px 10px 2px 0}
+.zfix{font:700 calc(var(--zb)*.78)/1.1 ui-monospace,monospace,system-ui;color:var(--ink);padding:2px 0}
+/* Das Rechenzeichen steht allein und muss nicht in der Zifferbreite
+   sitzen. Manche Monospace-Schriften zeichnen fuer den Malpunkt ein
+   leeres Kaestchen - mit der Systemschrift kommt er sicher. */
+.zop{font:700 calc(var(--zb)*.70)/1.1 system-ui,sans-serif;color:var(--ink);padding:2px 10px 2px 0}
 .zbox{width:var(--zb);height:calc(var(--zb)*1.22);border:2.5px solid var(--ink);border-radius:10px;background:var(--white);touch-action:none}
 .zbox.klein{width:calc(var(--zb)*.58);height:calc(var(--zb)*.72);border-width:2px;border-style:dashed}
 .zbox.aktiv{box-shadow:0 0 0 3px var(--mint)}
@@ -3049,25 +3053,46 @@ function renderQuestion(R,Q){
    ['pointerup','pointercancel','pointerleave'].forEach(k=>cv.addEventListener(k,()=>{cur=null;}));
    el.addEventListener('focus',()=>waehle(z));
    felder.push(z);setTimeout(()=>malen(z),0);return z;};
+  /* Das Gitter ist eine Folge von Zeilen. Addition, Subtraktion,
+     Multiplikation und Division liefern dieselbe Beschreibung; hier wird
+     nur noch gezeichnet, was dort steht. */
+  const zeilen=G.zeilen||[
+   {art:'fest',z:G.da},{art:'fest',op:G.op,z:G.db},
+   {art:'klein',z:(G.ueb||[]).map((v,i)=>G.offenUeb&&G.offenUeb[i]?v:undefined)},
+   {art:'strich'},{art:'feld',erg:true,z:G.erg}];
+  const mitNach=zeilen.some(r=>r.nach);
   const zellen=[];const leer=(r,c)=>h('div',{class:'zcell',style:'grid-row:'+r+';grid-column:'+c});
-  for(let i=0;i<N;i++)zellen.push(h('div',{class:'zcell zfix',style:'grid-row:1;grid-column:'+(i+2)},G.da[i]==null?'':String(G.da[i])));
-  zellen.push(h('div',{class:'zcell zop',style:'grid-row:2;grid-column:1'},G.op));
-  for(let i=0;i<N;i++)zellen.push(h('div',{class:'zcell zfix',style:'grid-row:2;grid-column:'+(i+2)},G.db[i]==null?'':String(G.db[i])));
-  for(let i=0;i<N;i++){
-   if(!G.offenUeb[i]){zellen.push(leer(3,i+2));continue;}
-   const z=feld(true,G.ueb[i],'ueb',i);
-   zellen.push(h('div',{class:'zcell',style:'grid-row:3;grid-column:'+(i+2)},z.el));}
-  zellen.push(h('div',{class:'zline',style:'grid-row:4;grid-column:1 / span '+(N+1)}));
   const ergF=[];
-  for(let i=0;i<N;i++){
-   if(!G.offenErg[i]){ergF.push(null);zellen.push(leer(5,i+2));continue;}
-   const z=feld(false,G.erg[i],'erg',i);ergF.push(z);
-   zellen.push(h('div',{class:'zcell',style:'grid-row:5;grid-column:'+(i+2)},z.el));}
+  zeilen.forEach((zeile,ri)=>{
+   const r=ri+1;
+   if(zeile.art==='strich'){
+    zellen.push(h('div',{class:'zline',style:'grid-row:'+r+';grid-column:1 / span '+(N+1)}));
+    return;}
+   if(zeile.op)zellen.push(h('div',{class:'zcell zop',style:'grid-row:'+r+';grid-column:1'},zeile.op));
+   for(let i=0;i<N;i++){
+    const v=zeile.z?zeile.z[i]:undefined;
+    if(zeile.art==='fest'){
+     zellen.push(h('div',{class:'zcell zfix',style:'grid-row:'+r+';grid-column:'+(i+2)},
+      v==null?'':String(v)));continue;}
+    /* undefined heisst: hier steht nichts. null in einer Kaestchenzeile
+       heisst: ein Kaestchen, das leer bleiben muss - beim Uebertrag ist
+       genau das die Aufgabe. */
+    if(v===undefined){zellen.push(leer(r,i+2));continue;}
+    if(zeile.art==='feld'&&v===null){if(zeile.erg)ergF.push(null);zellen.push(leer(r,i+2));continue;}
+    const z=feld(zeile.art==='klein',v,zeile.art==='klein'?'ueb':'erg',i);
+    if(zeile.erg)ergF.push(z);
+    zellen.push(h('div',{class:'zcell',style:'grid-row:'+r+';grid-column:'+(i+2)},z.el));}
+   if(zeile.nach)zellen.push(h('div',{class:'zcell zfix znach',
+    style:'grid-row:'+r+';grid-column:'+(N+2)},zeile.nach));});
   let zb=zboxGet();
+  /* Mehr Zeilen und Spalten brauchen kleinere Kaestchen - sonst steht die
+     Rechnung halb ausserhalb der Karte. */
+  const eng=Math.max(0,(N-4))+Math.max(0,(zeilen.length-5));
+  for(let k=0;k<eng;k++){const i=ZBOX.indexOf(zb);if(i>0)zb=ZBOX[i-1];}
   const gitterEl=h('div',{class:'zgrid'},zellen);
   const stelleGroesse=()=>{
    gitterEl.style.setProperty('--zb',zb+'px');
-   gitterEl.style.gridTemplateColumns='auto repeat('+N+','+(zb+10)+'px)';
+   gitterEl.style.gridTemplateColumns='auto repeat('+N+','+(zb+10)+'px)'+(mitNach?' auto':'');
    felder.forEach(z=>{z.cv.width=0;setTimeout(()=>malen(z),0);});};
   stelleGroesse();
   const status=h('p',{class:'small muted',style:'margin:8px 0 0;min-height:1.3em','aria-live':'polite'});
@@ -3697,9 +3722,98 @@ function stellenGitter(a,b,op){
   if(trag&&i>0)ueb[i-1]=1;}
  const res=plus?a+b:a-b;
  const erg=zifferFeld(res,breite);
+ const offenUeb=ueb.map((_,i)=>i<breite-1);
  return{op,a,b,res,breite,da,db,erg,ueb,
   offenErg:erg.map(d=>d!==null),
-  offenUeb:ueb.map((_,i)=>i<breite-1)};   /* ganz rechts nie ein Uebertragsfeld */
+  offenUeb,
+  zeilen:[
+   {art:'fest',z:da},
+   {art:'fest',op,z:db},
+   {art:'klein',z:ueb.map((v,i)=>offenUeb[i]?v:undefined)},
+   {art:'strich'},
+   {art:'feld',erg:true,z:erg}
+  ]};
+}
+
+/* Schriftliche Multiplikation.
+   Einstelliger Faktor: eine Ergebniszeile mit Uebertragskaestchen - der
+   Uebertrag kann hier groesser als eins sein.
+   Zweistelliger Faktor: zwei Teilprodukte und darunter die Summe. Die
+   Uebertraege bleiben dort weg, sonst wird das Blatt unleserlich; dafuer
+   gibt es den Schreibblock daneben. */
+function malGitter(a,b){
+ const res=a*b;
+ const sb=String(b);
+ if(sb.length===1){
+  const breite=String(res).length;
+  const da=zifferFeld(a,breite), db=zifferFeld(b,breite);
+  const ueb=new Array(breite).fill(null);
+  const za=zifferFeld(a,breite);
+  let trag=0;
+  for(let i=breite-1;i>=0;i--){
+   const d=za[i]||0;
+   const p=d*b+trag;
+   trag=Math.floor(p/10);
+   if(trag&&i>0)ueb[i-1]=trag;
+  }
+  const offenUeb=ueb.map((v,i)=>i<breite-1&&v!=null);
+  const erg=zifferFeld(res,breite);
+  return{op:'·',a,b,res,breite,da,db,erg,ueb,
+   offenErg:erg.map(d=>d!==null),offenUeb,
+   zeilen:[
+    {art:'fest',z:da},
+    {art:'fest',op:'·',z:db},
+    {art:'klein',z:ueb.map((v,i)=>offenUeb[i]?v:undefined)},
+    {art:'strich'},
+    {art:'feld',erg:true,z:erg}
+   ]};
+ }
+ /* zweistelliger Faktor */
+ const einer=+sb[1], zehner=+sb[0];
+ const t1=a*einer, t2=a*zehner;          /* t2 steht um eine Stelle versetzt */
+ const breite=Math.max(String(res).length,String(t1).length,String(t2).length+1);
+ const da=zifferFeld(a,breite), db=zifferFeld(b,breite);
+ const z1=zifferFeld(t1,breite);
+ const z2r=zifferFeld(t2,breite-1);      /* um eins nach links geschoben */
+ const z2=z2r.concat([null]);
+ const erg=zifferFeld(res,breite);
+ return{op:'·',a,b,res,breite,da,db,erg,teil:[t1,t2],
+  offenErg:erg.map(d=>d!==null),offenUeb:new Array(breite).fill(false),ueb:new Array(breite).fill(null),
+  zeilen:[
+   {art:'fest',z:da},
+   {art:'fest',op:'·',z:db},
+   {art:'strich'},
+   {art:'feld',z:z1},
+   {art:'feld',z:z2},
+   {art:'strich'},
+   {art:'feld',erg:true,z:erg}
+  ]};
+}
+
+/* Schriftliche Division mit einstelligem Teiler, in der Schreibweise mit
+   mitgefuehrtem Rest: ueber jeder Stelle steht der Rest, der aus der
+   vorherigen uebrig blieb. */
+function geteiltGitter(a,b){
+ const sa=String(a), breite=sa.length;
+ const da=zifferFeld(a,breite);
+ const rest=new Array(breite).fill(null);
+ let r=0;
+ for(let i=0;i<breite;i++){
+  const wert=r*10+(da[i]||0);
+  r=wert%b;
+  if(i+1<breite)rest[i+1]=r;         /* Rest steht ueber der naechsten Stelle */
+ }
+ const res=Math.floor(a/b), schluss=a%b;
+ const ergF=zifferFeld(res,breite);
+ const offenRest=rest.map(v=>v!=null);
+ return{op:':',a,b,res,schluss,breite,da,db:zifferFeld(b,breite),erg:ergF,ueb:rest,
+  offenErg:ergF.map(d=>d!==null),offenUeb:offenRest,
+  zeilen:[
+   {art:'klein',z:rest.map(v=>v==null?undefined:v)},
+   {art:'fest',z:da,nach:' : '+b+' ='},
+   {art:'strich'},
+   {art:'feld',erg:true,z:ergF}
+  ]};
 }
 /* ---------- item helpers ---------- */
 function numItem(prompt,val,o){o=o||{};const ans=typeof val==='object'?val:{re:val,im:0};
@@ -3929,6 +4043,58 @@ topic('m3-stellen',3,1,['Schriftlich rechnen mit Kästchen','Column arithmetic w
         :X('Zu klein? Dann zähle oben zehn dazu und setze unten in der nächsten Spalte eine 1.','Too small? Add ten above and put a 1 in the next column below.','Trop petit ? Ajoute dix en haut et mets un 1 dans la colonne suivante en bas.'),
    X('Dann die nächste Spalte, immer von rechts nach links.','Then the next column, always right to left.','Puis la colonne suivante, toujours de droite à gauche.'),
    a+' '+g.op+' '+b+' = '+g.res]);});
+topic('m4-malschriftlich',4,1,['Schriftlich malnehmen','Column multiplication','Multiplication posée'],
+ ['Ziffer für Ziffer von rechts nach links. Was über neun hinausgeht, kommt als Übertrag ins kleine Kästchen links daneben - hier kann dort auch eine 2 oder eine 4 stehen, nicht nur eine 1. Bei einem zweistelligen Faktor rechnest du zweimal und zählst die beiden Zeilen zusammen; die zweite Zeile beginnt eine Stelle weiter links.',
+  'Digit by digit, right to left. Anything above nine becomes a carry in the small box to its left - here it can be a 2 or a 4, not only a 1. With a two-digit factor you work twice and add the two rows; the second row starts one place further left.',
+  'Chiffre par chiffre, de droite à gauche. Ce qui dépasse neuf devient une retenue dans la petite case à gauche : ici ce peut être 2 ou 4, pas seulement 1. Avec un facteur à deux chiffres, tu calcules deux fois et tu additionnes les deux lignes ; la seconde commence une place plus à gauche.'],
+ ['product','factor','carry'],
+ lv=>{
+  let a,b;
+  if(lv===1){a=ri(12,99);b=ri(3,9);}
+  else if(lv===2){a=ri(112,999);b=ri(3,9);}
+  else{a=ri(112,999);b=ri(12,99);}
+  const g=malGitter(a,b);
+  const it={type:'stellen',gitter:g,answer:String(g.res),
+   prompt:X('Rechne schriftlich. Fülle die Kästchen.','Work it out in columns. Fill in the boxes.','Pose le calcul. Remplis les cases.')};
+  const e=a%10;
+  if(String(b).length===1)return steps(it,[
+   X('Beginne rechts: ','Start on the right: ','Commence à droite : ')+e+' · '+b+' = '+(e*b)+'.',
+   X('Schreibe die letzte Ziffer hin, den Rest als Übertrag ins kleine Kästchen links daneben.','Write the last digit down and the rest as a carry in the small box to its left.','Écris le dernier chiffre et le reste comme retenue dans la petite case à gauche.'),
+   X('Dann die nächste Stelle - und den Übertrag nicht vergessen.','Then the next place - and do not forget the carry.','Puis la place suivante, sans oublier la retenue.'),
+   a+' · '+b+' = '+g.res]);
+  return steps(it,[
+   X('Rechne zuerst ','First work out ','Calcule d’abord ')+a+' · '+(b%10)+' = '+(a*(b%10))+'.',
+   X('Dann ','Then ','Puis ')+a+' · '+Math.floor(b/10)+' = '+(a*Math.floor(b/10))+X(' - eine Stelle weiter links hinschreiben.',' - write it one place further left.',' - écris-le une place plus à gauche.'),
+   X('Zum Schluss die beiden Zeilen zusammenzählen.','Finally add the two rows.','Enfin, additionne les deux lignes.'),
+   a+' · '+b+' = '+g.res]);});
+
+topic('m4-geteiltschriftlich',4,1,['Schriftlich teilen','Column division','Division posée'],
+ ['Von links nach rechts. Du teilst die erste Ziffer, schreibst das Ergebnis hin und trägst den Rest klein über die nächste Ziffer. Dann nimmst du Rest und nächste Ziffer zusammen und teilst wieder.',
+  'Left to right. Divide the first digit, write the answer, and carry the remainder in small above the next digit. Then take remainder and next digit together and divide again.',
+  'De gauche à droite. Tu divises le premier chiffre, tu écris le résultat et tu notes le reste en petit au-dessus du chiffre suivant. Puis tu prends le reste et le chiffre suivant ensemble et tu divises de nouveau.'],
+ ['quotient','divisor','remainder'],
+ lv=>{
+  const stellen=lv===1?2:lv===2?3:4;
+  const min=Math.pow(10,stellen-1),max=Math.pow(10,stellen)-1;
+  let a,b,g;
+  for(let k=0;k<200;k++){
+   b=ri(2,9);
+   const q=ri(Math.ceil(min/b),Math.floor(max/b));
+   a=q*b;
+   if(String(a).length!==stellen)continue;
+   g=geteiltGitter(a,b);
+   /* Ohne mitgefuehrten Rest ist nichts zu ueben. */
+   if(lv===1||g.ueb.some(x=>x))break;}
+  const it={type:'stellen',gitter:g,answer:String(g.res),
+   prompt:X('Rechne schriftlich. Fülle die Kästchen.','Work it out in columns. Fill in the boxes.','Pose le calcul. Remplis les cases.')};
+  const d1=+String(a)[0];
+  return steps(it,[
+   X('Beginne links: ','Start on the left: ','Commence à gauche : ')+d1+' : '+b+' = '+Math.floor(d1/b)+
+    (d1%b?X(', Rest ',', remainder ',', reste ')+(d1%b):''),
+   X('Den Rest klein über die nächste Ziffer schreiben.','Write the remainder in small above the next digit.','Écris le reste en petit au-dessus du chiffre suivant.'),
+   X('Dann Rest und nächste Ziffer zusammen teilen.','Then divide remainder and next digit together.','Puis divise le reste et le chiffre suivant ensemble.'),
+   a+' : '+b+' = '+g.res]);});
+
 topic('m3-mult',3,1,['Multiplizieren','Multiplying','Multiplier'],
  ['Mit Zehnerzahlen rechnest du wie im Einmaleins und hängst eine 0 an: 4 · 30 = 4 · 3 · 10 = 120.','With tens you use the times table and add a 0: 4 · 30 = 4 · 3 · 10 = 120.','Avec des dizaines, utilise les tables et ajoute un 0 : 4 · 30 = 4 · 3 · 10 = 120.'],['product','factor'],
  lv=>{const a=ri(2,9);if(lv===1){const b=ri(2,10);const it=numItem(a+' · '+b+' = ?',a*b);return steps(it,[X('Nutze eine Kernaufgabe: ','Use a key fact: ','Utilise un calcul clé : ')+'5 · '+b+' = '+5*b+'.',(a>5?'+ ':'− ')+Math.abs(a-5)+' · '+b+'.',a+' · '+b+' = '+a*b]);}
