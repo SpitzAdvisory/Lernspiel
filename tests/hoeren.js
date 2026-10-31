@@ -118,12 +118,16 @@ const srv=http.createServer((q,s)=>{s.writeHead(200,{'Content-Type':'text/html'}
   await warte(60);
   gehoert='[räuspert sich]';
   document.querySelector('.hoerKnopf').click();
-  await warte(400);
+  /* Starre 400 ms reichten in einem von vier Laeufen nicht: der Knopf stand
+     noch auf «Halt», die Aufnahme lief also noch. Darum auf die Meldung
+     warten statt auf die Uhr. */
+  const ruhig=await warteAuf(()=>/Nichts verstanden/.test(
+   document.querySelector('.page').textContent),4000);
   pruef('Nichts Verstandenes wertet nicht',
    !/✓|✗/.test(document.querySelector('.hoerKnopf').textContent),
    document.querySelector('.hoerKnopf').textContent);
-  pruef('Dafuer die Einladung zum neuen Anlauf',
-   /Nichts verstanden/.test(document.querySelector('.page').textContent));
+  pruef('Dafuer die Einladung zum neuen Anlauf',ruhig,
+   document.querySelector('.page').textContent.slice(0,60));
 
   return aus;});
  let f=0;

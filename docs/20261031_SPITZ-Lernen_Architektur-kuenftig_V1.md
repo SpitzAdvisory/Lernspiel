@@ -65,7 +65,7 @@ geschieht in einem Editor im Browser, er lässt sich nicht prüfen, und er hinte
 keine Spur.
 
 Künftig liegt `worker.js` in derselben GitHub-Ablage wie die App. Ein Schub löst dort
-einen Arbeitslauf aus: 480 Prüfungen, und bei Erfolg geht die App an GitHub Pages und
+einen Arbeitslauf aus: 520 Prüfungen, und bei Erfolg geht die App an GitHub Pages und
 der Vermittler an Cloudflare.
 
 **Der Preis dafür:** ein Cloudflare-Zugangsschlüssel muss als Geheimnis in GitHub
@@ -134,7 +134,7 @@ Sperre aus.
 - Eine einzige HTML-Datei, kein Bauschritt, keine Abhängigkeit.
 - Die Schlüssel für ElevenLabs und Anthropic nur im Vermittler.
 - Die Türsteherregel: nur die eigene Adresse darf den Vermittler nutzen.
-- Die 480 Prüfungen vor jeder Auslieferung.
+- Die 520 Prüfungen vor jeder Auslieferung.
 - Der Abgleich mit dem Lehrplan 21 bei jedem neuen Thema.
 - Die Ablage der Spielstände über Dropbox mit dem Zugang des Benutzers selbst.
 

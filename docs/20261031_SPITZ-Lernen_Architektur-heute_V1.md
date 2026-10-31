@@ -42,7 +42,7 @@ werden bei jedem Durchgang neu gewürfelt. Dadurch kann ein Kind dasselbe Thema
 zwanzigmal spielen, ohne dieselbe Aufgabe zweimal zu sehen.
 
 Der Nachteil davon: ein Fehler im Aufgabenbauer erzeugt nicht eine falsche Aufgabe,
-sondern eine ganze Gattung falscher Aufgaben. Deshalb die 480 Prüfungen in 27 Dateien,
+sondern eine ganze Gattung falscher Aufgaben. Deshalb die 520 Prüfungen in 26 Dateien,
 die vor jeder Auslieferung durchlaufen.
 
 ---
@@ -139,7 +139,7 @@ mehr genützt als gekostet.
   sofort alle 327 Themen und alle sechs Spielarten.
 
 Der dritte Punkt ist der ernsteste. Er ist auch der Grund, warum die Prüfungen
-mitgewachsen sind: von einer Handvoll im August auf heute 480.
+mitgewachsen sind: von einer Handvoll im August auf heute 520.
 
 ---
 

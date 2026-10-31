@@ -13,7 +13,7 @@ Fassung zurückholen lässt. Alle Zahlen darin sind gemessen, nicht geschätzt.
 |---|---|---|
 | Die App | eine Datei, 1,18 MB | `index.html` im Repository |
 | Tondateien | 4857 Stück | `audio/` im Repository |
-| Prüfungen | 26 Dateien, rund 480 Prüfungen | `tests/` im Repository |
+| Prüfungen | 26 Dateien, 520 Prüfungen | `tests/` im Repository |
 | Vermittler | 1 Datei, 255 Zeilen | `worker/worker.js`, läuft bei Cloudflare |
 | Sprachpartnerin | 2 Dateien | `agent/`, läuft bei ElevenLabs |
 | Spielstände der Kinder | 161 Protokolle, 3 Profile | nur auf dem PC, jetzt auch im Archiv |

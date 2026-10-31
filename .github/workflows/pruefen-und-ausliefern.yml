@@ -1,0 +1,95 @@
+# Prueft jede Fassung und liefert den Vermittler aus.
+#
+# Die App selbst wird von GitHub Pages ausgeliefert und braucht hier nichts.
+# Dieser Arbeitslauf ersetzt den Handgriff am Vermittler: das Einfuegen des
+# Worker-Quelltextes ueber die Zwischenablage in die Cloudflare-Oberflaeche.
+#
+# Ohne das Geheimnis CLOUDFLARE_API_TOKEN laeuft nur die Pruefung. Die
+# Auslieferung wird uebersprungen und meldet das auch. Nichts geht kaputt,
+# solange das Geheimnis fehlt.
+
+name: Pruefen und ausliefern
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+
+  pruefen:
+    name: 520 Pruefungen
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright einrichten
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.0
+          npx playwright install --with-deps chromium
+
+      - name: Fassung melden
+        run: |
+          grep -o "const APPVER='[^']*'" index.html || echo "APPVER nicht gefunden"
+          ls -la index.html
+
+      - name: Pruefungen laufen lassen
+        run: node tests/alles.js
+
+  ausliefern:
+    name: Vermittler ausliefern
+    needs: pruefen
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Geheimnis vorhanden?
+        id: schluessel
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          KONTO: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "$TOKEN" ] && [ -n "$KONTO" ]; then
+            echo "da=ja" >> "$GITHUB_OUTPUT"
+          else
+            echo "da=nein" >> "$GITHUB_OUTPUT"
+            echo "::notice::Kein Cloudflare-Geheimnis hinterlegt - Auslieferung uebersprungen."
+          fi
+
+      - name: Auslieferung
+        if: steps.schluessel.outputs.da == 'ja'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+
+      # Gemessen am 31.10.2026 gegen den laufenden Vermittler: mit erlaubter
+      # Herkunft antwortet er 405 auf GET, ohne Herkunft 403. Geprueft wird
+      # hier vor allem das Zweite - der Tuersteher muss stehen.
+      - name: Tuersteher steht?
+        if: steps.schluessel.outputs.da == 'ja'
+        run: |
+          sleep 5
+          A=https://spitz-lernen.urs-409.workers.dev/unbekannt
+          mit=$(curl -s -m 20 -o /dev/null -w '%{http_code}' -H 'Origin: https://spitzadvisory.github.io' "$A")
+          ohne=$(curl -s -m 20 -o /dev/null -w '%{http_code}' "$A")
+          echo "mit erlaubter Herkunft: HTTP $mit"
+          echo "ohne Herkunft        : HTTP $ohne"
+          if [ "$ohne" != "403" ]; then
+            echo "::error::Fremde Herkunft wird nicht mehr abgewiesen (HTTP $ohne)"
+            exit 1
+          fi
+          case "$mit" in 2*|4*) ;; *) echo "::error::Vermittler antwortet $mit"; exit 1;; esac

@@ -1,0 +1,22 @@
+# Bauplan des Vermittlers fuer die selbsttaetige Auslieferung.
+#
+# Die Schluessel ELEVEN_KEY und ANTHROPIC_KEY stehen NICHT hier. Sie liegen
+# als Secrets im Cloudflare-Konto und ueberdauern jede Auslieferung.
+#
+# OFFEN: ob der Worker heute eine KV-Bindung ZAEHLER traegt, ist hier nicht
+# bekannt. Traegt er eine und steht sie nicht in dieser Datei, entfernt die
+# erste selbsttaetige Auslieferung sie - die Tagesgrenze liefe dann still ins
+# Leere. Vor der ersten Auslieferung wird das in der Cloudflare-Oberflaeche
+# nachgesehen und hier eingetragen.
+
+name = "spitz-lernen"
+main = "worker.js"
+compatibility_date = "2026-10-25"
+workers_dev = true
+
+# [[kv_namespaces]]
+# binding = "ZAEHLER"
+# id = "<aus der Cloudflare-Oberflaeche>"
+
+# [vars]
+# TAGESGRENZE = "500"
