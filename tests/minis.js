@@ -35,7 +35,7 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   mist:spielStufe({spielStufe:'drei'}),
   nan:spielStufe({spielStufe:NaN})}));
  pruef('Ohne Angabe beginnt die Stufe bei 1',stufen.ohne===1&&stufen.null_===1,JSON.stringify(stufen));
- pruef('Die Stufe bleibt zwischen 1 und 3',stufen.null0===1&&stufen.hoch===3,stufen.null0+'/'+stufen.hoch);
+ pruef('Die Stufe bleibt zwischen 1 und 5',stufen.null0===1&&stufen.hoch===5,stufen.null0+'/'+stufen.hoch);
  pruef('Unbrauchbare Werte fallen auf 1 zurück',stufen.mist===1&&stufen.nan===1);
  pruef('Gültige Werte bleiben erhalten',stufen.zwei===2&&stufen.krumm===2);
 
@@ -47,6 +47,30 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   /* Schreiben in den Datenspeicher ist hier nicht das Pruefziel. */
   window.__gespeichert=0;
   window.saveProfiles=async()=>{window.__gespeichert++;};});
+
+ /* ---------- Fuenf Stufen, und jede baut ---------- */
+ const leiter=await pg.evaluate(async()=>{
+  const schlecht=[];
+  for(const sp of SPIELE){
+   let vor=0;
+   for(let st=1;st<=SPIELSTUFEN;st++){
+    const z=sp.ziel(st);
+    if(!z||!isFinite(z.n)||z.n<=vor)schlecht.push(sp.id+' Stufe '+st+': '+(z&&z.n));
+    vor=z?z.n:0;
+    const platz=document.createElement('div');platz.style.cssText='width:358px';
+    document.body.appendChild(platz);
+    let F=null;
+    try{F=sp.bau(platz,{stufe:st,fertig(){}});}catch(e){schlecht.push(sp.id+' Stufe '+st+' baut nicht: '+e.message);}
+    await new Promise(r=>setTimeout(r,60));
+    if(!platz.querySelector('canvas'))schlecht.push(sp.id+' Stufe '+st+': keine Leinwand');
+    try{if(F&&F.ende)F.ende();}catch(_){}
+    platz.remove();
+   }
+  }
+  return {stufen:SPIELSTUFEN,schlecht};});
+ pruef('Es sind fünf Stufen',leiter.stufen===5,leiter.stufen);
+ pruef('Jede Stufe jedes Spiels baut und fordert mehr als die vorige',
+  leiter.schlecht.length===0,leiter.schlecht.slice(0,3).join(' | '));
 
  const eingebaut=await pg.evaluate(async()=>{
   const p={id:'t2',builtin:true};
@@ -81,8 +105,40 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   await new Promise(r=>setTimeout(r,200));
   SPIELE.forEach((s,i)=>{s.bau=echt[i];});
   return {stufe:window.__P.spielStufe,target:R.target};});
- pruef('Sieg im ersten Anlauf hebt die Stufe auf 2',sieg.stufe===2,sieg.stufe);
+ /* Das nachgebaute Spiel meldet nach 20 Millisekunden Sieg - das ist der
+    muehelose Fall, also zwei Stufen. Den knappen Sieg prueft weiter unten
+    ein eigener Durchgang mit vorgestellter Uhr. */
+ pruef('Sieg im ersten Anlauf hebt die Stufe',sieg.stufe===3,sieg.stufe);
  pruef('Sieg kostet keine Zusatzaufgaben',sieg.target===25,sieg.target);
+
+ /* ---------- Muehelos gewonnen: zwei Stufen auf einmal ---------- */
+ const schnell=await pg.evaluate(async()=>{
+  window.__P.spielStufe=1;const R=window.__R;R.q=5;R.spielAt=0;R.target=25;
+  const echt=SPIELE.map(s=>s.bau);
+  SPIELE.forEach(s=>{s.bau=(platz,o)=>{setTimeout(()=>o.fertig(true,9),20);return{ende(){}};};});
+  nextQuestion(R);
+  [...document.querySelectorAll('button')].find(b=>b.textContent.trim()===t('spielLos')).click();
+  await new Promise(r=>setTimeout(r,200));
+  SPIELE.forEach((s,i)=>{s.bau=echt[i];});
+  return window.__P.spielStufe;});
+ pruef('Mühelos gewonnen hebt gleich zwei Stufen',schnell===3,schnell);
+
+ const gemaechlich=await pg.evaluate(async()=>{
+  window.__P.spielStufe=1;const R=window.__R;R.q=5;R.spielAt=0;R.target=25;
+  const echt=SPIELE.map(s=>s.bau);
+  SPIELE.forEach(s=>{s.bau=(platz,o)=>{setTimeout(()=>o.fertig(true,9),20);return{ende(){}};};});
+  /* Statt wirklich zu warten wird die Uhr um zwei Minuten vorgestellt. */
+  const echteZeit=performance.now.bind(performance);
+  let versatz=0;
+  performance.now=()=>echteZeit()+versatz;
+  nextQuestion(R);
+  [...document.querySelectorAll('button')].find(b=>b.textContent.trim()===t('spielLos')).click();
+  versatz=120000;
+  await new Promise(r=>setTimeout(r,250));
+  performance.now=echteZeit;
+  SPIELE.forEach((s,i)=>{s.bau=echt[i];});
+  return window.__P.spielStufe;});
+ pruef('Knapp gewonnen hebt nur eine Stufe',gemaechlich===2,gemaechlich);
 
  /* ---------- Zweimal verloren: Stufe sinkt, keine Strafe ---------- */
  const sinkt=await pg.evaluate(async()=>{

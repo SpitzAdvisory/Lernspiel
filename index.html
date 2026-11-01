@@ -279,6 +279,13 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
  padding:8px 2px;min-height:44px;display:flex;align-items:center;gap:6px}
 .notiz[open]>summary{margin-bottom:2px}
 
+/* Auf einem Telefon frassen Karten- und Seitenrand ein Viertel der Breite
+   weg: 294 von 390 Punkten blieben dem Spiel. Der Spielplatz greift darum
+   ueber den Kartenrand hinaus. */
+@media (max-width:560px){
+ .spielplatz{margin-left:-14px;margin-right:-14px}
+}
+
 @media (max-width:430px){
  .hoerFrage{font-size:1.3rem}
  /* Apples Gestaltungsrichtlinie nennt 44 Punkte als kleinstes Tippziel.
@@ -1543,7 +1550,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V88';
+const APPVER='V89';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1994,12 +2001,15 @@ function spiel(id,n,kurz,ziel,bau){SPIELE.push({id,n,kurz,ziel,bau});}
    sechs. Die Stufe steht deshalb fuer sich, beginnt bei 1 und folgt dem,
    was das Kind in den Spielen tatsaechlich schafft. Sie haengt am Profil
    und wandert damit auf das iPad mit. */
+const SPIELSTUFEN=5;    /* drei reichten einem Siebenjaehrigen, nicht einem
+                           Jugendlichen: auf Stufe 3 war die Luft nach oben
+                           weg. Fuenf lassen beiden Raum. */
 function spielStufe(p){
  const v=p&&p.spielStufe;
- return Math.max(1,Math.min(3,typeof v==='number'&&isFinite(v)?Math.round(v):1));}
+ return Math.max(1,Math.min(SPIELSTUFEN,typeof v==='number'&&isFinite(v)?Math.round(v):1));}
 async function spielStufeSetz(p,wert){
  if(!p||p.builtin)return;
- const neu=Math.max(1,Math.min(3,wert));
+ const neu=Math.max(1,Math.min(SPIELSTUFEN,wert));
  if(neu===spielStufe(p))return;
  p.spielStufe=neu;
  try{await saveProfiles();}catch(_){}}
@@ -2131,7 +2141,7 @@ spiel('fliegen',
  ['Der Kuchen steht auf dem Tisch, und die halbe Fliegenwelt hat davon gehört. Klatsch sie weg.',
   'The cake is on the table and half the fly population has heard about it. Swat them.',
   'Le gâteau est sur la table et la moitié des mouches du pays est au courant. Chasse-les.'],
- st=>({n:[8,14,20][st-1],art:'treffer',zeit:30}),
+ st=>({n:[8,14,20,26,32][st-1],art:'treffer',zeit:30}),
  (platz,o)=>{
   const ziel=o.ziel||[8,14,20][o.stufe-1],dauer=o.dauer||30000;
   const F=spielFeld(platz,{hoehe:340});
@@ -2168,7 +2178,7 @@ spiel('toast',
  ['Der Toaster hat zu viel Kraft. Fang das Brot mit dem Teller - Bananenschalen lieber nicht.',
   'The toaster is far too strong. Catch the bread with the plate - skip the banana peels.',
   'Le grille-pain est trop puissant. Attrape le pain avec l’assiette, évite les peaux de banane.'],
- st=>({n:[6,11,16][st-1],art:'treffer',zeit:35}),
+ st=>({n:[6,11,16,21,26][st-1],art:'treffer',zeit:35}),
  (platz,o)=>{
   const ziel=o.ziel||[6,11,16][o.stufe-1],dauer=o.dauer||35000;
   const F=spielFeld(platz,{hoehe:340});
@@ -2205,7 +2215,7 @@ spiel('turm',
  ['Stapeln ist einfach. Treffen ist das Problem. Tippe, wenn der Klotz passt.',
   'Stacking is easy. Hitting the spot is the problem. Tap when the block lines up.',
   'Empiler, c’est facile. Viser, moins. Touche quand le bloc est bien placé.'],
- st=>({n:[4,6,8][st-1],art:'kloetze'}),
+ st=>({n:[4,6,8,10,12][st-1],art:'kloetze'}),
  (platz,o)=>{
   const ziel=o.ziel||[4,6,8][o.stufe-1];
   const F=spielFeld(platz,{hoehe:360});
@@ -2251,10 +2261,10 @@ spiel('drache',
  ['Der Drache hat einen dicken Panzer. Schlag zu, wenn er das Maul aufreisst, und fang seine Feuerbälle mit dem Schild.',
   'The dragon is thickly armoured. Strike when it opens its jaws, and block its fireballs with your shield.',
   'Le dragon est bien cuirassé. Frappe quand il ouvre la gueule et bloque ses boules de feu avec le bouclier.'],
- st=>({n:[6,9,13][st-1],art:'leben',zeit:60}),
+ st=>({n:[6,9,13,17,21][st-1],art:'leben',zeit:60}),
  (platz,o)=>{
   const stufe=o.stufe||1;
-  const voll=o.ziel||[6,9,13][stufe-1], dauer=o.dauer||60000;
+  const voll=o.ziel||[6,9,13,17,21][stufe-1], dauer=o.dauer||60000;
   const F=spielFeld(platz,{hoehe:380});
   let hp=voll, herz=3, schild=0, offen=0, naechsteOeffnung=0, naechsterBall=0, prellt=0;
   const baelle=[]; let dx=0.055+stufe*0.022;
@@ -2308,10 +2318,10 @@ spiel('raum',
  ['Steuere das Schiff mit dem Finger. Es schiesst von selbst - du musst nur zielen und ausweichen. Zum Schluss kommt der grosse Brocken.',
   'Steer the ship with your finger. It fires by itself - you only aim and dodge. The big rock comes last.',
   'Pilote le vaisseau avec le doigt. Il tire tout seul : vise et esquive. Le gros bloc arrive à la fin.'],
- st=>({n:[8,13,18][st-1],art:'treffer',zeit:70}),
+ st=>({n:[8,13,18,24,30][st-1],art:'treffer',zeit:70}),
  (platz,o)=>{
   const stufe=o.stufe||1;
-  const noetig=o.ziel||[8,13,18][stufe-1], dauer=o.dauer||70000;
+  const noetig=o.ziel||[8,13,18,24,30][stufe-1], dauer=o.dauer||70000;
   const F=spielFeld(platz,{hoehe:400});
   let schiff=0, treffer=0, herz=3, naechste=0, naechsterSchuss=0;
   let bossHp=0, bossVoll=4+stufe*3, boss=null;
@@ -2374,10 +2384,10 @@ spiel('duell',
  ['Du unten, der Gegner oben. Lass den Ball nicht durch - und schiess ihn an ihm vorbei.',
   'You at the bottom, your opponent at the top. Keep the ball out and slip it past them.',
   'Toi en bas, l’adversaire en haut. Ne laisse pas passer la balle et glisse-la derrière lui.'],
- st=>({n:[3,4,5][st-1],art:'tore',zeit:0}),
+ st=>({n:[3,4,5,6,7][st-1],art:'tore',zeit:0}),
  (platz,o)=>{
   const stufe=o.stufe||1;
-  const noetig=o.ziel||[3,4,5][stufe-1];
+  const noetig=o.ziel||[3,4,5,6,7][stufe-1];
   const F=spielFeld(platz,{hoehe:400});
   const br=()=>Math.max(54,Math.min(96,(F.w||320)*0.22));
   let ich=0, gegner=0, meine=0, seine=0;
@@ -2396,7 +2406,9 @@ spiel('duell',
    if(!b.x){anstoss(Math.random()<0.5);}
    if(!ich)ich=F.w/2;
    /* Gegner: zielt mit Verzoegerung und einem Fehler, der mit der Stufe schrumpft */
-   const ziel=b.x+(Math.random()-0.5)*(120-stufe*28);
+   /* Der Fehler des Gegners schrumpft mit der Stufe, verschwindet aber
+      nie ganz - ein unschlagbarer Gegner ist kein Spiel mehr. */
+   const ziel=b.x+(Math.random()-0.5)*Math.max(16,120-stufe*22);
    const tempo=(0.14+stufe*0.07);
    gegner=gegner||F.w/2;
    gegner+=Math.max(-tempo*F.dt,Math.min(tempo*F.dt,ziel-gegner));
@@ -2440,18 +2452,20 @@ spiel('geister',
  ['Es ist stockdunkel. Dein Finger ist die Laterne - halte die Geister im Licht, bis sie sich auflösen. Lass keinen an die Kürbisse heran. Ganz am Schluss kommt der Geisterfürst.',
   'It is pitch dark. Your finger is the lantern - hold the ghosts in the light until they dissolve. Let none reach the pumpkins. The ghost lord comes last.',
   'Il fait nuit noire. Ton doigt est la lanterne : garde les fantômes dans la lumière jusqu’à ce qu’ils se dissolvent. N’en laisse aucun atteindre les citrouilles. Le seigneur des fantômes arrive à la fin.'],
- st=>({n:[6,10,14][st-1],art:'leben',zeit:75}),
+ st=>({n:[6,10,14,18,22][st-1],art:'leben',zeit:75}),
  (platz,o)=>{
   const st=o.stufe||1;
-  const noetig=o.ziel||[6,10,14][st-1], dauer=o.dauer||75000;
+  const noetig=o.ziel||[6,10,14,18,22][st-1], dauer=o.dauer||75000;
   const F=spielFeld(platz,{hoehe:400});
-  const sicht=[150,118,92][st-1];          /* Lichtkreis: enger mit der Stufe */
-  const halten=[500,700,900][st-1];        /* so lange muss das Licht bleiben */
-  /* Sichtbarkeit der Geister ausserhalb des Lichts. Zuvor fest 0.45 Deckkraft
-     unter 0.90 Schwarz - zusammen rund vier Prozent, fuer einen Siebenjaehrigen
-     auf einem hellen Zimmer-iPad zu wenig. Stufe 3 bleibt wie gehabt. */
-  const grund=[0.62,0.52,0.45][st-1];      /* Deckkraft ohne Licht */
-  const dunkel=[0.82,0.86,0.90][st-1];     /* Schwaerze am Rand */
+  const sicht=[150,118,92,80,70][st-1];    /* Lichtkreis: enger mit der Stufe */
+  const halten=[500,700,900,1050,1200][st-1];
+  /* Sichtbarkeit der Geister ausserhalb des Lichts. Zweimal nachgebessert:
+     urspruenglich 0.45 Deckkraft unter 0.90 Schwaerze, zusammen rund vier
+     Prozent. Johannes sah sie auch nach der ersten Korrektur nicht, darum
+     jetzt durchgehend heller UND der Rand weniger schwarz. Auf Stufe 1 sind
+     es rund 22 Prozent statt 11. */
+  const grund=[0.88,0.80,0.72,0.64,0.56][st-1];   /* Deckkraft ohne Licht */
+  const dunkel=[0.60,0.66,0.72,0.78,0.84][st-1];  /* Schwaerze am Rand */
   const bossVoll=4+st*2;
   let lx=0,ly=0,geloest=0,herz=3,naechster=0,boss=null,bossHp=0,puls=0,naechsterSchlag=0;
   let ersterDa=false;
@@ -2488,8 +2502,10 @@ spiel('geister',
     emoji(c,'🎃',kx,laterne,38);}
    /* Geister */
    if(!ersterDa){ersterDa=true;neu();}
-   if(!boss&&jetzt>naechster&&geister.length<2+st){
-    naechster=jetzt+(1500-st*330);neu();}
+   /* Dichter als zuvor: auf Stufe 1 alle 840 statt 1170 Millisekunden, und
+      einer mehr darf gleichzeitig unterwegs sein. */
+   if(!boss&&jetzt>naechster&&geister.length<3+st){
+    naechster=jetzt+Math.max(240,1000-st*160);neu();}
    for(let i=geister.length-1;i>=0;i--){
     const g=geister[i];
     const zx=F.w/2, zy=laterne;
@@ -2546,8 +2562,8 @@ function spielSchirm(R){
  const wer=R.players&&R.players[0]||null;
  const stufe=spielStufe(wer);
  const z=sp.ziel(stufe);
- let versuch=0,F=null;
- const platz=h('div',{style:'margin-top:12px'});
+ let versuch=0,F=null,begonnen=0;
+ const platz=h('div',{class:'spielplatz',style:'margin-top:12px'});
  const ergebnis=h('p',{class:'hand',style:'font-size:1.25rem;margin:14px 0 0;min-height:1.4em','aria-live':'polite'});
  const losB=h('button',{class:'btn'},t('spielLos'));
  const weiterB=h('button',{class:'btn',style:'display:none'},t('next'));
@@ -2560,8 +2576,14 @@ function spielSchirm(R){
   losB.style.display='none';
   droneAus();
   if(geschafft){FX.sieg();stimme(t('spielRufGut'));
-   /* Im ersten Anlauf geschafft: eine Stufe hoeher beim naechsten Mal. */
-   if(versuch===0)spielStufeSetz(wer,stufe+1);
+   /* Im ersten Anlauf geschafft: eine Stufe hoeher. Ging es muehelos -
+      in weniger als der halben erlaubten Zeit, und bei Spielen ohne Uhr
+      unter 25 Sekunden -, dann gleich zwei. Sonst braeuchte ein
+      Jugendlicher vier Durchgaenge, ehe es ihn fordert. */
+   if(versuch===0){
+    const gebraucht=begonnen?performance.now()-begonnen:Infinity;
+    const grenze=z.zeit?z.zeit*1000*0.5:25000;
+    spielStufeSetz(wer,stufe+(gebraucht<grenze?2:1));}
    ergebnis.style.color='var(--green)';ergebnis.textContent=zufall(t('spielGut').split('|'));
    weiterB.style.display='';weiterB.focus();S.onEnter=weiter;return;}
   versuch++;
@@ -2584,6 +2606,7 @@ function spielSchirm(R){
  tonB.addEventListener('click',()=>{klangSchalter();tonZeige();if(klangDa())FX.punkt();});
  losB.addEventListener('click',()=>{
   losB.style.display='none';ergebnis.textContent='';platz.replaceChildren();
+  begonnen=performance.now();
   klangAn();                       /* der Druck oeffnet den Tonkanal */
   stimme(sp.n[i]+'. '+t(z.art==='kloetze'?'spielZielKloetze':z.art==='leben'?'spielZielLeben':z.art==='tore'?'spielZielTore':'spielZielTreffer',{n:z.n}));
   F=sp.bau(platz,{stufe,fertig});});
