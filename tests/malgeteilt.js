@@ -118,6 +118,27 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    pruef(name+': jede Stufe liefert ein Gitter',leer===0,'ohne Gitter: '+leer);
   }
 
+  /* Der Hinweis unter der Aufgabe muss die Schreibrichtung richtig
+     nennen: Teilen laeuft von links nach rechts, Malnehmen umgekehrt. */
+  {
+   const gt=mtopic('m4-geteiltschriftlich'), mt=mtopic('m4-malschriftlich');
+   const ig=genItem(gt,2,{}), im=genItem(mt,2,{});
+   pruef('Teilen zeigt den Hinweis «von links nach rechts»',
+    hinweisSchluessel(ig)==='hint_stellenGeteilt',hinweisSchluessel(ig));
+   pruef('Malnehmen behaelt «von rechts nach links»',
+    hinweisSchluessel(im)==='hint_stellen',hinweisSchluessel(im));
+   pruef('Der Teilen-Hinweis steht in allen drei Sprachen',
+    ['de','en','fr'].every(l=>T[l]&&T[l].hint_stellenGeteilt));
+   const w=T.de.hint_stellenGeteilt+'|'+T.en.hint_stellenGeteilt+'|'+T.fr.hint_stellenGeteilt;
+   pruef('Und er sagt wirklich links nach rechts',
+    /links nach rechts/.test(T.de.hint_stellenGeteilt)
+    &&/left to right/.test(T.en.hint_stellenGeteilt)
+    &&/gauche à droite/.test(T.fr.hint_stellenGeteilt),w);
+   pruef('Andere Aufgabenarten bleiben unberuehrt',
+    hinweisSchluessel({type:'single'})==='hint_single'
+    &&hinweisSchluessel({type:'map',map:{task:'tap'}})==='hint_map_tap');
+  }
+
   /* Ein Gitter ausfuellen und pruefen lassen */
   const tp=mtopic('m4-geteiltschriftlich');
   const it=genItem(tp,2,{});const Q=prepare(it,'medium');Q.t0=performance.now();
