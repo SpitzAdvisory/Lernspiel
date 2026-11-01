@@ -397,6 +397,9 @@ T.de.spielGut="Geschafft. Respekt.|Sauber. Das sass.|Erledigt. Weiter geht’s."
 T.fr.spielStrafe="Raté aussi. Deux exercices en plus, et on est quittes.";
 T.en.spielStrafe="Missed that one too. Two extra questions, then we are even.";
 T.de.spielStrafe="Auch der ging daneben. Zwei Aufgaben obendrauf, dann sind wir quitt.";
+T.fr.spielLeichter="Pas grave. La prochaine fois, ce sera un peu plus facile.";
+T.en.spielLeichter="Never mind. Next time it will be a little easier.";
+T.de.spielLeichter="Macht nichts. Beim nächsten Mal wird es etwas leichter.";
 T.fr.spielNochmal="Raté. Un deuxième essai, gratuit.";
 T.en.spielNochmal="Missed. One more try, and that one is free.";
 T.de.spielNochmal="Daneben. Ein zweiter Versuch, der ist gratis.";
@@ -436,6 +439,21 @@ T.de.spielLos="Los!";
 T.fr.spielTitel="Pause de jeu";
 T.en.spielTitel="Game break";
 T.de.spielTitel="Spielpause";
+T.fr.minis="Mini-jeux";
+T.en.minis="Mini games";
+T.de.minis="Minispiele";
+T.fr.minisOn="Oui";
+T.en.minisOn="On";
+T.de.minisOn="An";
+T.fr.minisOff="Non";
+T.en.minisOff="Off";
+T.de.minisOff="Aus";
+T.fr.mi_on="Une pause de jeu de temps en temps";
+T.en.mi_on="A game break now and then";
+T.de.mi_on="Zwischendurch eine Spielpause";
+T.fr.mi_off="Seulement des exercices";
+T.en.mi_off="Questions only";
+T.de.mi_off="Nur Aufgaben";
 T.fr.stellenGroesse="Cases plus grandes";
 T.en.stellenGroesse="Bigger boxes";
 T.de.stellenGroesse="Kästchen grösser";
@@ -1238,6 +1256,17 @@ function nachrichtWeggetippt(schluessel){
  try{return localStorage.getItem('spitz.band')===schluessel;}catch(_){return false;}}
 function nachrichtMerken(schluessel){
  try{localStorage.setItem('spitz.band',schluessel);}catch(_){}}
+/* Das Band meldet nur eine NEUERE Fassung. Vergleicht man bloss auf
+   Ungleichheit, sieht ein Geraet mit der neueren Fassung ein Band, das
+   zum Rueckschritt auffordert - gemessen am 01.11.2026 waehrend der
+   Entwicklung. Zahlen werden als Zahlen verglichen; passt die Form
+   nicht, zaehlt wie bisher die blosse Ungleichheit. */
+function fassungNeuer(dort,hier){
+ const z=s=>{const m=/^V(\d+)$/.exec(String(s||''));return m?+m[1]:null;};
+ const a=z(dort),b=z(hier);
+ if(a!==null&&b!==null)return a>b;
+ return String(dort)!==String(hier);}
+
 async function nachrichtHolen(){
  if(NACHRICHT_LAEUFT)return;
  if(Date.now()-NACHRICHT_ZULETZT<30000)return;
@@ -1249,7 +1278,7 @@ async function nachrichtHolen(){
   const txt=d&&d.text?(d.text[S.lang]||d.text.de||''):'';
   if(txt&&txt.trim()){
    NACHRICHT_OFFEN={art:'text',txt:txt.trim(),schluessel:'t:'+(d.stand||txt)};
-  }else if(d&&d.fassung&&d.fassung!==APPVER){
+  }else if(d&&d.fassung&&fassungNeuer(d.fassung,APPVER)){
    NACHRICHT_OFFEN={art:'fassung',fassung:d.fassung,schluessel:'v:'+d.fassung};
   }
   nachrichtZeigen();
@@ -1488,7 +1517,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V85';
+const APPVER='V86';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1580,7 +1609,8 @@ function isUnlocked(p,g,d){const u=st(p.id).unlocks[g.id];return d==='easy'||!!p
 
 function viewRunSetup(p,g,prev){
  for(const it of g.items)if(it.image&&it.image.path)imgURL(it.image.path).catch(()=>{});
- const sel=Object.assign({mode:'classic',diff:'easy',adaptive:true,opp:null},prev||{});
+ const sel=Object.assign({mode:'classic',diff:'easy',adaptive:true,opp:null,
+  minis:p.minis!==false},prev||{});
  if(!isUnlocked(p,g,sel.diff))sel.diff='easy';
  const re=()=>{S.keepScroll=true;viewRunSetup(p,g,sel);};
  const others=S.profiles.filter(x=>x.id!==p.id);
@@ -1612,9 +1642,15 @@ function viewRunSetup(p,g,prev){
    :h('p',{class:'muted'},t('needOpponent'))):null,
   h('h3',{},t('difficulty')),choiceGroup(DIFFS.map(v=>{const lock=!isUnlocked(p,g,v);return{v,label:t('d_'+v),desc:lock?t('lock_'+v):t('dd_'+v),disabled:lock};}),'diff'),
   h('h3',{},t('adjust')),choiceGroup([{v:true,label:t('adaptive'),desc:t('ad_adaptive')},{v:false,label:t('fixed'),desc:t('ad_fixed')}],'adaptive'),
+  sel.mode==='duel'?null:h('div',{},h('h3',{},t('minis')),
+   choiceGroup([{v:true,label:t('minisOn'),desc:t('mi_on')},
+                {v:false,label:t('minisOff'),desc:t('mi_off')}],'minis')),
   h('div',{style:'margin-top:24px'},h('button',{class:'btn big',disabled:!canStart,onclick:()=>{
    const players=[p];if(sel.mode==='duel')players.push(S.profiles.find(o=>o.id===sel.opp));
-   startRun({players,game:g,mode:sel.mode,diff:sel.diff,adaptive:sel.adaptive,sel,topics:g.gen?[...sel.topics]:null,sub:subOf(sel)});}},t('start')))));
+   /* Die Wahl bleibt beim Spieler, nicht am Geraet: wer sie abschaltet,
+      findet sie beim naechsten Mal abgeschaltet vor, auch auf dem iPad. */
+   if(!p.builtin&&(p.minis!==false)!==sel.minis){p.minis=sel.minis;saveProfiles().catch(()=>{});}
+   startRun({players,game:g,mode:sel.mode,diff:sel.diff,adaptive:sel.adaptive,minis:sel.minis,sel,topics:g.gen?[...sel.topics]:null,sub:subOf(sel)});}},t('start')))));
 }
 
 
@@ -1712,7 +1748,7 @@ async function startRun(o){
  R.jokes=[];R.jokeAt=Infinity;
  /* Statt der Scherzfrage kommt ein kleines Spiel. Im Duell bleibt es weg,
     dort wechseln sich zwei Spieler ab. */
- R.spielAt=(o.mode==='duel')?Infinity:5+Math.floor(Math.random()*4);
+ R.spielAt=(o.mode==='duel'||o.minis===false)?Infinity:5+Math.floor(Math.random()*4);
  if(o.mode==='timed'){R.deadline=Date.now()+({easy:90,medium:60,hard:45}[o.diff])*1000;R.timer=setInterval(()=>tick(R),250);}
  S.run=R;
  /* Das Sprachmodell im Hintergrund holen, sobald eine Stunde mit
@@ -1895,6 +1931,23 @@ function mapPicker(P,item,onPick){const dlg=$('#dlg');const tg=P.byId[item.map.t
    auch ein uebernommenes.                                            */
 const SPIELE=[];
 function spiel(id,n,kurz,ziel,bau){SPIELE.push({id,n,kurz,ziel,bau});}
+
+/* ---------- Eigene Stufe fuer die Minispiele ----------
+   Frueher kam die Stufe aus dem Lernniveau. Gut im Kopfrechnen zu sein
+   sagt aber nichts ueber Reaktionsvermoegen an einem Geschicklichkeits-
+   spiel: wer auf «Schwer» lernte, stand sofort vor 14 Geistern statt vor
+   sechs. Die Stufe steht deshalb fuer sich, beginnt bei 1 und folgt dem,
+   was das Kind in den Spielen tatsaechlich schafft. Sie haengt am Profil
+   und wandert damit auf das iPad mit. */
+function spielStufe(p){
+ const v=p&&p.spielStufe;
+ return Math.max(1,Math.min(3,typeof v==='number'&&isFinite(v)?Math.round(v):1));}
+async function spielStufeSetz(p,wert){
+ if(!p||p.builtin)return;
+ const neu=Math.max(1,Math.min(3,wert));
+ if(neu===spielStufe(p))return;
+ p.spielStufe=neu;
+ try{await saveProfiles();}catch(_){}}
 function spielNach(id){return SPIELE.find(s=>s.id===id)||null;}
 
 /* ---------- Klang fuer die Spiele ----------
@@ -2435,7 +2488,8 @@ spiel('geister',
 function spielSchirm(R){
  const sp=SPIELE[Math.floor(Math.random()*SPIELE.length)];
  const i=Math.max(0,LANGS.indexOf(S.lang));
- const stufe=Math.max(1,Math.min(3,R.adaptive?R.level:(DIFF_LEVEL[R.diff]||2)));
+ const wer=R.players&&R.players[0]||null;
+ const stufe=spielStufe(wer);
  const z=sp.ziel(stufe);
  let versuch=0,F=null;
  const platz=h('div',{style:'margin-top:12px'});
@@ -2451,6 +2505,8 @@ function spielSchirm(R){
   losB.style.display='none';
   droneAus();
   if(geschafft){FX.sieg();stimme(t('spielRufGut'));
+   /* Im ersten Anlauf geschafft: eine Stufe hoeher beim naechsten Mal. */
+   if(versuch===0)spielStufeSetz(wer,stufe+1);
    ergebnis.style.color='var(--green)';ergebnis.textContent=zufall(t('spielGut').split('|'));
    weiterB.style.display='';weiterB.focus();S.onEnter=weiter;return;}
   versuch++;
@@ -2458,9 +2514,14 @@ function spielSchirm(R){
   if(versuch<2){stimme(t('spielRufNochmal'));
    ergebnis.style.color='var(--ink)';ergebnis.textContent=t('spielNochmal');
    losB.textContent=t('spielWieder');losB.style.display='';losB.focus();S.onEnter=()=>losB.click();return;}
-  /* Verloren: zwei Aufgaben obendrauf, mehr nicht, und nur einmal je Spiel. */
-  if(R.target!==Infinity)R.target+=2;
-  ergebnis.style.color='var(--red)';ergebnis.textContent=t('spielStrafe');
+  /* Zweimal verloren: die Stufe sinkt, und das ist die ganze Korrektur -
+     zwei Aufgaben obendrauf kaemen einer doppelten Strafe gleich. Nur auf
+     Stufe 1 bleibt es beim Aufschlag, dort gibt es nichts zu senken. */
+  const gesunken=stufe>1;
+  if(gesunken)spielStufeSetz(wer,stufe-1);
+  else if(R.target!==Infinity)R.target+=2;
+  ergebnis.style.color='var(--red)';
+  ergebnis.textContent=gesunken?t('spielLeichter'):t('spielStrafe');
   weiterB.style.display='';weiterB.focus();S.onEnter=weiter;};
  const tonB=h('button',{class:'btn ghost small',type:'button'});
  const tonZeige=()=>{tonB.textContent=(klangDa()?'🔊 ':'🔇 ')+t(klangDa()?'spielTonAn':'spielTonAus');};

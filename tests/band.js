@@ -89,6 +89,27 @@ async function mitAntwort(b,antwort,was){
  pruef('nachricht.json hat ein Textfeld je Sprache',
   !!d&&d.text&&'de' in d.text&&'en' in d.text&&'fr' in d.text);
 
+ /* Nur eine neuere Fassung darf melden. */
+ {
+  const ctx=await b.newContext({viewport:{width:900,height:800}});
+  const pg=await ctx.newPage();
+  await pg.goto('http://127.0.0.1:8832/');
+  await pg.waitForFunction(()=>typeof fassungNeuer==='function');
+  const r=await pg.evaluate(()=>({
+   neuer:fassungNeuer('V99','V86'),
+   gleich:fassungNeuer('V86','V86'),
+   aelter:fassungNeuer('V85','V86'),
+   zehner:fassungNeuer('V100','V99'),
+   krumm:fassungNeuer('2026-11-01','V86'),
+   krummGleich:fassungNeuer('x','x')}));
+  pruef('Neuere Fassung meldet',r.neuer===true);
+  pruef('Gleiche Fassung meldet nicht',r.gleich===false);
+  pruef('Aeltere Fassung meldet nicht',r.aelter===false,r.aelter);
+  pruef('Zweistellig wird als Zahl verglichen',r.zehner===true,r.zehner);
+  pruef('Fremde Form faellt auf Ungleichheit zurueck',r.krumm===true&&r.krummGleich===false);
+  await ctx.close();
+ }
+
  let f=0;
  aus.forEach(x=>{if(x[0]==='FAIL')f++;console.log('  '+x[0]+'  '+x[1]+(x[2]?'   '+x[2]:''));});
  console.log('\n'+(f?('FEHLER: '+f):'alles gut'));
