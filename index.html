@@ -266,8 +266,25 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
 @keyframes hoerPuls{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .hoerStand{font-size:1.15rem;margin:0;color:var(--muted);min-height:1.4em}
 .hoerGehoert{font-size:1.3rem;margin:0;min-height:1.5em}
+/* Eine Kante zeigt, dass das Gitter seitlich weitergeht. */
+.zscroll{position:relative}
+.zscroll.mehrRechts{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 26px),transparent);
+ mask-image:linear-gradient(to right,#000 calc(100% - 26px),transparent)}
+.zscroll.mehrLinks:not(.mehrRechts){-webkit-mask-image:linear-gradient(to right,transparent,#000 26px);
+ mask-image:linear-gradient(to right,transparent,#000 26px)}
+.zscroll.mehrLinks.mehrRechts{-webkit-mask-image:linear-gradient(to right,transparent,#000 26px,#000 calc(100% - 26px),transparent);
+ mask-image:linear-gradient(to right,transparent,#000 26px,#000 calc(100% - 26px),transparent)}
+
+.notiz>summary{cursor:pointer;font-weight:700;font-size:.95rem;color:var(--muted);
+ padding:8px 2px;min-height:44px;display:flex;align-items:center;gap:6px}
+.notiz[open]>summary{margin-bottom:2px}
+
 @media (max-width:430px){
  .hoerFrage{font-size:1.3rem}
+ /* Apples Gestaltungsrichtlinie nennt 44 Punkte als kleinstes Tippziel.
+    Gemessen waren siebzehn Knoepfe auf dem Startschirm darunter. */
+ .btn.small,.topicrow>.btn{min-height:44px;min-width:44px}
+ .years .choice,.choices .choice{min-height:44px}
  .hoerKnopf{width:62vw;height:62vw;max-width:230px;max-height:230px;font-size:1.2rem}
  .hoerWahl li{font-size:1.05rem;padding:8px 12px}
 }
@@ -439,6 +456,12 @@ T.de.spielLos="Los!";
 T.fr.spielTitel="Pause de jeu";
 T.en.spielTitel="Game break";
 T.de.spielTitel="Spielpause";
+T.fr.notesAndSources="Remarque et sources";
+T.en.notesAndSources="Note and sources";
+T.de.notesAndSources="Hinweis und Quellen";
+T.fr.topicsOpen="Afficher les sujets ({n} sur {m} choisis)";
+T.en.topicsOpen="Show topics ({n} of {m} selected)";
+T.de.topicsOpen="Themen anzeigen ({n} von {m} gewählt)";
 T.fr.minis="Mini-jeux";
 T.en.minis="Mini games";
 T.de.minis="Minispiele";
@@ -1520,7 +1543,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V87';
+const APPVER='V88';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1685,6 +1708,20 @@ function sectionChooser(sel,re){
   h('div',{class:'choices'},[alle].concat(bs.map(btn))),
   ch.size?h('p',{class:'small muted',style:'margin:8px 0 0'},t('sectionPicked',{k:ch.size,n:n})):null);
 }
+/* Hinweis und Quellenangabe stehen auf dem iPad offen da. Auf einem
+   Telefon schoben sie den Knopf «Los geht's» um zwei Bildschirme nach
+   unten - gemessen: 3607 Pixel Seitenhoehe bei 390 Pixel Breite. Unter
+   431 Pixel bleiben sie darum zugeklappt und einen Fingertipp entfernt.
+   Der Inhalt steht immer im Dokument, nur eben verborgen. */
+function notizBlock(hinweis,quellen){
+ const eng=(typeof window!=='undefined'&&window.innerWidth<=430);
+ const d=h('details',{class:'notiz'},
+  h('summary',{},t('notesAndSources')),
+  h('p',{class:'small muted'},hinweis),
+  h('p',{class:'small muted'},quellen));
+ if(!eng)d.setAttribute('open','');
+ return d;}
+
 function topicChooser(p,g,sel,re){
  const gm=st(p.id).mastery[g.id]||{};const all=genTopics(g);const multiYear=new Set(all.map(x=>x.y)).size>1;const custom=!!g.gen.topics&&!multiYear;
  const isIT=g.gen.pool==='it';const isFR=g.id==='fr-vocab'||g.id==='fr-gram';const isDE=g.id==='de-verben';const isOW=g.id==='ow-english';
@@ -1700,12 +1737,27 @@ function topicChooser(p,g,sel,re){
  return h('div',{class:'stack'},
   custom?null:h('div',{},h('h3',{},t('year')),h('div',{class:'years'},[1,2,3,4,5,6,7,8,9].map(y=>{const has=yearsWith.has(y);
    return h('button',{class:'choice','aria-pressed':String(sel.year===y),disabled:!has,style:sel.year===y?'background:var(--mark)':'',onclick:()=>{sel.year=y;sel.topics=new Set(all.filter(x=>x.y===y).map(x=>x.id));re();}},
-    h('b',{},t('yearN',{n:y})),has?null:h('span',{},t('comingSoon')));})),h('p',{class:'small muted'},t(isOW?'ow_note':isDE?'de_note':isFR?'fr_note':g.id==='geo-kongruenz'?'geo_note':isIT?'itnote':'lp21note')),h('p',{class:'small muted'},t(isOW?'ow_sources':isDE?'de_sources':isFR?'fr_sources':isIT?'itSources':'mathSources'))),
+    h('b',{},t('yearN',{n:y})),has?null:h('span',{},t('comingSoon')));})),notizBlock(
+    t(isOW?'ow_note':isDE?'de_note':isFR?'fr_note':g.id==='geo-kongruenz'?'geo_note':isIT?'itnote':'lp21note'),
+    t(isOW?'ow_sources':isDE?'de_sources':isFR?'fr_sources':isIT?'itSources':'mathSources'))),
   h('div',{class:'row'},h('h3',{style:'margin:0'},t('topicsSel')+' ('+sel.topics.size+')'),h('span',{class:'sp'}),
    h('button',{class:'btn ghost small',onclick:()=>setAll(true)},t('allTopics')),h('button',{class:'btn ghost small',onclick:()=>setAll(false)},t('noTopics')),
    isFR?null:h('button',{class:'btn ghost small',onclick:()=>viewGlossary({back:re,topics:isIT?ITT:MT})},'📖 '+t('glossary'))),
-  [1,2,3].map(a=>{const ts=shown.filter(x=>x.a===a);return ts.length?h('div',{class:'stack'},h('div',{class:'small muted',style:'font-weight:700'},t(AP+a)),ts.map(row)):null;}));
+  themenBlock([1,2,3].map(a=>{const ts=shown.filter(x=>x.a===a);return ts.length?h('div',{class:'stack'},h('div',{class:'small muted',style:'font-weight:700'},t(AP+a)),ts.map(row)):null;}),
+   sel.topics.size,shown.length));
 }
+
+/* Die Themenliste traegt den groessten Teil der Seitenlaenge: vierzehn
+   Zeilen schoben «Los geht's» auf einem Telefon um zwei Bildschirme nach
+   unten. Unter 431 Pixel steht darum nur die Zahl da, und ein Tipp
+   oeffnet die Liste. Auf dem iPad bleibt alles wie zuvor offen. */
+function themenBlock(gruppen,gewaehlt,gesamt){
+ const eng=(typeof window!=='undefined'&&window.innerWidth<=430);
+ if(!eng)return h('div',{class:'stack'},gruppen);
+ const d=h('details',{class:'notiz themen'},
+  h('summary',{},t('topicsOpen',{n:gewaehlt,m:gesamt})),
+  h('div',{class:'stack'},gruppen));
+ return d;}
 function exampleFig(it){
  if(it.type==='numline'){const nl=figNumline(Object.assign({},it.nl));nl.mark(it.target,'ok');return nl.el;}
  if(it.type==='build'){const n=it.target;return figBlocks(Math.floor(n/100),Math.floor(n/10)%10,n%10);}
@@ -4080,6 +4132,23 @@ function renderQuestion(R,Q){
     if(passt()===false){zb=alt;stelleGroesse();break;}
    }};
   requestAnimationFrame(einpassen);
+  /* Passt das Gitter auch im kleinsten Mass nicht in die Breite, rollt es
+     innerhalb der Karte. Auf einem Telefon lagen die Ergebniskaestchen
+     rechts vom Gleichheitszeichen dann ausserhalb des Sichtfeldes - das
+     Kind sah nicht, wohin die Antwort gehoert. Jedes angetippte Kaestchen
+     holt sich darum selbst in den Blick, und eine Kante am Rand zeigt an,
+     dass dort weitergeht. */
+  const randZeigen=()=>{
+   const r=gitterRahmen;
+   const mehr=r.scrollWidth-r.clientWidth-Math.round(r.scrollLeft);
+   r.classList.toggle('mehrRechts',mehr>2);
+   r.classList.toggle('mehrLinks',r.scrollLeft>2);};
+  gitterRahmen.addEventListener('scroll',randZeigen,{passive:true});
+  requestAnimationFrame(()=>setTimeout(randZeigen,0));
+  gitterEl.addEventListener('focusin',e=>{
+   const el=e.target;
+   if(el&&el.scrollIntoView)el.scrollIntoView({block:'nearest',inline:'center'});
+   setTimeout(randZeigen,0);});
   const status=h('p',{class:'small muted',style:'margin:8px 0 0;min-height:1.3em','aria-live':'polite'});
   const tasten=h('div',{class:'keypad'},
    ['7','8','9','4','5','6','1','2','3'].map(k=>h('button',{class:'key',type:'button',onclick:()=>{
