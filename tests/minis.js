@@ -244,6 +244,64 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   return {h3:[...document.querySelectorAll('main h3')].map(x=>x.textContent),wort:t('minis')};});
  pruef('Im Duell fehlt die Gruppe «Minispiele»',duell.h3.indexOf(duell.wort)<0,duell.h3.join(' / '));
 
+
+ /* ---------- Stufentabellen: keine darf kuerzer sein als die Leiter ----------
+    Der Wackelturm zeigte «0 / undefined», weil seine Tabelle in bau() bei
+    drei Stufen stehengeblieben war, waehrend ziel() schon fuenf fuehrte.
+    Der Test prueft seither beides: die Quelle und das gespielte Ziel. */
+ const quelle=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+ const leiterZahl=+(/const SPIELSTUFEN=(\d+)/.exec(quelle)||[0,0])[1];
+ pruef('SPIELSTUFEN steht im Quelltext',leiterZahl>=3,leiterZahl);
+ const kurz=[];
+ const muster=/\[([0-9][0-9.,\s]*)\]\[(?:o\.)?(?:st|stufe)-1\]/g;
+ let tr;
+ while((tr=muster.exec(quelle))!==null){
+  const n=tr[1].split(',').length;
+  if(n!==leiterZahl)kurz.push(tr[0]+' ('+n+')');}
+ pruef('Jede Stufentabelle führt genau '+leiterZahl+' Einträge',
+  kurz.length===0,kurz.join(' | '));
+
+ /* ---------- Und das Ziel, nach dem wirklich gespielt wird ---------- */
+ const ziele=await pg.evaluate(st=>{
+  const raus=[];
+  for(const sp of SPIELE){
+   for(let s=1;s<=st;s++){
+    const soll=(sp.ziel(s)||{}).n;
+    if(!(typeof soll==='number'&&isFinite(soll)&&soll>0)){
+     raus.push([sp.id,s,soll,'ziel() unbrauchbar']);continue;}
+    const platz=document.createElement('div');document.body.appendChild(platz);
+    let F=null;
+    try{F=sp.bau(platz,{stufe:s,fertig(){}});}
+    catch(e){raus.push([sp.id,s,soll,'Aufbau: '+e.message]);}
+    try{if(F&&F.stop)F.stop();}catch(_){}
+    platz.remove();}}
+  return raus;},leiterZahl);
+ pruef('Jedes Spiel baut auf jeder Stufe mit brauchbarem Ziel',
+  ziele.length===0,JSON.stringify(ziele).slice(0,300));
+
+ /* Der Durchgriff: spiel() muss Ziel und Dauer in die Optionen legen.
+    Ein Probespiel mit derselben ziel()-Tabelle, aber gefangenem Aufbau,
+    zeigt, welche Optionen bei bau() wirklich ankommen. */
+ const durch=await pg.evaluate(st=>{
+  const raus=[];
+  const merk=SPIELE.length;
+  try{
+   for(const sp of SPIELE.slice(0,merk)){
+    for(let s=1;s<=st;s++){
+     const z=sp.ziel(s)||{};
+     let gesehen=null;
+     spiel('probe',['p','p','p'],['p','p','p'],sp.ziel,(pl,o)=>{gesehen=o;return{stop(){}};});
+     const probe=SPIELE[SPIELE.length-1];
+     const platz=document.createElement('div');document.body.appendChild(platz);
+     probe.bau(platz,{stufe:s,fertig(){}});
+     platz.remove();SPIELE.length=merk;
+     if(!gesehen||gesehen.ziel!==z.n)raus.push([sp.id,s,'Ziel',gesehen&&gesehen.ziel,z.n]);
+     else if(z.zeit&&gesehen.dauer!==z.zeit*1000)raus.push([sp.id,s,'Dauer',gesehen.dauer]);}}
+  }finally{SPIELE.length=merk;}
+  return raus;},leiterZahl);
+ pruef('spiel() legt Ziel und Dauer jeder Stufe in die Optionen',
+  durch.length===0,JSON.stringify(durch).slice(0,300));
+
  for(const [s,n,x] of aus)console.log(s,n,x);
  if(perr.length)console.log('SEITENFEHLER:',perr.slice(0,4).join(' | '));
  console.log(aus.filter(x=>x[0]==='FAIL').length||perr.length?'>>> NICHT BESTANDEN':'>>> alles bestanden');

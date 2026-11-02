@@ -1604,7 +1604,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V91';
+const APPVER='V92';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -2189,7 +2189,24 @@ function mapPicker(P,item,onPick){const dlg=$('#dlg');const tg=P.byId[item.map.t
    ein Spiel nicht zu wissen - so laesst sich jederzeit eines nachlegen,
    auch ein uebernommenes.                                            */
 const SPIELE=[];
-function spiel(id,n,kurz,ziel,bau){SPIELE.push({id,n,kurz,ziel,bau});}
+/* Jedes Spiel fuehrte bisher zwei Stufentabellen: eine in ziel(), die der
+   Schirm anzeigt, und eine zweite in bau(), nach der wirklich gespielt
+   wird. Bei der Erweiterung auf fuenf Stufen blieben drei der zweiten
+   dreistufig - der Wackelturm zeigte «0 / undefined» und war unspielbar.
+   Gemeldet von Urs am 2.11.2026 mit einem Foto vom iPhone.
+
+   Die Tabelle in ziel() ist jetzt die einzige Quelle: spiel() legt Ziel
+   und Dauer in die Optionen, bevor bau() sie sieht. Eine zweite Tabelle
+   kann nicht mehr abweichen, weil keine mehr gelesen wird. */
+function spiel(id,n,kurz,ziel,bau){
+ const bauMitZiel=(platz,o)=>{
+  const opt=Object.assign({},o||{});
+  opt.stufe=Math.max(1,Math.min(SPIELSTUFEN,opt.stufe||1));
+  const z=ziel(opt.stufe)||{};
+  if(opt.ziel==null)opt.ziel=z.n;
+  if(opt.dauer==null&&z.zeit)opt.dauer=z.zeit*1000;
+  return bau(platz,opt);};
+ SPIELE.push({id,n,kurz,ziel,bau:bauMitZiel});}
 
 /* ---------- Eigene Stufe fuer die Minispiele ----------
    Frueher kam die Stufe aus dem Lernniveau. Gut im Kopfrechnen zu sein
@@ -2340,7 +2357,7 @@ spiel('fliegen',
   'Le gâteau est sur la table et la moitié des mouches du pays est au courant. Chasse-les.'],
  st=>({n:[8,14,20,26,32][st-1],art:'treffer',zeit:30}),
  (platz,o)=>{
-  const ziel=o.ziel||[8,14,20][o.stufe-1],dauer=o.dauer||30000;
+  const ziel=o.ziel||[8,14,20,26,32][o.stufe-1],dauer=o.dauer||30000;
   const F=spielFeld(platz,{hoehe:340});
   const fliegen=[];let punkte=0,weg=0,naechste=0;
   const neu=()=>{const lebt=1800-o.stufe*260;
@@ -2377,7 +2394,7 @@ spiel('toast',
   'Le grille-pain est trop puissant. Attrape le pain avec l’assiette, évite les peaux de banane.'],
  st=>({n:[6,11,16,21,26][st-1],art:'treffer',zeit:35}),
  (platz,o)=>{
-  const ziel=o.ziel||[6,11,16][o.stufe-1],dauer=o.dauer||35000;
+  const ziel=o.ziel||[6,11,16,21,26][o.stufe-1],dauer=o.dauer||35000;
   const F=spielFeld(platz,{hoehe:340});
   let tx=0,punkte=0,naechste=0;const dinge=[];
   F.zug=x=>{tx=x;};F.tipp=x=>{tx=x;};
@@ -2414,7 +2431,7 @@ spiel('turm',
   'Empiler, c’est facile. Viser, moins. Touche quand le bloc est bien placé.'],
  st=>({n:[4,6,8,10,12][st-1],art:'kloetze'}),
  (platz,o)=>{
-  const ziel=o.ziel||[4,6,8][o.stufe-1];
+  const ziel=o.ziel||[4,6,8,10,12][o.stufe-1];
   const F=spielFeld(platz,{hoehe:360});
   const hoeheK=26;let turm=[],akt=null,fehler=0,gesetzt=0;
   const start=()=>{const unten=turm.length?turm[turm.length-1]:null;
