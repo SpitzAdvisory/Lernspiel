@@ -16,6 +16,14 @@
   /* SPITZ Advisory palette (Brand Book V7) */
   --paper:#F7F9FC; --grid:#C8D3DE; --ink:#0A2D56; --ink-soft:#DCEEEC;
   --red:#C46060; --mark:#DCEEEC; --graphite:#3F4A5C; --green:#3A8F6C;
+  /* Kleinstes Tippziel und die drei Knopfgroessen. Die mittlere Zahl in
+     clamp() waechst mit der Fensterbreite, die aeusseren halten sie in
+     Schranken: auf 320 px greift die Untergrenze, ab etwa 900 px die
+     obere. Damit skaliert jeder Knopf, ohne je auszuufern. */
+  --tap:44px;
+  --btnF:clamp(.95rem,.86rem + .42vw,1.05rem);
+  --btnFs:clamp(.85rem,.79rem + .28vw,.92rem);
+  --btnFb:clamp(1.05rem,.96rem + .62vw,1.2rem);
   --muted:#6B7B8E; --white:#FFFFFF; --mint:#4FB8B0; --steel:#3D6A9A; --midnight:#051A36;
   /* Stellenwerte. Dreierzyklus wie die Stellenwerttafel E Z H | T ZT HT:
      der Tausender traegt die Farbe des Einers, weil er der Einer der
@@ -46,12 +54,26 @@ h3{font-size:1.15rem;margin:24px 0 8px}
 p{margin:0 0 12px}
 .muted{color:var(--muted)}
 .small{font-size:.85rem}
-.btn{border:0;border-radius:10px;padding:10px 18px;background:var(--ink);color:var(--white);font-weight:700}
+ /* Knoepfe nehmen ihre Groesse aus der eigenen Schrift: die Polster in em,
+   die Schrift selbst ueber clamp() zwischen einer Untergrenze und einer
+   Obergrenze. Auf dem Telefon waechst der Knopf mit der Breite, auf dem
+   Schreibtisch bleibt er, wie er war. Feste Pixelwerte gibt es nur noch
+   fuer das kleinste Tippziel. */
+.btn{border:0;border-radius:10px;background:var(--ink);color:var(--white);font-weight:700;
+ font-size:var(--btnF);padding:.62em 1.15em;line-height:1.2;
+ display:inline-flex;align-items:center;justify-content:center;gap:.45em;
+ /* In einer Flex-Reihe gab der Knopf bisher nach: die Umrandung schrumpfte,
+    die Beschriftung lief darueber hinaus. In der Kopfleiste stand "Zurueck"
+    quer ueber dem Rahmen und dem Schriftzug. Ein Knopf gibt nicht mehr nach. */
+ flex:0 0 auto;white-space:nowrap}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
 .btn.danger{background:transparent;color:var(--red);box-shadow:inset 0 0 0 2px var(--red)}
-.btn.small{padding:6px 12px;font-size:.9rem}
-.btn.big{padding:14px 28px;font-size:1.15rem}
+.btn.small{font-size:var(--btnFs);padding:.45em .9em}
+.btn.big{font-size:var(--btnFb);padding:.75em 1.6em}
+/* Das Symbol im Knopf: eine Zeichnung, kein Zeichensatz. Es haengt an der
+   Schriftgroesse und faerbt sich mit dem Text, auch im Geisterknopf. */
+.sym{width:1.15em;height:1.15em;flex:none;display:block}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .stack>*+*{margin-top:12px}
 .lang{display:flex;border-radius:8px;overflow:hidden;box-shadow:inset 0 0 0 2px var(--ink)}
@@ -284,6 +306,11 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
    ueber den Kartenrand hinaus. */
 @media (max-width:560px){
  .spielplatz{margin-left:-14px;margin-right:-14px}
+ /* Apples Gestaltungsrichtlinie nennt 44 Punkte als kleinstes Tippziel.
+    Gemessen waren siebzehn Knoepfe auf dem Startschirm darunter. Die
+    Grenze gilt jetzt fuer jeden Knopf, nicht nur fuer die kleinen. */
+ .btn{min-height:var(--tap);min-width:var(--tap)}
+ .topicrow>.btn{min-height:var(--tap);min-width:var(--tap)}
 }
 
 /* Die Auskunft zum Schreibfeld: eingeklappt, bis jemand fragt. */
@@ -293,9 +320,15 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
 
 @media (max-width:430px){
  .hoerFrage{font-size:1.3rem}
- /* Apples Gestaltungsrichtlinie nennt 44 Punkte als kleinstes Tippziel.
-    Gemessen waren siebzehn Knoepfe auf dem Startschirm darunter. */
- .btn.small,.topicrow>.btn{min-height:44px;min-width:44px}
+ /* Auf 390 Punkten wollten Zurueck, Schriftzug, Fassung, Titel und die
+    Sprachwahl nebeneinander mehr Platz, als die Leiste hat. Zwei treten
+    zurueck: der Schriftzug, der auf dem Startschirm und im Fuss ohnehin
+    steht, und die Beschriftung am Zurueck-Knopf, deren Pfeil fuer sich
+    spricht. Die Vorlesefunktion liest weiter "Zurueck" vor. */
+ .top{gap:8px;padding:10px 14px}
+ .top .brandmark,.top .brandsep{display:none}
+ .top .zurueck .wort{display:none}
+ .top h1{font-size:1.05rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
  .years .choice,.choices .choice{min-height:44px}
  .hoerKnopf{width:62vw;height:62vw;max-width:230px;max-height:230px;font-size:1.2rem}
  .hoerWahl li{font-size:1.05rem;padding:8px 12px}
@@ -1314,6 +1347,29 @@ const $=(s,r=document)=>r.querySelector(s);
 function h(tag,attrs,...kids){const el=document.createElement(tag);for(const[k,v]of Object.entries(attrs||{})){if(v==null||v===false)continue;
  if(k==='class')el.className=v;else if(k.startsWith('on'))el.addEventListener(k.slice(2),v);else if(k==='value')el.value=v;else el.setAttribute(k,v===true?'':v);}
  for(const c of kids.flat(Infinity)){if(c==null||c===false)continue;el.append(c instanceof Node?c:document.createTextNode(String(c)));}return el;}
+/* ---------- Symbole ----------
+   Vier Zeichnungen statt vier Emoji. Ein Emoji ist ein Zeichen aus einem
+   Zeichensatz: das Telefon waehlt die Form, die Farbe sitzt fest, und auf
+   dem iPhone erschien der durchgestrichene Lautsprecher als farbiger
+   Klecks neben der Beschriftung. Eine Zeichnung haengt an der
+   Schriftgroesse, nimmt die Textfarbe an und sieht ueberall gleich aus. */
+const SYMBOLE={
+ ton:['M4 9.5h3.2L11.5 6v12L7.2 14.5H4z','M15 9.6a3.6 3.6 0 0 1 0 4.8','M17.6 7.2a7 7 0 0 1 0 9.6'],
+ tonAus:['M4 9.5h3.2L11.5 6v12L7.2 14.5H4z','M15.5 9.8l4.5 4.4','M20 9.8l-4.5 4.4'],
+ nochmal:['M19.5 12a7.5 7.5 0 1 1-2.3-5.4','M19.5 3.6v4.4h-4.4'],
+ zurueck:['M14.5 5.5L8 12l6.5 6.5']};
+function sym(name){
+ /* sv() ist der Bauhelfer der Kartenpakete; ein zweiter waere einer zuviel. */
+ const s=sv('svg',{class:'sym',viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',
+  'stroke-width':'2','stroke-linecap':'round','stroke-linejoin':'round',
+  'aria-hidden':'true',focusable:'false'});
+ for(const d of SYMBOLE[name]||[])s.appendChild(sv('path',{d}));
+ return s;}
+/* Beschriftung samt Symbol neu setzen. textContent allein wuerde die
+   Zeichnung mitloeschen - der haeufigste Fehler an dieser Stelle. */
+function knopfText(b,name,text){
+ b.replaceChildren(...(name?[sym(name)]:[]),document.createTextNode(text));}
+
 function screen(...kids){const keep=S.keepScroll?window.scrollY:0;S.keepScroll=false;S.sid=(S.sid||0)+1;$('#app').replaceChildren(...kids);
  window.scrollTo(0,keep);if(keep)requestAnimationFrame(()=>{if(Math.abs(window.scrollY-keep)>2)window.scrollTo(0,keep);});S.onEnter=null;}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
@@ -1604,13 +1660,14 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V92';
+const APPVER='V94';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
  LANGS.map(l=>h('button',{'aria-pressed':String(S.lang===l),onclick:async()=>{await setLang(l);S.keepScroll=true;rerender();}},l.toUpperCase())));}
 function topbar(title,opts={}){return h('header',{class:'top'},
- opts.back?h('button',{class:'btn ghost small',onclick:opts.back},'‹ '+t('back')):null,
+ opts.back?h('button',{class:'btn ghost small zurueck','aria-label':t('back'),onclick:opts.back},
+  sym('zurueck'),h('span',{class:'wort'},t('back'))):null,
  h('img',{src:BRAND.compact,alt:'SPITZ',class:'brandmark'}),
  h('span',{class:'small muted',style:'margin-left:6px;opacity:.6',title:'Version'},APPVER),
  h('span',{class:'brandsep','aria-hidden':'true'}),
@@ -2804,7 +2861,7 @@ function spielSchirm(R){
   FX.verloren();
   if(versuch<2){stimme(t('spielRufNochmal'));
    ergebnis.style.color='var(--ink)';ergebnis.textContent=t('spielNochmal');
-   losB.textContent=t('spielWieder');losB.style.display='';losB.focus();S.onEnter=()=>losB.click();return;}
+   knopfText(losB,'nochmal',t('spielWieder'));losB.style.display='';losB.focus();S.onEnter=()=>losB.click();return;}
   /* Zweimal verloren: die Stufe sinkt, und das ist die ganze Korrektur.
      Zusatzaufgaben gibt es keine mehr - auch nicht auf Stufe 1, wo sich
      nichts senken laesst. Eine Spielpause ist eine Pause; sie mit
@@ -2815,7 +2872,8 @@ function spielSchirm(R){
   ergebnis.textContent=gesunken?t('spielLeichter'):t('spielEgal');
   weiterB.style.display='';weiterB.focus();S.onEnter=weiter;};
  const tonB=h('button',{class:'btn ghost small',type:'button'});
- const tonZeige=()=>{tonB.textContent=(klangDa()?'🔊 ':'🔇 ')+t(klangDa()?'spielTonAn':'spielTonAus');};
+ const tonZeige=()=>{const an=klangDa();
+  knopfText(tonB,an?'ton':'tonAus',t(an?'spielTonAn':'spielTonAus'));};
  tonZeige();
  tonB.addEventListener('click',()=>{klangSchalter();tonZeige();if(klangDa())FX.punkt();});
  losB.addEventListener('click',()=>{

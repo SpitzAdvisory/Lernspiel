@@ -138,6 +138,66 @@ async function schirm(b,w,h){
   await ctx.close();
  }
 
+
+ /* ---------- Knoepfe: skalierbare Zeichnung statt Emoji ----------
+    Auf dem iPhone erschien der durchgestrichene Lautsprecher als
+    farbiger Klecks. Geprueft wird dreierlei: die Zeichnung ist da, sie
+    haengt an der Schriftgroesse, und kein Knopf faellt unter 44 Punkte. */
+ {
+  const {ctx,pg}=await schirm(b,390,844);
+  const s=await pg.evaluate(()=>{
+   const b1=document.createElement('button');b1.className='btn';
+   document.body.appendChild(b1);
+   knopfText(b1,'tonAus','Ton aus');
+   const z=b1.querySelector('svg.sym');
+   /* Die Werte jetzt ablesen: an einem entfernten Knopf gibt
+      getComputedStyle nur noch leere Zeichenketten zurueck. */
+   const strich=z?getComputedStyle(z).stroke:'';
+   const textfarbe=getComputedStyle(b1).color;
+   const schrift=getComputedStyle(b1).fontSize;
+   /* Dieselbe Zeichnung bei doppelter Schrift: sie muss mitwachsen. */
+   b1.style.fontSize='32px';
+   const gross=z?z.getBoundingClientRect().width:0;
+   b1.style.fontSize='';
+   const klein=z?z.getBoundingClientRect().width:0;
+   const r=b1.getBoundingClientRect();
+   b1.remove();
+   return {zeichnung:!!z,pfade:z?z.querySelectorAll('path').length:0,
+    strich,textfarbe,gross:Math.round(gross),klein:Math.round(klein),
+    hoehe:Math.round(r.height),text:b1.textContent,schrift};});
+  pruef('Der Knopf traegt eine Zeichnung statt eines Emoji',s.zeichnung===true);
+  pruef('Die Zeichnung besteht aus Linien',s.pfade>=2,s.pfade);
+  pruef('Die Zeichnung nimmt die Textfarbe an',
+   /^rgb/.test(s.strich)&&s.strich===s.textfarbe,s.strich+' gegen '+s.textfarbe);
+  pruef('Die Zeichnung waechst mit der Schrift',s.gross>s.klein*1.5,s.klein+' auf '+s.gross);
+  pruef('Die Beschriftung bleibt echter Text',/Ton aus/.test(s.text||''),s.text);
+  pruef('Der Knopf erreicht das kleinste Tippziel',s.hoehe>=44,s.hoehe);
+
+  /* Und derselbe Massstab ueber den ganzen Startschirm */
+  const alle=await pg.evaluate(()=>{
+   viewHome();
+   const zu=[];
+   for(const b of document.querySelectorAll('main .btn')){
+    const r=b.getBoundingClientRect();
+    if(r.width===0&&r.height===0)continue;
+    if(r.height<44-0.5||r.width<44-0.5)zu.push((b.textContent||'?').trim().slice(0,18)+' '+Math.round(r.width)+'x'+Math.round(r.height));}
+   return zu;});
+  pruef('Kein Knopf auf dem Startschirm bleibt unter 44 Punkten',
+   alle.length===0,alle.slice(0,4).join(' | '));
+  await ctx.close();
+ }
+
+ /* Auf dem Schreibtisch bleibt die Zwangsgroesse aus. */
+ {
+  const {ctx,pg}=await schirm(b,1000,900);
+  const w=await pg.evaluate(()=>{
+   const b1=document.createElement('button');b1.className='btn small';
+   b1.textContent='Probe';document.body.appendChild(b1);
+   const h=b1.getBoundingClientRect().height;b1.remove();return Math.round(h);});
+  pruef('Breiter Schirm zwingt den kleinen Knopf nicht auf 44 Punkte',w<44,w);
+  await ctx.close();
+ }
+
  for(const [s,n,x] of aus)console.log(s,n,x);
  if(perr.length)console.log('SEITENFEHLER:',perr.slice(0,3).join(' | '));
  const f=aus.filter(x=>x[0]==='FAIL').length;
