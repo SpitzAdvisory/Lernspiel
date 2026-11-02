@@ -463,6 +463,39 @@ T.de.spielLos="Los!";
 T.fr.spielTitel="Pause de jeu";
 T.en.spielTitel="Game break";
 T.de.spielTitel="Spielpause";
+T.fr.pause="Pause";
+T.en.pause="Pause";
+T.de.pause="Pause";
+T.fr.pauseTitel="Partie commencée";
+T.en.pauseTitel="Unfinished round";
+T.de.pauseTitel="Angefangener Durchgang";
+T.fr.pauseStand="Question {n} sur {m}";
+T.en.pauseStand="Question {n} of {m}";
+T.de.pauseStand="Frage {n} von {m}";
+T.fr.pauseStandOffen="{n} questions répondues";
+T.en.pauseStandOffen="{n} questions answered";
+T.de.pauseStandOffen="{n} Fragen beantwortet";
+T.fr.pauseWeiter="Continuer";
+T.en.pauseWeiter="Continue";
+T.de.pauseWeiter="Fortsetzen";
+T.fr.pauseVerwerfen="Abandonner";
+T.en.pauseVerwerfen="Discard";
+T.de.pauseVerwerfen="Verwerfen";
+T.fr.pauseVerwerfenFrage="Abandonner cette partie commencée ?";
+T.en.pauseVerwerfenFrage="Discard this unfinished round?";
+T.de.pauseVerwerfenFrage="Diesen angefangenen Durchgang verwerfen?";
+T.fr.pauseUnvollstaendig="Impossible de continuer : le jeu ou un joueur manque.";
+T.en.pauseUnvollstaendig="Cannot continue: the game or a player is missing.";
+T.de.pauseUnvollstaendig="Fortsetzen geht nicht: das Spiel oder ein Mitspieler fehlt.";
+T.fr.pauseSpielFort="Jeu introuvable";
+T.en.pauseSpielFort="Game no longer there";
+T.de.pauseSpielFort="Spiel nicht mehr da";
+T.fr.pauseGesichert="Mis en pause. Tu peux continuer sur un autre appareil.";
+T.en.pauseGesichert="Paused. You can continue on another device.";
+T.de.pauseGesichert="Pausiert. Du kannst auf einem anderen Gerät weitermachen.";
+T.fr.pauseNurHier="Mis en pause sur cet appareil seulement.";
+T.en.pauseNurHier="Paused on this device only.";
+T.de.pauseNurHier="Nur auf diesem Gerät pausiert.";
 T.fr.notesAndSources="Remarque et sources";
 T.en.notesAndSources="Note and sources";
 T.de.notesAndSources="Hinweis und Quellen";
@@ -1540,6 +1573,7 @@ async function init(){
  try{await IDB.open();}catch(e){screen(h('div',{class:'page'},h('p',{},t('err',{e:e.message}))));return;}
  S.lang=(await IDB.get('kv','lang'))||(LANGS.find(l=>(navigator.language||'de').startsWith(l))||'en');applyLang();
  nachrichtStarten();
+ pauseWacht();
  if(PLAY_ONLY)return initPlay();
  const mode=await IDB.get('kv','storeMode');
  if(mode==='folder'){const hd=await IDB.get('kv','dirHandle');
@@ -1550,7 +1584,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V89';
+const APPVER='V90';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1619,10 +1653,50 @@ function viewHome(noRefresh){
   .finally(()=>{S.refreshing=false;});}
 }
 function badgeSticker(id){return h('div',{class:'sticker'},h('i',{'aria-hidden':'true'},BADGES[id]||'★'),t('b_'+id));}
+/* Die Karte zuoberst auf der Spielerseite: ein angefangener Durchgang
+   wartet. Fehlt das Spiel oder ein Mitspieler, bleibt nur das Verwerfen -
+   ein Duell ohne den Zweiten laesst sich nicht fortsetzen. */
+/* Die eingebauten Spiele stehen in S.games, weil loadGames sie voranstellt.
+   Sollte die Liste einmal leer sein, faellt die Suche auf sie zurueck -
+   eine Pause darf nicht an einer Ladereihenfolge scheitern. */
+function spielAusId(id){
+ return (S.games||[]).find(g=>g.id===id)
+  ||[MATH_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,IT_GAME].find(g=>g&&g.id===id)
+  ||null;}
+
+function pauseKarte(p,d,re){
+ const g=spielAusId(d.spiel);
+ const spieler=(d.spieler||[]).map(id=>S.profiles.find(x=>x.id===id));
+ const fehlt=!g||spieler.some(x=>!x);
+ const stand=(d.target!=null)
+  ?t('pauseStand',{n:Math.min((d.q||0)+1,d.target),m:d.target})
+  :t('pauseStandOffen',{n:d.q||0});
+ let wann='';
+ try{wann=new Date(d.abgelegt).toLocaleString(S.lang==='en'?'en-GB':S.lang==='fr'?'fr-CH':'de-CH',
+  {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(_){}
+ const weiter=async()=>{
+  const sel=Object.assign({},d.sel||{});
+  if(Array.isArray(sel.topics))sel.topics=new Set(sel.topics);
+  await startRun({players:spieler,game:g,mode:d.mode,diff:d.diff,adaptive:d.adaptive,
+   minis:d.spielAt!==null,sel,topics:d.topics,sub:d.sub,fort:d});};
+ const verwerfen=async()=>{
+  if(!confirm(t('pauseVerwerfenFrage')))return;
+  await pauseWeg(p.id);re();};
+ return h('div',{class:'card stack',style:'border-color:var(--mark)'},
+  h('h3',{style:'margin:0'},'⏸️ '+t('pauseTitel')),
+  h('div',{},h('b',{},g?g.title:t('pauseSpielFort')),
+   h('div',{class:'small muted'},stand+(wann?' · '+wann:''))),
+  fehlt?h('p',{class:'small muted',style:'margin:0'},t('pauseUnvollstaendig')):null,
+  h('div',{class:'row',style:'gap:8px'},
+   fehlt?null:h('button',{class:'btn',onclick:weiter},'▶ '+t('pauseWeiter')),
+   h('button',{class:'btn ghost small',onclick:verwerfen},t('pauseVerwerfen'))));}
+
 async function viewGames(p){
+ const pausiert=await pauseLaden(p.id).catch(()=>null);
  const s=st(p.id);const m=s.mastery;const lv=levelOf(s.xp);const lo=xpFor(lv),hi=xpFor(lv+1);
  const re=()=>{S.keepScroll=true;viewGames(p);};
  screen(topbar(t('chooseGame'),{back:viewHome,rerender:re}),h('main',{class:'page stack'},
+  pausiert?pauseKarte(p,pausiert,re):null,
   h('div',{class:'row'},h('span',{style:'font-size:3rem','aria-hidden':'true'},p.avatar),
    h('div',{class:'grow',style:'flex:1'},h('h2',{class:'hand',style:'margin:0'},t('hello',{name:p.name})),
     h('div',{class:'small'},t('level',{n:lv})+' · '+s.xp+' '+t('points')),
@@ -1798,6 +1872,89 @@ function viewGlossary(o){
 
 /* ================= run engine ================= */
 function poolFor(g,d){const allow={easy:[1,2],medium:[1,2,3],hard:[2,3]}[d];const p=g.items.filter(i=>allow.includes(i.difficulty));return p.length>=5?p:g.items.slice();}
+/* ===================== Pause und Fortsetzen =========================
+   Ein Durchgang lebt bisher nur im Arbeitsspeicher: schlaeft das iPad ein
+   oder wird der Reiter geschlossen, ist er fort. Abgelegt werden darum
+   zwei Kopien mit verschiedenen Aufgaben.
+
+   Im Geraet (IndexedDB) nach jeder beantworteten Frage - schnell, ohne
+   Netz, und genau der Fall, der am haeufigsten eintritt.
+
+   Im Datenordner beim Druck auf «Pause», beim Verlassen der Seite und
+   beim Wegschalten des Reiters - das kostet einen Schreibvorgang, dafuer
+   folgt die Pause dem Kind aufs andere Geraet.
+
+   Beim Laden gewinnt die juengere der beiden Kopien.               */
+const PAUSE_FASSUNG=1;
+const PAUSE_GRENZE=400000;        /* darueber fliegen die Notizblaetter raus */
+function pausePfad(pid){return 'pause/'+pid+'.json';}
+function pauseSchluessel(pid){return 'pause:'+pid;}
+
+function pauseSel(sel){
+ if(!sel||typeof sel!=='object')return null;
+ const o={};
+ for(const k of ['mode','diff','adaptive','opp','year','minis'])if(k in sel)o[k]=sel[k];
+ if(sel.topics)o.topics=[...sel.topics];
+ return o;}
+
+function pauseAus(R){
+ if(!R||R.ended||!R.answers||!R.answers.length)return null;
+ const jetzt=Date.now();
+ const d={fassung:PAUSE_FASSUNG,id:R.id,
+  spieler:R.players.map(x=>x.id),spiel:R.game.id,
+  mode:R.mode,diff:R.diff,adaptive:!!R.adaptive,gen:!!R.gen,
+  topics:R.topics||null,sub:R.sub||null,sel:pauseSel(R.sel),
+  begonnen:(R.started instanceof Date?R.started:new Date(R.started)).toISOString(),
+  abgelegt:new Date(jetzt).toISOString(),
+  pool:R.pool,used:[...R.used],cards:[...R.cards],
+  answers:R.answers,masteries:R.masteries,
+  score:R.score,streak:R.streak,best:R.best,lives:R.lives,
+  level:R.level,up:R.up,down:R.down,q:R.q,extra:R.extra,
+  target:isFinite(R.target)?R.target:null,
+  spielAt:isFinite(R.spielAt)?R.spielAt:null,
+  wcur:R.wcur||{},noteBytes:R.noteBytes||0,
+  /* Das Zeitrennen laeuft gegen die Uhr: gesichert wird die Restzeit,
+     nicht der Zeitpunkt. */
+  restMs:(R.mode==='timed'&&R.deadline)?Math.max(0,R.deadline-jetzt):null};
+ /* Zu gross: die Notizblaetter weichen, der Stand bleibt. */
+ try{
+  if(JSON.stringify(d).length>PAUSE_GRENZE)
+   d.answers=d.answers.map(a=>{const b=Object.assign({},a);delete b.note;delete b.cons;return b;});
+ }catch(_){ d.answers=d.answers.map(a=>({itemId:a.itemId,correct:a.correct,points:a.points,player:a.player})); }
+ return d;}
+
+async function pauseSichernLokal(R){
+ const d=pauseAus(R);if(!d)return;
+ try{await IDB.set('kv',pauseSchluessel(R.players[0].id),d);}catch(_){}}
+
+async function pauseSichernWeit(R){
+ const d=pauseAus(R);if(!d)return false;
+ try{await IDB.set('kv',pauseSchluessel(R.players[0].id),d);}catch(_){}
+ try{await S.store.write(pausePfad(R.players[0].id),d);return true;}catch(_){return false;}}
+
+async function pauseLaden(pid){
+ let nah=null,fern=null;
+ try{nah=await IDB.get('kv',pauseSchluessel(pid));}catch(_){}
+ if(typeof nah==='string'){try{nah=JSON.parse(nah);}catch(_){nah=null;}}
+ try{fern=await S.store.read(pausePfad(pid));}catch(_){}
+ const gut=x=>x&&x.fassung===PAUSE_FASSUNG&&Array.isArray(x.answers)&&x.answers.length;
+ if(!gut(nah)&&!gut(fern))return null;
+ if(!gut(nah))return fern;
+ if(!gut(fern))return nah;
+ return (String(nah.abgelegt)>=String(fern.abgelegt))?nah:fern;}
+
+async function pauseWeg(pid){
+ try{await IDB.del('kv',pauseSchluessel(pid));}catch(_){}
+ try{await S.store.remove(pausePfad(pid));}catch(_){}}
+
+/* Beim Wegschalten oder Schliessen noch schnell in den Datenordner. */
+function pauseWacht(){
+ const weg=()=>{const R=S.run;if(R&&!R.ended&&R.answers&&R.answers.length)pauseSichernWeit(R);};
+ try{
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')weg();});
+  window.addEventListener('pagehide',weg);
+ }catch(_){}}
+
 async function startRun(o){
  const masteries={};for(const p of o.players)masteries[p.id]=JSON.parse(JSON.stringify(st(p.id).mastery));
  for(const pk of new Set(o.game.items.filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack)))await loadPack(pk).catch(e=>toast(e.message,true));
@@ -1807,11 +1964,31 @@ async function startRun(o){
  const R={id:uid(),players:o.players,game:o.game,mode:o.mode,diff:o.diff,adaptive:o.adaptive,sel:o.sel,started:new Date(),pool,used:new Set(),answers:[],
   score:o.players.map(()=>0),streak:o.players.map(()=>0),best:o.players.map(()=>0),lives:3,level:DIFF_LEVEL[o.diff],up:0,down:0,q:0,masteries,timer:null,ended:false};
  R.target=o.mode==='classic'?25:o.mode==='duel'?26:(o.mode==='learn'||o.mode==='hoeren')?12:Infinity;R.retry=[];R.extra=0;R.gen=!!o.game.gen;R.topics=o.topics;R.cards=new Set();R.sub=o.sub||null;R.wcur={};
+ /* Fortsetzen: der frisch gebaute Durchgang bekommt den abgelegten Stand
+    uebergestuelpt. Die zuletzt offene Frage kehrt nicht zurueck - sie
+    wird neu gezogen. */
+ const F=o.fort;
+ if(F){
+  R.id=F.id;R.started=new Date(F.begonnen);
+  if(Array.isArray(F.pool)&&F.pool.length)R.pool=F.pool;
+  R.used=new Set(F.used||[]);R.cards=new Set(F.cards||[]);
+  R.answers=F.answers||[];R.masteries=F.masteries||R.masteries;
+  R.score=F.score||R.score;R.streak=F.streak||R.streak;R.best=F.best||R.best;
+  R.lives=typeof F.lives==='number'?F.lives:R.lives;
+  R.level=typeof F.level==='number'?F.level:R.level;
+  R.up=F.up||0;R.down=F.down||0;R.q=F.q||0;R.extra=F.extra||0;
+  R.wcur=F.wcur||{};R.noteBytes=F.noteBytes||0;
+  if(F.target!=null)R.target=F.target;
+  if(F.spielAt!=null)R.spielAt=F.spielAt;
+ }
  R.jokes=[];R.jokeAt=Infinity;
  /* Statt der Scherzfrage kommt ein kleines Spiel. Im Duell bleibt es weg,
     dort wechseln sich zwei Spieler ab. */
  R.spielAt=(o.mode==='duel'||o.minis===false)?Infinity:5+Math.floor(Math.random()*4);
- if(o.mode==='timed'){R.deadline=Date.now()+({easy:90,medium:60,hard:45}[o.diff])*1000;R.timer=setInterval(()=>tick(R),250);}
+ if(o.mode==='timed'){
+  const voll=({easy:90,medium:60,hard:45}[o.diff])*1000;
+  R.deadline=Date.now()+((F&&F.restMs!=null)?Math.max(3000,F.restMs):voll);
+  R.timer=setInterval(()=>tick(R),250);}
  S.run=R;
  /* Das Sprachmodell im Hintergrund holen, sobald eine Stunde mit
     Sprechaufgaben beginnt. Sonst wartet das Kind erst, wenn es sprechen
@@ -2660,6 +2837,12 @@ function hud(R){
   R.mode==='timed'?h('span',{id:'timer'},'⏱ '+Math.max(0,Math.ceil((R.deadline-Date.now())/1000))+' s'):null,
   (R.mode==='classic'||R.mode==='duel'||R.mode==='learn'||R.mode==='hoeren')?h('span',{},Math.min(R.q+1,R.target)+' / '+R.target):null,
   h('span',{class:'sp'}),
+  R.answers.length?h('button',{class:'btn ghost small',onclick:async()=>{
+   clearInterval(R.timer);R.timer=null;S.onEnter=null;wachAus();
+   const ok=await pauseSichernWeit(R);
+   R.ended=true;
+   toast(ok?t('pauseGesichert'):t('pauseNurHier'));
+   viewGames(R.players[0]);}},'⏸️ '+t('pause')):null,
   h('button',{class:'btn ghost small',onclick:()=>finishRun(R,true)},t('quit')));
 }
 
@@ -4621,6 +4804,7 @@ function onAnswer(R,Q,given,correct,fb){
  R.answers.push({itemId:it.id,type:it.type,lv:it.difficulty||undefined,cons:(Q.board?JSON.stringify(Q.board.data()).slice(0,4000):undefined),prompt:plain(Q.prompt||it.prompt),hints:Q.hintsUsed||undefined,note:noteOk?note:undefined,expected:answerText(it),given,correct,ms,points:pts,player:p.id,
   second:Q.second?Q.firstGiven:undefined,joke:joke||undefined,retry:Q.retry||undefined});
  R.q++;
+ pauseSichernLokal(R);
  const over=()=>(R.mode==='classic'||R.mode==='duel'||R.mode==='learn'||R.mode==='hoeren')?R.q>=R.target:R.mode==='survival'?R.lives<=0:(R.mode==='timed'&&Date.now()>=R.deadline);
  const proceed=()=>{if(R.ended)return;if(over())finishRun(R,false);else nextQuestion(R);};
  fb.className='feedback';
@@ -4681,6 +4865,8 @@ async function finishRun(R,aborted){
  const eff=applyLog(S.state||(S.state={}),log);
  for(const r of results){const e=eff[r.p.id];if(e)Object.assign(r,{newBadges:e.newBadges,unlocked:e.unlocked,levelBefore:e.levelBefore,levelAfter:e.levelAfter});
   const lp=log.players.find(x=>x.id===r.p.id);lp.badgesEarned=r.newBadges;lp.unlocked=r.unlocked;}
+ /* Der Durchgang ist vorbei - die Pause darf nicht stehen bleiben. */
+ pauseWeg(R.players[0].id);
  const fname=ymd(R.started)+'_'+slug(R.players.map(p=>p.name).join('-'))+'_'+slug(R.game.title)+'_'+hms(R.started)+'_'+R.id.slice(-4)+'.json';
  S.logMap=S.logMap||{};S.logMap[fname]=log;R.logFile=fname;
  try{await writeLog(fname,log);}catch(e){toast(t('err',{e:e.message}),true);}
