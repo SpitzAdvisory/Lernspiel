@@ -22,6 +22,31 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   const kn=k=>pad.el.querySelector('button[data-k="'+k+'"]');
   const fB=kn('finger'), pB=kn('penonly');
   pruef('Beide Knöpfe da',!!fB&&!!pB,fB&&fB.textContent.trim()+' / '+(pB&&pB.textContent.trim()));
+
+  /* ---- Die Auskunft zum Stift ---- */
+  const fehlt=[];
+  for(const k of ['padHelp','padHelpFinger','padHelpPen','padHelpStift'])
+   for(const l of ['de','en','fr'])if(!T[l]||!T[l][k])fehlt.push(l+'.'+k);
+  pruef('Hilfetexte in allen drei Sprachen',fehlt.length===0,fehlt.join(','));
+  pruef('Am Schreibtisch bringt der Zeiger die Erklärung',
+   fB.title===t('padHelpFinger')&&pB.title===t('padHelpPen'),
+   (fB.title||'').slice(0,30));
+  const hB=kn('stifthilfe');
+  pruef('Der Fragezeichen-Knopf steht in der Leiste',!!hB,hB&&hB.textContent.trim());
+  const tafel=pad.el.querySelector('.stifthilfe');
+  pruef('Die Tafel ist zuerst zugeklappt',!!tafel&&tafel.hidden===true,tafel&&tafel.hidden);
+  if(hB&&tafel){
+   hB.click();
+   const txt=tafel.textContent.replace(/\s+/g,' ');
+   pruef('Ein Tipp klappt sie auf',tafel.hidden===false);
+   pruef('Sie nennt Finger, Nur Stift und den erkannten Stift',
+    txt.indexOf(t('padHelpFinger'))>=0&&txt.indexOf(t('padHelpPen'))>=0
+    &&txt.indexOf(t('padHelpStift'))>=0,txt.slice(0,60));
+   pruef('Der Zustand steht auch für Hilfsmittel da',
+    hB.getAttribute('aria-expanded')==='true',hB.getAttribute('aria-expanded'));
+   hB.click();
+   pruef('Noch ein Tipp klappt sie wieder zu',tafel.hidden===true);
+  }
   if(!fB||!pB)return aus;
   const hell=e=>!!e.style.background&&e.style.background!=='';
   pruef('Finger ist voreingestellt und hervorgehoben',hell(fB)&&!hell(pB));

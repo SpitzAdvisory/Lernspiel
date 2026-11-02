@@ -286,6 +286,11 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
  .spielplatz{margin-left:-14px;margin-right:-14px}
 }
 
+/* Die Auskunft zum Schreibfeld: eingeklappt, bis jemand fragt. */
+.stifthilfe{border:2px solid var(--grid);border-radius:12px;background:var(--white);
+ padding:10px 14px;margin-top:4px}
+.stifthilfe p{margin:4px 0;font-size:.95rem;line-height:1.45}
+
 @media (max-width:430px){
  .hoerFrage{font-size:1.3rem}
  /* Apples Gestaltungsrichtlinie nennt 44 Punkte als kleinstes Tippziel.
@@ -424,6 +429,9 @@ T.de.spielStrafe="Auch der ging daneben. Zwei Aufgaben obendrauf, dann sind wir 
 T.fr.spielLeichter="Pas grave. La prochaine fois, ce sera un peu plus facile.";
 T.en.spielLeichter="Never mind. Next time it will be a little easier.";
 T.de.spielLeichter="Macht nichts. Beim nächsten Mal wird es etwas leichter.";
+T.fr.spielEgal="Pas grave. On continue.";
+T.en.spielEgal="Never mind. On we go.";
+T.de.spielEgal="Macht nichts. Weiter geht's.";
 T.fr.spielNochmal="Raté. Un deuxième essai, gratuit.";
 T.en.spielNochmal="Missed. One more try, and that one is free.";
 T.de.spielNochmal="Daneben. Ein zweiter Versuch, der ist gratis.";
@@ -616,6 +624,18 @@ T.de.padOnlyPen="Nur Stift";
 T.fr.padFinger="Doigt";
 T.en.padFinger="Finger";
 T.de.padFinger="Finger";
+T.fr.padHelp="Aide";
+T.en.padHelp="Help";
+T.de.padHelp="Hilfe";
+T.fr.padHelpFinger="écrit avec le doigt ou un stylet simple. Ne pose pas la main, elle dessinerait aussi.";
+T.en.padHelpFinger="writes with a finger or a simple stylus. Do not rest your hand, it would draw too.";
+T.de.padHelpFinger="schreibt mit Finger oder einfachem Stift. Die Hand nicht auflegen, sie zeichnet sonst mit.";
+T.fr.padHelpPen="seul un stylet reconnu écrit. La main peut reposer, le doigt fait défiler.";
+T.en.padHelpPen="only a recognised pen writes. Your hand may rest, fingers scroll.";
+T.de.padHelpPen="nur ein erkannter Stift schreibt. Die Hand darf aufliegen, Finger blättern.";
+T.fr.padHelpStift="Un stylet reconnu dessine aussi plus finement, selon la pression. Apple Pencil sur iPad, Surface Pen sur PC. Sur iPhone, il reste le doigt.";
+T.en.padHelpStift="A recognised pen also draws more finely, depending on pressure. Apple Pencil on iPad, Surface Pen on a PC. On an iPhone the finger remains.";
+T.de.padHelpStift="Ein erkannter Stift zeichnet auch feiner, je nach Druck. Apple Pencil auf dem iPad, Surface Pen am PC. Auf dem iPhone bleibt der Finger.";
 T.fr.padInputBy="Écrire avec :";
 T.en.padInputBy="Write with:";
 T.de.padInputBy="Schreiben mit:";
@@ -1584,7 +1604,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V90';
+const APPVER='V91';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -2768,14 +2788,14 @@ function spielSchirm(R){
   if(versuch<2){stimme(t('spielRufNochmal'));
    ergebnis.style.color='var(--ink)';ergebnis.textContent=t('spielNochmal');
    losB.textContent=t('spielWieder');losB.style.display='';losB.focus();S.onEnter=()=>losB.click();return;}
-  /* Zweimal verloren: die Stufe sinkt, und das ist die ganze Korrektur -
-     zwei Aufgaben obendrauf kaemen einer doppelten Strafe gleich. Nur auf
-     Stufe 1 bleibt es beim Aufschlag, dort gibt es nichts zu senken. */
+  /* Zweimal verloren: die Stufe sinkt, und das ist die ganze Korrektur.
+     Zusatzaufgaben gibt es keine mehr - auch nicht auf Stufe 1, wo sich
+     nichts senken laesst. Eine Spielpause ist eine Pause; sie mit
+     Mehrarbeit zu bestrafen, kehrt ihren Zweck um. */
   const gesunken=stufe>1;
   if(gesunken)spielStufeSetz(wer,stufe-1);
-  else if(R.target!==Infinity)R.target+=2;
   ergebnis.style.color='var(--red)';
-  ergebnis.textContent=gesunken?t('spielLeichter'):t('spielStrafe');
+  ergebnis.textContent=gesunken?t('spielLeichter'):t('spielEgal');
   weiterB.style.display='';weiterB.focus();S.onEnter=weiter;};
  const tonB=h('button',{class:'btn ghost small',type:'button'});
  const tonZeige=()=>{tonB.textContent=(klangDa()?'🔊 ':'🔇 ')+t(klangDa()?'spielTonAn':'spielTonAus');};
@@ -3666,12 +3686,27 @@ function scratchPad(o={}){
  if(padTouchDa()){
   const fB=tbtn('finger','✍️ '+t('padFinger'),()=>setzeFinger(true));
   const pB=tbtn('penonly','🖊️ '+t('padOnlyPen'),()=>setzeFinger(false));
+  /* Am Schreibtisch bringt der Mauszeiger die Erklaerung hervor. Auf
+     iPad und iPhone gibt es keinen Zeiger - dort fuehrt der Knopf «?»
+     zur selben Auskunft. */
+  fB.title=t('padHelpFinger');
+  pB.title=t('padHelpPen');
   const fmark=()=>{setzeAktiv(fB,fingerSchreibt);setzeAktiv(pB,!fingerSchreibt);
    if(fingerSchreibt)hinweis.textContent='';};
   const setzeFinger=(v)=>{fingerSchreibt=v;padFingerSet(v);fmark();};
   fmark();
-  bar2=h('div',{class:'row',style:'gap:8px;flex-wrap:wrap;margin-top:6px;align-items:center'},
-   h('span',{class:'small muted'},t('padInputBy')),fB,pB);}
+  const tafel=h('div',{class:'stifthilfe',hidden:true},
+   h('p',{},h('b',{},t('padFinger')+' — '),t('padHelpFinger')),
+   h('p',{},h('b',{},t('padOnlyPen')+' — '),t('padHelpPen')),
+   h('p',{class:'muted'},t('padHelpStift')));
+  const hB=tbtn('stifthilfe','❓ '+t('padHelp'),()=>{
+   tafel.hidden=!tafel.hidden;setzeAktiv(hB,!tafel.hidden);});
+  hB.setAttribute('aria-expanded','false');
+  hB.addEventListener('click',()=>hB.setAttribute('aria-expanded',String(!tafel.hidden)));
+  bar2=h('div',{class:'stack',style:'gap:6px'},
+   h('div',{class:'row',style:'gap:8px;flex-wrap:wrap;margin-top:6px;align-items:center'},
+    h('span',{class:'small muted'},t('padInputBy')),fB,pB,h('span',{class:'sp'}),hB),
+   tafel);}
  sc.style.height=vis+'px';
  const el=h('div',{class:'padwrap stack'},bar,bar2,hinweis,sc);
  new ResizeObserver(fit).observe(sc);setTimeout(fit,0);

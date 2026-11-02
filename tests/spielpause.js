@@ -21,7 +21,7 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
  await pg.waitForFunction(()=>typeof nextQuestion==='function'&&typeof SPIELE!=='undefined');
 
  const wort=await pg.evaluate(()=>{const fehlt=[];
-  for(const k of ['spielTitel','spielLos','spielWieder','spielZielTreffer','spielZielKloetze','spielZeit','spielNochmal','spielStrafe','spielGut'])
+  for(const k of ['spielTitel','spielLos','spielWieder','spielZielTreffer','spielZielKloetze','spielZeit','spielNochmal','spielEgal','spielLeichter','spielGut'])
    for(const l of ['de','en','fr'])if(!T[l]||!T[l][k])fehlt.push(l+'.'+k);
   return fehlt;});
  pruef('Wortlaute in allen drei Sprachen',wort.length===0,wort.join(','));
@@ -76,15 +76,18 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   los().click();await new Promise(r=>setTimeout(r,200));
   const nach2={txt:document.querySelector('main .hand').textContent,target:R.target};
   SPIELE.forEach((s,i)=>{s.bau=echt[i];});
-  return {nach1,nach2,wieder:t('spielWieder'),strafe:t('spielStrafe')};});
+  return {nach1,nach2,wieder:t('spielWieder'),egal:t('spielEgal')};});
  pruef('Erster Fehlversuch ist gratis',verloren.nach1.target===25&&verloren.nach1.knopf===verloren.wieder,
   JSON.stringify(verloren.nach1));
- pruef('Zweiter Fehlversuch kostet genau zwei Aufgaben',verloren.nach2.target===27,verloren.nach2.target);
- pruef('Strafe wird benannt',verloren.nach2.txt===verloren.strafe,verloren.nach2.txt.slice(0,50));
+ /* Seit V91 kostet ein verlorenes Minispiel nichts mehr. Eine Pause mit
+    Mehrarbeit zu bestrafen, kehrt ihren Zweck um; auf hoeheren Stufen
+    sinkt stattdessen die Stufe, auf Stufe 1 geschieht schlicht nichts. */
+ pruef('Zweiter Fehlversuch kostet keine Zusatzaufgaben',verloren.nach2.target===25,verloren.nach2.target);
+ pruef('Der Hinweis bleibt freundlich',verloren.nach2.txt===verloren.egal,verloren.nach2.txt.slice(0,50));
 
- /* Die Strafe haeuft sich nicht: ein zweites Spiel, wieder nur +2 */
+ /* Auch mehrere verlorene Spiele hintereinander kosten nichts. */
  const zweimal=await pg.evaluate(async()=>{
-  const R=window.__R;R.target=27;R.q=12;R.spielAt=0;
+  const R=window.__R;R.target=25;R.q=12;R.spielAt=0;
   const echt=SPIELE.map(s=>s.bau);
   SPIELE.forEach(s=>{s.bau=(platz,o)=>{setTimeout(()=>o.fertig(false,0),20);return{ende(){}};};});
   nextQuestion(R);
@@ -93,7 +96,7 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   los().click();await new Promise(r=>setTimeout(r,200));
   SPIELE.forEach((s,i)=>{s.bau=echt[i];});
   return R.target;});
- pruef('Zweites Spiel kostet wieder nur zwei',zweimal===29,zweimal);
+ pruef('Auch ein zweites verlorenes Spiel kostet nichts',zweimal===25,zweimal);
 
  /* Im Duell bleibt die Pause weg */
  const duell=await pg.evaluate(()=>{

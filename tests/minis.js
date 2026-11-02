@@ -172,10 +172,11 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   los().click();await new Promise(r=>setTimeout(r,160));
   const txt=document.querySelector('main .hand').textContent;
   SPIELE.forEach((s,i)=>{s.bau=echt[i];});
-  return {stufe:window.__P.spielStufe,target:R.target,txt,strafe:t('spielStrafe')};});
+  return {stufe:window.__P.spielStufe,target:R.target,txt,egal:t('spielEgal')};});
  pruef('Auf Stufe 1 bleibt die Stufe stehen',unten.stufe===1,unten.stufe);
- pruef('Auf Stufe 1 kosten zwei Fehlversuche zwei Aufgaben',unten.target===27,unten.target);
- pruef('Dort steht wieder der Strafhinweis',unten.txt===unten.strafe,unten.txt.slice(0,40));
+ /* Seit V91: kein Aufschlag, auf keiner Stufe. */
+ pruef('Auf Stufe 1 kosten zwei Fehlversuche nichts',unten.target===25,unten.target);
+ pruef('Dort steht der freundliche Hinweis',unten.txt===unten.egal,unten.txt.slice(0,40));
 
  /* ---------- Der Schalter auf dem Startschirm ---------- */
  const schirm=await pg.evaluate(()=>{
