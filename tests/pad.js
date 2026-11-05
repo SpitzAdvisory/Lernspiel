@@ -66,6 +66,35 @@ const ok=(n,c,i)=>{if(!c)fails++;console.log((c?'  OK  ':'  FAIL')+'  '+n+(i?'  
  ok('Groesse umschalten', r.groesse);
  ok('Seite anfuegen', r.seite);
  ok('Radierer', r.radierer);
+ /* ---------- Die Leiste traegt Zeichnungen, keine Emoji ----------
+    Zwei Symbolsprachen nebeneinander lesen sich wie zwei Handschriften.
+    Geprueft wird: jeder Knopf hat eine Zeichnung, keine Beschriftung
+    enthaelt noch ein Emoji, und jede Zeichnung im Vorrat traegt Linien. */
+ const leiste=await pg.evaluate(()=>{
+  const pad=scratchPad({height:300});document.body.append(pad.el);
+  const knoepfe=[...pad.el.querySelectorAll('button[data-k]')];
+  const emoji=/[\u{1F300}-\u{1FAFF}\u{2190}-\u{21FF}\u{2460}-\u{27BF}\u{FE0F}]/u;
+  const ohne=[],mitEmoji=[];
+  for(const b of knoepfe){
+   if(!b.querySelector('svg.sym'))ohne.push(b.dataset.k);
+   if(emoji.test(b.textContent||''))mitEmoji.push(b.dataset.k+': '+b.textContent.trim());}
+  /* Jeder Name im Vorrat muss Linien liefern - ein Tippfehler im Namen
+     ergaebe sonst still eine leere Zeichnung. */
+  const leer=Object.keys(SYMBOLE).filter(n=>sym(n).querySelectorAll('path').length===0);
+  pad.el.remove();
+  return {anzahl:knoepfe.length,schluessel:knoepfe.map(b=>b.dataset.k),
+   ohne,mitEmoji,leer,vorrat:Object.keys(SYMBOLE).length};});
+ /* Sieben Knoepfe immer; die drei zum Schreibgeraet treten nur hinzu,
+    wenn das Geraet Beruehrung kennt (padTouchDa). Dieser Browser hat
+    keine, deshalb sind sieben richtig. */
+ ok('Die Leiste traegt die sieben Werkzeugknoepfe',leiste.anzahl===7,leiste.anzahl);
+ ok('Die erwarteten Knoepfe sind da',
+  ['pen','eraser','undo','redo','clear','size','page'].every(k=>leiste.schluessel.includes(k)),
+  leiste.schluessel.join(','));
+ ok('Jeder Knopf traegt eine Zeichnung',leiste.ohne.length===0,leiste.ohne.join(','));
+ ok('Keine Beschriftung enthaelt noch ein Emoji',leiste.mitEmoji.length===0,leiste.mitEmoji.join(' | '));
+ ok('Jede Zeichnung im Vorrat traegt Linien',leiste.leer.length===0,leiste.leer.join(','));
+ ok('Der Vorrat umfasst alle vierzehn Zeichnungen',leiste.vorrat===14,leiste.vorrat);
  ok('Keine Seitenfehler', perr.length===0, perr.slice(0,2).join(' | '));
  await b.close();srv.close();
  console.log('\n'+(fails?('FEHLER: '+fails):'alles gut'));

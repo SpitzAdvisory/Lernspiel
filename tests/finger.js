@@ -22,6 +22,16 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   const kn=k=>pad.el.querySelector('button[data-k="'+k+'"]');
   const fB=kn('finger'), pB=kn('penonly');
   pruef('Beide Knöpfe da',!!fB&&!!pB,fB&&fB.textContent.trim()+' / '+(pB&&pB.textContent.trim()));
+  /* Hand und Stylus tragen Zeichnungen, und sie sind verschieden: beide
+     mit demselben Bleistift waeren zwei Knoepfe, die gleich aussehen und
+     Verschiedenes tun. */
+  const hB0=kn('stifthilfe');
+  const linien=b=>[...b.querySelectorAll('svg.sym path')].map(q=>q.getAttribute('d')).join('|');
+  pruef('Finger, Stylus und Hilfe tragen Zeichnungen',
+   !!fB.querySelector('svg.sym')&&!!pB.querySelector('svg.sym')&&!!(hB0&&hB0.querySelector('svg.sym')));
+  pruef('Die Zeichnung am Stylus unterscheidet sich vom Werkzeug-Bleistift',
+   linien(pB)!==linien(kn('pen'))&&linien(pB).length>0,
+   linien(pB).slice(0,30));
 
   /* ---- Die Auskunft zum Stift ---- */
   const fehlt=[];
