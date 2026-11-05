@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V97';
+const APPVER='V98';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -9405,9 +9405,10 @@ function dptopic(id,y,a,n,c,terms,g){DPT.push({id,y,a,n,c,terms,g,de:true});}
    Fuer die phonologische Bewusstheit des 1. Zyklus - Silben, Reime,
    Anlaute - fand ich keinen belegten Code. Dort steht darum der Zyklus
    statt einer Nummer, die bloss plausibel klaenge. */
-const lpz=X(' (Lehrplan 21: 1. Zyklus, phonologische Bewusstheit. Ein genauer Kompetenzcode ist hier nicht belegt. Die Klasse ist eine Empfehlung.)',
- ' (Lehrplan 21: cycle 1, phonological awareness. No exact competence code verified here. The class is a recommendation.)',
- ' (Plan d’études 21 : cycle 1, conscience phonologique. Aucun code précis vérifié ici. La classe est une recommandation.)');
+const lpzy=(zy,was,en,fr)=>X(' (Lehrplan 21: '+zy+'. Zyklus, '+was+'. Ein genauer Kompetenzcode ist hier nicht belegt. Die Klasse ist eine Empfehlung.)',
+ ' (Lehrplan 21: cycle '+zy+', '+en+'. No exact competence code verified here. The class is a recommendation.)',
+ ' (Plan d’études 21 : cycle '+zy+', '+fr+'. Aucun code précis vérifié ici. La classe est une recommandation.)');
+const lpz=lpzy(1,'phonologische Bewusstheit','phonological awareness','conscience phonologique');
 const lpq=code=>X(' (Lehrplan 21: '+code+'. Die Klasse ist eine Empfehlung; der Lehrplan ordnet nach Zyklen.)',
  ' (Lehrplan 21: '+code+'. The class is a recommendation; the curriculum is organised by cycles.)',
  ' (Plan d’études 21 : '+code+'. La classe est une recommandation ; le plan est organisé par cycles.)');
@@ -9552,6 +9553,172 @@ dptopic('d2-zeichen',2,2,['Punkt, Frage- und Ausrufezeichen','Full stop, questio
   return steps(choiceItem(D('Welches Zeichen gehört ans Ende? «'+s[0]+'»','Which mark belongs at the end? «'+s[0]+'»','Quel signe à la fin ? «'+s[0]+'»'),s[1],['.','?','!'].filter(x=>x!==s[1])),
    [D('Wird etwas gefragt, befohlen oder einfach gesagt?','Is something asked, ordered, or simply stated?','Est-ce une question, un ordre ou une déclaration ?'),
     D('Richtig ist «'+s[1]+'»: '+s[0]+s[1],'Correct is «'+s[1]+'»: '+s[0]+s[1],'Correct : «'+s[1]+'» — '+s[0]+s[1])]);});
+
+/* ---------------------------------------------------------- Klasse 3 */
+const IE=['Biene','Wiese','Spiegel','fliegen','Brief','tief','Ziel','viel','Riese',
+ 'liegen','Dieb','Miete','Schiene','Stiefel','Spiel','Knie'];
+dptopic('d3-ie',3,2,['Die ie-Regel','The ie rule','La règle du ie'],
+ ['Ein lang gesprochenes i schreibt man mit ie: Biene, Wiese, tief. Sprich das Wort langsam — hörst du das i lang, kommt ein e dazu.'+lpq('D.5.E.1.c'),
+  'A long i is written ie: Biene, Wiese, tief. Say the word slowly: if the i is long, an e follows.'+lpq('D.5.E.1.c'),
+  'Un i long s’écrit ie : Biene, Wiese, tief. Dis le mot lentement : si le i est long, un e suit.'+lpq('D.5.E.1.c')],
+ ['ieRegel'],
+ lv=>{const w=pick(IE);const falsch=w.replace('ie','i');
+  return steps(choiceItem(D('Wie schreibt man das Wort richtig?','Which spelling is correct?','Quelle orthographe est correcte ?'),w,[falsch]),
+   [D('Sprich es langsam. Klingt das i lang oder kurz?','Say it slowly. Is the i long or short?','Dis-le lentement. Le i est-il long ou court ?'),
+    D('Lang gesprochen heisst mit ie: «'+w+'».','Long means ie: «'+w+'».','Long veut dire ie : «'+w+'».')]);});
+
+const UMLAUT=[['Hand','Hände'],['Baum','Bäume'],['Haus','Häuser'],['Maus','Mäuse'],
+ ['Wald','Wälder'],['Blatt','Blätter'],['Traum','Träume'],['Kraft','Kräfte'],
+ ['Nacht','Nächte'],['Gast','Gäste'],['Zaun','Zäune'],['Apfel','Äpfel']];
+dptopic('d3-aeu',3,2,['ä und äu ableiten','Deriving ä and äu','Déduire ä et äu'],
+ ['Schreibt man ä oder e, äu oder eu? Such das verwandte Wort: Hände kommt von Hand, also ä. Häuser kommt von Haus, also äu.'+lpq('D.5.E.1.c'),
+  'Is it ä or e, äu or eu? Find the related word: Hände comes from Hand, so ä. Häuser comes from Haus, so äu.'+lpq('D.5.E.1.c'),
+  'Est-ce ä ou e ? Cherche le mot apparenté : Hände vient de Hand, donc ä.'+lpq('D.5.E.1.c')],
+ ['wortstamm'],
+ lv=>{const u=pick(UMLAUT);
+  /* Auch das grosse Ä muss ersetzt werden, sonst bliebe bei «Äpfel» der
+     Ablenker gleich der Loesung und die Frage haette nur eine Antwort. */
+  const falsch=u[1].replace(/äu/g,'eu').replace(/Äu/g,'Eu').replace(/ä/g,'e').replace(/Ä/g,'E');
+  return steps(choiceItem(D('Wie schreibt man die Mehrzahl von «'+u[0]+'»?','What is the plural of «'+u[0]+'»?','Quel est le pluriel de «'+u[0]+'» ?'),u[1],[falsch]),
+   [D('Das verwandte Wort heisst «'+u[0]+'».','The related word is «'+u[0]+'».','Le mot apparenté est «'+u[0]+'».'),
+    D('Darum mit Umlaut: «'+u[1]+'».','So it takes the umlaut: «'+u[1]+'».','Donc avec tréma : «'+u[1]+'».')]);});
+
+const PLURAL=[['Haus','Häuser'],['Kind','Kinder'],['Auto','Autos'],['Blume','Blumen'],
+ ['Tisch','Tische'],['Buch','Bücher'],['Apfel','Äpfel'],['Vogel','Vögel'],
+ ['Hand','Hände'],['Baum','Bäume'],['Bild','Bilder'],['Schule','Schulen']];
+dptopic('d3-plural',3,1,['Einzahl und Mehrzahl','Singular and plural','Singulier et pluriel'],
+ ['Die Mehrzahl wird im Deutschen auf verschiedene Weise gebildet: mit -er, -e, -en, -s oder mit einem Umlaut. Darum lohnt es sich, sie zu jedem Wort mitzulernen.'
+  +lpzy(2,'Mehrzahlbildung','plural formation','formation du pluriel'),
+  'German forms the plural in several ways: with -er, -e, -en, -s or with an umlaut. Worth learning with every word.'
+  +lpzy(2,'Mehrzahlbildung','plural formation','formation du pluriel'),
+  'L’allemand forme le pluriel de plusieurs façons. Il vaut la peine de l’apprendre avec chaque mot.'
+  +lpzy(2,'Mehrzahlbildung','plural formation','formation du pluriel')],
+ ['mehrzahl'],
+ lv=>{const w=pick(PLURAL);
+  const andere=PLURAL.filter(x=>x[1]!==w[1]).map(x=>x[1]);
+  return steps(choiceItem(D('Wie heisst die Mehrzahl von «'+w[0]+'»?','What is the plural of «'+w[0]+'»?','Quel est le pluriel de «'+w[0]+'» ?'),
+   w[1],[w[0]+'e',w[0]+'n'].filter(x=>x!==w[1]).slice(0,2)),
+   [D('Sag: ein '+w[0]+', zwei …','Say: one '+w[0]+', two …','Dis : un '+w[0]+', deux …'),
+    D('Die Mehrzahl heisst «'+w[1]+'».','The plural is «'+w[1]+'».','Le pluriel est «'+w[1]+'».')]);});
+
+/* ck bleibt beim Trennen zusammen, tz und ss werden getrennt. */
+const TRENN=[['Strasse','Stras-se'],['Fenster','Fens-ter'],['Katze','Kat-ze'],
+ ['Zucker','Zu-cker'],['Bruder','Bru-der'],['Sommer','Som-mer'],['Blume','Blu-me'],
+ ['Apfel','Ap-fel'],['Schule','Schu-le'],['Mutter','Mut-ter'],['Brücke','Brü-cke'],
+ ['Wasser','Was-ser'],['Mütze','Müt-ze'],['Glocke','Glo-cke']];
+dptopic('d3-trennen',3,2,['Wörter trennen','Dividing words','Couper les mots'],
+ ['Getrennt wird nach Sprechsilben: Blu-me, Fens-ter. Zwei gleiche Buchstaben werden geteilt, auch ss: Som-mer, Stras-se. Nur ck bleibt zusammen: Zu-cker.'+lpq('D.5.E.1.d'),
+  'Words are divided by spoken syllables: Blu-me, Fens-ter. Double letters split, ss included: Stras-se. Only ck stays together: Zu-cker.'+lpq('D.5.E.1.d'),
+  'On coupe selon les syllabes : Blu-me. Les lettres doubles se séparent, ss compris. Seul ck reste ensemble : Zu-cker.'+lpq('D.5.E.1.d')],
+ ['silbe','trennen'],
+ lv=>{const w=pick(TRENN);
+  const i=w[1].indexOf('-');
+  const falsch=[w[0].slice(0,i-1)+'-'+w[0].slice(i-1),w[0].slice(0,i+1)+'-'+w[0].slice(i+1)]
+   .filter(x=>x!==w[1]&&x.indexOf('-')>0&&x.indexOf('-')<w[0].length);
+  return steps(choiceItem(D('Wie trennt man «'+w[0]+'»?','How is «'+w[0]+'» divided?','Comment coupe-t-on «'+w[0]+'» ?'),w[1],falsch),
+   [D('Sprich das Wort in Silben.','Say the word in syllables.','Dis le mot en syllabes.'),
+    D('Richtig ist «'+w[1]+'».','«'+w[1]+'» is correct.','«'+w[1]+'» est correct.')]);});
+
+const FAMILIE=[['fahren',['Fahrer','Fahrt','Fahrrad','abfahren'],'Farbe'],
+ ['spielen',['Spieler','Spielzeug','Spielplatz','verspielen'],'Spiegel'],
+ ['schreiben',['Schreiber','Schrift','aufschreiben','Schreibtisch'],'Schrank'],
+ ['Haus',['Häuser','Haustür','Hausaufgabe','Hochhaus'],'Hase'],
+ ['bauen',['Bauer','Bauernhof','Gebäude','aufbauen'],'Baum']];
+dptopic('d3-wortstamm',3,2,['Wortstamm und Wortfamilie','Word stem and word family','Radical et famille de mots'],
+ ['Wörter mit demselben Stamm gehören zu einer Wortfamilie: fahren, Fahrer, Fahrt, Fahrrad. Der Stamm entscheidet oft über die Schreibweise.'+lpq('D.5.E.1.c'),
+  'Words sharing a stem form a family: fahren, Fahrer, Fahrt, Fahrrad. The stem often decides the spelling.'+lpq('D.5.E.1.c'),
+  'Les mots au même radical forment une famille. Le radical décide souvent de l’orthographe.'+lpq('D.5.E.1.c')],
+ ['wortstamm','wortfamilie'],
+ lv=>{const f=pick(FAMILIE);
+  return steps(choiceItem(D('Welches Wort gehört NICHT zur Familie von «'+f[0]+'»?','Which word does NOT belong to the family of «'+f[0]+'»?','Quel mot n’appartient PAS à la famille de «'+f[0]+'» ?'),
+   f[2],[pick(f[1]),pick(f[1]),pick(f[1])]),
+   [D('Such den gemeinsamen Stamm.','Look for the shared stem.','Cherche le radical commun.'),
+    D('«'+f[2]+'» hat einen anderen Stamm.','«'+f[2]+'» has a different stem.','«'+f[2]+'» a un autre radical.')]);});
+
+/* ---------------------------------------------------------- Klasse 4 */
+const CKTZ=[['Katze','tz'],['Platz','tz'],['sitzen','tz'],['Mütze','tz'],['Hitze','tz'],
+ ['putzen','tz'],['Netz','tz'],['Schmutz','tz'],
+ ['Zucker','ck'],['Decke','ck'],['backen','ck'],['Brücke','ck'],['Rücken','ck'],
+ ['Glocke','ck'],['drucken','ck'],['Stück','ck']];
+dptopic('d4-ck-tz',4,2,['Die ck- und tz-Regel','The ck and tz rule','La règle ck et tz'],
+ ['Nach einem kurz gesprochenen Vokal steht ck statt kk und tz statt zz: Zucker, Katze. Sprich das Wort und hör auf den Vokal davor.'+lpq('D.5.E.1.c'),
+  'After a short vowel you write ck instead of kk and tz instead of zz: Zucker, Katze. Listen to the vowel before.'+lpq('D.5.E.1.c'),
+  'Après une voyelle brève on écrit ck et tz : Zucker, Katze. Écoute la voyelle qui précède.'+lpq('D.5.E.1.c')],
+ ['ckRegel'],
+ lv=>{const w=pick(CKTZ);
+  const falsch=w[1]==='ck'?w[0].replace('ck','k'):w[0].replace('tz','z');
+  return steps(choiceItem(D('Wie schreibt man das Wort richtig?','Which spelling is correct?','Quelle orthographe est correcte ?'),w[0],[falsch]),
+   [D('Ist der Vokal davor kurz oder lang?','Is the vowel before it short or long?','La voyelle d’avant est-elle brève ou longue ?'),
+    D('Kurz gesprochen heisst '+w[1]+': «'+w[0]+'».','Short means '+w[1]+': «'+w[0]+'».','Brève veut dire '+w[1]+' : «'+w[0]+'».')]);});
+
+const FV=['Vater','Vogel','viel','vier','von','vor','Vase','Volk','Vetter','Veilchen','Vorhang','verlieren'];
+dptopic('d4-f-v',4,2,['Die f- und v-Regel','The f and v rule','La règle f et v'],
+ ['Einige Wörter klingen wie f, werden aber mit v geschrieben: Vater, Vogel, viel, vier, von, vor. Diese Wörter lernt man auswendig.'+lpq('D.5.E.1.c'),
+  'Some words sound like f but are written with v: Vater, Vogel, viel, vier, von, vor. These are learnt by heart.'+lpq('D.5.E.1.c'),
+  'Certains mots sonnent comme f mais s’écrivent avec v. Ils s’apprennent par cœur.'+lpq('D.5.E.1.c')],
+ ['fvRegel'],
+ lv=>{const w=pick(FV);const falsch=w.replace(/^V/,'F').replace(/^v/,'f');
+  return steps(choiceItem(D('Wie schreibt man das Wort richtig?','Which spelling is correct?','Quelle orthographe est correcte ?'),w,[falsch]),
+   [D('Es klingt wie f — aber gehört es zu den v-Wörtern?','It sounds like f — but is it one of the v words?','Cela sonne f — mais est-ce un mot en v ?'),
+    D('«'+w+'» schreibt man mit v.','«'+w+'» is written with v.','«'+w+'» s’écrit avec v.')]);});
+
+const ZEITEN=[['ich spiele','Präsens'],['ich spielte','Präteritum'],['ich habe gespielt','Perfekt'],
+ ['ich gehe','Präsens'],['ich ging','Präteritum'],['ich bin gegangen','Perfekt'],
+ ['du läufst','Präsens'],['du liefst','Präteritum'],['du bist gelaufen','Perfekt'],
+ ['wir lesen','Präsens'],['wir lasen','Präteritum'],['wir haben gelesen','Perfekt']];
+dptopic('d4-zeiten',4,2,['Präsens, Präteritum, Perfekt','Present, past, perfect','Présent, prétérit, parfait'],
+ ['Das Präsens sagt, was jetzt geschieht: ich spiele. Das Präteritum erzählt von früher: ich spielte. Das Perfekt braucht ein Hilfsverb: ich habe gespielt.'+lpq('D.5.D.1.c'),
+  'The present says what happens now, the past tells of earlier, the perfect needs an auxiliary verb.'+lpq('D.5.D.1.c'),
+  'Le présent dit ce qui se passe maintenant, le prétérit raconte le passé, le parfait exige un auxiliaire.'+lpq('D.5.D.1.c')],
+ ['zeitform'],
+ lv=>{const z=pick(ZEITEN);
+  const alle=['Präsens','Präteritum','Perfekt'];
+  return steps(choiceItem(D('In welcher Zeit steht «'+z[0]+'»?','Which tense is «'+z[0]+'»?','À quel temps est «'+z[0]+'» ?'),
+   z[1],alle.filter(x=>x!==z[1])),
+   [D('Steht ein Hilfsverb wie «habe» oder «bin» dabei? Dann Perfekt.','Is there an auxiliary like «habe» or «bin»? Then perfect.','Y a-t-il un auxiliaire ? Alors parfait.'),
+    D('«'+z[0]+'» steht im '+z[1]+'.','«'+z[0]+'» is '+z[1]+'.','«'+z[0]+'» est au '+z[1]+'.')]);});
+
+const FORMEN=[['laufen','läuft'],['singen','singt'],['lesen','liest'],['geben','gibt'],
+ ['fahren','fährt'],['schlafen','schläft'],['sprechen','spricht'],['nehmen','nimmt']];
+dptopic('d4-personalform',4,2,['Grundform und Personalform','Base form and finite form','Infinitif et forme conjuguée'],
+ ['Die Grundform steht im Wörterbuch: laufen. Die Personalform richtet sich nach der Person: er läuft. An der Personalform erkennt man, wer handelt.'+lpq('D.5.D.1.c'),
+  'The base form is the dictionary form: laufen. The finite form follows the person: er läuft.'+lpq('D.5.D.1.c'),
+  'L’infinitif est la forme du dictionnaire. La forme conjuguée suit la personne.'+lpq('D.5.D.1.c')],
+ ['grundform','personalform'],
+ lv=>{const f=pick(FORMEN);const grund=Math.random()<0.5;
+  const frage=grund?D('Welches Wort ist die Grundform?','Which word is the base form?','Quel mot est l’infinitif ?')
+                   :D('Welches Wort ist die Personalform?','Which word is the finite form?','Quel mot est la forme conjuguée ?');
+  return steps(choiceItem(frage,grund?f[0]:f[1],[grund?f[1]:f[0]]),
+   [D('Die Grundform endet meist auf -en und passt zu «ich will …».','The base form usually ends in -en.','L’infinitif se termine souvent par -en.'),
+    D('«'+f[0]+'» ist die Grundform, «'+f[1]+'» die Personalform.','«'+f[0]+'» is the base form, «'+f[1]+'» the finite form.','«'+f[0]+'» infinitif, «'+f[1]+'» forme conjuguée.')]);});
+
+const KOMMA=[['Ich kaufe Brot, Milch und Käse.','Ich kaufe Brot Milch und Käse.'],
+ ['Im Korb liegen Äpfel, Birnen und Nüsse.','Im Korb liegen Äpfel Birnen, und Nüsse.'],
+ ['Wir packen Hose, Jacke, Mütze und Schuhe ein.','Wir packen Hose Jacke Mütze und Schuhe ein.'],
+ ['Lea, Noah und Mia spielen zusammen.','Lea Noah, und Mia spielen zusammen.']];
+dptopic('d4-komma',4,2,['Komma bei Aufzählungen','Comma in lists','La virgule dans les énumérations'],
+ ['Zwischen den Gliedern einer Aufzählung steht ein Komma. Vor «und» und vor «oder» steht keines: Brot, Milch und Käse.'+lpq('D.5.E.1.c'),
+  'A comma separates the items of a list. No comma before «und» or «oder».'+lpq('D.5.E.1.c'),
+  'Une virgule sépare les éléments d’une énumération, mais pas devant «und».'+lpq('D.5.E.1.c')],
+ ['komma'],
+ lv=>{const k=pick(KOMMA);
+  return steps(choiceItem(D('Welcher Satz ist richtig?','Which sentence is correct?','Quelle phrase est correcte ?'),k[0],[k[1]]),
+   [D('Komma zwischen die Glieder, keines vor «und».','Comma between items, none before «und».','Virgule entre les éléments, aucune devant «und».'),
+    D('Richtig ist: '+k[0],'Correct: '+k[0],'Correct : '+k[0])]);});
+
+const REDE=[['«Komm schnell», rief Mia.','"Komm schnell", rief Mia.'],
+ ['«Ich bin müde», sagte Noah.','«Ich bin müde» sagte Noah.'],
+ ['Lea fragte: «Wo ist mein Buch?»','Lea fragte: «Wo ist mein Buch.»'],
+ ['«Das schaffst du», sagte der Vater.','«Das schaffst du,» sagte der Vater.']];
+dptopic('d4-rede',4,3,['Die direkte Rede','Direct speech','Le discours direct'],
+ ['Gesprochenes steht in Anführungszeichen. In der Schweiz sind das Guillemets: «Komm schnell», rief Mia. Das Komma steht nach dem schliessenden Zeichen.'+lpq('D.5.E.1.c'),
+  'Spoken words go in quotation marks. In Switzerland these are guillemets: «Komm schnell», rief Mia.'+lpq('D.5.E.1.c'),
+  'Les paroles vont entre guillemets. En Suisse, ce sont les chevrons : «Komm schnell», rief Mia.'+lpq('D.5.E.1.c')],
+ ['direkteRede'],
+ lv=>{const r=pick(REDE);
+  return steps(choiceItem(D('Welcher Satz ist richtig geschrieben?','Which sentence is written correctly?','Quelle phrase est correctement écrite ?'),r[0],[r[1]]),
+   [D('Schau auf die Zeichen und darauf, wo das Komma steht.','Check the marks and where the comma sits.','Regarde les signes et la place de la virgule.'),
+    D('Richtig ist: '+r[0],'Correct: '+r[0],'Correct : '+r[0])]);});
 
 const DEP_GAME={id:'de-primar',builtin:true,subject:'lang',kind:'lang',items:[],gen:{topics:DPT.map(x=>x.id)}};
 Object.defineProperty(DEP_GAME,'title',{get:()=>t('dep_title'),enumerable:true});

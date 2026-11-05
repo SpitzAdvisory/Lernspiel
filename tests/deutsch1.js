@@ -1,4 +1,4 @@
-/* Deutsch Primarschule, Klassen 1 und 2.
+/* Deutsch Primarschule, Klassen 1 bis 4.
    Geprueft wird dreierlei: dass jedes Thema auf jeder Stufe eine brauchbare
    Frage liefert, dass die Antworten fachlich stimmen, und dass die Schweizer
    Schreibung eingehalten ist - nie das scharfe s. */
@@ -25,9 +25,9 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   titelDa:['de','en','fr'].every(l=>T[l]&&T[l].dep_title),
   gefunden:DPT.every(x=>!!mtopic(x.id)),
   inListe:S.lang&&typeof builtinGames==='function'?true:null}));
- pruef('Zehn Themen sind eingetragen',bau.anzahl===10,bau.anzahl);
- pruef('Fünf in Klasse 1, fünf in Klasse 2',
-  bau.jahre.length===2&&bau.jahre[0]===1&&bau.jahre[1]===2,JSON.stringify(bau.jahre));
+ pruef('Einundzwanzig Themen sind eingetragen',bau.anzahl===21,bau.anzahl);
+ pruef('Die Klassen 1 bis 4 sind besetzt',
+  JSON.stringify(bau.jahre)==='[1,2,3,4]',JSON.stringify(bau.jahre));
  pruef('Alle Themen sind über mtopic auffindbar',bau.gefunden===true);
  pruef('Das Spiel heisst de-primar',bau.spiel==='de-primar',bau.spiel);
  pruef('Der Spieltitel steht in allen drei Sprachen',bau.titelDa===true);
@@ -86,6 +86,58 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
  pruef('Kein Wort steht in zwei Wortarten',
   !fach.some(x=>x.startsWith('Wort in')),fach.filter(x=>x.startsWith('Wort in')).join(' | '));
  pruef('Alle fachlichen Stichproben bestehen',fach.length===0,fach.slice(0,3).join(' | '));
+
+ /* ---------- Die Listen der Klassen 3 und 4 ---------- */
+ const f34=await pg.evaluate(()=>{
+  const falsch=[];
+  /* ie: jedes Wort muss ie enthalten, sonst greift die Ablenkerbildung ins Leere */
+  for(const w of IE)if(!w.includes('ie'))falsch.push('IE ohne ie: '+w);
+  /* Umlaut: die Mehrzahl muss ä oder äu tragen und aus dem Grundwort stammen */
+  for(const [e,m] of UMLAUT){
+   if(!/ä|Ä/.test(m))falsch.push('Umlaut fehlt: '+m);
+   if(m.toLowerCase().replace(/ä/g,'a').slice(0,3)!==e.toLowerCase().slice(0,3))
+    falsch.push('Umlaut passt nicht: '+e+'/'+m);}
+  /* Trennen: der Strich muss echt im Wort stehen, ck darf nie geteilt werden */
+  for(const [w,tr] of TRENN){
+   if(tr.replace('-','')!==w)falsch.push('Trennung passt nicht: '+w+'/'+tr);
+   if(/c-k/.test(tr))falsch.push('ck geteilt: '+tr);
+   if(/s-s/.test(tr)&&!/ss/.test(w))falsch.push('ss erfunden: '+tr);}
+  /* ck und tz: die Kennzeichnung muss im Wort vorkommen */
+  for(const [w,k] of CKTZ)if(!w.includes(k))falsch.push('cktz '+w+' als '+k);
+  /* f/v: jedes Wort beginnt mit v oder enthaelt es am Wortanfang eines Teils */
+  for(const w of FV)if(!/^[Vv]/.test(w))falsch.push('FV ohne v am Anfang: '+w);
+  /* Zeiten: nur die drei erlaubten Bezeichnungen */
+  for(const [s,z] of ZEITEN)if(!['Präsens','Präteritum','Perfekt'].includes(z))
+   falsch.push('Zeitform unbekannt: '+z);
+  /* Perfekt braucht ein Hilfsverb, Praesens und Praeteritum nicht */
+  for(const [s,z] of ZEITEN){
+   const hilf=/\b(habe|hast|hat|haben|habt|bin|bist|ist|sind|seid)\b/.test(s);
+   if(z==='Perfekt'&&!hilf)falsch.push('Perfekt ohne Hilfsverb: '+s);
+   if(z!=='Perfekt'&&hilf)falsch.push('Hilfsverb ausserhalb Perfekt: '+s);}
+  /* Grundform endet auf -en oder -n, Personalform nicht */
+  for(const [g,pf] of FORMEN){
+   if(!/e?n$/.test(g))falsch.push('Grundform ohne -en: '+g);
+   if(g===pf)falsch.push('Grund- und Personalform gleich: '+g);}
+  /* Direkte Rede: die richtige Fassung braucht Guillemets, nie Zollzeichen */
+  for(const [r,w] of REDE){
+   if(!r.includes('«')||!r.includes('»'))falsch.push('Rede ohne Guillemets: '+r);
+   if(r.includes('"'))falsch.push('Zollzeichen in der richtigen Fassung: '+r);}
+  /* Wortfamilie: das Fremdwort darf nicht in der Familie stehen */
+  for(const [st,fam,fremd] of FAMILIE)if(fam.includes(fremd))
+   falsch.push('Fremdwort in der Familie: '+fremd);
+  return falsch;});
+ pruef('Die ie-Liste trägt überall ein ie',!f34.some(x=>x.startsWith('IE')),f34.filter(x=>x.startsWith('IE')).join(' | '));
+ pruef('Jede Umlautform stammt aus ihrem Grundwort',!f34.some(x=>x.startsWith('Umlaut')),f34.filter(x=>x.startsWith('Umlaut')).join(' | '));
+ pruef('Jede Trennung ergibt wieder das Wort, und ck bleibt ganz',
+  !f34.some(x=>x.startsWith('Trennung')||x.includes('ck geteilt')),
+  f34.filter(x=>x.startsWith('Trennung')||x.includes('ck geteilt')).join(' | '));
+ pruef('ck und tz sind richtig gekennzeichnet',!f34.some(x=>x.startsWith('cktz')),f34.filter(x=>x.startsWith('cktz')).join(' | '));
+ pruef('Das Perfekt trägt ein Hilfsverb, die anderen Zeiten nicht',
+  !f34.some(x=>x.includes('Hilfsverb')),f34.filter(x=>x.includes('Hilfsverb')).join(' | '));
+ pruef('Die direkte Rede verwendet Guillemets statt Zollzeichen',
+  !f34.some(x=>x.includes('Guillemets')||x.includes('Zollzeichen')),
+  f34.filter(x=>x.includes('Guillemets')||x.includes('Zollzeichen')).join(' | '));
+ pruef('Alle Stichproben der Klassen 3 und 4 bestehen',f34.length===0,f34.slice(0,3).join(' | '));
 
  /* ---------- Schweizer Schreibung ---------- */
  const ch=await pg.evaluate(()=>{
