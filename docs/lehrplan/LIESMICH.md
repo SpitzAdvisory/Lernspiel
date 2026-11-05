@@ -83,3 +83,38 @@ Folge für die Module: St. Galler Aufgaben — Säntis, Churfirsten,
 Stiftsbezirk, Kantonsrat — sind anschlussfähig und sinnvoll, aber sie
 erfüllen eine offene Stelle des Lehrplans und sind keine Vorgabe. Auch
 das gehört gekennzeichnet.
+
+## Die übrigen Fachbereiche
+
+Kompetenzaufbauten aus `sg.lehrplan.ch`, Stand August 2025:
+
+| Datei | Fachbereich |
+|---|---|
+| `…_mu_all.txt` | Musik, alle Zyklen |
+| `…_bg_all.txt` | Bildnerisches Gestalten, alle Zyklen |
+| `…_ttg_all.txt` | Textiles und Technisches Gestalten, alle Zyklen |
+| `…_bs_all.txt` | Bewegung und Sport, alle Zyklen |
+| `…_nmg_f3_z3.txt` | Wirtschaft, Arbeit, Haushalt, 3. Zyklus |
+| `…_nmg_f5_z3.txt` | Ethik, Religionen, Gemeinschaft, 3. Zyklus |
+
+Zur Eignung für automatisch geprüfte Aufgaben: Musik trägt mit `MU.6`
+(Praxis des musikalischen Wissens), `MU.4.C` (Instrumentenkunde) und
+`MU.6.B` (Notation) einen vollwertigen Aufgabenpool. Bildnerisches
+Gestalten hat keinen einzigen gut abprüfbaren Kompetenzbereich, Bewegung
+und Sport nur `BS.6.C` (Sicherheit im Wasser). Textiles und Technisches
+Gestalten trägt `TTG.2.E` (Werkstoffe, Werkzeuge, Maschinen).
+
+Zwei Vorbehalte aus dem Lehrplanwortlaut, die für die Modulgestaltung
+zählen: die Musiklehre soll nicht isoliert erworben werden, und die
+Religionen sind «nicht enzyklopädisch zu behandeln», wobei die Verteilung
+auf die einzelnen Religionen ausdrücklich offen bleibt. Ein Modul ist in
+beiden Fällen Übungshilfe zum gewählten Unterrichtsstoff, nicht dessen
+Abbild.
+
+## Hinweis zu den Druckansichten
+
+Der Kompetenzaufbau liegt unter
+`lehrplan_printout.php?k=1&ekalias=0&fb_id=<N>`, nicht unter `?e=1&…`;
+letzteres liefert nur die einleitenden Kapitel. Die Nummern: 6 = Natur,
+Mensch, Gesellschaft (mit f_id 2 = NT, 3 = WAH, 4 = RZG, 5 = ERG),
+7 = Gestalten (f_id 1 = BG, 2 = TTG), 8 = Musik, 9 = Bewegung und Sport.
