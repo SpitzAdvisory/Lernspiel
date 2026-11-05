@@ -1,4 +1,4 @@
-/* Deutsch Primarschule, Klassen 1 bis 4.
+/* Deutsch Primarschule, Klassen 1 bis 6.
    Geprueft wird dreierlei: dass jedes Thema auf jeder Stufe eine brauchbare
    Frage liefert, dass die Antworten fachlich stimmen, und dass die Schweizer
    Schreibung eingehalten ist - nie das scharfe s. */
@@ -25,9 +25,9 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   titelDa:['de','en','fr'].every(l=>T[l]&&T[l].dep_title),
   gefunden:DPT.every(x=>!!mtopic(x.id)),
   inListe:S.lang&&typeof builtinGames==='function'?true:null}));
- pruef('Einundzwanzig Themen sind eingetragen',bau.anzahl===21,bau.anzahl);
- pruef('Die Klassen 1 bis 4 sind besetzt',
-  JSON.stringify(bau.jahre)==='[1,2,3,4]',JSON.stringify(bau.jahre));
+ pruef('Einunddreissig Themen sind eingetragen',bau.anzahl===31,bau.anzahl);
+ pruef('Alle sechs Klassen sind besetzt',
+  JSON.stringify(bau.jahre)==='[1,2,3,4,5,6]',JSON.stringify(bau.jahre));
  pruef('Alle Themen sind über mtopic auffindbar',bau.gefunden===true);
  pruef('Das Spiel heisst de-primar',bau.spiel==='de-primar',bau.spiel);
  pruef('Der Spieltitel steht in allen drei Sprachen',bau.titelDa===true);
@@ -138,6 +138,51 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   !f34.some(x=>x.includes('Guillemets')||x.includes('Zollzeichen')),
   f34.filter(x=>x.includes('Guillemets')||x.includes('Zollzeichen')).join(' | '));
  pruef('Alle Stichproben der Klassen 3 und 4 bestehen',f34.length===0,f34.slice(0,3).join(' | '));
+
+ /* ---------- Die Listen der Klassen 5 und 6 ---------- */
+ const f56=await pg.evaluate(()=>{
+  const falsch=[];
+  /* Doppelkonsonanten: die Kennzeichnung muss zur Schreibung passen */
+  for(const [w,l] of DOPPEL){
+   const hatDoppel=/([bdfgklmnprst])\1/.test(w);
+   if(l==='kurz'&&!hatDoppel)falsch.push('kurz ohne Doppel: '+w);
+   if(l==='lang'&&hatDoppel)falsch.push('lang mit Doppel: '+w);}
+  /* Die vier Fragen gehoeren je genau einem Fall */
+  const fr=FAELLE.map(x=>x[1]);
+  if(new Set(fr).size!==fr.length)falsch.push('Frage doppelt vergeben');
+  if(FAELLE.length!==4)falsch.push('nicht vier Fälle');
+  /* Zeiten2: Futur braucht werden, Plusquamperfekt hatte oder waren */
+  for(const [s,z] of ZEITEN2){
+   if(z==='Futur'&&!/\bwerde|wirst|werden|wird\b/.test(s))falsch.push('Futur ohne werden: '+s);
+   if(z==='Plusquamperfekt'&&!/\bhatte|hatten|war|waren\b/.test(s))falsch.push('Plusquamperfekt ohne Hilfsverb: '+s);}
+  /* Nachmorphem: das Nomen muss auf die angegebene Endung enden und gross sein */
+  for(const [g,n,e] of NACHMORPHEM){
+   if(!n.endsWith(e.slice(1)))falsch.push('Endung passt nicht: '+n+' / '+e);
+   if(n[0]!==n[0].toUpperCase())falsch.push('Nomen klein: '+n);}
+  /* Satzglieder: das Subjekt darf nicht mit dem Verb oder dem Rest zusammenfallen */
+  for(const [su,ve,re] of SATZGLIED){
+   if(su===ve||su===re)falsch.push('Subjekt nicht eindeutig: '+su);}
+  /* Fallsaetze: jeder der vier Faelle muss vorkommen */
+  const vorhanden=new Set(FALLSATZ.map(x=>x[2]));
+  for(const f of ['Nominativ','Genitiv','Dativ','Akkusativ'])
+   if(!vorhanden.has(f))falsch.push('Fall fehlt in den Beispielen: '+f);
+  /* Proben: vier, mit verschiedenen Beschreibungen */
+  if(PROBEN.length!==4)falsch.push('nicht vier Proben');
+  if(new Set(PROBEN.map(x=>x[1])).size!==PROBEN.length)falsch.push('Probenbeschreibung doppelt');
+  return falsch;});
+ pruef('Die Doppelkonsonanten stimmen mit der Kennzeichnung überein',
+  !f56.some(x=>x.includes('Doppel')),f56.filter(x=>x.includes('Doppel')).join(' | '));
+ pruef('Die vier Fälle tragen vier verschiedene Fragen',
+  !f56.some(x=>x.includes('Fälle')||x.includes('Frage')),f56.filter(x=>x.includes('Fälle')||x.includes('Frage')).join(' | '));
+ pruef('Futur und Plusquamperfekt tragen ihr Hilfsverb',
+  !f56.some(x=>x.includes('Futur')||x.includes('Plusquamperfekt')),
+  f56.filter(x=>x.includes('Futur')||x.includes('Plusquamperfekt')).join(' | '));
+ pruef('Jede Endung passt zu ihrem Nomen, und jedes Nomen ist gross',
+  !f56.some(x=>x.includes('Endung')||x.includes('Nomen klein')),
+  f56.filter(x=>x.includes('Endung')||x.includes('Nomen klein')).join(' | '));
+ pruef('Alle vier Fälle kommen in den Beispielsätzen vor',
+  !f56.some(x=>x.includes('Fall fehlt')),f56.filter(x=>x.includes('Fall fehlt')).join(' | '));
+ pruef('Alle Stichproben der Klassen 5 und 6 bestehen',f56.length===0,f56.slice(0,3).join(' | '));
 
  /* ---------- Schweizer Schreibung ---------- */
  const ch=await pg.evaluate(()=>{

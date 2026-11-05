@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V98';
+const APPVER='V99';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -9719,6 +9719,166 @@ dptopic('d4-rede',4,3,['Die direkte Rede','Direct speech','Le discours direct'],
   return steps(choiceItem(D('Welcher Satz ist richtig geschrieben?','Which sentence is written correctly?','Quelle phrase est correctement écrite ?'),r[0],[r[1]]),
    [D('Schau auf die Zeichen und darauf, wo das Komma steht.','Check the marks and where the comma sits.','Regarde les signes et la place de la virgule.'),
     D('Richtig ist: '+r[0],'Correct: '+r[0],'Correct : '+r[0])]);});
+
+/* ---------------------------------------------------------- Klasse 5 */
+const DOPPEL=[['Sonne','kurz'],['Mutter','kurz'],['Wasser','kurz'],['kommen','kurz'],
+ ['rennen','kurz'],['Suppe','kurz'],['Teller','kurz'],['Koffer','kurz'],['Zimmer','kurz'],
+ ['Sommer','kurz'],['hoffen','kurz'],['Puppe','kurz'],
+ ['Blume','lang'],['Schule','lang'],['Ofen','lang'],['holen','lang'],['Nase','lang'],
+ ['Tomate','lang'],['Bohne','lang'],['Hose','lang']];
+dptopic('d5-doppel',5,2,['Die Doppelkonsonantenregel','The double consonant rule','La règle de la consonne double'],
+ ['Nach einem kurz gesprochenen Vokal steht der Konsonant doppelt: Sonne, Mutter, Wasser. Nach einem lang gesprochenen steht er einfach: Blume, Schule.'+lpq('D.5.E.1.d'),
+  'After a short vowel the consonant is doubled: Sonne, Mutter. After a long one it stands single: Blume, Schule.'+lpq('D.5.E.1.d'),
+  'Après une voyelle brève, la consonne double : Sonne. Après une longue, elle reste simple : Blume.'+lpq('D.5.E.1.d')],
+ ['doppelkonsonant','vokal'],
+ lv=>{const w=pick(DOPPEL);
+  const falsch=w[1]==='kurz'
+   ? w[0].replace(/([bdfgklmnprst])\1/,'$1')
+   : w[0].replace(/([bdfgklmnprst])/, '$1$1');
+  return steps(choiceItem(D('Wie schreibt man das Wort richtig?','Which spelling is correct?','Quelle orthographe est correcte ?'),w[0],[falsch]),
+   [D('Sprich das Wort. Ist der Vokal davor kurz oder lang?','Say it. Is the vowel before short or long?','Dis-le. La voyelle d’avant est-elle brève ou longue ?'),
+    D(w[1]==='kurz'?'Kurz gesprochen heisst doppelt: «'+w[0]+'».':'Lang gesprochen heisst einfach: «'+w[0]+'».',
+      w[1]==='kurz'?'Short means doubled: «'+w[0]+'».':'Long means single: «'+w[0]+'».',
+      w[1]==='kurz'?'Brève veut dire double : «'+w[0]+'».':'Longue veut dire simple : «'+w[0]+'».')]);});
+
+const ABSTRAKT=['Liebe','Wut','Glück','Angst','Freude','Mut','Hoffnung','Trauer','Geduld','Neugier','Ruhe','Kraft'];
+const NICHTNOMEN=['schön','laufen','schnell','leise','singen','rot','müde','springen','warm','lesen'];
+dptopic('d5-abstrakt',5,2,['Nomen, die man nicht anfassen kann','Nouns you cannot touch','Les noms abstraits'],
+ ['Auch Gefühle und Zustände sind Nomen und werden gross geschrieben: die Liebe, die Wut, das Glück. Die Probe bleibt dieselbe — passt «der», «die» oder «das» davor?'+lpq('D.5.E.1.d'),
+  'Feelings and states are nouns too and take a capital: die Liebe, die Wut. The test stays the same.'+lpq('D.5.E.1.d'),
+  'Les sentiments sont aussi des noms et prennent la majuscule. Le test reste le même.'+lpq('D.5.E.1.d')],
+ ['nomen','gross'],
+ lv=>{const n=pick(ABSTRAKT);
+  const falsch=[];while(falsch.length<3){const x=pick(NICHTNOMEN);if(!falsch.includes(x))falsch.push(x);}
+  return steps(choiceItem(D('Welches Wort schreibt man gross?','Which word takes a capital?','Quel mot prend une majuscule ?'),n,falsch),
+   [D('Setze «die» oder «das» davor. Passt es, auch wenn man es nicht anfassen kann?','Put «die» or «das» in front. Does it fit, even though you cannot touch it?','Mets un article devant. Cela fonctionne-t-il ?'),
+    D('«'+n+'» ist ein Nomen: die '+n+'.','«'+n+'» is a noun.','«'+n+'» est un nom.')]);});
+
+const PRONOMEN=['ich','du','er','sie','es','wir','ihr','mein','dein','sein','unser','dieser','jener','niemand'];
+dptopic('d5-pronomen',5,2,['Pronomen','Pronouns','Les pronoms'],
+ ['Ein Pronomen steht für ein Nomen: statt «der Hund» sagt man «er». So muss man dasselbe Wort nicht ständig wiederholen.'+lpq('D.5.D.1.d'),
+  'A pronoun stands in for a noun: instead of «der Hund» you say «er».'+lpq('D.5.D.1.d'),
+  'Un pronom remplace un nom : au lieu de «der Hund», on dit «er».'+lpq('D.5.D.1.d')],
+ ['pronomen'],
+ lv=>{const pr=pick(PRONOMEN);
+  const andere=[pick(WORTARTEN[0][1]),pick(WORTARTEN[1][1]),pick(WORTARTEN[2][1])];
+  return steps(choiceItem(D('Welches Wort ist ein Pronomen?','Which word is a pronoun?','Quel mot est un pronom ?'),pr,andere),
+   [D('Ein Pronomen kann ein Nomen ersetzen.','A pronoun can replace a noun.','Un pronom peut remplacer un nom.'),
+    D('«'+pr+'» ist ein Pronomen.','«'+pr+'» is a pronoun.','«'+pr+'» est un pronom.')]);});
+
+const FAELLE=[['Nominativ','Wer oder was?'],['Genitiv','Wessen?'],['Dativ','Wem?'],['Akkusativ','Wen oder was?']];
+dptopic('d5-faelle',5,2,['Die vier Fälle und ihre Fragen','The four cases and their questions','Les quatre cas et leurs questions'],
+ ['Jeder Fall hat seine Frage: Nominativ «Wer oder was?», Genitiv «Wessen?», Dativ «Wem?», Akkusativ «Wen oder was?». Mit der Frage findet man den Fall.'+lpq('D.5.D.1.d'),
+  'Each case has its question: nominative «Wer oder was?», genitive «Wessen?», dative «Wem?», accusative «Wen oder was?».'+lpq('D.5.D.1.d'),
+  'Chaque cas a sa question. C’est par la question qu’on trouve le cas.'+lpq('D.5.D.1.d')],
+ ['fall'],
+ lv=>{const f=pick(FAELLE);const nachFrage=Math.random()<0.5;
+  if(nachFrage)return steps(choiceItem(D('Mit welcher Frage findet man den '+f[0]+'?','Which question finds the '+f[0]+'?','Quelle question trouve le '+f[0]+' ?'),
+    f[1],FAELLE.filter(x=>x[0]!==f[0]).map(x=>x[1])),
+   [D('Denk an die Reihe: Wer oder was, wessen, wem, wen oder was.','Think of the row: Wer oder was, wessen, wem, wen oder was.','Pense à la série.'),
+    D('Der '+f[0]+' fragt «'+f[1]+'».','The '+f[0]+' asks «'+f[1]+'».','Le '+f[0]+' demande «'+f[1]+'».')]);
+  return steps(choiceItem(D('Zu welchem Fall gehört die Frage «'+f[1]+'»?','Which case does «'+f[1]+'» belong to?','À quel cas appartient «'+f[1]+'» ?'),
+    f[0],FAELLE.filter(x=>x[0]!==f[0]).map(x=>x[0])),
+   [D('Die vier Fälle heissen Nominativ, Genitiv, Dativ, Akkusativ.','The four cases are nominative, genitive, dative, accusative.','Les quatre cas : nominatif, génitif, datif, accusatif.'),
+    D('«'+f[1]+'» fragt nach dem '+f[0]+'.','«'+f[1]+'» asks for the '+f[0]+'.','«'+f[1]+'» demande le '+f[0]+'.')]);});
+
+const ZEITEN2=[['ich werde spielen','Futur'],['du wirst lesen','Futur'],['wir werden gehen','Futur'],
+ ['ich hatte gespielt','Plusquamperfekt'],['sie hatte gelesen','Plusquamperfekt'],['wir waren gegangen','Plusquamperfekt'],
+ ['ich spiele','Präsens'],['ich spielte','Präteritum'],['ich habe gespielt','Perfekt']];
+dptopic('d5-zeiten2',5,3,['Futur und Plusquamperfekt','Future and past perfect','Futur et plus-que-parfait'],
+ ['Das Futur sagt, was noch kommt: ich werde spielen. Das Plusquamperfekt erzählt, was noch vor dem Früheren war: ich hatte gespielt.'+lpq('D.5.D.1.d'),
+  'The future says what is to come: ich werde spielen. The past perfect tells what happened before the past: ich hatte gespielt.'+lpq('D.5.D.1.d'),
+  'Le futur dit ce qui vient. Le plus-que-parfait raconte ce qui précède le passé.'+lpq('D.5.D.1.d')],
+ ['zeitform'],
+ lv=>{const z=pick(ZEITEN2);
+  const alle=['Präsens','Präteritum','Perfekt','Futur','Plusquamperfekt'];
+  const falsch=alle.filter(x=>x!==z[1]).sort(()=>Math.random()-0.5).slice(0,3);
+  return steps(choiceItem(D('In welcher Zeit steht «'+z[0]+'»?','Which tense is «'+z[0]+'»?','À quel temps est «'+z[0]+'» ?'),z[1],falsch),
+   [D('«werde» zeigt aufs Futur, «hatte» oder «waren» aufs Plusquamperfekt.','«werde» points to the future, «hatte» to the past perfect.','«werde» indique le futur, «hatte» le plus-que-parfait.'),
+    D('«'+z[0]+'» steht im '+z[1]+'.','«'+z[0]+'» is '+z[1]+'.','«'+z[0]+'» est au '+z[1]+'.')]);});
+
+/* ---------------------------------------------------------- Klasse 6 */
+const NACHMORPHEM=[['frei','Freiheit','-heit'],['entdecken','Entdeckung','-ung'],
+ ['freundlich','Freundschaft','-schaft'],['kindlich','Kindheit','-heit'],
+ ['hoffen','Hoffnung','-ung'],['möglich','Möglichkeit','-keit'],
+ ['dunkel','Dunkelheit','-heit'],['bewegen','Bewegung','-ung'],
+ ['sauber','Sauberkeit','-keit'],['krank','Krankheit','-heit']];
+dptopic('d6-nachmorphem',6,3,['Endungen, die Nomen machen','Endings that create nouns','Suffixes qui créent des noms'],
+ ['Die Endungen -heit, -keit, -ung und -schaft machen aus einem Wort ein Nomen: frei wird zur Freiheit, entdecken zur Entdeckung. Wer die Endung erkennt, weiss, dass gross geschrieben wird.'+lpq('D.5.E.1.e'),
+  'The endings -heit, -keit, -ung and -schaft turn a word into a noun: frei becomes Freiheit. Spot the ending and you know it takes a capital.'+lpq('D.5.E.1.e'),
+  'Les suffixes -heit, -keit, -ung et -schaft transforment un mot en nom. Reconnaître le suffixe, c’est savoir qu’il faut une majuscule.'+lpq('D.5.E.1.e')],
+ ['nachmorphem','gross'],
+ lv=>{const n=pick(NACHMORPHEM);
+  const alle=['-heit','-keit','-ung','-schaft'];
+  return steps(choiceItem(D('Welche Endung macht aus «'+n[0]+'» ein Nomen?','Which ending turns «'+n[0]+'» into a noun?','Quel suffixe fait de «'+n[0]+'» un nom ?'),
+   n[2],alle.filter(x=>x!==n[2])),
+   [D('Sprich das Nomen laut. Wie hört es auf?','Say the noun aloud. How does it end?','Dis le nom à voix haute. Comment finit-il ?'),
+    D('«'+n[0]+'» wird zu «'+n[1]+'» — und darum gross.','«'+n[0]+'» becomes «'+n[1]+'» — hence the capital.','«'+n[0]+'» devient «'+n[1]+'» — donc majuscule.')]);});
+
+const PRAEPOS=['in','auf','unter','über','neben','vor','hinter','zwischen','mit','ohne','für','gegen','durch','bei','nach','seit','aus','um'];
+dptopic('d6-praeposition',6,2,['Präpositionen','Prepositions','Les prépositions'],
+ ['Präpositionen stehen vor einem Nomen und sagen, wo, wann oder wie etwas ist: auf dem Tisch, nach dem Essen, ohne Hilfe. Sie bestimmen auch den Fall des Nomens.'+lpq('D.5.D.1.e'),
+  'Prepositions stand before a noun and say where, when or how: auf dem Tisch, nach dem Essen. They also govern the case.'+lpq('D.5.D.1.e'),
+  'Les prépositions précèdent un nom et disent où, quand ou comment. Elles commandent aussi le cas.'+lpq('D.5.D.1.e')],
+ ['praeposition'],
+ lv=>{const pr=pick(PRAEPOS);
+  const andere=[pick(WORTARTEN[0][1]),pick(WORTARTEN[1][1]),pick(WORTARTEN[2][1])];
+  return steps(choiceItem(D('Welches Wort ist eine Präposition?','Which word is a preposition?','Quel mot est une préposition ?'),pr,andere),
+   [D('Eine Präposition passt vor ein Nomen: … dem Tisch.','A preposition fits before a noun: … dem Tisch.','Une préposition se place devant un nom.'),
+    D('«'+pr+'» ist eine Präposition.','«'+pr+'» is a preposition.','«'+pr+'» est une préposition.')]);});
+
+const SATZGLIED=[['Der Hund','bellt','laut'],['Die Kinder','spielen','im Garten'],
+ ['Mia','liest','ein Buch'],['Der Vater','kocht','das Essen'],
+ ['Meine Schwester','singt','ein Lied'],['Das Velo','steht','vor dem Haus']];
+dptopic('d6-satzglied',6,3,['Satzglieder und das Subjekt','Sentence parts and the subject','Les groupes et le sujet'],
+ ['Ein Satzglied lässt sich als Ganzes verschieben. Das Subjekt ist das Satzglied, nach dem man mit «Wer oder was?» fragt — es bestimmt, wie das Verb endet.'+lpq('D.5.D.1.e'),
+  'A sentence part moves as a whole. The subject is the part you find with «Wer oder was?» — it decides the verb ending.'+lpq('D.5.D.1.e'),
+  'Un groupe se déplace d’un bloc. Le sujet est le groupe trouvé par «Wer oder was ?».'+lpq('D.5.D.1.e')],
+ ['satzglied','subjekt'],
+ lv=>{const s=pick(SATZGLIED);const satz=s[0]+' '+s[1]+' '+s[2]+'.';
+  return steps(choiceItem(D('Was ist das Subjekt in «'+satz+'»?','What is the subject in «'+satz+'»?','Quel est le sujet dans «'+satz+'» ?'),
+   s[0],[s[1],s[2]]),
+   [D('Frag: Wer oder was '+s[1]+'?','Ask: who or what '+s[1]+'?','Demande : qui ou quoi ?'),
+    D('Das Subjekt ist «'+s[0]+'».','The subject is «'+s[0]+'».','Le sujet est «'+s[0]+'».')]);});
+
+const PROBEN=[['Verschiebeprobe','Ein Satzglied lässt sich im Satz verschieben.'],
+ ['Ersatzprobe','Ein Wort wird durch ein anderes ersetzt.'],
+ ['Weglassprobe','Man lässt einen Teil weg und schaut, ob der Satz noch steht.'],
+ ['Erweiterungsprobe','Man fügt etwas hinzu, um eine Stelle zu prüfen.']];
+dptopic('d6-proben',6,3,['Die Proben','The tests','Les manipulations'],
+ ['Vier Proben helfen beim Untersuchen eines Satzes: verschieben, ersetzen, weglassen, erweitern. Mit der Verschiebeprobe findet man die Satzglieder, mit der Ersatzprobe den Fall.'+lpq('D.5.A.1'),
+  'Four tests help examine a sentence: move, replace, omit, expand. Moving finds the parts, replacing finds the case.'+lpq('D.5.A.1'),
+  'Quatre manipulations : déplacer, remplacer, supprimer, étendre. Le déplacement trouve les groupes.'+lpq('D.5.A.1')],
+ ['probe','satzglied'],
+ lv=>{const pb=pick(PROBEN);
+  return steps(choiceItem(D('Welche Probe ist gemeint? «'+pb[1]+'»','Which test is meant? «'+pb[1]+'»','De quelle manipulation s’agit-il ? «'+pb[1]+'»'),
+   pb[0],PROBEN.filter(x=>x[0]!==pb[0]).map(x=>x[0])),
+   [D('Der Name sagt, was man tut.','The name says what you do.','Le nom dit ce qu’on fait.'),
+    D('Das ist die '+pb[0]+'.','That is the '+pb[0]+'.','C’est la '+pb[0]+'.')]);});
+
+/* Wortgruppe und vollstaendiger Satz getrennt, damit die Frage den Satz
+   einmal zeigt und nicht zweimal - und mit einem Fragezeichen endet. */
+const FALLSATZ=[['Der Hund','Der Hund bellt laut.','Nominativ'],
+ ['des Hundes','Der Napf des Hundes ist leer.','Genitiv'],
+ ['dem Hund','Mia gibt dem Hund Futter.','Dativ'],
+ ['den Hund','Mia ruft den Hund.','Akkusativ'],
+ ['Die Kinder','Die Kinder lachen.','Nominativ'],
+ ['der Kinder','Der Lärm der Kinder ist gross.','Genitiv'],
+ ['den Kindern','Der Vater hilft den Kindern.','Dativ'],
+ ['die Kinder','Die Mutter holt die Kinder.','Akkusativ']];
+dptopic('d6-faelle',6,3,['Den Fall bestimmen','Determining the case','Déterminer le cas'],
+ ['Den Fall findet man mit der Frage: «Wer oder was?» führt zum Nominativ, «Wessen?» zum Genitiv, «Wem?» zum Dativ, «Wen oder was?» zum Akkusativ.'+lpq('D.5.D.1.e'),
+  'Find the case with the question: «Wer oder was?» gives the nominative, «Wessen?» the genitive, «Wem?» the dative, «Wen oder was?» the accusative.'+lpq('D.5.D.1.e'),
+  'On trouve le cas par la question : «Wer oder was ?» donne le nominatif, etc.'+lpq('D.5.D.1.e')],
+ ['fall','probe'],
+ lv=>{const f=pick(FALLSATZ);
+  const alle=['Nominativ','Genitiv','Dativ','Akkusativ'];
+  return steps(choiceItem(D('«'+f[1]+'» In welchem Fall steht «'+f[0]+'»?',
+    '«'+f[1]+'» Which case is «'+f[0]+'»?',
+    '«'+f[1]+'» À quel cas est «'+f[0]+'» ?'),
+   f[2],alle.filter(x=>x!==f[2])),
+   [D('Stell die passende Frage an den Satz.','Ask the matching question.','Pose la question qui convient.'),
+    D('«'+f[0]+'» steht im '+f[2]+'.','«'+f[0]+'» is '+f[2]+'.','«'+f[0]+'» est au '+f[2]+'.')]);});
 
 const DEP_GAME={id:'de-primar',builtin:true,subject:'lang',kind:'lang',items:[],gen:{topics:DPT.map(x=>x.id)}};
 Object.defineProperty(DEP_GAME,'title',{get:()=>t('dep_title'),enumerable:true});
