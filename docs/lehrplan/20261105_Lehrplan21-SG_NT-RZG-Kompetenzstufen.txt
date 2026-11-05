@@ -1,0 +1,445 @@
+###  NT.1.1  [ c_2_1_1.html ]
+      NT.1.1.a | können beschreiben, wie naturwissenschaftliche Erkenntnisse gewonnen werden (z.B. Was ist eine Beobachtung? Was ist eine naturwissenschaftliche Frage? Was ist eine Hypothese? Was ist ein Experiment? Welche Rolle spielen die Untersuchungsbedingungen?). Naturwissenschaftliche Beobachtung /// können naturwissenschaftliche Erkenntnisse von nicht naturwissenschaftlichen unterscheiden und an Beispielen 
+      VERBINDLICH: Naturwissenschaftliche Beobachtung | Naturwissenschaftliches Experimentieren
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.1.1.b | können Informationen zu ausgewählten Persönlichkeiten (z.B. Galilei, le Verrier, Adams und Galle, Curie, Einstein, das Team um Watson und Crick) erschliessen und daraus ableiten, was Naturwissenschaftler/innen machen bzw. wie sie zu ihren Erkenntnissen gelangen.
+      NT.1.1.c | können angeleitet Informationen über eine naturwissenschaftliche Erkenntnis zusammenstellen sowie nachvollziehen und kommunizieren, wie diese Erkenntnis unser Weltbild verändert hat (z.B. Kopernikanische Wende, Entdeckung des Magensaftes, Gravitationsgesetz, Rutherfords Streuversuch, Atomtheorie, Entdeckung der Kernenergie, Penizillin, Entdeckung der Gene, Urknalltheorie).
+      NT.1.1.d | können generalisieren, wie naturwissenschaftliche Erkenntnisgewinnung abläuft, welchen Prinzipien sie unterliegt und diese nicht naturwissenschaftlicher Erkenntnisgewinnung gegenüberstellen. Prinzipien der Naturwissenschaften: grundsätzliche Verstehbarkeit der Welt, Einfachheit der Lösung, Objektivität und Reproduzierbarkeit, Beständigkeit und Vorläufigkeit, Grenzen der Erkenntnisse
+      VERBINDLICH: Prinzipien der Naturwissenschaften: grundsätzliche Verstehbarkeit der Welt, Einfachheit der Lösung, Objektivität und Reproduzierbarkeit, Beständigkeit und Vorläufigkeit, Grenzen der Erkenntnisse
+###  NT.1.2  [ c_2_1_2.html ]
+      NT.1.2.a | können die Funktionsweise einfacher technischer Geräte erfassen und Komponenten nachbauen (z.B. Handbohrmaschine, Heissluftballon). Einfache technische Geräte: Funktionsweise /// können eine einfache Fehlersuche bei nicht funktionierenden Geräten durchführen und die Fehl- oder Nichtfunktion genau beschreiben (z.B. defekte Lampe, Sicherung, Kabel richtig einstecken). Einfache Fehlersuche
+      VERBINDLICH: Einfache technische Geräte: Funktionsweise | Einfache Fehlersuche
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.1.2.b | können Anwendungsmöglichkeiten technischer Geräte unter unterschiedlichen Rahmenbedingungen bzw. Einflüssen testen (z.B. erhöhte Reibung, tiefere Temperatur). Testverfahren /// können technische Geräte austesten, hinterfragen und dazu Verbesserungen vorschlagen (z.B. Schattenwurf und Neigungswinkel bei Solarzellen).
+      VERBINDLICH: Testverfahren
+      NT.1.2.c | können Grundprinzipien von Alltagsgeräten erkennen, vergleichen und präsentieren (z.B. wärmeerzeugende Geräte, Wärmepumpe, Lampen, Übersetzung Fahrrad, Zapfenzieher, Personenlift, Sicherungsautomat, Lautsprecher, Leuchtdiode, Solarzellen).
+      NT.1.2.d | können die grundlegende Funktionsweise aktueller Technologien aufgrund von Sachtexten erfassen und künftige Anwendungsmöglichkeiten unter unterschiedlichen Rahmenbedingungen skizzieren (z.B. Geothermie, Informations- und Kommunikationstechnologie, Handy in Funkzellen, GPS, Flachbildschirm, Endoskop, Induktionsherd).
+###  NT.1.3  [ c_2_1_3.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.1.3.a | können sich angeleitet über die Bedeutung von naturwissenschaftlich-technischen Anwendungen für den Menschen informieren, insbesondere in den Bereichen Gesundheit, Sicherheit und Ethik (z.B. Gentechnik, Nanostoffe, Haltbarmachung von Milch, Antibiotika).
+      NT.1.3.b | können sich angeleitet über die Nachhaltigkeit von naturwissenschaftlich-technischen Anwendungen informieren sowie Chancen und Risiken diskutieren (z.B. Verbrennungsmotoren, Kernenergie, Herstellung von Düngemittel, Computer).
+      NT.1.3.c | können selbstständig Sachinformationen zu naturwissenschaftlich-technischen Themenbereichen recherchieren, reflektieren und präsentieren (z.B. Auswirkungen bei Rohstoffmangel).
+###  NT.2.1  [ c_2_2_1.html ]
+   GA NT.2.1.1a | können Stoffeigenschaften nach Anleitung bestimmen, dazu geeignete Messverfahren und -geräte einsetzen. Schmelz- und Siedetemperatur, Dichte, Löslichkeit, pH-Wert, Brennbarkeit; Messgeräte
+      VERBINDLICH: Schmelz- und Siedetemperatur, Dichte, Löslichkeit, pH-Wert, Brennbarkeit; Messgeräte
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.2.1.1b | können Versuchsergebnisse vergleichen und Messgenauigkeit diskutieren. Messverfahren, Messgenauigkeit
+      VERBINDLICH: Messverfahren, Messgenauigkeit
+      NT.2.1.1c | können Versuche zur Unterscheidung oder Gruppierung von Stoffen selbstständig planen, durchführen und auswerten.
+   GA NT.2.1.2a | können die Aggregatzustände und Zustandsänderungen mithilfe des Teilchenmodells erklären und veranschaulichen. Aggregatzustände, Zustandsänderungen; Teilchenmodell: Energie, Anziehung, Abstände und Ordnung der Teilchen
+      VERBINDLICH: Aggregatzustände, Zustandsänderungen; Teilchenmodell: Energie, Anziehung, Abstände und Ordnung der Teilchen
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.2.1.2b | können die Grenzen des Teilchenmodells bei ausgewählten Stoffeigenschaften, Lösevorgängen und Stoffgemischen aufzeigen und beschreiben, welche Vorteile die Weiterentwicklungen Ladungsmodell oder Elementarmagnetmodell haben. Ladungsmodell: elektrostatische Eigenschaften, elektrische Leitfähigkeit; Elementarmagnetmodell: Magnetismus, Magnetisierbarkeit
+      VERBINDLICH: Ladungsmodell: elektrostatische Eigenschaften, elektrische Leitfähigkeit; Elementarmagnetmodell: Magnetismus, Magnetisierbarkeit
+      NT.2.1.2c | können Unterschiede zwischen Modell und Wirklichkeit aufzeigen.
+###  NT.2.2  [ c_2_2_2.html ]
+      NT.2.2.a | können Stoffe aufgrund ihrer Zusammensetzung benennen und nach ausgewählten naturwissenschaftlichen Prinzipien ordnen. Reinstoff/Gemisch, Gemischarten, Metall/Nichtmetall, Element/Verbindung
+      VERBINDLICH: Reinstoff/Gemisch, Gemischarten, Metall/Nichtmetall, Element/Verbindung
+      NT.2.2.b | können einfache Gemische mit ausgewählten Methoden nach Anleitung trennen und das Vorgehen fachlich korrekt beschreiben. Extraktion, Chromatografie, Destillation
+      VERBINDLICH: Extraktion, Chromatografie, Destillation
+   GA NT.2.2.c | können Anwendungen der Trennverfahren im Alltag und bei Alltagsprodukten erkennen (z.B. Tee-, Kaffeezubereitung, Wäschereinigung, Kläranlage, Ölabscheider, Magnetscheide).
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+###  NT.3.1  [ c_2_3_1.html ]
+      NT.3.1.1a | können Sicherheitsvorschriften und Regeln im Umgang mit Chemikalien und Gerätschaften einhalten. Laborführerschein: Gefahren- und Sicherheitshinweise nach globalem Klassifikations- und Einstufungssystem für Chemikalien GHS
+      VERBINDLICH: Laborführerschein: Gefahren- und Sicherheitshinweise nach globalem Klassifikations- und Einstufungssystem für Chemikalien GHS
+   GA NT.3.1.1b | können ausgewählte Stoffumwandlungen (z.B. Kerzen- und Brennerflammen, Verbrennung, Gerinnung von Eiklar) beobachten, untersuchen, als materielle und energetische Umwandlung erkennen und in Fachsprache beschreiben. Chemische Reaktion, Reaktionsschema in Worten
+      VERBINDLICH: Chemische Reaktion, Reaktionsschema in Worten
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.3.1.1c | können angeleitet Reaktionen mit Sauerstoff durchführen, protokollieren, Fragen stellen, Vermutungen formulieren und diese experimentell überprüfen. Oxide, Korrosion/Korrosionsschutz
+      VERBINDLICH: Oxide, Korrosion/Korrosionsschutz
+      NT.3.1.1d | können Zusammenhänge und Gesetzmässigkeiten bei chemischen Reaktionen vermuten und überprüfen (z.B. Einfluss der Temperatur, Erhaltung der Masse).
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.3.1.2a | können angeleitet Kohlenstoffdioxid, Sauerstoff, Zucker, Stärke und Proteine chemisch nachweisen. Nachweisreaktionen
+      VERBINDLICH: Nachweisreaktionen
+      NT.3.1.2b | können neutrale, saure oder basische Lösungen mittels Indikatoren nachweisen (z.B. Rotkohlsaft, Universalindikator) sowie Wirkungen von Säuren und Basen unter­suchen. Eigenschaften Säuren/Basen, pH-Streifen, Neutralisation /// können ausgewählte Neutralisationen nach Anleitung durchführen und das Ergebnis beschreiben.
+      VERBINDLICH: Eigenschaften Säuren/Basen, pH-Streifen, Neutralisation
+      NT.3.1.2c | können beim Untersuchen von Stoffen aus dem Alltag geeignete Nachweisverfahren auswählen, selbstständig einsetzen (z.B. Messstäbchen) und dabei die nötigen Sicherheits- und Sorgfaltsaspekte beachten. pH-Wert, Wasserhärte
+      VERBINDLICH: pH-Wert, Wasserhärte
+###  NT.3.2  [ c_2_3_2.html ]
+      NT.3.2.a | können in der Entstehungsgeschichte des Periodensystems der Elemente PSE die Bedeutung des systematischen Beschreibens und Ordnens erkennen. Element Metalle, Nichtmetalle, Edelgase /// können aus dem Periodensystem Informationen zu den Elementen herauslesen.
+      VERBINDLICH: Element Metalle, Nichtmetalle, Edelgase
+   GA NT.3.2.b | können eine chemische Reaktion mit dem Teilchenmodell veranschaulichen. Kugelmodell /// können Energiediagramme skizzieren und ausgewählten chemischen Reaktionen zuordnen. Energiediagramme
+      VERBINDLICH: Kugelmodell | Energiediagramme
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.3.2.c | können am Beispiel der Entwicklungsgeschichte des Kern-Hülle-Modells die Bedeutung der Grenzen von Modellen erkennen. Masse-Ladungsmodell nach Thomson, Kern-Hülle-Modell nach Rutherford /// können Atome mit dem Kern-Hülle-Modell darstellen sowie Protonen und Neutronen als Kernbausteine benennen. PSE: Ordnungszahl, Atommasse, Hauptgruppen; Isotop
+      VERBINDLICH: Masse-Ladungsmodell nach Thomson, Kern-Hülle-Modell nach Rutherford | PSE: Ordnungszahl, Atommasse, Hauptgruppen; Isotop
+      NT.3.2.d | können Zusammenhänge zwischen Schalenmodell und PSE aufzeigen Schalenmodell /// können Stoffumwandlungen als Veränderung in der Anordnung von Teilchen und als Veränderung chemischer Bindungen erklären. Wertigkeit, Donator-Akzeptor-Konzept bei Redoxreaktionen, Bindungstypen, Edelgasregel
+      VERBINDLICH: Schalenmodell | Wertigkeit, Donator-Akzeptor-Konzept bei Redoxreaktionen, Bindungstypen, Edelgasregel
+      NT.3.2.e | können die Vielfalt der Stoffe und deren Eigenschaften auf Anordnung und Kombination verschiedener Atome zurückführen. Ionen-, Metall-, Molekülbindung; Modifikation /// können Gesetzmässigkeiten mit Modellen erklären (z.B. Erhaltung der Masse, Reaktionsgeschwindigkeit).
+      VERBINDLICH: Ionen-, Metall-, Molekülbindung; Modifikation
+###  NT.3.3  [ c_2_3_3.html ]
+      NT.3.3.a | können in ausgewählten Medien Informationen zusammentragen und die Umwandlungsschritte vom Rohstoff zu einem Produkt mit geeigneten Darstellungsformen präsentieren (z.B. Flusswasser - Trinkwasser, Steinsalz - Kochsalz, Rohöl - Fraktionsprodukte). Rohstoff und Produkt
+      VERBINDLICH: Rohstoff und Produkt
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.3.3.b | können Stoffkreisläufe erklären und darstellen. Rohstoff-, Kohlenstoffkreislauf
+      VERBINDLICH: Rohstoff-, Kohlenstoffkreislauf
+   GA NT.3.3.c | können aufzeigen, welche lokalen und globalen Folgen die Nutzung von Rohstoffen auf die Umwelt hat und Möglichkeiten zum nachhaltigen Umgang mit globalen Ressourcen zusammenstellen und einschätzen. Globale Ressourcen: Wasser, Luft, fossile Brennstoffe, Uran; Endlichkeit der Ressourcen /// können Informationsquellen beurteilen und einschätzen, ob mit den Informationen bestimmte Interessen vertreten
+      VERBINDLICH: Globale Ressourcen: Wasser, Luft, fossile Brennstoffe, Uran; Endlichkeit der Ressourcen
+      NT.3.3.d | können selbstständig in Medien nach Informationen zum Recycling von Stoffen suchen und das eigene Recyclingverhalten reflektieren. Wertstoffkreislauf, PET /// können Ideen zur Abfallverminderung, zur Verbesserung des Recyclingverhaltens sowie Visionen für weitere Recyclingkreisläufe entwickeln und deren Realisierungsmöglichkeiten einschätzen.
+      VERBINDLICH: Wertstoffkreislauf, PET
+###  NT.4.1  [ c_2_4_1.html ]
+      NT.4.1.a | können Vorgänge beschreiben, bei denen eine Energieform in eine andere Energieform umgewandelt wird (z.B. Verbrennung von Treibstoff, Verwertung der Nahrung im Körper, den Berg hinunterschlitteln, einen Backofen benutzen, eine Glüh-, Halogen- oder Energiesparlampe verwenden). Energieformen qualitativ: Lage-, Bewegungs-, elektrische, chemische und thermische Energie
+      VERBINDLICH: Energieformen qualitativ: Lage-, Bewegungs-, elektrische, chemische und thermische Energie
+      NT.4.1.b | können Energieumwandlungsketten schematisch darstellen sowie Energieformen und -wandler benennen (z. B. Bewegungsenergie - Energiewandler Generator - elektrische Energie - Energiewandler Heizung - thermische Energie) Energieumwandlungsketten
+      VERBINDLICH: Energieumwandlungsketten
+      NT.4.1.c | kennen die Bedeutung der Systemgrenzen bei der Beschreibung von Energieumwandlungsprozessen. /// können das Prinzip der Energieerhaltung beschreiben und mithilfe von Beispielen verdeutlichen.
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.4.1.d | können die umgewandelte Energie pro Zeit als Leistung experimentell erfassen und beschreiben (z.B. mechanische Leistung beim Treppensteigen als gewonnene Lageenergie pro Zeit, elektrische Leistung beim Wasserkochen als benötigte elektrische Energie pro Zeit). /// können die Arbeit als eine der massgeblichen Grössen im Prozess der Energieumwandlung identifizieren und beschreiben.
+      NT.4.1.e | können in verschiedenen Situationen Lage-, Bewegungs- und elektrische Energie berechnen (z.B. verschieden schwere Steine werden in verschiedene Höhen gehoben, verschieden lange Laufzeiten von elektrischen Geräten). /// können mechanische und elektrische Leistung berechnen.
+      NT.4.1.f | können Energieumwandlungen in lebenden Systemen als solche erkennen und beschreiben. Fotosynthese, Zellatmung
+      VERBINDLICH: Fotosynthese, Zellatmung
+###  NT.4.2  [ c_2_4_2.html ]
+      NT.4.2.a | können verschiedene Möglichkeiten der Isolation an Alltagsbeispielen beschreiben sowie die jeweilige Wirkung vergleichen (z.B. Thermoskanne versus Glaskanne, grobmaschiger Wollpullover versus Baumwollhemd). Wärmeleitung, Wärmestrahlung, Wärmeströmung; Isolation
+      VERBINDLICH: Wärmeleitung, Wärmestrahlung, Wärmeströmung; Isolation
+      NT.4.2.b | können mithilfe von Alltagsbeispielen zeigen, dass bei Energieumwandlungen fast immer ein Teil der Energie in thermische Energie umgewandelt wird. Energieentwertung
+      VERBINDLICH: Energieentwertung
+      NT.4.2.c | können verschiedene Möglichkeiten der Speicherung und Bereitstellung elektrischer Energie benennen und beschreiben (z.B. Batterie, Schwungrad, Dynamo, Generatoren in Energiewerken).
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.4.2.d | können verschiedene Formen der Energiebereitstellung recherchieren und diese vergleichend analysieren. Erneuerbare und fossile Energieträger /// können den Wirkungsgrad von Energiewandlern vergleichen und bewerten (z.B. nicht nutzbare Energieformen, Inexistenz eines Perpetuum mobile).
+      VERBINDLICH: Erneuerbare und fossile Energieträger
+      NT.4.2.e | wissen, wie Energie unter verschiedenen Rahmenbedingungen gespeichert und transportiert werden kann und können jeweilige Vor- und Nachteile diskutieren.
+      NT.4.2.f | können die Erkenntnisse über Energie in Alltagssituationen anwenden und im Umgang mit Energieressourcen reflektiert handeln.
+###  NT.5.1  [ c_2_5_1.html ]
+      NT.5.1.a | können gleichförmige Bewegungen von Körpern in Diagrammen erkennen und darstellen.
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.5.1.b | können Wirkungen von Kräften untersuchen und beschreiben (z.B. verformte Plastilinkugel nach dem Herunterfallen, Bedeutung der Gurte beim Autofahren, Veränderung der Flugbahn eines Balls durch Krafteinwirkung). Angriffspunkt, Richtung und Betrag einer Kraft; Verformung, Bewegungs- und Lageänderungen durch Krafteinwirkung
+      VERBINDLICH: Angriffspunkt, Richtung und Betrag einer Kraft; Verformung, Bewegungs- und Lageänderungen durch Krafteinwirkung
+      NT.5.1.c | können experimentell zeigen und in Diagrammen darstellen, dass die Gewichtskraft proportional zur Masse ist. Umgang mit einem Kraftmesser
+      VERBINDLICH: Umgang mit einem Kraftmesser
+   GA NT.5.1.d | können Kräfte einordnen und darstellen. Kräftediagramm /// können experimentell zeigen, dass bei einfachen Maschinen die benötigten Kräfte verringert werden können (z.B. Hebel, schiefe Ebene, Flaschenzug, Ketten-/Zahnradgetriebe).
+      VERBINDLICH: Kräftediagramm
+      NT.5.1.e | können begründen, dass bei einfachen Maschinen die benötigten Kräfte verringert werden können, sich gleichzeitig aber die Strecke, entlang der die Kräfte wirken, verlängert (z.B. Hebel, schiefe Ebene, Flaschenzug). Goldene Regel der Mechanik
+      VERBINDLICH: Goldene Regel der Mechanik
+      NT.5.1.f | können beschleunigte Bewegungen von Körpern in Diagrammen erkennen und darstellen.
+###  NT.5.2  [ c_2_5_2.html ]
+      NT.5.2.a | können erklären und mit einfachen Experimenten zeigen, dass der elektrische Strom verschiedene Wirkungen hat (z.B. Licht-, Wärme-, magnetische und chemische Wirkung).
+      NT.5.2.b | können Veränderungen in Stromkreisen mithilfe geeigneter Messgeräte untersuchen und einfache Regeln aufstellen (z.B. mehr/weniger Lämpchen, Serie-/Parallelschaltung).
+   GA NT.5.2.c | können die massgeblichen Grössen eines einfachen Stromkreises miteinander in Beziehung setzen und Gesetzmässigkeiten experimentell herleiten. Stromstärke, Spannung, Widerstand, Ohm'sches Gesetz
+      VERBINDLICH: Stromstärke, Spannung, Widerstand, Ohm'sches Gesetz
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.5.2.d | können die massgeblichen Grössen eines verzweigten Stromkreises miteinander in Beziehung setzen, Gesetzmässigkeiten experimentell herleiten sowie entsprechende Versuchsprotokolle anfertigen. Knoten- und Maschenregel
+      VERBINDLICH: Knoten- und Maschenregel
+      NT.5.2.e | können die Funktionsweisen von Elektromotor und Generator beschreiben.
+###  NT.5.3  [ c_2_5_3.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.5.3.a | können Schalter, Dioden und veränderbare Widerstände sachgemäss in einen Stromkreis einbauen und die prinzipielle Funktionsweise beschreiben (z.B. Bimetallstreifen, Reedkontakt, Relais, Leuchtdiode, Fotowiderstand, Heiss- oder Kaltleiterwiderstand). Schaltplan, Vorwiderstand, Sperr- und Durchlassrichtung, Sensoren
+      VERBINDLICH: Schaltplan, Vorwiderstand, Sperr- und Durchlassrichtung, Sensoren
+   GA NT.5.3.b | können einfache Anwendungsprobleme analysieren und eine entsprechende Schaltung entwerfen (z.B. Thermoschalter im Haarföhn oder Rauchmelder).
+      NT.5.3.c | können die Entwicklung der Halbleitertechnologie recherchieren und die Bedeutung für die Gesellschaft diskutieren.
+      NT.5.3.d | können einfache Transistorschaltungen bauen und analysieren (z.B. Alarmanlage oder Feuchtigkeitsmelder). Schalter, Verstärker, Steuer-, Arbeitsstromkreis /// können die prinzipielle Funktionsweise von Halbleitern beschreiben. n- und -p-Leiter, Dotierung
+      VERBINDLICH: Schalter, Verstärker, Steuer-, Arbeitsstromkreis | n- und -p-Leiter, Dotierung
+###  NT.6.1  [ c_2_6_1.html ]
+      NT.6.1.a | können den Bau und die Vielfalt der Sinnesorgane in Beziehung zur Lebensweise ausgewählter Tiere setzen (z.B. unterschiedliche Anordnung der Augen bei Fluchttieren und Raubtieren, Seitenlinienorgan der Fische).
+      NT.6.1.b | können beobachten, beschreiben und dokumentieren, wie ein bestimmter Reiz eine entsprechende Reaktion auslöst (z.B. Stimme und Körpergeruch führen zu Zuneigung oder Abneigung).
+   GA NT.6.1.c | können Reiz und Reaktion in das Zusammenspiel von Sinnesorgan, Nerven, Gehirn und Muskeln bzw. Drüsen einordnen. Reflex, unbewusste Reaktion, bewusste Reaktion
+      VERBINDLICH: Reflex, unbewusste Reaktion, bewusste Reaktion
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.6.1.d | können mit einfachen Versuchen nachweisen, dass jeder Mensch bzw. jedes Lebewesen die Welt anders wahrnimmt (z.B. unterschiedliche Farbwahrnehmungen in der Dämmerung, unterschiedliches Geschmacksempfinden der Zunge). Intersubjektive Wahrnehmung der Welt
+      VERBINDLICH: Intersubjektive Wahrnehmung der Welt
+###  NT.6.2  [ c_2_6_2.html ]
+      NT.6.2.a | können die Schallausbreitung als fortschreitende Verdichtung der Luft beschreiben und mithilfe von entsprechenden Modellen erklären (z.B. grosse Spiralfeder, Magnete).
+      NT.6.2.b | können mögliche Hörschäden mit unterschiedlichen Schalleinwirkungen in Beziehung setzen (z.B. Trommelfellriss durch lauten Knall, Lücken im Hörbereich durch Dauerbeschallung) und entsprechendes Verhalten daraus ableiten.
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.6.2.c | können die Funktionsweise des menschlichen Ohres beschreiben (z.B. Stereohören, Schallverstärkung, Frequenzverarbeitung, Hinhören/Weghören). /// können die Funktionsweise des menschlichen Auges beschreiben (z.B. Stereosehen, Farbsehen, Akkommodieren).
+      NT.6.2.d | können Fehlsichtigkeiten und deren Korrekturen beschreiben (z.B. Kurz-, Weit- und Alterssichtigkeit).
+###  NT.6.3  [ c_2_6_3.html ]
+      NT.6.3.a | können die Eigenschaften von Konvex- und Konkavlinsen experimentell bestimmen und entsprechende Versuchsprotokolle anfertigen. Brennpunkt
+      VERBINDLICH: Brennpunkt
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.6.3.b | können die Entstehung von Spiegelbildern und Abbildungen mit Linsen mithilfe des Modells des Lichtstrahls resp. Lichtbündels erklären. /// können den Aufbau von optischen Geräten darstellen und die wichtigsten Bestandteile benennen (z.B. Fernrohr, Mikroskop, Fotoapparat).
+      NT.6.3.c | können die Bedingungen für Totalreflexion experimentell bestimmen und ein Versuchsprotokoll anfertigen.
+      NT.6.3.d | können das Phänomen der optischen Hebung mithilfe des Strahlengangmodells erklären.
+      NT.6.3.e | können die Entstehung der Abbildung in/mit optischen Geräten mithilfe des Strahlengangmodells erklären (z.B. Fernrohr, Mikroskop, Fotoapparat).
+###  NT.7.1  [ c_2_7_1.html ]
+      NT.7.1.a | können ihren eigenen Körper sowie Funktions- und Strukturmodelle dazu nutzen, um das Zusammenspiel von Bau und Funktion des Bewegungsapparates zu analysieren (z.B. Biomechanik der Muskelansatzstellen). Biomechanik: Bau und Funktion des Bewegungsapparats
+      VERBINDLICH: Biomechanik: Bau und Funktion des Bewegungsapparats
+   GA NT.7.1.b | können mithilfe ausgewählter Medien, Modelle oder realer Objekte das Zusammenspiel von Bau und Funktion eines inneren Organs analysieren (z.B. Physiologie der Lungenbläschen). Physiologie: Bau und Funktion innerer Organe
+      VERBINDLICH: Physiologie: Bau und Funktion innerer Organe
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.7.1.c | können zum exemplarisch erarbeiteten Verständnis von Physiologie und Anatomie Gesetzmässigkeiten ableiten und diese erklären (z.B. Agonist - Antagonist, Röhrenknochen - Platte Knochen; Resorption benötigt grosse Oberfläche). anatomische und physiologische Gesetzmässigkeiten
+      VERBINDLICH: anatomische und physiologische Gesetzmässigkeiten
+###  NT.7.2  [ c_2_7_2.html ]
+      NT.7.2.a | können die Organe als Komponenten eines Systems erkennen, das die vier zentralen Stoffwechselvorgänge Aufnahme, Transport, Umwandlung und Abgabe umschliesst. Aufnahme: Lunge, Verdauungsorgane; Transport: Blut, Blutkreislauf, Herz; Umwandlung: Leber, Fettgewebe, Knochen, Muskeln, Hirn; Abgabe: Niere, Lunge Verdauungsorgane, Haut
+      VERBINDLICH: Aufnahme: Lunge, Verdauungsorgane; Transport: Blut, Blutkreislauf, Herz; Umwandlung: Leber, Fettgewebe, Knochen, Muskeln, Hirn; Abgabe: Niere, Lunge Verdauungsorgane, Haut
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.7.2.b | können körpereigene Phänomene mit Stoffwechselvorgängen erklären (z.B. unterschiedliche Gelbfärbung des Urins, Verdauungskoma). Aktion und Reaktion bei Stoffwechselvorgängen
+      VERBINDLICH: Aktion und Reaktion bei Stoffwechselvorgängen
+      NT.7.2.c | können Ergebnisse experimenteller Untersuchungen (z.B. Nährstoffnachweise in Lebensmitteln, Verdauung im Reagenzglas) dazu nutzen, um die Ansprüche des eigenen Körpers einzuschätzen und entsprechend zu handeln. Nährstoffexperimente, Ernährung, Bewegung, Schlaf
+      VERBINDLICH: Nährstoffexperimente, Ernährung, Bewegung, Schlaf
+###  NT.7.3  [ c_2_7_3.html ]
+      NT.7.3.a | kennen die Wirk- und Anwendungsweise verschiedener Mittel und Methoden zur Empfängnisverhütung und können deren Risiken und Nebenwirkungen vergleichen. Fortpflanzung, Verhütung
+      VERBINDLICH: Fortpflanzung, Verhütung
+      NT.7.3.b | wissen um die Verantwortung beider Geschlechter für Empfängnis und Verhütung.
+   GA NT.7.3.c | kennen Krankheiten, die häufig sexuell übertragen werden, und können erläutern, wie man sich davor schützt. HIV, Geschlechtskrankheiten
+      VERBINDLICH: HIV, Geschlechtskrankheiten
+      NT.7.3.d | kennen altersgemässe Medien und Informationsquellen zur Sexualaufklärung.
+###  NT.7.4  [ c_2_7_4.html ]
+      NT.7.4.a | können verschiedene Verursacher von Erkrankungen unterscheiden und kennen prinzipielle Reaktionsweisen des Immunsystems (z.B. Antikörper blockieren Viren in der Blutbahn). Krankheitsverursacher: Viren, Bakterien, Pilze; Immunsystem
+      VERBINDLICH: Krankheitsverursacher: Viren, Bakterien, Pilze; Immunsystem
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.7.4.b | können präventiv (z.B. Hände waschen, Impfung) und kurativ (z.B. körperliche Ruhe bei einer Grippe) angemessen auf häufige Erkrankungen reagieren. Prävention, Therapie
+      VERBINDLICH: Prävention, Therapie
+      NT.7.4.c | können grundlegende Wirkungsweisen von Medikamenten verstehen (z.B. keine Wirkung ohne Nebenwirkung), unterscheiden und abgrenzen (z.B. gegenüber Placebo). Wirkung, Nebenwirkung
+      VERBINDLICH: Wirkung, Nebenwirkung
+###  NT.8.1  [ c_2_8_1.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.8.1.a | können Ordnungssysteme der Lebewesen hinterfragen und als Modelle erkennen (z.B. Stammbäume). Biologische Ordnungssysteme
+      VERBINDLICH: Biologische Ordnungssysteme
+   GA NT.8.1.b | können zentrale Prinzipien der Evolutionstheorie an Beispielen erkennen und Gesetzmässigkeiten nachvollziehen. Evolutionstheorie: Mutation, Rekombination, Selektion
+      VERBINDLICH: Evolutionstheorie: Mutation, Rekombination, Selektion
+      NT.8.1.c | können die Veränderlichkeit der Arten erfassen, auftretende Probleme benennen und begründete Vermutungen äussern (z.B. Was spricht dafür, dass Teichfrosch, Wasserfrosch und Seefrosch verschiedene Arten sind, was dagegen?). Artkonzept
+      VERBINDLICH: Artkonzept
+###  NT.8.2  [ c_2_8_2.html ]
+      NT.8.2.a | können mikroskopische Phänomene an Zellen beobachten, dokumentieren und deren Funktionen präsentieren (z.B. die Stadien des Zellzyklus in Zwiebelwurzelzellen zu mikroskopieren und zu erläutern). Zellen, Mikroskopieren
+      VERBINDLICH: Zellen, Mikroskopieren
+   GA NT.8.2.b | können Experimente zu Wachstum und Entwicklung von Pflanzen planen, durchführen und dokumentieren (z.B. Keimungs- und Wachstumsexperimente). Pflanzenwachstum, Pflanzenentwicklung, Experimentierprozess
+      VERBINDLICH: Pflanzenwachstum, Pflanzenentwicklung, Experimentierprozess
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.8.2.c | können Informationen zu Zellteilung, -streckung und -differenzierung recherchieren und damit Ergebnisse von Keimungs- und Wachstumsexperimenten interpretieren. Zellteilung, Zellstreckung, Zelldifferenzierung
+      VERBINDLICH: Zellteilung, Zellstreckung, Zelldifferenzierung
+###  NT.8.3  [ c_2_8_3.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.8.3.a | können den Zusammenhang von DNS, Genen, Proteinen und Merkmalsausprägungen darstellen. Molekulare Genetik: DNS, Gene, Proteine, Phäne
+      VERBINDLICH: Molekulare Genetik: DNS, Gene, Proteine, Phäne
+      NT.8.3.b | können Ursachen und Wirkungen von Mutationen beschreiben und zur Erklärung von Merkmalsveränderungen herbeiziehen. Mutationen, gentechnische Veränderung, gentechnisch veränderte Organismen /// können aus dem Grundverständnis der molekularen Genetik das Prinzip der Gentechnik ableiten.
+      VERBINDLICH: Mutationen, gentechnische Veränderung, gentechnisch veränderte Organismen
+      NT.8.3.c | können die Gesetzmässigkeiten der Vererbung erkennen und zur Erklärung von Phänomenen herbeiziehen. Klassische Genetik: Wahrscheinlichkeit, Mendelsche Regel
+      VERBINDLICH: Klassische Genetik: Wahrscheinlichkeit, Mendelsche Regel
+###  NT.9.1  [ c_2_9_1.html ]
+      NT.9.1.a | können mit geeigneten Instrumenten Daten über abiotische (z.B. Strömungsgeschwindigkeit, Wassertemperatur) und biotische Faktoren (z.B. Leitorganismen für Wassergüte wie Eintagsfliegenlarven) zu aquatischen Ökosystemen sammeln, ordnen und auswerten. Aquatisches Ökosystem, abiotische und biotische Faktoren
+      VERBINDLICH: Aquatisches Ökosystem, abiotische und biotische Faktoren
+   GA NT.9.1.b | können die Planung sowie die Durchführung der Beobachtungen und Experimente kriteriengeleitet prüfen und mögliche Optimierungen vorschlagen. Methodenkritik
+      VERBINDLICH: Methodenkritik
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.9.1.c | können vertiefende Informationen zu aquatischen Ökosystemen oder zum Wasser als Lebensgrundlage suchen, mit Modellen deuten und einschätzen. Nahrungskette, Nahrungsnetze, Konkurrenz
+      VERBINDLICH: Nahrungskette, Nahrungsnetze, Konkurrenz
+###  NT.9.2  [ c_2_9_2.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      NT.9.2.a | können Wechselwirkungen zwischen mehreren terrestrischen Ökosystemen erkennen und beschreiben (z.B. Verinselung von Lebensräumen). terrestrisches Ökosystem
+      VERBINDLICH: terrestrisches Ökosystem
+   GA NT.9.2.b | können Untersuchungen zur Wechselwirkung zwischen Pflanzen und Böden planen, durchführen und auswerten (z.B. Veränderungen des pH-Wertes mit zunehmender Entfernung von einem Baumstamm, Zunahme des Sandanteils von der Bodenoberfläche in den Untergrund). Bodeneigenschaften und Zeigereigenschaften von Pflanzen /// können auf der Basis der gesammelten Daten Schlussfolgerungen zu den vermuteten Wechsel
+      VERBINDLICH: Bodeneigenschaften und Zeigereigenschaften von Pflanzen
+      NT.9.2.c | können Informationen und Informationsquellen zum Boden als Ressource einordnen, Schlussfolgerungen für eine nachhaltige Nutzung ziehen und diese beurteilen.­ Bodennutzung, Nährstoffkreisläufe
+      VERBINDLICH: Bodennutzung, Nährstoffkreisläufe
+###  NT.9.3  [ c_2_9_3.html ]
+      NT.9.3.a | können den eigenen Beobachtungen zum Einfluss des Menschen auf Ökosysteme Informationen aus verschiedenen Quellen gegenüberstellen und daraus Schlussfolgerungen ziehen (z.B. naturnahe und naturfremde Ufer, Nährstoffanreicherung in Gewässern). anthropogene Einflüsse
+      VERBINDLICH: anthropogene Einflüsse
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA NT.9.3.b | können zum Einfluss des Menschen auf Ökosysteme verschiedene Perspektiven einnehmen und prüfen, welche langfristigen Folgen zu erwarten sind (z.B. intensive und extensive Bewirtschaftung, invasive Pflanzen und Tiere). Naturnutzung, Naturschutz
+      VERBINDLICH: Naturnutzung, Naturschutz
+      NT.9.3.c | können aufgrund von Fakten eigene Ideen und Visionen zu einem verantwortungsvollen Umgang mit der Natur entwickeln und begründen.
+###  RZG.1.1  [ c_4_1_1.html ]
+      RZG.1.1.a | können Merkmale der Erde als Planeten beschreiben. Gestalt der Erde, Neigung der Erdachse, Rotation, Erdrevolution
+      VERBINDLICH: Gestalt der Erde, Neigung der Erdachse, Rotation, Erdrevolution
+   GA RZG.1.1.b | können Phänomene erklären, die sich aus Stellung und Bewegung der Erde im Sonnensystem ergeben. Jahreszeiten, Tageslängen, Zeitzonen
+      VERBINDLICH: Jahreszeiten, Tageslängen, Zeitzonen
+      RZG.1.1.c | können verschiedene Weltbilder zeitlich und räumlich einordnen. Weltbilder
+      VERBINDLICH: Weltbilder
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+###  RZG.1.2  [ c_4_1_2.html ]
+      RZG.1.2.a | können verschiedene Landschaftszonen beschreiben und ihnen die sie kennzeichnenden klimatischen Grundlagen (z.B. Klimadiagramme) zuordnen. Kalte Zone, gemässigte Zone, Subtropenzone und Tropenzone; Höhenstufen; kontinentale und ozeanische Lage
+      VERBINDLICH: Kalte Zone, gemässigte Zone, Subtropenzone und Tropenzone; Höhenstufen; kontinentale und ozeanische Lage
+      RZG.1.2.b | können Grosswetterlagen und grossräumige Windsysteme benennen und die daraus entstehenden typischen Wetterabläufe erklären. tropische Zirkulation; europäische Grosswetterlagen: Föhn, Frontverlauf, Bise
+      VERBINDLICH: tropische Zirkulation; europäische Grosswetterlagen: Föhn, Frontverlauf, Bise
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.1.2.c | können sich über den Klimawandel informieren, Ursachen erläutern und Auswirkungen des Klimawandels auf verschiedene Regionen der Welt, insbesondere die Schweiz, einschätzen. Treibhauseffekt; Extremereignisse: Hochwasser
+      VERBINDLICH: Treibhauseffekt; Extremereignisse: Hochwasser
+      RZG.1.2.d | können die aktuelle Situation in die Klimaentwicklung einordnen sowie Beiträge zur Begrenzung des Klimawandels in der Zukunft formulieren.
+###  RZG.1.3  [ c_4_1_3.html ]
+      RZG.1.3.a | können Naturphänomene und Naturlandschaften (z.B. Glazial-, Auen-, Vulkanlandschaft) beschreiben und deren Entstehung als Ergebnis endogener und exogener Prozesse erklären. Plattentektonik, Erosion, Ablagerung
+      VERBINDLICH: Plattentektonik, Erosion, Ablagerung
+      RZG.1.3.b | können sich über aktuelle Naturereignisse informieren und deren Ursachen erklären. Vulkanismus, Erdbeben, Murgang, Felssturz
+      VERBINDLICH: Vulkanismus, Erdbeben, Murgang, Felssturz
+   GA RZG.1.3.c | können die Auswirkungen von Naturereignissen auf Lebenssituationen von Menschen und auf die Umwelt benennen und einschätzen.
+      RZG.1.3.d | können Naturlandschaften und Spuren von Naturereignissen an ausserschulischen Lernorten erkennen und untersuchen.
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+###  RZG.1.4  [ c_4_1_4.html ]
+      RZG.1.4.a | können für den Menschen wichtige natürliche Ressourcen (z.B. Gesteine, mineralische Rohstoffe, Wasser, Boden) und deren Nutzung nennen. Rohstoff, Ressource
+      VERBINDLICH: Rohstoff, Ressource
+      RZG.1.4.b | können zwischen erneuerbaren und nicht-erneuerbaren Energieträgern unterscheiden (z.B. Sonnenstrahlen, Wasserkraft, Erdöl, Holz) und deren Vor- und Nachteile vergleichen. Energieträger
+      VERBINDLICH: Energieträger
+   GA RZG.1.4.c | können Auswirkungen analysieren, die durch die Gewinnung, den Abbau und die Nutzung natürlicher Ressourcen auf Mensch und Umwelt entstehen.
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      RZG.1.4.d | können Probleme benennen, die sich aus dem begrenzten Vorkommen von natürlichen Ressourcen ergeben und daraus entstehende Interessenskonflikte untersuchen.
+      RZG.1.4.e | reflektieren das eigene Verhalten im Hinblick auf einen nachhaltigen Umgang mit natürlichen Ressourcen.
+###  RZG.2.1  [ c_4_2_1.html ]
+      RZG.2.1.a | können Bevölkerungsverteilungen und -entwicklungen in ausgewählten Regionen der Welt beschreiben und anhand von Bevölkerungsdiagrammen vergleichen. Globales Bevölkerungswachstum
+      VERBINDLICH: Globales Bevölkerungswachstum
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.2.1.b | können aktuelle Bevölkerungsbewegungen erkennen, diese räumlich und zeitlich strukturieren sowie Gründe für Migration erklären. Migration in die Schweiz; wirtschaftliche, soziale, ökologische und politische Migrationsgründe
+      VERBINDLICH: Migration in die Schweiz; wirtschaftliche, soziale, ökologische und politische Migrationsgründe
+      RZG.2.1.c | können diskutieren, welche Auswirkungen Migration auf die betroffenen Personen und die Aufnahmegesellschaft hat.
+###  RZG.2.2  [ c_4_2_2.html ]
+      RZG.2.2.a | können eigene Vorstellungen von vertrauten und fremden Lebensweisen darstellen, mit anderen vergleichen und ordnen. Mental Maps
+      VERBINDLICH: Mental Maps
+      RZG.2.2.b | können vergangene und gegenwärtige Lebensweisen in verschiedenen Räumen untersuchen, charakterisieren und vergleichen.­ Daseinsgrundfunktionen
+      VERBINDLICH: Daseinsgrundfunktionen
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.2.2.c | können soziale Ungleichheiten beschreiben, deren Ursachen erklären und Lebensbedingungen in verschiedenen Lebensräumen bewerten. Armut, Hunger, Bildung
+      VERBINDLICH: Armut, Hunger, Bildung
+      RZG.2.2.d | können Auswirkungen von sozialen Ungleichheiten untersuchen, Massnahmen zu deren Verringerung beurteilen (z.B. Millenniumsziele, Entwicklungszusammenarbeit) und entsprechende eigene Ideen entwickeln.
+###  RZG.2.3  [ c_4_2_3.html ]
+      RZG.2.3.a | können ihre Vorstellungen von städtischen und ländlichen Räumen darstellen, mit anderen vergleichen und hinterfragen.
+      RZG.2.3.b | können Merkmale und Funktionen von städtischen und ländlichen Räumen erkennen und vergleichen. Zentrums-, Erholungs-, Wohnfunktion, Bevölkerungsverteilung, Nationalitäten
+      VERBINDLICH: Zentrums-, Erholungs-, Wohnfunktion, Bevölkerungsverteilung, Nationalitäten
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.2.3.c | können Entwicklungen und Veränderungen in städtischen und ländlichen Räumen untersuchen und benennen. Agglomeration, Siedlungsentwicklung, Verstädterung, Landflucht, Push/Pullfaktoren, Segregation
+      VERBINDLICH: Agglomeration, Siedlungsentwicklung, Verstädterung, Landflucht, Push/Pullfaktoren, Segregation
+      RZG.2.3.d | können Wechselwirkungen zwischen städtischen und ländlichen Räumen hinterfragen und daraus resultierende Auswirkungen auf Mensch und Umwelt ableiten.
+###  RZG.2.4  [ c_4_2_4.html ]
+      RZG.2.4.a | können an Beispielen aus der Schweiz und im weltweiten Kontext die Entwicklung des Transports von Personen und Gütern, sowie die Entwicklung der Nachrichtentechnik analysieren.
+   GA RZG.2.4.b | können die Auswirkungen von Transport und Mobilität auf Mensch, Umwelt und Raumstrukturen untersuchen und benennen. öffentlicher Verkehr, Individualverkehr
+      VERBINDLICH: öffentlicher Verkehr, Individualverkehr
+      RZG.2.4.c | kennen Kriterien für ein nachhaltiges und sicheres Mobilitätsverhalten und können diese für die Reflexion des eigenen Mobilitätsverhaltens anwenden.
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+###  RZG.2.5  [ c_4_2_5.html ]
+      RZG.2.5.a | können das Verhalten von Tourist/innen beschreiben und im Vergleich mit statistischen Kennzahlen einordnen (z.B. Destinationen, Zweck, Dauer, Form, Übernachtung, Verkehrsmittel).
+      RZG.2.5.b | können Formen des Tourismus am Beispiel des Schweizer Alpenraumes und des Mittelmeerraumes beschreiben sowie die wirtschaftliche Bedeutung für ausgewählte Regionen charakterisieren. Individualtourismus, Massentourismus, sanfter Tourismus
+      VERBINDLICH: Individualtourismus, Massentourismus, sanfter Tourismus
+      RZG.2.5.c | können den Einfluss touristischer Aktivitäten auf Gebirgs- und Küstenregionen einschätzen und deren Auswirkungen für Mensch und Umwelt benennen. Winter- und Sommertourismus, Verkehr, Infrastruktur, Landschaftsveränderungen
+      VERBINDLICH: Winter- und Sommertourismus, Verkehr, Infrastruktur, Landschaftsveränderungen
+   GA RZG.2.5.d | können die Anliegen des nachhaltigen Tourismus erklären und reflektieren sie in Bezug auf die eigene Feriengestaltung.
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+###  RZG.3.1  [ c_4_3_1.html ]
+      RZG.3.1.a | können natürliche Systeme charakterisieren und räumlich einordnen. Regenwald, Meer, Arktis/Antarktis, Gebirge, Wüsten, Städte
+      VERBINDLICH: Regenwald, Meer, Arktis/Antarktis, Gebirge, Wüsten, Städte
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      RZG.3.1.b | können Nutzungsformen natürlicher Systeme (z.B. Landwirtschaft, Fischfang, Rohstoffgewinnung, Tourismus, Besiedlung) untersuchen und den Nutzungswandel im Verlauf der Zeit beschreiben. Kulturlandschaftswandel in der Schweiz
+      VERBINDLICH: Kulturlandschaftswandel in der Schweiz
+   GA RZG.3.1.c | können die Auswirkungen der Nutzung natürlicher Systeme auf das Landschaftsbild und den Verbrauch natürlicher Ressourcen ableiten. Desertifikation, Waldrodung, Bewässerung
+      VERBINDLICH: Desertifikation, Waldrodung, Bewässerung
+      RZG.3.1.d | können sich über Interessenskonflikte bei der Nutzung natürlicher Systeme informieren, diese abwägen und Eingriffe des Menschen in natürliche Systeme bewerten.
+      RZG.3.1.e | können Schutzmassnahmen von natürlichen Systemen bewerten (z.B. Nationalparks, Umweltlabels, Kampagnen) und über mögliche nachhaltige Nutzungen nachdenken.
+###  RZG.3.2  [ c_4_3_2.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      RZG.3.2.a | können verschiedene Wirtschaftsräume beschreiben und unterscheiden. Agrarräume, Industrieregionen, Dienstleistungszentren
+      VERBINDLICH: Agrarräume, Industrieregionen, Dienstleistungszentren
+      RZG.3.2.b | können landwirtschaftliche Produktionsformen hinsichtlich ihrer Auswirkungen auf die Landschaft, den Verbrauch natürlicher Ressourcen und die Arbeitssituation der Menschen vergleichen und einschätzen sowie regionale und globale Verflechtungen erläutern. Landwirtschaftliche Produktionsformen: Berglandwirtschaft, Plantage
+      VERBINDLICH: Landwirtschaftliche Produktionsformen: Berglandwirtschaft, Plantage
+   GA RZG.3.2.c | können die Produktion von industriellen Gütern und die Bereitstellung von Dienstleistungen hinsichtlich ihrer räumlichen und sozialen Auswirkungen untersuchen, sowie regionale und globale Verflechtungen erläutern. Bedarf an Ressourcen wie Boden, Wasser, Arbeitskräfte
+      VERBINDLICH: Bedarf an Ressourcen wie Boden, Wasser, Arbeitskräfte
+      RZG.3.2.d | können räumliche Veränderungen beschreiben, die sich aufgrund des Strukturwandels ergeben haben (z.B. Landwirtschaft - Industrie - Dienstleistung). Umnutzung und Aufwertung ehemaliger Industriezentren; Rolle der Kommunikationsmedien
+      VERBINDLICH: Umnutzung und Aufwertung ehemaliger Industriezentren; Rolle der Kommunikationsmedien
+      RZG.3.2.e | setzen sich mit der nachhaltigen Produktion von Gütern auseinander und können Erkenntnisse in Bezug auf das eigene Verhalten reflektieren.
+###  RZG.3.3  [ c_4_3_3.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      RZG.3.3.a | können die gesellschaftliche Bedeutung geografischer und raumplanerischer Fragestellungen in Medien erkennen, sie auswerten und darüber diskutieren.
+   GA RZG.3.3.b | können fachliche Grundlagen bei raumplanerischen Prozessen erarbeiten (z.B. Siedlungsraumgestaltung, Umzonung), verschiedene Positionen dazu nennen und sich eine eigene Meinung bilden. Raumplanung, Zersiedlung, Landschaftsschutz, nachhaltige Raumentwicklung
+      VERBINDLICH: Raumplanung, Zersiedlung, Landschaftsschutz, nachhaltige Raumentwicklung
+###  RZG.4.1  [ c_4_4_1.html ]
+      RZG.4.1.a | können zu Lernsituationen passende Orte auf Karten, analogen und digitalen Globen sowie Satellitenbildern in verschiedenen Massstabsebenen einzeichnen und auffinden. Kontinente, Ozeane, Gebirge, Länder, Ortschaften, Gewässer, Grosslandschaften
+      VERBINDLICH: Kontinente, Ozeane, Gebirge, Länder, Ortschaften, Gewässer, Grosslandschaften
+      RZG.4.1.b | können die Lage von ausgewählten Orten mithilfe von Raummerkmalen geografisch charakterisieren (z.B. am Meer, im Alpenvorland, in aridem Gebiet).
+   GA RZG.4.1.c | können Orte in räumliche Orientierungsraster einordnen. Gradnetz, Vegetationszonen, Plattengrenzen; Wirtschaftsräume
+      VERBINDLICH: Gradnetz, Vegetationszonen, Plattengrenzen; Wirtschaftsräume
+###  RZG.4.2  [ c_4_4_2.html ]
+      RZG.4.2.a | können verschiedene Kartendarstellungen (z.B. euro- oder polzentriert, verzerrte Kartogramme) beschreiben und vergleichen.
+      RZG.4.2.b | können verschiedene Karten und Orientierungsmittel zur Beantwortung von Fragestellungen nutzen und auswerten. Orientierungsmittel: Sachtext, Bild, Blockbild, Profil, Statistik, Diagramm, Modell
+      VERBINDLICH: Orientierungsmittel: Sachtext, Bild, Blockbild, Profil, Statistik, Diagramm, Modell
+      RZG.4.2.c | können Kartenskizzen und einfache Karten zeichnen.
+   GA RZG.4.2.d | können räumliche Situationen und Problemstellungen in Modellen darstellen (z.B. Tellurium, Sandkasten, Grundwassermodell) und mithilfe einfacher Experimente untersuchen.
+###  RZG.4.3  [ c_4_4_3.html ]
+      RZG.4.3.a | können mithilfe von Karten und Orientierungsmitteln den eigenen Standort bestimmen sowie Orte und Objekte im Realraum auffinden. Koordinaten
+      VERBINDLICH: Koordinaten
+   GA RZG.4.3.b | können sich mithilfe von Orientierungsmitteln (z.B. Kompass, GPS, Rallyekarte, Verkehrsnetzplan) im Realraum fortbewegen.
+      RZG.4.3.c | können einfache Kartierungen zu ausgewählten Fragestellungen im Realraum vornehmen.
+###  RZG.5.1  [ c_4_5_1.html ]
+      RZG.5.1.a | können wichtige Ereignisse aus Entstehung und Entwicklung der Eidgenossenschaften kurz erklären und berühmten Bildern zuordnen. Ursprungsmythen, Eidgenossenschaften, Gegensatz Stadtorte-Landorte, Konfessionelle Spaltung
+      VERBINDLICH: Ursprungsmythen, Eidgenossenschaften, Gegensatz Stadtorte-Landorte, Konfessionelle Spaltung
+      RZG.5.1.b | können Entstehung und Entwicklung der Schweiz als Bundesstaat schildern und in einen europäischen Zusammenhang stellen. Helvetik, Bundesstaat, Nation
+      VERBINDLICH: Helvetik, Bundesstaat, Nation
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.5.1.c | können zu einem wichtigen Ereignis der Schweizer Geschichte im 20. Jahrhundert Ursachen, Verlauf und Folgen aufzeigen. Schweiz während der Zeit der Weltkriege; Landesstreik; Schweiz im Kalten Krieg, in der Hochkonjunktur; Frauenstimmrecht
+      VERBINDLICH: Schweiz während der Zeit der Weltkriege; Landesstreik; Schweiz im Kalten Krieg, in der Hochkonjunktur; Frauenstimmrecht
+      RZG.5.1.d | können zu ausgewählten Veränderungen in der Schweiz der letzten 200 Jahre selbstständig Materialien finden und damit die Veränderungen veranschaulichen (z.B. Umwelt, Alltag, Geschlecht, Migration, Religion).
+###  RZG.5.2  [ c_4_5_2.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      RZG.5.2.a | können die Entwicklung der Erwerbssektoren am Beispiel der Schweiz aufzeigen und erläutern (z.B. Veränderungen der Anzahl Bauernhöfe in der Schulgemeinde, Entwicklung der Anzahl Beschäftigten in den drei Erwerbssektoren im 19. und 20. Jahrhundert in der Schweiz). Wandel von der Agrar- zur Industrie- und zur Dienstleistungsgesellschaft; Schweiz als Auswanderungs- und Einwanderungsland
+      VERBINDLICH: Wandel von der Agrar- zur Industrie- und zur Dienstleistungsgesellschaft; Schweiz als Auswanderungs- und Einwanderungsland
+   GA RZG.5.2.b | können die Veränderung eines Berufs im Laufe der Zeit darstellen (z.B. mit Bild-, Textquellen). Technischer Fortschritt
+      VERBINDLICH: Technischer Fortschritt
+      RZG.5.2.c | können Auswirkungen von wirtschaftlichen Veränderungen auf einzelne Menschen erklären (z.B. Technisierung, Inflation, Hochkonjunktur, Energieknappheit).
+###  RZG.5.3  [ c_4_5_3.html ]
+      RZG.5.3.a | können die Veränderungen eines Ortes im Verlaufe der Zeit dokumentieren und erklären (z.B. Schulhaus, Dorfplatz, Stadtbild, Strasse, Tal). Schulgeschichte, Orts- und Regionalgeschichte
+      VERBINDLICH: Schulgeschichte, Orts- und Regionalgeschichte
+      RZG.5.3.b | können einzelne Aspekte des Alltagslebens aus verschiedenen Zeiten vergleichen und Ursachen von Veränderungen benennen (z.B. Wohnen, Ernährung, Freizeit). Alltags­geschichte
+      VERBINDLICH: Alltags­geschichte
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.5.3.c | können einzelne Schweizerinnen und Schweizer porträtieren, die einen wichtigen Beitrag zur Entwicklung des Zusammenlebens oder der sozialen Gerechtigkeit in der Schweiz und der Welt geleistet haben (z.B. Niklaus von Flüe, Huldrych Zwingli, Guillaume-Henri Dufour, Alfred Escher, Emilie Kempin-Spyri, Henry Dunant, Marie Heim-Vögtlin, Robert Grimm, Denis de Rougemont, Henri Guisan, Gertrud Kurz, Emil
+      VERBINDLICH: Kulturelle und religiöse Minderheiten, Gerechtigkeit, Zivilcourage
+      RZG.5.3.d | können eine Quelle oder eine Darstellung zum Alltag eines Menschen in der Schweiz in einer Bibliothek oder einem Archiv finden, lesen und analysieren (z.B. zu Familie, Gesundheit, Mobilität).
+###  RZG.6.1  [ c_4_6_1.html ]
+      RZG.6.1.a | können mit Materialien aufzeigen, wie sich das Bild der Welt zu Beginn der Neuzeit verändert hat (z.B. mit Karten, Bildern zu Entdeckungsreisen). Neuzeit: Kulturbegegnungen, Weltbild
+      VERBINDLICH: Neuzeit: Kulturbegegnungen, Weltbild
+      RZG.6.1.b | können an einem geschichtlichen Umbruch der frühen Neuzeit darlegen, wie sich Denken und Leben von Menschen verändert haben. Europäische Expansion, Reformation, Absolutismus, Aufklärung
+      VERBINDLICH: Europäische Expansion, Reformation, Absolutismus, Aufklärung
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.6.1.c | können einen groben Überblick zur Geschichte vom Beginn der Neuzeit bis heute entwickeln (z.B. mit einem einfachen Zeitstrahl, einer Tabelle mit Informationen aus verschiedenen Kontinenten). Vergangenheit, Gegenwart, Zukunft
+      VERBINDLICH: Vergangenheit, Gegenwart, Zukunft
+      RZG.6.1.d | können eine kurze historische Darstellung einer ausgewählten Region vom Beginn der Neuzeit bis heute verfassen (z.B. zum Heimatland, zum Ferienziel, zu den USA, zum Nahen Osten, zu China).
+###  RZG.6.2  [ c_4_6_2.html ]
+      RZG.6.2.a | können Ursachen und Folgen der Französischen Revolution erklären. Ständegesellschaft; Französische Revolution: Freiheit, Gleichheit
+      VERBINDLICH: Ständegesellschaft; Französische Revolution: Freiheit, Gleichheit
+      RZG.6.2.b | können zu einem Aspekt der Industrialisierung verschiedene Informationen finden und miteinander vergleichen (z.B. ein Bild, eine Textquelle, ein Erlebnisbericht zur Dampfmaschine). Industrialisierung, Soziale Frage, Kinderarbeit
+      VERBINDLICH: Industrialisierung, Soziale Frage, Kinderarbeit
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.6.2.c | können mit vorgegebenen Materialien eine kurze, historisch sachgerechte Geschichte zum 19. Jahrhundert erzählen. Imperialismus, Kolonialismus, Nationalismus
+      VERBINDLICH: Imperialismus, Kolonialismus, Nationalismus
+      RZG.6.2.d | können Materialien zu Erfindungen und Entdeckungen im 19. Jahrhundert erschliessen und damit Ursache, Verlauf und Wirkung der Veränderung darstellen.
+###  RZG.6.3  [ c_4_6_3.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      RZG.6.3.a | können darlegen, warum das 20. Jahrhundert als Zeitalter der Extreme bezeichnet wird. Welt­kriege, Faschismus, Kommunismus, Holocaust, Kalter Krieg, Unabhängigkeitsbewegung, Globalisierung, Bürgerkrieg, Terrorismus
+      VERBINDLICH: Welt­kriege, Faschismus, Kommunismus, Holocaust, Kalter Krieg, Unabhängigkeitsbewegung, Globalisierung, Bürgerkrieg, Terrorismus
+   GA RZG.6.3.b | können die Geschichte von ausgewählten Institutionen und Menschen erzählen, die sich im 20. und 21. Jahrhundert für Freiheit, Frieden, Wohlstand, Gerechtigkeit oder Nachhaltige Entwicklung einsetzten (z.B. Bertha von Suttner, Martin Luther King, Mutter Theresa, Nelson Mandela, Mahathma Ghandi). Humanitäres Völkerrecht, Rotes Kreuz, Flucht, Migration, Asyl
+      VERBINDLICH: Humanitäres Völkerrecht, Rotes Kreuz, Flucht, Migration, Asyl
+      RZG.6.3.c | können anhand vorgegebener Materialien Geschichten von Krieg betroffener Menschen aus den letzten 50 Jahren erzählen und diese in einen geschichtlichen Zusammenhang stellen.
+###  RZG.7.1  [ c_4_7_1.html ]
+      RZG.7.1.a | können nach einem Museumsbesuch einen Ausstellungsgegenstand beschreiben und dazu eine Geschichte erzählen. Museum
+      VERBINDLICH: Museum
+      RZG.7.1.b | können eine Karte relevanter Denkmäler und historisch bedeutsamer Orte in der eigenen Umgebung erstellen. Denkmal, historischer Schauplatz, Erinnerungsort
+      VERBINDLICH: Denkmal, historischer Schauplatz, Erinnerungsort
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.7.1.c | können erklären, woran ein ausgewähltes Denkmal erinnert. Recherche
+      VERBINDLICH: Recherche
+      RZG.7.1.d | können Mitschülerinnen/Mitschüler durch einen Teil eines Museums oder eines historischen Schauplatzes führen und dabei ausgewählte Gegenstände bzw. Orte erklären.
+###  RZG.7.2  [ c_4_7_2.html ]
+      RZG.7.2.a | können zu einem selber gewählten geschichtlichen Thema unterschiedliche Materialien finden, diese fachgerecht beschreiben und nach Quellenarten ordnen. Textquelle, Bildquelle, historische Karikatur, Fotografie, historische Karte und Geschichtskarte
+      VERBINDLICH: Textquelle, Bildquelle, historische Karikatur, Fotografie, historische Karte und Geschichtskarte
+      RZG.7.2.b | können eine populäre Geschichtsdarstellung zu einem historischen Thema zusammenfassen und in einen historischen Zusammenhang stellen. populäre Geschichtsdarstellung: historischer Comic, Spielfilm, historisches Jugendbuch
+      VERBINDLICH: populäre Geschichtsdarstellung: historischer Comic, Spielfilm, historisches Jugendbuch
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.7.2.c | können zu einer ausgewählten populären Geschichtsdarstellung weitere Materialien finden und diese mit der Darstellung vergleichen. Quelle und Darstellung, Quellenkritik
+      VERBINDLICH: Quelle und Darstellung, Quellenkritik
+      RZG.7.2.d | können erklären, wie Geschichte ihr Leben beeinflusst hat und worin für sie selber der Nutzen der Beschäftigung mit Geschichte liegt.
+###  RZG.7.3  [ c_4_7_3.html ]
+      RZG.7.3.a | können zur Geschichte des eigenen Lebens Quellen finden und in eine Erzählung integrieren. Biografie: Fotografien, Gegenstände, Urkunden
+      VERBINDLICH: Biografie: Fotografien, Gegenstände, Urkunden
+      RZG.7.3.b | können bei einem historischen Gegenstand darstellen, wie Menschen damit umgegangen sind und wozu er diente (z.B. altes Spinnrad, Waschbrett, Setzkasten, Dreschflegel). historischer Gegenstand
+      VERBINDLICH: historischer Gegenstand
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.7.3.c | können zu einem geschichtlichen Ereignis oder Phänomen ein Zeitzeugeninterview durchführen und dokumentieren. Zeitzeugen-Interview
+      VERBINDLICH: Zeitzeugen-Interview
+      RZG.7.3.d | können ein selber durchgeführtes Zeitzeugeninterview mit anderen Quellen anreichern (z.B. mit Fotografien, Zeitungsberichten, Statistiken) und in einen geschichtlichen Zusammenhang stellen.
+###  RZG.8.1  [ c_4_8_1.html ]
+      RZG.8.1.a | können darlegen, wie Demokratie entstanden ist, wie sie sich weiterentwickelt hat und sich von anderen Regierungsformen unterscheidet. Demokratie, Volkssouveränität, Machtbegrenzung, Bürgerrecht
+      VERBINDLICH: Demokratie, Volkssouveränität, Machtbegrenzung, Bürgerrecht
+      RZG.8.1.b | können die drei Gewalten auf Gemeinde-, Kantons- und Bundesebene unterscheiden und aufzeigen, welche Aufgaben sie lösen. Verfassung, Gewaltenteilung, Regierung, Parlament, Gericht
+      VERBINDLICH: Verfassung, Gewaltenteilung, Regierung, Parlament, Gericht
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+   GA RZG.8.1.c | können wichtige Besonderheiten der Schweizer Demokratie sowie die daraus resultierenden Rechte und Pflichten erklären. Föderalismus, Volk, Gemeinde, direkte Demokratie, Initiative, Referendum, Parteien, Verbände
+      VERBINDLICH: Föderalismus, Volk, Gemeinde, direkte Demokratie, Initiative, Referendum, Parteien, Verbände
+      RZG.8.1.d | können zu aktuellen Problemen und Kontroversen Stellung beziehen, dabei persönliche Erfahrungen im schulischen und ausserschulischen Alltag einbeziehen und die Positionen begründen (z.B. Verhältnis von Staat und Wirtschaft, Siedlungsraumgestaltung).
+###  RZG.8.2  [ c_4_8_2.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      RZG.8.2.a | können Kinder- und Menschenrechte erläutern. Grundrechte, Menschenrechte, Menschenwürde
+      VERBINDLICH: Grundrechte, Menschenrechte, Menschenwürde
+   GA RZG.8.2.b | können die Bedeutung von Kinder- und Menschenrechten für den eigenen Alltag und die Schulgemeinschaft erkennen und einschätzen. Diskriminierung
+      VERBINDLICH: Diskriminierung
+      RZG.8.2.c | können historische Beispiele schildern, die zu einer besseren Durchsetzung der Kinder- und Menschenrechte geführt haben.
+###  RZG.8.3  [ c_4_8_3.html ]
+   --- Orientierungspunkt (Mitte 2. Oberstufe) ---
+      RZG.8.3.a | können ausgewählte Ziele und Anliegen sowie die Entwicklung einer internationalen Organisation beschreiben, bei der die Schweiz Mitglied ist. UNO
+      VERBINDLICH: UNO
+   GA RZG.8.3.b | können Phasen der europäischen Einigung aufzählen und dabei die Position der Schweiz charakterisieren. Neutralität; Europarat; OSZE
+      VERBINDLICH: Neutralität; Europarat; OSZE
+      RZG.8.3.c | können unterschiedliche Positionen zum Verhältnis Schweiz - Europa skizzieren und selber dazu Stellung nehmen.

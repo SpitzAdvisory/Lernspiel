@@ -870,6 +870,7 @@ T.fr.ow_note="Le vocabulaire des sept unités avec prononciation et phrase d’e
 T.de.ow_sources="Wortschatz, unregelmässige Verben und Zahlwörter: «Open World 1», Lehrmittelverlag Zürich; Verben und Zahlen aus dem Language Companion, S. 62-64.";
 T.en.ow_sources="Vocabulary, irregular verbs and number words: «Open World 1», Lehrmittelverlag Zürich; verbs and numbers from the Language Companion, pp. 62-64.";
 T.fr.ow_sources="Vocabulaire, verbes irréguliers et nombres : « Open World 1 », Lehrmittelverlag Zürich ; verbes et nombres du Language Companion, p. 62-64.";
+T.de.dep_title="Deutsch (Lehrplan 21)";T.en.dep_title="German (Lehrplan 21)";T.fr.dep_title="Allemand (Plan d’études 21)";
 T.de.de_title="Deutsch: Verben im Fokus";
 T.en.de_title="German: verbs in focus";
 T.fr.de_title="Allemand : le verbe";
@@ -1663,7 +1664,7 @@ function viewConnect(){screen(topbar(t('appTitle'),{rerender:viewConnect}),h('ma
 async function disconnectDbx(){if(!confirm(t('confirmDisconnect')))return;await IDB.del('kv','dbxRefresh');DBX.token=null;viewConnect();}
 async function updateSyncStatus(){const el=$('#syncstatus');if(!el||!PLAY_ONLY)return;const n=(await IDB.keys('outbox')).length;el.textContent=n?t('pending',{n}):'';}
 async function loadGames(){const out=[];for(const n of(await S.store.list('games')).filter(n=>n.endsWith('.json'))){try{const g=await S.store.read('games/'+n);if(g&&Array.isArray(g.items))out.push(g);}catch(e){console.warn(n,e);}}
- out.sort((a,b)=>a.title.localeCompare(b.title));return[MATH_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,IT_GAME].concat(out);}
+ out.sort((a,b)=>a.title.localeCompare(b.title));return[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,IT_GAME].concat(out);}
 const TEST_PLAYER={id:'test',avatar:'🧪',unlockAll:true,pen:true,builtin:true};
 Object.defineProperty(TEST_PLAYER,'name',{get:()=>t('testPlayer'),enumerable:true});
 function withTest(list){return (list||[]).filter(p=>p.id!=='test').concat([TEST_PLAYER]);}
@@ -1764,7 +1765,7 @@ function badgeSticker(id){return h('div',{class:'sticker'},h('i',{'aria-hidden':
    eine Pause darf nicht an einer Ladereihenfolge scheitern. */
 function spielAusId(id){
  return (S.games||[]).find(g=>g.id===id)
-  ||[MATH_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,IT_GAME].find(g=>g&&g.id===id)
+  ||[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,IT_GAME].find(g=>g&&g.id===id)
   ||null;}
 
 function pauseKarte(p,d,re){
@@ -8932,7 +8933,7 @@ const FRG_GAME={id:'fr-gram',builtin:true,subject:'lang',kind:'lang',items:[],ge
 Object.defineProperty(FRG_GAME,'title',{get:()=>t('frg_title'),enumerable:true});
 
 const MATH_ARITH={id:'arith',y:0,a:1,n:['Freies Rechnen','Free arithmetic','Calcul libre'],c:['Rechnen mit den Zahlen und Rechenarten, die für dieses Spiel eingestellt sind.','Calculating with the numbers and operations set for this game.','Calculer avec les nombres et les opérations choisis pour ce jeu.'],terms:['sum','difference','product','quotient'],g:genArith};
-function mtopic(id){return id==='arith'?MATH_ARITH:(MT.find(x=>x.id===id)||ITT.find(x=>x.id===id)||FRTOPICS.find(x=>x.id===id)||FRG.find(x=>x.id===id)||(typeof DET!=='undefined'?DET.find(x=>x.id===id):null)||(typeof OWT!=='undefined'?OWT.find(x=>x.id===id):null));}
+function mtopic(id){return id==='arith'?MATH_ARITH:(MT.find(x=>x.id===id)||ITT.find(x=>x.id===id)||FRTOPICS.find(x=>x.id===id)||FRG.find(x=>x.id===id)||(typeof DET!=='undefined'?DET.find(x=>x.id===id):null)||(typeof DPT!=='undefined'?DPT.find(x=>x.id===id):null)||(typeof OWT!=='undefined'?OWT.find(x=>x.id===id):null));}
 function genItem(tp,lv,o){let it;for(let k=0;k<6;k++){try{it=tp.g(lv,o||{});break;}catch(e){console.warn(tp.id,e);}}if(!it)return null;
  it.id=tp.id;it.topic=tp.id;it.difficulty=lv;it.gen=true;return it;}
 /* ---------- glossary ---------- */
@@ -9384,6 +9385,176 @@ detopic('de-begriffe',7,2,['Grammatikbegriffe','Grammar terms','Termes de gramma
  lv=>{const w=DEBEG[Math.floor(Math.random()*DEBEG.length)];
   const it=choiceItem(w[0],w[1],w[2]);
   return steps(it,[D('Denk an die Liste aus Kapitel 6.','Think of the list in chapter 6.','Pense à la liste du chapitre 6.'),w[1]]);});
+
+/* ================= Deutsch Primarschule, Klassen 1 bis 6 =================
+   Grundlage ist der St. Galler Lehrplan Volksschule, der inhaltlich dem
+   Lehrplan 21 entspricht. Wichtig fuer die Einordnung: der Lehrplan legt
+   die Kompetenzstufen nach Zyklen fest, nicht nach Schuljahren. Die
+   Zuordnung einer Stufe zu einer Klasse ist darum eine Ableitung aus den
+   verbreiteten Lehrmitteln, keine Vorgabe des Lehrplans. Jedes Thema nennt
+   darum seinen Lehrplan-Code; die Klasse ist eine Empfehlung.
+
+   Schweizer Schreibung durchgehend: nie das scharfe s, immer ss, auch beim
+   Trennen (Stras-se). Anfuehrungszeichen als Guillemets.
+
+   Zyklus 1 umfasst Kindergarten bis 2. Klasse, Zyklus 2 die 3. bis 6. */
+const DPT=[];
+function dptopic(id,y,a,n,c,terms,g){DPT.push({id,y,a,n,c,terms,g,de:true});}
+/* Lehrplan-Hinweis, der an jede Themenerklaerung angehaengt wird. */
+/* Ein Code steht hier nur, wenn sein Wortlaut aus dem Lehrplan belegt ist.
+   Fuer die phonologische Bewusstheit des 1. Zyklus - Silben, Reime,
+   Anlaute - fand ich keinen belegten Code. Dort steht darum der Zyklus
+   statt einer Nummer, die bloss plausibel klaenge. */
+const lpz=X(' (Lehrplan 21: 1. Zyklus, phonologische Bewusstheit. Ein genauer Kompetenzcode ist hier nicht belegt. Die Klasse ist eine Empfehlung.)',
+ ' (Lehrplan 21: cycle 1, phonological awareness. No exact competence code verified here. The class is a recommendation.)',
+ ' (Plan d’études 21 : cycle 1, conscience phonologique. Aucun code précis vérifié ici. La classe est une recommandation.)');
+const lpq=code=>X(' (Lehrplan 21: '+code+'. Die Klasse ist eine Empfehlung; der Lehrplan ordnet nach Zyklen.)',
+ ' (Lehrplan 21: '+code+'. The class is a recommendation; the curriculum is organised by cycles.)',
+ ' (Plan d’études 21 : '+code+'. La classe est une recommandation ; le plan est organisé par cycles.)');
+
+/* ---------------------------------------------------------- Klasse 1 */
+const ABC='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+dptopic('d1-abc',1,1,['Das Alphabet','The alphabet','L’alphabet'],
+ ['Die 26 Buchstaben stehen immer in derselben Reihenfolge. Wer sie auswendig kann, findet jedes Wort im Wörterbuch.'+lpq('D.5.E.1.b'),
+  'The 26 letters always come in the same order. Knowing them by heart is what makes a dictionary usable.'+lpq('D.5.E.1.b'),
+  'Les 26 lettres sont toujours dans le même ordre. Les connaître par cœur permet d’utiliser le dictionnaire.'+lpq('D.5.E.1.b')],
+ ['abc'],
+ lv=>{const i=ri(0,ABC.length-2);const vor=lv>1&&Math.random()<0.5;
+  const frage=vor?D('Welcher Buchstabe kommt VOR '+ABC[i+1]+'?','Which letter comes BEFORE '+ABC[i+1]+'?','Quelle lettre vient AVANT '+ABC[i+1]+' ?')
+                 :D('Welcher Buchstabe kommt NACH '+ABC[i]+'?','Which letter comes AFTER '+ABC[i]+'?','Quelle lettre vient APRÈS '+ABC[i]+' ?');
+  const r=vor?ABC[i]:ABC[i+1];
+  const falsch=[];while(falsch.length<3){const c=ABC[ri(0,25)];if(c!==r&&!falsch.includes(c))falsch.push(c);}
+  return steps(choiceItem(frage,r,falsch),
+   [D('Sag das Alphabet leise auf, bis du die Stelle hörst.','Say the alphabet quietly until you reach the spot.','Récite l’alphabet à voix basse jusqu’à l’endroit.'),
+    D('Die Antwort ist '+r+'.','The answer is '+r+'.','La réponse est '+r+'.')]);});
+
+const SILBEN=[['Haus',1],['Ball',1],['Kind',1],['Tisch',1],['Baum',1],['Hund',1],
+ ['Blu-me',2],['Schu-le',2],['Son-ne',2],['Gar-ten',2],['Fens-ter',2],['Ap-fel',2],
+ ['Ve-lo',2],['Mut-ter',2],['Va-ter',2],['Bru-der',2],
+ ['Ba-na-ne',3],['To-ma-te',3],['E-le-fant',3],['Kar-tof-fel',3],['Leh-re-rin',3],['Som-mer-tag',3],
+ ['Scho-ko-la-de',4],['Kin-der-gar-ten',4]];
+dptopic('d1-silben',1,1,['Sprechsilben zählen','Counting syllables','Compter les syllabes'],
+ ['Klatsche das Wort: jede Silbe ist ein Klatscher. «Blu-me» sind zwei, «Ba-na-ne» drei. Silben helfen später beim Trennen.'+lpz,
+  'Clap the word: every syllable is one clap. «Blu-me» is two, «Ba-na-ne» three. Syllables later help with hyphenation.'+lpz,
+  'Frappe le mot dans les mains : chaque syllabe est un frappé. Les syllabes servent plus tard à la coupure des mots.'+lpz],
+ ['silbe'],
+ lv=>{const w=pick(lv===1?SILBEN.filter(x=>x[1]<=2):SILBEN);
+  const wort=w[0].replace(/-/g,'');
+  return steps(numItem(D('Wie viele Sprechsilben hat «'+wort+'»?','How many syllables does «'+wort+'» have?','Combien de syllabes a «'+wort+'» ?'),w[1]),
+   [D('Klatsche das Wort langsam mit.','Clap along slowly.','Frappe le mot lentement.'),
+    D('So wird getrennt: '+w[0]+'.','It splits like this: '+w[0]+'.','Découpage : '+w[0]+'.'),
+    D('Das sind '+w[1]+'.','That makes '+w[1]+'.','Cela fait '+w[1]+'.')]);});
+
+const REIME=[['Haus','Maus',['Hund','Baum','Tisch']],['Baum','Traum',['Blume','Hand','Stern']],
+ ['Katze','Tatze',['Hund','Vogel','Blume']],['Hund','rund',['Katze','Haus','gelb']],
+ ['Nacht','lacht',['Tag','Sonne','gross']],['Stein','klein',['Berg','Wasser','rot']],
+ ['Maus','Haus',['Käse','Loch','grau']],['Hand','Sand',['Fuss','Finger','warm']],
+ ['Licht','Gesicht',['Lampe','dunkel','Auge']],['Schnee','See',['Winter','kalt','weiss']]];
+dptopic('d1-reim',1,1,['Reimwörter','Rhyming words','Les rimes'],
+ ['Zwei Wörter reimen sich, wenn sie hinten gleich klingen: Haus und Maus. Das Ohr entscheidet, nicht die Schreibweise.'+lpz,
+  'Two words rhyme when they sound the same at the end: Haus and Maus. The ear decides, not the spelling.'+lpz,
+  'Deux mots riment quand la fin sonne pareil. C’est l’oreille qui décide, pas l’orthographe.'+lpz],
+ ['reim'],
+ lv=>{const r=pick(REIME);
+  return steps(choiceItem(D('Welches Wort reimt sich auf «'+r[0]+'»?','Which word rhymes with «'+r[0]+'»?','Quel mot rime avec «'+r[0]+'» ?'),r[1],r[2]),
+   [D('Sprich die Wörter laut und hör auf das Ende.','Say the words aloud and listen to the ending.','Dis les mots à voix haute et écoute la fin.'),
+    D('«'+r[0]+'» und «'+r[1]+'» klingen hinten gleich.','«'+r[0]+'» and «'+r[1]+'» sound the same at the end.','«'+r[0]+'» et «'+r[1]+'» finissent pareil.')]);});
+
+const ANLAUT=['Apfel','Ball','Computer','Dach','Esel','Fisch','Garten','Haus','Igel','Jacke',
+ 'Katze','Lampe','Maus','Nase','Ofen','Puppe','Rose','Sonne','Tisch','Uhr','Vogel','Wasser','Zebra'];
+dptopic('d1-anlaut',1,1,['Anlaut hören','Hearing the first sound','Entendre le son initial'],
+ ['Der Anlaut ist der erste Laut eines Wortes. Bei «Sonne» ist es das S. Wer den Anlaut hört, findet den ersten Buchstaben.'+lpz,
+  'The first sound of a word: in «Sonne» it is the S. Hearing it gives you the first letter.'+lpz,
+  'Le premier son d’un mot : dans «Sonne», c’est le S. L’entendre donne la première lettre.'+lpz],
+ ['anlaut'],
+ lv=>{const w=pick(ANLAUT);const r=w[0];
+  const falsch=[];while(falsch.length<3){const c=ABC[ri(0,25)];if(c!==r&&!falsch.includes(c))falsch.push(c);}
+  return steps(choiceItem(D('Mit welchem Buchstaben beginnt «'+w+'»?','Which letter does «'+w+'» begin with?','Par quelle lettre commence «'+w+'» ?'),r,falsch),
+   [D('Sprich das Wort langsam: '+r+'…','Say the word slowly: '+r+'…','Dis le mot lentement : '+r+'…'),
+    D('«'+w+'» beginnt mit '+r+'.','«'+w+'» begins with '+r+'.','«'+w+'» commence par '+r+'.')]);});
+
+const SATZ1=[['der hund bellt laut','Der Hund bellt laut.'],['mia liest ein buch','Mia liest ein Buch.'],
+ ['wir gehen zur schule','Wir gehen zur Schule.'],['die sonne scheint','Die Sonne scheint.'],
+ ['im garten blüht eine blume','Im Garten blüht eine Blume.'],['noah spielt mit dem ball','Noah spielt mit dem Ball.']];
+dptopic('d1-satz',1,1,['Satzanfang und Punkt','Sentence start and full stop','Majuscule et point'],
+ ['Jeder Satz beginnt mit einem grossen Buchstaben und endet mit einem Satzzeichen. Das ist die erste Regel, die immer gilt.'+lpq('D.4.F.1.a'),
+  'Every sentence starts with a capital letter and ends with a mark. The first rule that always holds.'+lpq('D.4.F.1.a'),
+  'Toute phrase commence par une majuscule et finit par un signe. La première règle, sans exception.'+lpq('D.4.F.1.a')],
+ ['satzanfang'],
+ lv=>{const s=pick(SATZ1);
+  const falsch=[s[1].toLowerCase(), s[1].replace(/\.$/,''), s[1].toUpperCase()].filter(x=>x!==s[1]);
+  return steps(choiceItem(D('Welcher Satz ist richtig geschrieben?','Which sentence is written correctly?','Quelle phrase est correctement écrite ?'),s[1],falsch),
+   [D('Schau auf den ersten Buchstaben und auf das Ende.','Look at the first letter and at the end.','Regarde la première lettre et la fin.'),
+    D('Gross anfangen, Punkt am Schluss: '+s[1],'Capital at the start, full stop at the end: '+s[1],'Majuscule au début, point à la fin : '+s[1])]);});
+
+/* ---------------------------------------------------------- Klasse 2 */
+const WORTARTEN=[
+ ['Nomen',['Hund','Tisch','Blume','Schule','Vater','Katze','Auto','Fenster','Berg','Brot']],
+ ['Verb',['laufen','singen','lesen','schlafen','springen','essen','malen','schreiben','lachen','bauen']],
+ ['Adjektiv',['rot','gross','klein','warm','schnell','leise','alt','schön','nass','rund']]];
+dptopic('d2-wortarten',2,1,['Nomen, Verb, Adjektiv','Noun, verb, adjective','Nom, verbe, adjectif'],
+ ['Drei Wortarten reichen für den Anfang. Das Nomen benennt etwas, das Verb sagt, was geschieht, das Adjektiv sagt, wie etwas ist.'+lpq('D.5.D.1.b'),
+  'Three word classes to begin with: the noun names, the verb says what happens, the adjective says what something is like.'+lpq('D.5.D.1.b'),
+  'Trois classes pour commencer : le nom nomme, le verbe dit ce qui se passe, l’adjectif dit comment c’est.'+lpq('D.5.D.1.b')],
+ ['nomen','verb','adjektiv'],
+ lv=>{const i=ri(0,2);const w=pick(WORTARTEN[i][1]);
+  const r=D(WORTARTEN[i][0],['Noun','Verb','Adjective'][i],['Nom','Verbe','Adjectif'][i]);
+  const alle=[D('Nomen','Noun','Nom'),D('Verb','Verb','Verbe'),D('Adjektiv','Adjective','Adjectif')];
+  return steps(choiceItem(D('Welche Wortart ist «'+w+'»?','Which word class is «'+w+'»?','Quelle classe est «'+w+'» ?'),r,alle.filter(x=>x!==r)),
+   [D('Kannst du «der, die oder das» davorsetzen? Dann ist es ein Nomen.','Can you put «der, die, das» in front? Then it is a noun.','Peut-on mettre un article devant ? Alors c’est un nom.'),
+    D('Kannst du es tun? Dann ist es ein Verb. Sagt es, wie etwas ist? Dann ein Adjektiv.','Can you do it? A verb. Does it say what something is like? An adjective.','Peut-on le faire ? Un verbe. Dit-il comment c’est ? Un adjectif.'),
+    D('«'+w+'» ist ein '+WORTARTEN[i][0]+'.','«'+w+'» is a '+['noun','verb','adjective'][i]+'.','«'+w+'» est un '+['nom','verbe','adjectif'][i]+'.')]);});
+
+dptopic('d2-gross',2,1,['Nomen gross schreiben','Capitalising nouns','Majuscule aux noms'],
+ ['Nomen schreibt man gross. Die Probe: Steht «der», «die» oder «das» davor, ist es ein Nomen und beginnt mit einem grossen Buchstaben.'+lpq('D.4.F.1.a'),
+  'Nouns are capitalised. The test: if «der», «die» or «das» fits in front, it is a noun and takes a capital.'+lpq('D.4.F.1.a'),
+  'Les noms prennent une majuscule. Test : si «der», «die» ou «das» va devant, c’est un nom.'+lpq('D.4.F.1.a')],
+ ['nomen','gross'],
+ lv=>{const nomen=pick(WORTARTEN[0][1]);
+  const andere=[pick(WORTARTEN[1][1]),pick(WORTARTEN[2][1]),pick(WORTARTEN[1][1])];
+  return steps(choiceItem(D('Welches Wort schreibt man gross?','Which word is capitalised?','Quel mot prend une majuscule ?'),nomen,andere.filter(x=>x!==nomen)),
+   [D('Setze «der», «die» oder «das» davor. Passt es?','Try putting «der», «die» or «das» in front. Does it fit?','Essaie de mettre un article devant.'),
+    D('«'+nomen+'» ist ein Nomen und wird gross geschrieben.','«'+nomen+'» is a noun and takes a capital.','«'+nomen+'» est un nom : majuscule.')]);});
+
+const SPST=[['Sport','sp'],['Stein','st'],['Spiel','sp'],['Stuhl','st'],['Sprache','sp'],['Strasse','st'],
+ ['Spinne','sp'],['Stern','st'],['Spitze','sp'],['Stadt','st'],['Sparen','sp'],['Stunde','st']];
+dptopic('d2-spst',2,2,['sp und st am Wortanfang','sp and st at the start','sp et st au début'],
+ ['Am Wortanfang hört man «schp» und «scht», geschrieben wird aber sp und st: Sport, Stein. Die Ohren täuschen hier, die Regel hilft.'+lpq('D.5.E.1.b'),
+  'At the start of a word you hear «schp» and «scht» but write sp and st: Sport, Stein. The ear misleads; the rule helps.'+lpq('D.5.E.1.b'),
+  'Au début d’un mot on entend «schp» et «scht» mais on écrit sp et st. L’oreille trompe ; la règle aide.'+lpq('D.5.E.1.b')],
+ ['spst'],
+ lv=>{const w=pick(SPST);const falschSchreib=w[1]==='sp'?w[0].replace(/^Sp/,'Schp'):w[0].replace(/^St/,'Scht');
+  return steps(choiceItem(D('Wie schreibt man das Wort richtig?','Which spelling is correct?','Quelle orthographe est correcte ?'),w[0],[falschSchreib,w[0].toLowerCase()]),
+   [D('Gesprochen klingt es wie «sch» — geschrieben steht nur '+w[1]+'.','It sounds like «sch» but only '+w[1]+' is written.','Cela sonne «sch» mais on écrit seulement '+w[1]+'.'),
+    D('Richtig ist «'+w[0]+'».','«'+w[0]+'» is correct.','«'+w[0]+'» est correct.')]);});
+
+dptopic('d2-vokal',2,1,['Vokale und Konsonanten','Vowels and consonants','Voyelles et consonnes'],
+ ['Die Vokale sind a, e, i, o, u und die Umlaute ä, ö, ü. Alle anderen Buchstaben sind Konsonanten. Fast jede Rechtschreibregel braucht diesen Unterschied.'+lpq('D.5.E.1.c'),
+  'The vowels are a, e, i, o, u and the umlauts ä, ö, ü. All other letters are consonants. Nearly every spelling rule needs this distinction.'+lpq('D.5.E.1.c'),
+  'Les voyelles sont a, e, i, o, u et les trémas. Les autres lettres sont des consonnes. Presque toute règle en a besoin.'+lpq('D.5.E.1.c')],
+ ['vokal','konsonant'],
+ lv=>{const vok='aeiouäöü';const istVokal=Math.random()<0.5;
+  const b=istVokal?vok[ri(0,vok.length-1)]:pick('bcdfghjklmnpqrstvwxyz'.split(''));
+  const r=istVokal?D('Vokal','Vowel','Voyelle'):D('Konsonant','Consonant','Consonne');
+  const a=D('Vokal','Vowel','Voyelle'),k=D('Konsonant','Consonant','Consonne');
+  return steps(choiceItem(D('Ist «'+b+'» ein Vokal oder ein Konsonant?','Is «'+b+'» a vowel or a consonant?','«'+b+'» est-il une voyelle ou une consonne ?'),r,[r===a?k:a]),
+   [D('Die Vokale sind a, e, i, o, u, ä, ö, ü.','The vowels are a, e, i, o, u, ä, ö, ü.','Les voyelles : a, e, i, o, u, ä, ö, ü.'),
+    D('«'+b+'» ist ein '+(istVokal?'Vokal':'Konsonant')+'.','«'+b+'» is a '+(istVokal?'vowel':'consonant')+'.','«'+b+'» est une '+(istVokal?'voyelle':'consonne')+'.')]);});
+
+const ZEICHEN=[['Wie spät ist es','?'],['Komm sofort her','!'],['Der Hund schläft','.'],
+ ['Wo wohnst du','?'],['Pass auf','!'],['Wir essen Suppe','.'],['Wer hat das gemacht','?'],['Hilf mir bitte','!']];
+dptopic('d2-zeichen',2,2,['Punkt, Frage- und Ausrufezeichen','Full stop, question and exclamation mark','Point, point d’interrogation et d’exclamation'],
+ ['Ein Aussagesatz endet mit dem Punkt, eine Frage mit dem Fragezeichen, ein Ausruf oder Befehl mit dem Ausrufezeichen.'+lpq('D.4.F.1.b'),
+  'A statement ends with a full stop, a question with a question mark, a command or exclamation with an exclamation mark.'+lpq('D.4.F.1.b'),
+  'Une déclaration finit par un point, une question par un point d’interrogation, un ordre par un point d’exclamation.'+lpq('D.4.F.1.b')],
+ ['satzzeichen'],
+ lv=>{const s=pick(ZEICHEN);
+  return steps(choiceItem(D('Welches Zeichen gehört ans Ende? «'+s[0]+'»','Which mark belongs at the end? «'+s[0]+'»','Quel signe à la fin ? «'+s[0]+'»'),s[1],['.','?','!'].filter(x=>x!==s[1])),
+   [D('Wird etwas gefragt, befohlen oder einfach gesagt?','Is something asked, ordered, or simply stated?','Est-ce une question, un ordre ou une déclaration ?'),
+    D('Richtig ist «'+s[1]+'»: '+s[0]+s[1],'Correct is «'+s[1]+'»: '+s[0]+s[1],'Correct : «'+s[1]+'» — '+s[0]+s[1])]);});
+
+const DEP_GAME={id:'de-primar',builtin:true,subject:'lang',kind:'lang',items:[],gen:{topics:DPT.map(x=>x.id)}};
+Object.defineProperty(DEP_GAME,'title',{get:()=>t('dep_title'),enumerable:true});
 
 const DE_GAME={id:'de-verben',builtin:true,subject:'lang',kind:'lang',items:[],gen:{topics:DET.map(x=>x.id)}};
 Object.defineProperty(DE_GAME,'title',{get:()=>t('de_title'),enumerable:true});
