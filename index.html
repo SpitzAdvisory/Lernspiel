@@ -1680,7 +1680,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V95';
+const APPVER='V96';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -7069,6 +7069,22 @@ const GLOSS_GEO=({
  geo_midpoint:['Mittelpunkt einer Strecke','midpoint of a segment','milieu d’un segment','Der Punkt, der die Strecke in zwei gleich lange Teile teilt.','The point that divides a segment into two equal parts.','Le point qui partage un segment en deux parties égales.'],
  geo_congruent:['kongruent (deckungsgleich)','congruent','isométrique (superposable)','Zwei Figuren, die man genau aufeinanderlegen kann.','Two figures that can be laid exactly on top of each other.','Deux figures que l’on peut superposer exactement.'],
  geo_fixpoint:['Fixpunkt','fixed point','point fixe','Ein Punkt, der bei einer Abbildung auf sich selbst abgebildet wird.','A point that maps onto itself.','Un point qui est sa propre image.'],
+ geo_anglebisector:['Winkelhalbierende','angle bisector','bissectrice',
+  'Gerade, die einen Winkel in zwei gleich grosse Winkel teilt. Jeder ihrer Punkte hat von beiden Schenkeln denselben Abstand.',
+  'A line that divides an angle into two equal angles. Each of its points is the same distance from both arms.',
+  'Droite qui partage un angle en deux angles égaux. Chacun de ses points est à égale distance des deux côtés.'],
+ geo_midparallel:['Mittelparallele','mid-parallel','parallèle médiane',
+  'Gerade, die zwischen zwei Parallelen liegt und von beiden denselben Abstand hat.',
+  'The line between two parallels at the same distance from both.',
+  'Droite située entre deux parallèles, à égale distance des deux.'],
+ geo_locus:['Ortslinie','locus','lieu géométrique',
+  'Die Linie aller Punkte, die eine Bedingung erfüllen. Beispiel: alle Punkte mit gleichem Abstand von A und B liegen auf der Mittelsenkrechten von AB.',
+  'The line of all points that satisfy a condition. Example: all points equidistant from A and B lie on the perpendicular bisector of AB.',
+  'La ligne de tous les points qui remplissent une condition. Exemple : les points équidistants de A et B sont sur la médiatrice de AB.'],
+ geo_orientation:['Umlaufsinn','orientation','sens de parcours',
+  'Die Richtung, in der man die Ecken einer Figur durchläuft. Die Achsenspiegelung kehrt ihn um, die Punktspiegelung behält ihn bei.',
+  'The direction in which the vertices of a figure are traversed. An axis reflection reverses it; a point reflection keeps it.',
+  'Le sens dans lequel on parcourt les sommets. La symétrie axiale l’inverse, la centrale le conserve.'],
  geo_billiard:['Reflexionsgesetz','law of reflection','loi de la réflexion','Einfallswinkel gleich Ausfallswinkel; die Bande wirkt wie ein Spiegel.','Angle in equals angle out; the cushion acts like a mirror.','Angle d’incidence égal à l’angle de réflexion ; la bande agit comme un miroir.']});
 const GEO_GAME={id:'geo-kongruenz',builtin:true,subject:'math',kind:'math',items:[],gen:{topics:GEO_IDS}};
 Object.defineProperty(GEO_GAME,'title',{get:()=>t('geo_title'),enumerable:true});
@@ -7695,6 +7711,67 @@ const KTASKS3=[
 ];
 KTASKS3.forEach(t=>KTASKS.push(t));
 
+/* ===== Zwei Aufgaben aus der Wiederholungspruefung vom 26.10.2026 =====
+   Die Mittelparallele fehlte im Modul ganz, obwohl Aufgabe 5a sie
+   voraussetzt. Beide Aufgaben zielen auf denselben Schritt: eine Bedingung
+   in eine Ortslinie uebersetzen und zwei davon schneiden. */
+const KTASKS4=[
+{id:'k-mittelparallele',y:7,tools:['pt','ln','sg','ci'],
+ n:['Mittelparallele','Mid-parallel','Parallèle médiane'],
+ goal:['g und h sind parallel. Konstruiere die Gerade, die von beiden den gleichen Abstand hat.',
+  'g and h are parallel. Construct the line at equal distance from both.',
+  'g et h sont parallèles. Construis la droite à égale distance des deux.'],
+ steps:[['Wähle einen Punkt A auf g.','Kreis um A, der h in zwei Punkten schneidet; die Mittelsenkrechte dieser beiden Schnittpunkte trifft h im Lotfusspunkt F.','Konstruiere die Mittelsenkrechte der Strecke AF: ihr Mittelpunkt M liegt genau zwischen g und h.','Die Parallele zu g durch M ist die Mittelparallele.'],
+        ['Choose a point A on g.','A circle around A cutting h twice; the perpendicular bisector of those two points meets h at the foot F.','Construct the midpoint M of AF: it lies exactly between g and h.','The parallel to g through M is the mid-parallel.'],
+        ['Choisis un point A sur g.','Un cercle de centre A coupe h en deux points ; leur médiatrice rencontre h au pied F.','Construis le milieu M de AF : il est exactement entre g et h.','La parallèle à g par M est la parallèle médiane.']],
+ geg:()=>[{k:'P',x:16,y:34,given:1,n:'G'},{k:'P',x:116,y:34,given:1,n:'H'},{k:'L',a:0,b:1},
+          {k:'P',x:16,y:74,given:1,n:'I'},{k:'P',x:116,y:74,given:1,n:'J'},{k:'L',a:3,b:4}],
+ ok:(o,R)=>{const G=kByName(o,R,'G'),H=kByName(o,R,'H'),I=kByName(o,R,'I');
+  if(!G||!H||!I)return false;
+  const L=kdist(G,H), d=kDistLine(I,G,H);
+  if(d<KEPS)return false;
+  /* parallel zu g, und von g wie von h genau den halben Abstand entfernt */
+  return kLines(o,R).some(l=>kParTo(l,G,H)
+   && Math.abs(kDistLine(G,l.p,l.q)-d/2)<=KTOLR*L
+   && Math.abs(kDistLine(I,l.p,l.q)-d/2)<=KTOLR*L);}},
+
+{id:'k-punkt-zwei-bedingungen',y:8,tools:['pt','ln','sg','ci','pp','pl'],
+ n:['Punkt aus zwei Bedingungen','Point from two conditions','Point à partir de deux conditions'],
+ goal:['Konstruiere den Punkt C, der von A und B gleich weit entfernt ist und von den parallelen Geraden g und h den gleichen Abstand hat.',
+  'Construct the point C equidistant from A and B and at equal distance from the parallel lines g and h.',
+  'Construis le point C équidistant de A et B et à égale distance des parallèles g et h.'],
+ steps:[['Gleich weit von A und B: das ist die Mittelsenkrechte von AB. Konstruiere sie.',
+         'Gleicher Abstand von g und h: das ist die Mittelparallele. Konstruiere sie.',
+         'Zwei Bedingungen, zwei Ortslinien. C ist ihr Schnittpunkt — setze ihn.'],
+        ['Equidistant from A and B: that is the perpendicular bisector of AB. Construct it.',
+         'Equal distance from g and h: that is the mid-parallel. Construct it.',
+         'Two conditions, two loci. C is their intersection — mark it.'],
+        ['Équidistant de A et B : c’est la médiatrice de AB. Construis-la.',
+         'À égale distance de g et h : c’est la parallèle médiane. Construis-la.',
+         'Deux conditions, deux lieux. C est leur intersection — place-le.']],
+ geg:()=>[{k:'P',x:16,y:28,given:1,n:'G'},{k:'P',x:120,y:28,given:1,n:'H'},{k:'L',a:0,b:1},
+          {k:'P',x:16,y:84,given:1,n:'I'},{k:'P',x:120,y:84,given:1,n:'J'},{k:'L',a:3,b:4},
+          {k:'P',x:38,y:48,given:1,n:'A'},{k:'P',x:92,y:70,given:1,n:'B'},{k:'S',a:6,b:7}],
+ ok:(o,R)=>{const G=kByName(o,R,'G'),H=kByName(o,R,'H'),I=kByName(o,R,'I'),
+   A=kByName(o,R,'A'),B=kByName(o,R,'B');
+  if(!G||!H||!I||!A||!B)return false;
+  const L=kdist(A,B);
+  /* Mittelsenkrechte von AB */
+  const M=kmid(A,B), nAB=[-(B[1]-A[1]),B[0]-A[0]];
+  /* Mittelparallele: Lotfusspunkt von I auf g, dann die Haelfte */
+  const nGH=[-(H[1]-G[1]),H[0]-G[0]];
+  const fs=kIntLL(I,[I[0]+nGH[0],I[1]+nGH[1]],G,H);
+  if(!fs.length)return false;
+  const Mg=kmid(I,fs[0]);
+  const xs=kIntLL(M,[M[0]+nAB[0],M[1]+nAB[1]],Mg,[Mg[0]+(H[0]-G[0]),Mg[1]+(H[1]-G[1])]);
+  if(!xs.length)return false;
+  const C=xs[0];
+  /* Ein gesetzter Punkt genuegt nur, wenn er beim Verschieben mitgeht -
+     das besorgt kCheck. Die gegebenen Punkte liegen weit genug weg. */
+  return kPoints(o,R).some(P=>kdist(P,C)<=KTOLR*kScale(L)*1.6);}}
+];
+KTASKS4.forEach(t=>KTASKS.push(t));
+
 /* ---------------- Wissensaufgaben aus der Prüfung ---------------- */
 /* Aufgabe 2: Symmetrie der Grossbuchstaben (Blockschrift) */
 const PLETT=[['A','ax'],['E','ax'],['H','both'],['I','both'],['L','none'],['N','pt'],
@@ -7747,7 +7824,34 @@ const PFILL=[
  [['Die Linie, welche von zwei parallelen Geraden den gleichen Abstand hat, heisst …','The line at equal distance from two parallel lines is called …','La ligne à égale distance de deux parallèles s’appelle …'],
   'Mittelparallele',['mittelparallele','mid-parallel','parallèle médiane','mittellinie']],
  [['Die Linie, welche von zwei sich schneidenden Geraden den gleichen Abstand hat, heisst …','The line at equal distance from two intersecting lines is called …','La ligne à égale distance de deux droites sécantes s’appelle …'],
-  'Winkelhalbierende',['winkelhalbierende','angle bisector','bissectrice']]];
+  'Winkelhalbierende',['winkelhalbierende','angle bisector','bissectrice']],
+ /* Johannes verlor in der Wiederholungspruefung vom 26.10.2026 drei von
+    vier Punkten an Fachbegriffe - Winkelhalbierende und Mittelparallele
+    konnte er nicht benennen. Dieselben zwei Woerter braucht Aufgabe 5a,
+    um ueberhaupt anfangen zu koennen. Der Wortschatz ist darum nicht
+    Beiwerk, sondern der Schluessel zur halben Pruefung. */
+ [['Die Gerade, die eine Strecke im rechten Winkel halbiert, heisst …','The line that halves a segment at a right angle is called …','La droite qui coupe un segment en son milieu à angle droit s’appelle …'],
+  'Mittelsenkrechte',['mittelsenkrechte','perpendicular bisector','médiatrice','streckensymmetrale']],
+ [['Alle Punkte, die von A und B gleich weit entfernt sind, liegen auf der …','All points equidistant from A and B lie on the …','Tous les points équidistants de A et B sont sur la …'],
+  'Mittelsenkrechten',['mittelsenkrechte','mittelsenkrechten','perpendicular bisector','médiatrice']],
+ [['Alle Punkte, die von zwei Parallelen gleich weit entfernt sind, liegen auf der …','All points equidistant from two parallels lie on the …','Tous les points équidistants de deux parallèles sont sur la …'],
+  'Mittelparallelen',['mittelparallele','mittelparallelen','mid-parallel','parallèle médiane','mittellinie']],
+ [['Die Linie aller Punkte, die eine Bedingung erfüllen, heisst …','The line of all points satisfying a condition is called …','La ligne de tous les points remplissant une condition s’appelle …'],
+  'Ortslinie',['ortslinie','locus','lieu géométrique','ortskurve']],
+ [['Eine Senkrechte, die man von einem Punkt auf eine Gerade zeichnet, heisst …','A perpendicular drawn from a point onto a line is called …','Une perpendiculaire tracée d’un point vers une droite s’appelle …'],
+  'Lot',['lot','perpendicular','perpendiculaire','das lot']],
+ [['Ein Punkt, der bei einer Spiegelung an seinem Ort bleibt, heisst …','A point that stays where it is under a reflection is called …','Un point qui ne bouge pas dans une symétrie s’appelle …'],
+  'Fixpunkt',['fixpunkt','fixed point','point fixe']],
+ [['Die Richtung, in der man die Ecken einer Figur durchläuft, heisst …','The direction in which the vertices are traversed is called …','Le sens dans lequel on parcourt les sommets s’appelle …'],
+  'Umlaufsinn',['umlaufsinn','orientation','sens de parcours','drehsinn']],
+ [['Bei der Achsenspiegelung ist die Achse die … der Strecke PP′.','In an axis reflection the axis is the … of the segment PP′.','Dans une symétrie axiale, l’axe est la … du segment PP′.'],
+  'Mittelsenkrechte',['mittelsenkrechte','perpendicular bisector','médiatrice']],
+ [['Längen bleiben bei einer Spiegelung erhalten. Der Fachausdruck lautet …','Lengths are preserved under a reflection. The technical term is …','Les longueurs sont conservées. Le terme technique est …'],
+  'Streckentreue',['streckentreue','längentreue','laengentreue','preserves length','isométrie']],
+ [['Winkel bleiben bei einer Spiegelung erhalten. Der Fachausdruck lautet …','Angles are preserved under a reflection. The technical term is …','Les angles sont conservés. Le terme technique est …'],
+  'Winkeltreue',['winkeltreue','preserves angles','conservation des angles']],
+ [['Der Punkt, an dem bei einer Punktspiegelung gespiegelt wird, heisst …','The point in which a figure is reflected is called the …','Le point par rapport auquel on reflète s’appelle le …'],
+  'Spiegelzentrum',['spiegelzentrum','zentrum','centre of reflection','centre de symétrie','symmetriezentrum']]];
 function pFillItem(lv){
  const L=kLang();const e=pick(PFILL);
  const it={type:'input',prompt:e[0][L],answer:e[1],accept:e[2].concat([e[1]])};
@@ -7766,6 +7870,63 @@ gtopic('p-eigenschaften',['Eigenschaften der Spiegelungen','Properties of the re
   'Les deux symétries conservent forme et taille. La différence est le sens de parcours : la symétrie axiale l’inverse, la centrale le conserve, étant une rotation de 180°.'],
  ['geo_axismirror','geo_pointmirror','geo_congruent'],
  lv=>Math.random()<0.6?pPropItem(lv):pFillItem(lv));
+
+/* ---------- Fachwoerter, unverduennt ----------
+   Dieselben Woerter standen schon in PFILL, aber dort erschienen sie nur in
+   gut vierzig Prozent der Fragen eines einzigen von sechsundzwanzig
+   Geometrie-Themen. Eine Trefferquote, die zum Einpraegen nicht reicht.
+   Hier ist jede Frage ein Wort, und getippt statt angekreuzt: die Pruefung
+   verlangt das Wort, nicht das Wiedererkennen. */
+gtopic('g7-woerter',['Die Wörter der Geometrie','The words of geometry','Les mots de la géométrie'],
+ ['Jede Konstruktionsaufgabe beginnt mit einem Satz, und der Satz nennt eine Linie bei ihrem Namen. Mittelsenkrechte, Mittelparallele, Winkelhalbierende, Lot: solange diese vier Wörter sitzen, lässt sich jede Aufgabe übersetzen. Fehlt ein Wort, steht die Aufgabe still, auch wenn die Konstruktion selbst längst geübt ist.',
+  'Every construction task begins with a sentence, and the sentence names a line. Perpendicular bisector, mid-parallel, angle bisector, perpendicular: once these four words are secure, any task can be translated. A missing word stops the task, however well the construction itself is practised.',
+  'Chaque construction commence par une phrase qui nomme une ligne. Médiatrice, parallèle médiane, bissectrice, perpendiculaire : avec ces quatre mots, toute tâche se traduit. Un mot manquant bloque la tâche, même si le tracé est maîtrisé.'],
+ ['geo_perpbisector','geo_midparallel','geo_anglebisector','geo_locus','geo_orientation'],
+ pFillItem);
+
+/* ---------- Vom Satz zur Linie ----------
+   Der Schritt, an dem Aufgabe 5a scheiterte: «gleich weit von A und B» und
+   «gleicher Abstand von g und h» sind zwei Ortslinien, und der gesuchte
+   Punkt ist ihr Schnittpunkt. Geuebt wird in beide Richtungen, weil die
+   Pruefung mal die Bedingung und mal den Namen vorgibt. */
+gtopic('g7-ortslinien',['Vom Satz zur Linie','From the sentence to the line','De la phrase à la ligne'],
+ ['Eine Ortslinie ist die Linie aller Punkte, die eine Bedingung erfüllen. Gleich weit von zwei Punkten: Mittelsenkrechte. Gleich weit von zwei Parallelen: Mittelparallele. Gleich weit von zwei sich schneidenden Geraden: Winkelhalbierende. Fester Abstand von einem Punkt: Kreis. Zwei Bedingungen zusammen legen einen Punkt fest, und zwar in ihrem Schnittpunkt.',
+  'A locus is the line of all points satisfying a condition. Equidistant from two points: perpendicular bisector. From two parallels: mid-parallel. From two intersecting lines: angle bisector. A fixed distance from a point: circle. Two conditions together fix a point, at their intersection.',
+  'Un lieu géométrique est la ligne de tous les points remplissant une condition. À égale distance de deux points : médiatrice. De deux parallèles : parallèle médiane. De deux sécantes : bissectrice. À distance fixe d’un point : cercle. Deux conditions fixent un point, à leur intersection.'],
+ ['geo_locus','geo_perpbisector','geo_midparallel','geo_anglebisector'],
+ lv=>{const Q=[
+  [X('Alle Punkte, die von A und B gleich weit entfernt sind, liegen auf …','All points equidistant from A and B lie on …','Tous les points équidistants de A et B sont sur …'),
+   ['der Mittelsenkrechten von AB|the perpendicular bisector of AB|la médiatrice de AB','der Strecke AB|the segment AB|le segment AB','der Parallelen zu AB|the parallel to AB|la parallèle à AB'],
+   X('Zeichne zwei Punkte, die von A und B gleich weit weg sind, und verbinde sie.','Mark two points equidistant from A and B and join them.','Marque deux points équidistants de A et B et relie-les.'),
+   X('Die Mittelsenkrechte von AB ist genau die Linie der Punkte mit gleichem Abstand zu A und B.','The perpendicular bisector of AB is exactly the line of points equidistant from A and B.','La médiatrice de AB est exactement la ligne des points équidistants de A et B.')],
+  [X('Alle Punkte, die von den Parallelen g und h gleich weit entfernt sind, liegen auf …','All points equidistant from the parallels g and h lie on …','Tous les points équidistants des parallèles g et h sont sur …'),
+   ['der Mittelparallelen|the mid-parallel|la parallèle médiane','der Winkelhalbierenden|the angle bisector|la bissectrice','einem Kreis|a circle|un cercle'],
+   X('Die Linie läuft mittig zwischen beiden und ist zu beiden parallel.','The line runs midway between the two and is parallel to both.','La ligne passe au milieu et est parallèle aux deux.'),
+   X('Die Mittelparallele liegt zwischen g und h und hat von beiden denselben Abstand.','The mid-parallel lies between g and h at the same distance from both.','La parallèle médiane est entre g et h, à égale distance des deux.')],
+  [X('Alle Punkte, die von zwei sich schneidenden Geraden gleich weit entfernt sind, liegen auf …','All points equidistant from two intersecting lines lie on …','Tous les points équidistants de deux droites sécantes sont sur …'),
+   ['der Winkelhalbierenden|the angle bisector|la bissectrice','der Mittelparallelen|the mid-parallel|la parallèle médiane','der Mittelsenkrechten|the perpendicular bisector|la médiatrice'],
+   X('Die beiden Geraden bilden einen Winkel. Welche Linie teilt ihn?','The two lines form an angle. Which line halves it?','Les deux droites forment un angle. Quelle ligne le partage ?'),
+   X('Die Winkelhalbierende teilt den Winkel in zwei gleiche Teile; jeder ihrer Punkte hat von beiden Schenkeln denselben Abstand.','The angle bisector halves the angle; each of its points is the same distance from both arms.','La bissectrice partage l’angle ; chacun de ses points est à égale distance des deux côtés.')],
+  [X('Alle Punkte, die von M genau 3 cm entfernt sind, liegen auf …','All points exactly 3 cm from M lie on …','Tous les points à exactement 3 cm de M sont sur …'),
+   ['einem Kreis um M mit Radius 3 cm|a circle around M of radius 3 cm|un cercle de centre M et de rayon 3 cm','einer Geraden durch M|a line through M|une droite par M','der Mittelsenkrechten|the perpendicular bisector|la médiatrice'],
+   X('Der Zirkel zeichnet genau diese Linie.','The compasses draw exactly this line.','Le compas trace exactement cette ligne.'),
+   X('Ein fester Abstand von einem Punkt ergibt einen Kreis — die vierte Ortslinie.','A fixed distance from one point gives a circle — the fourth locus.','Une distance fixe à un point donne un cercle — le quatrième lieu.')],
+  [X('Die Mittelsenkrechte von AB ist die Linie aller Punkte, die …','The perpendicular bisector of AB is the line of all points that …','La médiatrice de AB est la ligne de tous les points qui …'),
+   ['von A und B gleich weit entfernt sind|are equidistant from A and B|sont équidistants de A et B','auf AB liegen|lie on AB|sont sur AB','von A doppelt so weit entfernt sind wie von B|are twice as far from A as from B|sont deux fois plus loin de A que de B'],
+   X('Lies die Regel rückwärts: der Name nennt die Bedingung.','Read the rule backwards: the name states the condition.','Lis la règle à l’envers : le nom dit la condition.'),
+   X('Jeder Name einer Ortslinie lässt sich in seine Bedingung übersetzen und umgekehrt.','Every locus name translates into its condition and back.','Chaque nom de lieu se traduit en sa condition, et inversement.')],
+  [X('Ein Punkt C soll von A und B gleich weit entfernt sein und zugleich von den Parallelen g und h. Wo liegt er?','A point C is to be equidistant from A and B and also from the parallels g and h. Where is it?','Un point C doit être équidistant de A et B et aussi des parallèles g et h. Où est-il ?'),
+   ['im Schnittpunkt der Mittelsenkrechten von AB mit der Mittelparallelen von g und h|at the intersection of the perpendicular bisector of AB with the mid-parallel of g and h|à l’intersection de la médiatrice de AB et de la parallèle médiane de g et h',
+    'in der Mitte zwischen A und B|midway between A and B|au milieu entre A et B',
+    'auf der Mittelparallelen, irgendwo|somewhere on the mid-parallel|quelque part sur la parallèle médiane'],
+   X('Zeichne beide Ortslinien. Der gesuchte Punkt erfüllt beide Bedingungen zugleich.','Draw both loci. The point satisfies both conditions at once.','Trace les deux lieux. Le point remplit les deux conditions à la fois.'),
+   X('Zwei Bedingungen, zwei Ortslinien, ein Schnittpunkt. Genau so entsteht ein gesuchter Punkt.','Two conditions, two loci, one intersection. That is how a required point is found.','Deux conditions, deux lieux, une intersection. C’est ainsi qu’on trouve le point.')],
+  [X('Wie viele Bedingungen braucht es, um einen Punkt in der Ebene festzulegen?','How many conditions are needed to fix a point in the plane?','Combien de conditions faut-il pour fixer un point du plan ?'),
+   ['zwei|two|deux','eine|one|une','drei|three|trois'],
+   X('Eine Bedingung lässt eine ganze Linie übrig.','One condition leaves a whole line.','Une seule condition laisse toute une ligne.'),
+   X('Eine Bedingung ergibt eine Ortslinie, zwei Bedingungen ihren Schnittpunkt.','One condition gives a locus, two give its intersection point.','Une condition donne un lieu, deux donnent leur intersection.')]];
+  const q=pick(lv===1?Q.slice(0,4):Q);const opts=q[1].map(T3);
+  const it=choiceItem(q[0],opts[0],opts.slice(1));return steps(it,[q[2],q[3]]);});
 
 /* ---------- Aufgaben als Themen eintragen ---------- */
 function kLang(){return S.lang==='en'?1:S.lang==='fr'?2:0;}
