@@ -942,6 +942,12 @@ T.fr.penMode="Mode stylo (Apple Pencil)";
 T.de.penNote="Eingeschaltet zeigt jede Frage ein Notizblatt zum Rechnen und Zeichnen und vergrössert die Eingabefelder für die Handschrift. Ausschalten, wenn ohne Stift gespielt wird.";
 T.en.penNote="When on, every question shows a scratch pad for working out and the input fields are enlarged for handwriting. Switch it off when playing without a pen.";
 T.fr.penNote="Activé, chaque question affiche un brouillon et agrandit les champs de saisie pour l’écriture. À désactiver si l’on joue sans stylet.";
+T.de.birthday="Geburtstag";T.en.birthday="Date of birth";T.fr.birthday="Date de naissance";
+T.de.birthNote="Das Alter bestimmt, auf welcher Stufe die Minispiele beginnen, und setzt eine Untergrenze, unter die sie nicht zurückfallen. Nach oben entscheidet das Können, nicht das Alter. Ohne Geburtstag beginnt jeder bei Stufe 1.";
+T.en.birthNote="The age sets the level at which the minigames start and a floor they do not fall below. Above that, ability decides, not age. Without a date of birth everyone starts at level 1.";
+T.fr.birthNote="L’âge fixe le niveau de départ des mini-jeux et un plancher sous lequel ils ne redescendent pas. Au-dessus, c’est la capacité qui décide, pas l’âge. Sans date de naissance, chacun commence au niveau 1.";
+T.de.yearsOld="{n} Jahre";T.en.yearsOld="{n} years";T.fr.yearsOld="{n} ans";
+T.de.gameLevel="Spielstufe {n}";T.en.gameLevel="Game level {n}";T.fr.gameLevel="Niveau de jeu {n}";
 T.de.confirmLeaveRun="Der laufende Durchgang wird beendet. Verwaltung trotzdem öffnen?";
 T.en.confirmLeaveRun="The current session will end. Open the parental area anyway?";
 T.fr.confirmLeaveRun="La partie en cours sera terminée. Ouvrir quand même l’espace parental ?";
@@ -1680,7 +1686,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V96';
+const APPVER='V97';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -2295,12 +2301,49 @@ function spiel(id,n,kurz,ziel,bau){
 const SPIELSTUFEN=5;    /* drei reichten einem Siebenjaehrigen, nicht einem
                            Jugendlichen: auf Stufe 3 war die Luft nach oben
                            weg. Fuenf lassen beiden Raum. */
+/* ---------- Alter ----------
+   Marie meldete am 5.11.2026, die Minispiele passten nicht zum Alter. Mit
+   Felix (7), Valentin (10) und Johannes (12) an denselben Spielen ist eine
+   gemeinsame Einstellung zu grob. Das Alter setzt darum die Anfangsstufe. */
+function alterJahre(p,jetzt){
+ if(!p||!p.geb)return null;
+ const g=new Date(String(p.geb)+'T00:00:00');
+ if(isNaN(g.getTime()))return null;
+ const d=jetzt||new Date();
+ let j=d.getFullYear()-g.getFullYear();
+ const schonGehabt=(d.getMonth()>g.getMonth())
+  ||(d.getMonth()===g.getMonth()&&d.getDate()>=g.getDate());
+ if(!schonGehabt)j--;
+ return (j>=0&&j<130)?j:null;}
+/* Bis zu diesem Alter gilt die Stufe; darueber die naechste. */
+const ALTERSSTUFEN=[[7,1],[9,2],[11,3],[13,4]];
+function altersStufe(p){
+ const j=alterJahre(p);
+ if(j===null)return 1;
+ for(const [bis,s] of ALTERSSTUFEN)if(j<=bis)return s;
+ return SPIELSTUFEN;}
+/* Das Alter gibt den Anfang und einen Boden eine Stufe darunter. Nach oben
+   gibt es keine Grenze ausser Stufe 5.
+
+   Eine Decke bei Alter plus eins stand hier kurz und war falsch. Felix
+   stand mit sieben Jahren auf Stufe 4, und ich hielt das fuer eine
+   verrutschte Einstellung. Urs stellte am 5.11.2026 richtig: Felix ist in
+   Mathematik hochbegabt, die Stufe war verdient. Eine Decke haette ihn auf
+   Stufe 2 heruntergeholt - derselbe Fehler, ueber den Johannes klagte, nur
+   in die andere Richtung.
+
+   Das Alter sagt, wo ein Kind anfaengt und wie tief es fallen kann. Wie
+   hoch es steigt, sagt das Koennen. */
+/* Ohne Geburtstag weiss die App nichts ueber das Kind. Dann gilt die volle
+   Leiter, wie vor der Altersstaffelung. */
+function spielBoden(p){return alterJahre(p)===null?1:Math.max(1,altersStufe(p)-1);}
 function spielStufe(p){
  const v=p&&p.spielStufe;
- return Math.max(1,Math.min(SPIELSTUFEN,typeof v==='number'&&isFinite(v)?Math.round(v):1));}
+ const gelernt=(typeof v==='number'&&isFinite(v))?Math.round(v):altersStufe(p);
+ return Math.max(spielBoden(p),Math.min(SPIELSTUFEN,gelernt));}
 async function spielStufeSetz(p,wert){
  if(!p||p.builtin)return;
- const neu=Math.max(1,Math.min(SPIELSTUFEN,wert));
+ const neu=Math.max(spielBoden(p),Math.min(SPIELSTUFEN,wert));
  if(neu===spielStufe(p))return;
  p.spielStufe=neu;
  try{await saveProfiles();}catch(_){}}
@@ -9475,7 +9518,9 @@ function viewAdmin(tab){
 function adminPlayers(body){
  body.append(h('div',{class:'row',style:'margin-bottom:14px'},h('button',{class:'btn',onclick:()=>editPlayer(null)},'+ '+t('addPlayer'))),
   h('div',{class:'list'},S.profiles.map(p=>h('div',{class:'item'},h('span',{style:'font-size:2rem'},p.avatar),
-   h('div',{class:'grow'},h('b',{},p.name),h('div',{class:'small muted'},t('level',{n:levelOf(st(p.id).xp)})+' · '+st(p.id).xp+' '+t('points')+' · '+st(p.id).badges.length+' 🏅'+(p.unlockAll?' · 🔓':'')+(penOn(p)?' · 🖊':''))),
+   h('div',{class:'grow'},h('b',{},p.name),h('div',{class:'small muted'},t('level',{n:levelOf(st(p.id).xp)})+' · '+st(p.id).xp+' '+t('points')+' · '+st(p.id).badges.length+' 🏅'
+     +(alterJahre(p)!==null?' · '+t('yearsOld',{n:alterJahre(p)})+' · '+t('gameLevel',{n:spielStufe(p)}):'')
+     +(p.unlockAll?' · 🔓':'')+(penOn(p)?' · 🖊':''))),
    p.builtin?h('span',{class:'tag'},t('builtinPlayer')):h('button',{class:'btn ghost small',onclick:()=>editPlayer(p)},t('edit')),
    p.builtin?h('button',{class:'btn ghost small',onclick:()=>resetTest()},t('resetProgress'))
     :h('button',{class:'btn danger small',onclick:async()=>{if(!confirm(t('confirmDelPlayer',{name:p.name})))return;S.profiles=S.profiles.filter(x=>x.id!==p.id);
@@ -9487,19 +9532,30 @@ async function resetTest(){if(!confirm(t('confirmResetTest')))return;
  computeState();toast(t('testReset',{n:gone.length}));viewAdmin('players');
 }
 function editPlayer(p){
- const d={name:p?p.name:'',avatar:p?p.avatar:AVATARS[Math.floor(Math.random()*AVATARS.length)],unlockAll:p?!!p.unlockAll:false,pen:p?p.pen!==false:true};
+ const d={name:p?p.name:'',avatar:p?p.avatar:AVATARS[Math.floor(Math.random()*AVATARS.length)],unlockAll:p?!!p.unlockAll:false,pen:p?p.pen!==false:true,geb:p&&p.geb?p.geb:''};
  const dlg=$('#dlg');const nm=h('input',{type:'text',id:'pn',value:d.name,maxlength:'30'});
  const avs=h('div',{class:'avpick'});const drawAv=()=>avs.replaceChildren(...AVATARS.map(a=>h('button',{type:'button','aria-pressed':String(d.avatar===a),onclick:()=>{d.avatar=a;drawAv();}},a)));drawAv();
  const ua=h('input',{type:'checkbox',id:'ua'});ua.checked=d.unlockAll;
  const pe=h('input',{type:'checkbox',id:'pe'});pe.checked=d.pen;
+ /* Der Geburtstag, und daneben sofort, was er bewirkt. */
+ const heuteStr=new Date().toISOString().slice(0,10);
+ const gbInfo=h('p',{class:'small'});
+ const gb=h('input',{type:'date',id:'pg',value:d.geb,max:heuteStr});
+ const gbZeige=()=>{const j=alterJahre({geb:gb.value});
+  gbInfo.textContent=j===null?'':t('yearsOld',{n:j})+' · '+t('gameLevel',{n:altersStufe({geb:gb.value})});};
+ gb.addEventListener('change',gbZeige);gb.addEventListener('input',gbZeige);gbZeige();
  dlg.replaceChildren(h('div',{class:'stack'},h('h2',{},p?t('editPlayer'):t('addPlayer')),
   h('div',{},h('label',{class:'f',for:'pn'},t('name')),nm),h('div',{},h('div',{class:'f'},t('avatar')),avs),
   h('label',{},ua,' '+t('unlockAll')),
+  h('div',{},h('label',{class:'f',for:'pg'},t('birthday')),gb,
+   h('p',{class:'small muted'},t('birthNote')),gbInfo),
   h('div',{},h('label',{},pe,' '+t('penMode')),h('p',{class:'small muted'},t('penNote'))),
   p?h('button',{class:'btn danger small',onclick:async()=>{if(!confirm(t('confirmReset',{name:p.name})))return;p.resetAt=new Date().toISOString();
    await saveProfiles();computeState();dlg.close();viewAdmin('players');}},t('resetProgress')):null,
   h('div',{class:'row'},h('button',{class:'btn',onclick:async()=>{const n=nm.value.trim();if(!n)return nm.focus();
-   if(p){p.name=n;p.avatar=d.avatar;p.unlockAll=ua.checked;p.pen=pe.checked;}else S.profiles.push({id:uid(),name:n,avatar:d.avatar,unlockAll:ua.checked,pen:pe.checked,createdAt:new Date().toISOString()});
+   const geb=gb.value||'';
+   if(p){p.name=n;p.avatar=d.avatar;p.unlockAll=ua.checked;p.pen=pe.checked;if(geb)p.geb=geb;else delete p.geb;}
+   else S.profiles.push({id:uid(),name:n,avatar:d.avatar,unlockAll:ua.checked,pen:pe.checked,geb:geb||undefined,createdAt:new Date().toISOString()});
    try{await saveProfiles();}catch(e){return toast(t('err',{e:e.message}),true);}computeState();dlg.close();viewAdmin('players');}},t('save')),
    h('button',{class:'btn ghost',onclick:()=>dlg.close()},t('cancel')))));
  dlg.showModal();nm.focus();
