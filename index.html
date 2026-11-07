@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V99';
+const APPVER='V100';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -6338,6 +6338,22 @@ function exprItem(prompt,ans,o){return Object.assign({type:'expr',prompt,expr:an
 function lin(a,b,v){v=v||'x';const A=a===0?'':a===1?v:a===-1?'−'+v:fmtN(a)+v;const B=b===0?'':(b<0?' − '+fmtN(-b):(A?' + ':'')+fmtN(b));return(A+B)||'0';}
 function quad(a,b,c){const parts=[];if(a)parts.push((a===1?'':a===-1?'−':fmtN(a))+'x²');if(b)parts.push((b===1?'x':b===-1?'−x':fmtN(b)+'x'));if(c)parts.push(fmtN(c));
  return parts.map((p,i)=>i===0?p:(p.startsWith('−')?' − '+p.slice(1):' + '+p)).join('')||'0';}
+/* ---------- Klammern pruefen: welche Klammer ist wirklich noetig? ---------- */
+function kpaare(s){const st=[],out=[];
+ for(let i=0;i<s.length;i++){if(s[i]==='(')st.push(i);else if(s[i]===')')out.push([st.pop(),i]);}
+ return out.sort((a,b)=>a[0]-b[0]);}
+function kwert(s){const f=exprFn(s);if(!f)return null;const v=f(0);
+ return isFinite(v)?Math.round(v*1e9)/1e9:null;}
+function kohne(s,paare){const idx=[].concat.apply([],paare).sort((a,b)=>b-a);
+ let r=s;for(const i of idx)r=r.slice(0,i)+r.slice(i+1);return r;}
+function knoetig(s){const p=kpaare(s),w=kwert(s);
+ return p.map(pr=>kwert(kohne(s,[pr]))!==w);}
+/* Eine Klammer kann erst dadurch ueberfluessig werden, dass eine
+   andere faellt. Darum wird so lange entfernt, bis nichts mehr geht. */
+function kminimal(s){const w=kwert(s);let r=s,weiter=true;
+ while(weiter){weiter=false;
+  for(const pr of kpaare(r)){const t=kohne(r,[pr]);if(kwert(t)===w){r=t;weiter=true;break;}}}
+ return r;}
 function nr1(v){return Math.round(v*10)/10;}
 /* ---- figures ---- */
 function figPlot(o){/* o:{fns:[f], x0,x1,y0,y1, pts} */ const g=figCoord({x0:o.x0,x1:o.x1,y0:o.y0,y1:o.y1,pts:o.pts||[]});const s=g.el;const c=34,H=(o.y1-o.y0)*c+50;const X2=x=>30+(x-o.x0)*c,Y2=y=>H-30-(y-o.y0)*c;
@@ -6399,6 +6415,202 @@ topic('m7-percent',7,1,['Prozentrechnen','Percentage calculations','Calculs de p
 topic('m7-word',7,1,['Sachaufgaben','Word problems','Problèmes'],
  ['Schreibe auf, was gegeben und was gesucht ist. Zerlege in Schritte und prüfe am Schluss mit einem Überschlag.','Write down what is given and what is wanted. Break it into steps and check with an estimate at the end.','Note ce qui est donné et ce qui est cherché. Découpe en étapes et vérifie à la fin avec une estimation.'],['sum','product'],
  lv=>wordItem(pick(GSM.filter(g=>g[3].length>=2))));
+/* ---------- Pruefungsstoff Klammern, Distributivgesetz, Rechenworte ---------- */
+const SUPZ=['⁰','¹','²','³','⁴','⁵','⁶','⁷','⁸'];
+topic('m7-distributive',7,1,['Distributivgesetz','The distributive law','La distributivité'],
+ ['a · (b + c) = a · b + a · c. Beim Teilen gilt dasselbe: (a + b) : c = a : c + b : c. Der Faktor vor der Klammer trifft jeden Summanden einzeln.',
+  'a · (b + c) = a · b + a · c. Dividing works the same way: (a + b) : c = a : c + b : c. The factor outside meets every term inside.',
+  'a · (b + c) = a · b + a · c. Pour la division, c’est pareil : (a + b) : c = a : c + b : c. Le facteur devant la parenthèse touche chaque terme.'],
+ ['distributive','brackets','product'],
+ lv=>{const hi=lv===1?9:lv===2?12:20;const k=ri(0,3);
+  if(k===0){const a=ri(3,hi),b=ri(2,hi),c=ri(2,hi);const v=a*(b+c);
+   return steps(numItem(a+' · ('+b+' + '+c+') = ?',v),
+    [X('Klammer zuerst: ','Brackets first: ','Parenthèse d’abord : ')+b+' + '+c+' = '+(b+c)+'.',
+     X('Oder einzeln: ','Or term by term: ','Ou terme par terme : ')+a+' · '+b+' + '+a+' · '+c+' = '+(a*b)+' + '+(a*c)+'.',
+     String(v)]);}
+  if(k===1){const a=ri(3,hi),b=ri(2,hi),c=ri(2,hi);
+   return steps(choiceItem(X('Suche die gleichwertige Rechnung zu ','Find the calculation that equals ','Cherche le calcul égal à ')+a+' · ('+b+' + '+c+').',
+     a+' · '+b+' + '+a+' · '+c,
+     [a+' · '+b+' + '+c, a+' · '+b+' · '+a+' · '+c, '('+a+' + '+b+') · ('+a+' + '+c+')']),
+    [X('Der Faktor vor der Klammer trifft jeden Summanden einzeln.','The factor outside meets every term inside.','Le facteur devant la parenthèse touche chaque terme.'),
+     a+' · ('+b+' + '+c+') = '+a+' · '+b+' + '+a+' · '+c+'.']);}
+  if(k===2){const d=ri(2,9),p=ri(2,hi),q=ri(2,hi);const A=d*p,B=d*q;
+   return steps(numItem('('+A+' + '+B+') : '+d+' = ?',p+q),
+    [X('Einzeln teilen: ','Divide term by term: ','Divise terme par terme : ')+A+' : '+d+' = '+p+', '+B+' : '+d+' = '+q+'.',
+     X('Oder Klammer zuerst: ','Or brackets first: ','Ou parenthèse d’abord : ')+A+' + '+B+' = '+(A+B)+', '+(A+B)+' : '+d+' = '+(p+q)+'.',
+     String(p+q)]);}
+  const f=ri(3,hi),u=ri(2,hi),w=ri(2,hi);
+  return steps(numItem(X('Setze die fehlende Zahl ein: ','Fill in the missing number: ','Complète le nombre manquant : ')+'___ · ('+u+' + '+w+') = '+f+' · '+u+' + '+f+' · '+w,f),
+   [X('Rechts steht beide Male derselbe Faktor.','The same factor appears twice on the right.','Le même facteur apparaît deux fois à droite.'),
+    X('Dieser Faktor stand vor der Klammer.','That factor was in front of the brackets.','Ce facteur était devant la parenthèse.'),
+    String(f)]);});
+const KWEG=[
+ ()=>{const b=ri(2,9),m=ri(2,9),c=ri(2,9),d=ri(2,9);return '('+(b*m)+' : '+b+') + ('+c+' · '+d+')';},
+ ()=>{const a=ri(3,9),b=ri(3,9),d=ri(2,6);const q=ri(1,Math.max(1,Math.floor((a*b-1)/d)));
+  return '(('+a+' · '+b+') − '+(a*b-q*d)+') : '+d;},
+ ()=>{const c=ri(2,9),s=ri(3,9),A=ri(2,Math.min(9,c*s-2));const d=ri(4,12),e=ri(1,d-1);
+  return '('+A+' + '+(c*s-A)+') : '+c+' − ('+d+' − '+e+')';},
+ ()=>{const C=ri(2,6),q=ri(2,6),A=q*ri(2,9),D=ri(2,9),E=ri(2,9);
+  return A+' : ('+(C*q)+' : '+C+') + ('+D+' + '+E+')';},
+ ()=>{const a=ri(2,9),b=ri(2,9),c=ri(2,9),d=ri(2,9),e=ri(2,9);
+  return a+' · ('+b+' + '+c+') + ('+d+' · '+e+')';},
+ ()=>{const a=ri(2,9),b=ri(2,9),d=ri(2,9),q=ri(2,9);
+  return '('+(a*b)+' : '+b+') + ('+(d*q)+' : '+d+')';},
+ ()=>{const c=ri(2,6),s=ri(2,8),b=ri(1,c*s-1),d=ri(2,9),e=ri(2,9);
+  return '('+(c*s+b)+' − '+b+') : '+c+' + ('+d+' · '+e+')';},
+ ()=>{const a=ri(2,9),b=ri(2,9),D=ri(2,9),C=D*ri(2,4);
+  return '(('+a+' + '+b+') · '+C+') : '+D;}];
+topic('m7-klammern-weg',7,1,['Klammern weglassen','Dropping unnecessary brackets','Supprimer les parenthèses inutiles'],
+ ['Punkt vor Strich gilt auch ohne Klammer. Eine Klammer ist nur nötig, wenn sie die Reihenfolge wirklich ändert. Nach einem Minus oder einem Geteilt-Zeichen ändert sie fast immer etwas.',
+  'Times and divide come before plus and minus even without brackets. Brackets are only needed when they really change the order. After a minus or a division sign they almost always do.',
+  'La multiplication passe avant l’addition même sans parenthèses. Une parenthèse n’est nécessaire que si elle change vraiment l’ordre. Après un moins ou une division, c’est presque toujours le cas.'],
+ ['brackets'],
+ lv=>{for(let n2=0;n2<60;n2++){
+   const s=KWEG[ri(0,KWEG.length-1)]();const v=kwert(s);
+   if(v===null||!Number.isInteger(v)||v<0||v>100000)continue;
+   const k=lv===1?ri(0,1):ri(0,2);
+   if(k===0)return steps(numItem(s+' = ?',v),
+    [X('Rechne zuerst, was in den Klammern steht.','Work out what is inside the brackets first.','Calcule d’abord ce qui est entre parenthèses.'),
+     X('Dann Punkt vor Strich.','Then multiply and divide before adding and subtracting.','Ensuite, multiplication et division avant addition et soustraction.'),
+     String(v)]);
+   const noetig=kpaare(kminimal(s)).length;
+   if(k===1){const falsch=[];for(let i=0;i<=kpaare(s).length;i++)if(i!==noetig)falsch.push(String(i));
+    return steps(choiceItem(X('Zähle, wie viele Klammern in ','Count how many brackets in ','Compte combien de parenthèses dans ')+s+X(' wirklich nötig sind.',' are really needed.',' sont vraiment nécessaires.'),String(noetig),falsch),
+     [X('Lass jede Klammer einmal weg und rechne nach.','Leave out each pair in turn and work it out again.','Enlève chaque paire à tour de rôle et recalcule.'),
+      X('Ändert sich das Ergebnis, war die Klammer nötig.','If the result changes, the brackets were needed.','Si le résultat change, la parenthèse était nécessaire.'),
+      X('Nötig: ','Needed: ','Nécessaires : ')+noetig]);}
+   const paare=kpaare(s),richtig=kminimal(s),alle=s.replace(/[()]/g,'');
+   if(richtig===s||!/\(/.test(richtig))continue;
+   return steps(choiceItem(X('Schreibe ','Write ','Écris ')+s+X(' ohne die Klammern, die nicht nötig sind.',' without the brackets that are not needed.',' sans les parenthèses inutiles.'),
+     richtig,[alle,s,kohne(s,[paare[0]])]),
+    [X('Prüfe jede Klammer einzeln: Ändert sie das Ergebnis?','Check each pair on its own: does it change the result?','Vérifie chaque paire séparément : change-t-elle le résultat ?'),
+     X('Nur die nötigen Klammern bleiben stehen.','Only the necessary brackets stay.','Seules les parenthèses nécessaires restent.'),
+     richtig+' = '+v]);}
+  const a=ri(2,9),b=ri(2,9);
+  return steps(numItem('('+(a*b)+' : '+b+') + '+a+' = ?',a+a),
+   [X('Die Klammer ändert hier nichts.','The brackets change nothing here.','La parenthèse ne change rien ici.'),String(a+a)]);});
+topic('m7-klammer-setzen',7,1,['Klammer setzen','Placing the brackets','Placer la parenthèse'],
+ ['Rechne zuerst ohne Klammer. Stimmt das Ergebnis nicht, suche die Stelle, an der eine Klammer die Reihenfolge ändert. Probiere jede mögliche Stelle durch.',
+  'Work it out without brackets first. If the result is wrong, look for the place where brackets change the order. Try every possible place.',
+  'Calcule d’abord sans parenthèse. Si le résultat ne correspond pas, cherche l’endroit où une parenthèse change l’ordre. Essaie chaque possibilité.'],
+ ['brackets'],
+ lv=>{const n=lv===1?3:4;
+  for(let versuch=0;versuch<80;versuch++){
+   const zs=[],ops=[];
+   for(let i=0;i<n;i++)zs.push(ri(2,12));
+   for(let i=0;i<n-1;i++)ops.push(pick(['+','−','·',':']));
+   const flach=zs.map((z,i)=>i<n-1?z+' '+ops[i]:''+z).join(' ');
+   const ohne=kwert(flach);if(ohne===null)continue;
+   const bau=(i,j)=>{let s='';for(let m=0;m<n;m++){if(m===i)s+='(';s+=zs[m];if(m===j)s+=')';if(m<n-1)s+=' '+ops[m]+' ';}return s;};
+   const kand=[];
+   for(let i=0;i<n-1;i++)for(let j=i+1;j<n;j++){if(i===0&&j===n-1)continue;
+    const s=bau(i,j),v=kwert(s);
+    if(v!==null&&Number.isInteger(v)&&v>=0&&v<=10000)kand.push([s,v]);}
+   if(kand.length<3)continue;
+   const gut=kand.filter(c=>c[1]!==ohne&&kand.filter(d=>d[1]===c[1]).length===1);
+   if(!gut.length)continue;
+   const z=gut[ri(0,gut.length-1)];
+   const falsch=kand.filter(c=>c[1]!==z[1]).map(c=>c[0]).sort(()=>Math.random()-.5).slice(0,3);
+   if(falsch.length<2)continue;
+   return steps(choiceItem(X('Setze eine Klammer, sodass die Rechnung stimmt: ','Place one pair of brackets so that the calculation is right: ','Place une parenthèse pour que le calcul soit juste : ')+flach+' = '+z[1],z[0],falsch),
+    [X('Ohne Klammer ergibt die Rechnung ','Without brackets the calculation gives ','Sans parenthèse le calcul donne ')+fmtN(ohne)+'.',
+     X('Gesucht ist ','The target is ','On cherche ')+z[1]+'.',
+     z[0]+' = '+z[1]]);}
+  return steps(choiceItem(X('Setze eine Klammer, sodass die Rechnung stimmt: ','Place one pair of brackets so that the calculation is right: ','Place une parenthèse pour que le calcul soit juste : ')+'2 + 3 · 4 = 20',
+    '(2 + 3) · 4',['2 + (3 · 4)']),
+   ['2 + 3 · 4 = 14.','(2 + 3) · 4 = 20']);});
+const RW_A=[
+ ()=>{const c=pick([2,5,10]),s=c*ri(2,9),a=ri(2,s-2);
+  return {t:X('Bilde die Summe von '+a+' und '+(s-a)+'. Dividiere dann durch '+c+'.',
+              'Add '+a+' and '+(s-a)+'. Then divide by '+c+'.',
+              'Fais la somme de '+a+' et '+(s-a)+'. Divise ensuite par '+c+'.'),
+          r:'('+a+' + '+(s-a)+') : '+c,v:s/c};},
+ ()=>{const a=ri(3,15),b=ri(2,9),c=ri(2,20);
+  return {t:X('Addiere '+c+' zum Produkt der beiden Zahlen '+a+' und '+b+'.',
+              'Add '+c+' to the product of the two numbers '+a+' and '+b+'.',
+              'Ajoute '+c+' au produit des deux nombres '+a+' et '+b+'.'),
+          r:a+' · '+b+' + '+c,v:a*b+c};},
+ ()=>{const a=ri(5,15),b=ri(3,9);
+  return {t:X('Bilde das Produkt von '+a+' und '+b+'. Subtrahiere dann die Summe dieser beiden Zahlen.',
+              'Form the product of '+a+' and '+b+'. Then subtract the sum of these two numbers.',
+              'Forme le produit de '+a+' et '+b+'. Soustrais ensuite la somme de ces deux nombres.'),
+          r:a+' · '+b+' − ('+a+' + '+b+')',v:a*b-(a+b)};},
+ ()=>{const b=ri(2,12),q=4*ri(2,9),a=b*q;
+  return {t:X('Teile '+a+' durch '+b+'. Dividiere dann durch die zweite Potenz von 2.',
+              'Divide '+a+' by '+b+'. Then divide by the second power of 2.',
+              'Divise '+a+' par '+b+'. Divise ensuite par la deuxième puissance de 2.'),
+          r:'('+a+' : '+b+') : 2²',v:q/4};},
+ ()=>{const a=pick([3,4,5]),n=pick([3,4]),c=pick([2,5,10]);const P=Math.pow(a,n);const b=P-c*ri(1,Math.floor((P-1)/c));
+  return {t:X('Bilde die '+n+'. Potenz von '+a+'. Subtrahiere davon '+b+' und teile das Resultat durch '+c+'.',
+              'Form the '+n+(n===3?'rd':'th')+' power of '+a+'. Subtract '+b+' from it and divide the result by '+c+'.',
+              'Forme la puissance '+n+' de '+a+'. Soustrais-en '+b+' et divise le résultat par '+c+'.'),
+          r:'('+a+SUPZ[n]+' − '+b+') : '+c,v:(P-b)/c};},
+ ()=>{const a=ri(10,40),b=a+ri(2,12);
+  return {t:X('Subtrahiere '+a+' von '+b+'. Quadriere das Ergebnis.',
+              'Subtract '+a+' from '+b+'. Square the result.',
+              'Soustrais '+a+' de '+b+'. Élève le résultat au carré.'),
+          r:'('+b+' − '+a+')²',v:(b-a)*(b-a)};},
+ ()=>{const a=ri(6,15),b=ri(2,a-1);
+  return {t:X('Addiere zum Produkt der beiden Zahlen '+a+' und '+b+' ihre Differenz.',
+              'Add their difference to the product of the two numbers '+a+' and '+b+'.',
+              'Ajoute leur différence au produit des deux nombres '+a+' et '+b+'.'),
+          r:a+' · '+b+' + ('+a+' − '+b+')',v:a*b+(a-b)};},
+ ()=>{const a=ri(2,9),n=ri(3,6);
+  return {t:X('Multipliziere '+a+' mit der '+n+'. Potenz von 2.',
+              'Multiply '+a+' by the '+n+(n===3?'rd':'th')+' power of 2.',
+              'Multiplie '+a+' par la puissance '+n+' de 2.'),
+          r:a+' · 2'+SUPZ[n],v:a*Math.pow(2,n)};}];
+const RW_B=[
+ ()=>{const a=ri(30,90),b=ri(5,20),c=ri(2,9);
+  return {q:a+' − ('+b+' + '+c+')',
+   r:X('Subtrahiere von '+a+' die Summe von '+b+' und '+c+'.','Subtract from '+a+' the sum of '+b+' and '+c+'.','Soustrais de '+a+' la somme de '+b+' et '+c+'.'),
+   f:[X('Subtrahiere von '+a+' die Differenz von '+b+' und '+c+'.','Subtract from '+a+' the difference of '+b+' and '+c+'.','Soustrais de '+a+' la différence de '+b+' et '+c+'.'),
+      X('Addiere zu '+a+' die Summe von '+b+' und '+c+'.','Add to '+a+' the sum of '+b+' and '+c+'.','Ajoute à '+a+' la somme de '+b+' et '+c+'.'),
+      X('Subtrahiere '+a+' von der Summe von '+b+' und '+c+'.','Subtract '+a+' from the sum of '+b+' and '+c+'.','Soustrais '+a+' de la somme de '+b+' et '+c+'.')]};},
+ ()=>{const a=ri(2,9),b=ri(20,60),c=ri(3,19);
+  return {q:a+' · ('+b+' − '+c+')',
+   r:X('Multipliziere '+a+' mit der Differenz von '+b+' und '+c+'.','Multiply '+a+' by the difference of '+b+' and '+c+'.','Multiplie '+a+' par la différence de '+b+' et '+c+'.'),
+   f:[X('Multipliziere '+a+' mit der Summe von '+b+' und '+c+'.','Multiply '+a+' by the sum of '+b+' and '+c+'.','Multiplie '+a+' par la somme de '+b+' et '+c+'.'),
+      X('Subtrahiere '+c+' vom Produkt von '+a+' und '+b+'.','Subtract '+c+' from the product of '+a+' and '+b+'.','Soustrais '+c+' du produit de '+a+' et '+b+'.'),
+      X('Subtrahiere das Produkt von '+a+' und '+c+' von '+b+'.','Subtract the product of '+a+' and '+c+' from '+b+'.','Soustrais le produit de '+a+' et '+c+' de '+b+'.')]};},
+ ()=>{const n=ri(3,7),c=ri(2,20);
+  return {q:'2'+SUPZ[n]+' − '+c,
+   r:X('Subtrahiere '+c+' von der '+n+'. Potenz von 2.','Subtract '+c+' from the '+n+(n===3?'rd':'th')+' power of 2.','Soustrais '+c+' de la puissance '+n+' de 2.'),
+   f:[X('Subtrahiere die '+n+'. Potenz von 2 von '+c+'.','Subtract the '+n+(n===3?'rd':'th')+' power of 2 from '+c+'.','Soustrais la puissance '+n+' de 2 de '+c+'.'),
+      X('Multipliziere 2 mit '+n+' und subtrahiere '+c+'.','Multiply 2 by '+n+' and subtract '+c+'.','Multiplie 2 par '+n+' et soustrais '+c+'.'),
+      X('Bilde die '+n+'. Potenz von 2 und addiere '+c+'.','Form the '+n+(n===3?'rd':'th')+' power of 2 and add '+c+'.','Forme la puissance '+n+' de 2 et ajoute '+c+'.')]};},
+ ()=>{const b=ri(3,13),q=ri(3,12),a=b*q,c=ri(2,q-1);
+  return {q:'('+a+' : '+b+') − '+c,
+   r:X('Dividiere '+a+' durch '+b+' und subtrahiere dann '+c+'.','Divide '+a+' by '+b+' and then subtract '+c+'.','Divise '+a+' par '+b+', puis soustrais '+c+'.'),
+   f:[X('Dividiere '+a+' durch die Differenz von '+b+' und '+c+'.','Divide '+a+' by the difference of '+b+' and '+c+'.','Divise '+a+' par la différence de '+b+' et '+c+'.'),
+      X('Dividiere '+a+' durch '+b+' und addiere dann '+c+'.','Divide '+a+' by '+b+' and then add '+c+'.','Divise '+a+' par '+b+', puis ajoute '+c+'.'),
+      X('Subtrahiere '+c+' von '+a+' und dividiere dann durch '+b+'.','Subtract '+c+' from '+a+' and then divide by '+b+'.','Soustrais '+c+' de '+a+', puis divise par '+b+'.')]};},
+ ()=>{const c=ri(2,9),s=c*ri(3,9),a=ri(2,s-2);const b=s-a;
+  return {q:'('+a+' + '+b+') : '+c,
+   r:X('Dividiere die Summe von '+a+' und '+b+' durch '+c+'.','Divide the sum of '+a+' and '+b+' by '+c+'.','Divise la somme de '+a+' et '+b+' par '+c+'.'),
+   f:[X('Addiere '+a+' zum Quotienten von '+b+' und '+c+'.','Add '+a+' to the quotient of '+b+' and '+c+'.','Ajoute '+a+' au quotient de '+b+' et '+c+'.'),
+      X('Dividiere die Differenz von '+a+' und '+b+' durch '+c+'.','Divide the difference of '+a+' and '+b+' by '+c+'.','Divise la différence de '+a+' et '+b+' par '+c+'.'),
+      X('Dividiere '+c+' durch die Summe von '+a+' und '+b+'.','Divide '+c+' by the sum of '+a+' and '+b+'.','Divise '+c+' par la somme de '+a+' et '+b+'.')]};},
+ ()=>{const a=ri(3,14),b=ri(2,9),c=ri(2,25);
+  return {q:a+' · '+b+' + '+c,
+   r:X('Addiere '+c+' zum Produkt von '+a+' und '+b+'.','Add '+c+' to the product of '+a+' and '+b+'.','Ajoute '+c+' au produit de '+a+' et '+b+'.'),
+   f:[X('Multipliziere '+a+' mit der Summe von '+b+' und '+c+'.','Multiply '+a+' by the sum of '+b+' and '+c+'.','Multiplie '+a+' par la somme de '+b+' et '+c+'.'),
+      X('Addiere '+a+', '+b+' und '+c+'.','Add '+a+', '+b+' and '+c+'.','Additionne '+a+', '+b+' et '+c+'.'),
+      X('Subtrahiere '+c+' vom Produkt von '+a+' und '+b+'.','Subtract '+c+' from the product of '+a+' and '+b+'.','Soustrais '+c+' du produit de '+a+' et '+b+'.')]};}];
+topic('m7-rechenworte',7,1,['Rechenausdruck und Worte','Expressions in words','Expressions en mots'],
+ ['Summe heisst plus, Differenz minus, Produkt mal, Quotient geteilt. «Subtrahiere a von b» heisst b − a. Halte die Reihenfolge der Wörter fest, bevor du rechnest.',
+  'Sum means plus, difference minus, product times, quotient divided. "Subtract a from b" means b − a. Note the order of the words before you calculate.',
+  'Somme veut dire plus, différence moins, produit fois, quotient divisé. « Soustrais a de b » veut dire b − a. Note l’ordre des mots avant de calculer.'],
+ ['sum','difference','product','quotient'],
+ lv=>{if(lv>=2&&Math.random()<.5){const d=RW_B[ri(0,RW_B.length-1)]();
+   return steps(choiceItem(X('Suche die passende Beschreibung für ','Find the description that fits ','Cherche la description qui convient à ')+d.q+'.',d.r,d.f),
+    [X('Lies den Term von innen nach aussen.','Read the expression from the inside out.','Lis l’expression de l’intérieur vers l’extérieur.'),
+     X('Die Klammer ist die Summe, die Differenz oder das Produkt.','The brackets hold the sum, the difference or the product.','La parenthèse contient la somme, la différence ou le produit.'),
+     d.q+': '+d.r]);}
+  const g=RW_A[ri(0,RW_A.length-1)]();
+  return steps(numItem(X('Notiere die Rechnung und bestimme das Ergebnis. ','Write down the calculation and work out the result. ','Note le calcul et détermine le résultat. ')+g.t,g.v),
+   [X('Schreibe zuerst den Term auf.','Write down the expression first.','Note d’abord l’expression.'),
+    g.r,g.r+' = '+fmtN(g.v)]);});
 topic('m7-parallelangles',7,2,['Winkel an Parallelen','Angles at parallel lines','Angles et droites parallèles'],
  ['Schneidet eine Gerade zwei Parallelen, sind Stufenwinkel und Wechselwinkel gleich gross. Nebenwinkel ergeben zusammen 180°.','When a line crosses two parallels, corresponding and alternate angles are equal. Adjacent angles add up to 180°.','Quand une droite coupe deux parallèles, les angles correspondants et alternes-internes sont égaux. Les angles adjacents font 180°.'],['angle','parallel'],
  lv=>{const a=ri(35,80);const cases=[[{p:2,dx:28,dy:-8},a,X('Stufenwinkel','corresponding angle','angle correspondant')],[{p:1,dx:-28,dy:-8},180-a,X('Nebenwinkel','adjacent angle','angle adjacent')],[{p:2,dx:-28,dy:24},a,''],[{p:1,dx:-26,dy:24},a,X('Scheitelwinkel','vertically opposite angle','angle opposé par le sommet')]];
@@ -6613,6 +6825,7 @@ topic('m9-relfreq',9,3,['Relative Häufigkeit','Relative frequency','Fréquence 
   return steps(it,[X('Relative Häufigkeit = ','Relative frequency = ','Fréquence relative = ')+k+' : '+n+' = '+fmtN(k/n)+'.',X('In Prozent: mal 100.','As a percentage: times 100.','En pourcentage : fois 100.'),fmtN(k/n*100)+' %']);});
 const GLOSS3=({integer:['ganze Zahl','integer','entier relatif','Die Zahlen …, −2, −1, 0, 1, 2, …','The numbers …, −2, −1, 0, 1, 2, …','Les nombres …, −2, −1, 0, 1, 2, …'],
  rational:['rationale Zahl','rational number','nombre rationnel','Eine Zahl, die man als Bruch zweier ganzer Zahlen schreiben kann.','A number that can be written as a fraction of two integers.','Un nombre qui s’écrit comme fraction de deux entiers.'],
+ distributive:['Distributivgesetz','distributive law','distributivité','Ein Faktor vor einer Klammer trifft jeden Summanden einzeln: a · (b + c) = a · b + a · c.','A factor outside brackets meets every term inside: a · (b + c) = a · b + a · c.','Un facteur devant une parenthèse touche chaque terme : a · (b + c) = a · b + a · c.'],
  term:['Term','expression','expression','Ein Rechenausdruck aus Zahlen, Variablen und Rechenzeichen, zum Beispiel 3x + 5.','A combination of numbers, variables and operations, for example 3x + 5.','Une combinaison de nombres, de variables et d’opérations, par exemple 3x + 5.'],
  root:['Quadratwurzel (√)','square root (√)','racine carrée (√)','Die Zahl, die mit sich selbst malgenommen die gegebene Zahl ergibt: √36 = 6.','The number that multiplied by itself gives the given number: √36 = 6.','Le nombre qui, multiplié par lui-même, donne le nombre donné : √36 = 6.'],
  height:['Höhe','height','hauteur','Der senkrechte Abstand einer Ecke von der gegenüberliegenden Seite.','The perpendicular distance from a corner to the opposite side.','La distance perpendiculaire d’un sommet au côté opposé.'],

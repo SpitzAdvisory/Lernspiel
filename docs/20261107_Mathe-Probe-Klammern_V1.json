@@ -1,0 +1,969 @@
+{
+ "title": "Mathe-Probe: Klammern, Distributivgesetz, Rechenworte",
+ "kind": "other",
+ "instructions": "Der Stoff der Wiederholungsprüfung von Johannes: Aufgaben 8.4 bis 9.2 aus dem Mathbuch, nach den Fotos von Nina vom 7. November 2026.",
+ "sources": [
+  "Mathbuch, Aufgaben 8.4 bis 9.2 (Fotos vom 7.11.2026)"
+ ],
+ "items": [
+  {
+   "id": "d-84a",
+   "type": "input",
+   "prompt": "6 · (5 + 11) = ?",
+   "answer": "96",
+   "accept": [
+    "96"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 6 · 5 + 6 · 11.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "6 · (5 + 11) = 96.",
+   "difficulty": 2
+  },
+  {
+   "id": "d-84b",
+   "type": "input",
+   "prompt": "(45 + 15) : 5 = ?",
+   "answer": "12",
+   "accept": [
+    "12"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 45 : 5 + 15 : 5.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "(45 + 15) : 5 = 12.",
+   "difficulty": 2
+  },
+  {
+   "id": "d-85a",
+   "type": "input",
+   "prompt": "6 · (3 + 2) = ?",
+   "answer": "30",
+   "accept": [
+    "30"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 6 · 3 + 6 · 2.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "6 · (3 + 2) = 30.",
+   "difficulty": 1
+  },
+  {
+   "id": "d-85b",
+   "type": "input",
+   "prompt": "3 · (12 + 8) = ?",
+   "answer": "60",
+   "accept": [
+    "60"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 3 · 12 + 3 · 8.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "3 · (12 + 8) = 60.",
+   "difficulty": 1
+  },
+  {
+   "id": "d-85c",
+   "type": "input",
+   "prompt": "(20 − 16) : 4 = ?",
+   "answer": "1",
+   "accept": [
+    "1"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 20 : 4 − 16 : 4.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "(20 − 16) : 4 = 1.",
+   "difficulty": 1
+  },
+  {
+   "id": "d-85d",
+   "type": "input",
+   "prompt": "(32 + 24) : 8 = ?",
+   "answer": "7",
+   "accept": [
+    "7"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 32 : 8 + 24 : 8.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "(32 + 24) : 8 = 7.",
+   "difficulty": 1
+  },
+  {
+   "id": "d-86a",
+   "type": "input",
+   "prompt": "11 · (2 + 8) = ?",
+   "answer": "110",
+   "accept": [
+    "110"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 11 · 2 + 11 · 8.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "11 · (2 + 8) = 110.",
+   "difficulty": 2
+  },
+  {
+   "id": "d-86b",
+   "type": "input",
+   "prompt": "4 · (12 − 3) = ?",
+   "answer": "36",
+   "accept": [
+    "36"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 4 · 12 − 4 · 3.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "4 · (12 − 3) = 36.",
+   "difficulty": 2
+  },
+  {
+   "id": "d-86c",
+   "type": "input",
+   "prompt": "(56 + 64) : 8 = ?",
+   "answer": "15",
+   "accept": [
+    "15"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 56 : 8 + 64 : 8.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "(56 + 64) : 8 = 15.",
+   "difficulty": 2
+  },
+  {
+   "id": "d-86d",
+   "type": "input",
+   "prompt": "(108 − 81) : 9 = ?",
+   "answer": "3",
+   "accept": [
+    "3"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 108 : 9 − 81 : 9.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "(108 − 81) : 9 = 3.",
+   "difficulty": 2
+  },
+  {
+   "id": "d-87a",
+   "type": "input",
+   "prompt": "14 · (3 + 5) = ?",
+   "answer": "112",
+   "accept": [
+    "112"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 14 · 3 + 14 · 5.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "14 · (3 + 5) = 112.",
+   "difficulty": 2
+  },
+  {
+   "id": "d-87b",
+   "type": "input",
+   "prompt": "(7 − 2) · 11 = ?",
+   "answer": "55",
+   "accept": [
+    "55"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 7 · 11 − 2 · 11.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "(7 − 2) · 11 = 55.",
+   "difficulty": 2
+  },
+  {
+   "id": "d-87c",
+   "type": "input",
+   "prompt": "(36 + 81) : 9 = ?",
+   "answer": "13",
+   "accept": [
+    "13"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 36 : 9 + 81 : 9.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "(36 + 81) : 9 = 13.",
+   "difficulty": 2
+  },
+  {
+   "id": "d-87d",
+   "type": "input",
+   "prompt": "(72 − 40) : 8 = ?",
+   "answer": "4",
+   "accept": [
+    "4"
+   ],
+   "hints": [
+    "Zerlege nach dem Distributivgesetz: 72 : 8 − 40 : 8.",
+    "Rechne beide Teile einzeln aus und fasse zusammen."
+   ],
+   "explanation": "(72 − 40) : 8 = 4.",
+   "difficulty": 2
+  },
+  {
+   "id": "z-84a",
+   "type": "single",
+   "prompt": "Suche die gleichwertige Rechnung zu 6 · (5 + 11).",
+   "options": [
+    "6 · 5 + 6 · 11",
+    "6 · 5 + 11",
+    "6 · 5 · 6 · 11"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Der Faktor vor der Klammer trifft jeden Summanden einzeln."
+   ],
+   "explanation": "6 · (5 + 11) = 6 · 5 + 6 · 11 = 96.",
+   "difficulty": 2
+  },
+  {
+   "id": "z-84b",
+   "type": "single",
+   "prompt": "Suche die gleichwertige Rechnung zu (45 + 15) : 5.",
+   "options": [
+    "45 : 5 + 15 : 5",
+    "45 : 5 + 15",
+    "5 : 45 + 5 : 15"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Der Faktor vor der Klammer trifft jeden Summanden einzeln."
+   ],
+   "explanation": "(45 + 15) : 5 = 45 : 5 + 15 : 5 = 12.",
+   "difficulty": 2
+  },
+  {
+   "id": "z-85a",
+   "type": "single",
+   "prompt": "Suche die gleichwertige Rechnung zu 6 · (3 + 2).",
+   "options": [
+    "6 · 3 + 6 · 2",
+    "6 · 3 + 2",
+    "6 · 3 · 6 · 2"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Der Faktor vor der Klammer trifft jeden Summanden einzeln."
+   ],
+   "explanation": "6 · (3 + 2) = 6 · 3 + 6 · 2 = 30.",
+   "difficulty": 2
+  },
+  {
+   "id": "z-85b",
+   "type": "single",
+   "prompt": "Suche die gleichwertige Rechnung zu 3 · (12 + 8).",
+   "options": [
+    "3 · 12 + 3 · 8",
+    "3 · 12 + 8",
+    "3 · 12 · 3 · 8"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Der Faktor vor der Klammer trifft jeden Summanden einzeln."
+   ],
+   "explanation": "3 · (12 + 8) = 3 · 12 + 3 · 8 = 60.",
+   "difficulty": 2
+  },
+  {
+   "id": "z-85c",
+   "type": "single",
+   "prompt": "Suche die gleichwertige Rechnung zu (20 − 16) : 4.",
+   "options": [
+    "20 : 4 − 16 : 4",
+    "20 : 4 − 16",
+    "4 : 20 − 4 : 16"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Der Faktor vor der Klammer trifft jeden Summanden einzeln."
+   ],
+   "explanation": "(20 − 16) : 4 = 20 : 4 − 16 : 4 = 1.",
+   "difficulty": 2
+  },
+  {
+   "id": "z-85d",
+   "type": "single",
+   "prompt": "Suche die gleichwertige Rechnung zu (32 + 24) : 8.",
+   "options": [
+    "32 : 8 + 24 : 8",
+    "32 : 8 + 24",
+    "8 : 32 + 8 : 24"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Der Faktor vor der Klammer trifft jeden Summanden einzeln."
+   ],
+   "explanation": "(32 + 24) : 8 = 32 : 8 + 24 : 8 = 7.",
+   "difficulty": 2
+  },
+  {
+   "id": "r-88a",
+   "type": "input",
+   "prompt": "(15 : 3) + (2 · 8) = ?",
+   "answer": "21",
+   "accept": [
+    "21"
+   ],
+   "hints": [
+    "Rechne zuerst, was in den Klammern steht.",
+    "Dann Punkt vor Strich."
+   ],
+   "explanation": "(15 : 3) + (2 · 8) = 21.",
+   "difficulty": 2
+  },
+  {
+   "id": "k-88a",
+   "type": "single",
+   "prompt": "Schreibe (15 : 3) + (2 · 8) ohne die Klammern, die nicht nötig sind.",
+   "options": [
+    "15 : 3 + 2 · 8",
+    "15 : 3 + (2 · 8)",
+    "(15 : 3) + (2 · 8)"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lass jede Klammer einmal weg und rechne nach.",
+    "Ändert sich das Ergebnis, war die Klammer nötig."
+   ],
+   "explanation": "15 : 3 + 2 · 8 = 21. Die übrigen Klammern ändern nichts mehr.",
+   "difficulty": 3
+  },
+  {
+   "id": "r-88b",
+   "type": "input",
+   "prompt": "((2 · 17) − 4) : 5 = ?",
+   "answer": "6",
+   "accept": [
+    "6"
+   ],
+   "hints": [
+    "Rechne zuerst, was in den Klammern steht.",
+    "Dann Punkt vor Strich."
+   ],
+   "explanation": "((2 · 17) − 4) : 5 = 6.",
+   "difficulty": 2
+  },
+  {
+   "id": "k-88b",
+   "type": "single",
+   "prompt": "Schreibe ((2 · 17) − 4) : 5 ohne die Klammern, die nicht nötig sind.",
+   "options": [
+    "(2 · 17 − 4) : 5",
+    "2 · 17 − 4 : 5",
+    "(2 · 17) − 4 : 5",
+    "((2 · 17) − 4) : 5"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lass jede Klammer einmal weg und rechne nach.",
+    "Ändert sich das Ergebnis, war die Klammer nötig."
+   ],
+   "explanation": "(2 · 17 − 4) : 5 = 6. Die übrigen Klammern ändern nichts mehr.",
+   "difficulty": 3
+  },
+  {
+   "id": "r-88c",
+   "type": "input",
+   "prompt": "(11 · 3) + (14 : 2) = ?",
+   "answer": "40",
+   "accept": [
+    "40"
+   ],
+   "hints": [
+    "Rechne zuerst, was in den Klammern steht.",
+    "Dann Punkt vor Strich."
+   ],
+   "explanation": "(11 · 3) + (14 : 2) = 40.",
+   "difficulty": 2
+  },
+  {
+   "id": "k-88c",
+   "type": "single",
+   "prompt": "Schreibe (11 · 3) + (14 : 2) ohne die Klammern, die nicht nötig sind.",
+   "options": [
+    "11 · 3 + 14 : 2",
+    "11 · 3 + (14 : 2)",
+    "(11 · 3) + (14 : 2)"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lass jede Klammer einmal weg und rechne nach.",
+    "Ändert sich das Ergebnis, war die Klammer nötig."
+   ],
+   "explanation": "11 · 3 + 14 : 2 = 40. Die übrigen Klammern ändern nichts mehr.",
+   "difficulty": 3
+  },
+  {
+   "id": "r-88d",
+   "type": "input",
+   "prompt": "(29 − 1) : 7 + (2 · 3) = ?",
+   "answer": "10",
+   "accept": [
+    "10"
+   ],
+   "hints": [
+    "Rechne zuerst, was in den Klammern steht.",
+    "Dann Punkt vor Strich."
+   ],
+   "explanation": "(29 − 1) : 7 + (2 · 3) = 10.",
+   "difficulty": 2
+  },
+  {
+   "id": "k-88d",
+   "type": "single",
+   "prompt": "Schreibe (29 − 1) : 7 + (2 · 3) ohne die Klammern, die nicht nötig sind.",
+   "options": [
+    "(29 − 1) : 7 + 2 · 3",
+    "29 − 1 : 7 + 2 · 3",
+    "29 − 1 : 7 + (2 · 3)",
+    "(29 − 1) : 7 + (2 · 3)"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lass jede Klammer einmal weg und rechne nach.",
+    "Ändert sich das Ergebnis, war die Klammer nötig."
+   ],
+   "explanation": "(29 − 1) : 7 + 2 · 3 = 10. Die übrigen Klammern ändern nichts mehr.",
+   "difficulty": 3
+  },
+  {
+   "id": "r-88e",
+   "type": "input",
+   "prompt": "((26 + 10) · 2) : 8 = ?",
+   "answer": "9",
+   "accept": [
+    "9"
+   ],
+   "hints": [
+    "Rechne zuerst, was in den Klammern steht.",
+    "Dann Punkt vor Strich."
+   ],
+   "explanation": "((26 + 10) · 2) : 8 = 9.",
+   "difficulty": 2
+  },
+  {
+   "id": "k-88e",
+   "type": "single",
+   "prompt": "Schreibe ((26 + 10) · 2) : 8 ohne die Klammern, die nicht nötig sind.",
+   "options": [
+    "(26 + 10) · 2 : 8",
+    "26 + 10 · 2 : 8",
+    "((26 + 10) · 2) : 8"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lass jede Klammer einmal weg und rechne nach.",
+    "Ändert sich das Ergebnis, war die Klammer nötig."
+   ],
+   "explanation": "(26 + 10) · 2 : 8 = 9. Die übrigen Klammern ändern nichts mehr.",
+   "difficulty": 3
+  },
+  {
+   "id": "r-88f",
+   "type": "input",
+   "prompt": "65 : (15 : 3) − (9 − 6) = ?",
+   "answer": "10",
+   "accept": [
+    "10"
+   ],
+   "hints": [
+    "Rechne zuerst, was in den Klammern steht.",
+    "Dann Punkt vor Strich."
+   ],
+   "explanation": "65 : (15 : 3) − (9 − 6) = 10.",
+   "difficulty": 2
+  },
+  {
+   "id": "k-88f",
+   "type": "single",
+   "prompt": "Prüfe, ob sich in 65 : (15 : 3) − (9 − 6) eine Klammer weglassen lässt.",
+   "options": [
+    "Keine einzige, beide werden gebraucht.",
+    "Die erste lässt sich weglassen.",
+    "Die letzte lässt sich weglassen.",
+    "Alle lassen sich weglassen."
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Nach einem Minus oder einem Geteilt-Zeichen ändert eine Klammer fast immer etwas."
+   ],
+   "explanation": "65 : (15 : 3) − (9 − 6) = 10. Ohne Klammern käme etwas anderes heraus.",
+   "difficulty": 3
+  },
+  {
+   "id": "r-88g",
+   "type": "input",
+   "prompt": "81 : (18 : 2) + (5 + 6) = ?",
+   "answer": "20",
+   "accept": [
+    "20"
+   ],
+   "hints": [
+    "Rechne zuerst, was in den Klammern steht.",
+    "Dann Punkt vor Strich."
+   ],
+   "explanation": "81 : (18 : 2) + (5 + 6) = 20.",
+   "difficulty": 2
+  },
+  {
+   "id": "k-88g",
+   "type": "single",
+   "prompt": "Schreibe 81 : (18 : 2) + (5 + 6) ohne die Klammern, die nicht nötig sind.",
+   "options": [
+    "81 : (18 : 2) + 5 + 6",
+    "81 : 18 : 2 + 5 + 6",
+    "81 : 18 : 2 + (5 + 6)",
+    "81 : (18 : 2) + (5 + 6)"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lass jede Klammer einmal weg und rechne nach.",
+    "Ändert sich das Ergebnis, war die Klammer nötig."
+   ],
+   "explanation": "81 : (18 : 2) + 5 + 6 = 20. Die übrigen Klammern ändern nichts mehr.",
+   "difficulty": 3
+  },
+  {
+   "id": "r-88h",
+   "type": "input",
+   "prompt": "(7 · (3 + 4) + 1) : (2 · 5) = ?",
+   "answer": "5",
+   "accept": [
+    "5"
+   ],
+   "hints": [
+    "Rechne zuerst, was in den Klammern steht.",
+    "Dann Punkt vor Strich."
+   ],
+   "explanation": "(7 · (3 + 4) + 1) : (2 · 5) = 5.",
+   "difficulty": 2
+  },
+  {
+   "id": "k-88h",
+   "type": "single",
+   "prompt": "Prüfe, ob sich in (7 · (3 + 4) + 1) : (2 · 5) eine Klammer weglassen lässt.",
+   "options": [
+    "Keine einzige, alle drei werden gebraucht.",
+    "Die erste lässt sich weglassen.",
+    "Die letzte lässt sich weglassen.",
+    "Alle lassen sich weglassen."
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Nach einem Minus oder einem Geteilt-Zeichen ändert eine Klammer fast immer etwas."
+   ],
+   "explanation": "(7 · (3 + 4) + 1) : (2 · 5) = 5. Ohne Klammern käme etwas anderes heraus.",
+   "difficulty": 3
+  },
+  {
+   "id": "r-88i",
+   "type": "input",
+   "prompt": "((45 : 9) · 6) − (2 · (4 + 3)) = ?",
+   "answer": "16",
+   "accept": [
+    "16"
+   ],
+   "hints": [
+    "Rechne zuerst, was in den Klammern steht.",
+    "Dann Punkt vor Strich."
+   ],
+   "explanation": "((45 : 9) · 6) − (2 · (4 + 3)) = 16.",
+   "difficulty": 2
+  },
+  {
+   "id": "k-88i",
+   "type": "single",
+   "prompt": "Schreibe ((45 : 9) · 6) − (2 · (4 + 3)) ohne die Klammern, die nicht nötig sind.",
+   "options": [
+    "45 : 9 · 6 − 2 · (4 + 3)",
+    "45 : 9 · 6 − 2 · 4 + 3",
+    "(45 : 9) · 6 − (2 · (4 + 3))",
+    "((45 : 9) · 6) − (2 · (4 + 3))"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lass jede Klammer einmal weg und rechne nach.",
+    "Ändert sich das Ergebnis, war die Klammer nötig."
+   ],
+   "explanation": "45 : 9 · 6 − 2 · (4 + 3) = 16. Die übrigen Klammern ändern nichts mehr.",
+   "difficulty": 3
+  },
+  {
+   "id": "s-89a",
+   "type": "single",
+   "prompt": "Setze eine Klammer, sodass die Rechnung stimmt: 13 + 2 · 5 : 25 − 3 = 0",
+   "options": [
+    "(13 + 2) · 5 : 25 − 3",
+    "13 + (2 · 5) : 25 − 3",
+    "13 + 2 · (5 : 25) − 3",
+    "13 + 2 · 5 : (25 − 3)"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Ohne Klammer ergibt die Rechnung 10.4.",
+    "Gesucht ist 0."
+   ],
+   "explanation": "(13 + 2) · 5 : 25 − 3 = 0.",
+   "difficulty": 3
+  },
+  {
+   "id": "s-89b",
+   "type": "single",
+   "prompt": "Setze eine Klammer, sodass die Rechnung stimmt: 100 − 1 : 33 · 8 = 24",
+   "options": [
+    "(100 − 1) : 33 · 8",
+    "100 − (1 : 33) · 8",
+    "100 − 1 : (33 · 8)"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Ohne Klammer ergibt die Rechnung 99.7576.",
+    "Gesucht ist 24."
+   ],
+   "explanation": "(100 − 1) : 33 · 8 = 24.",
+   "difficulty": 3
+  },
+  {
+   "id": "s-89c",
+   "type": "single",
+   "prompt": "Setze eine Klammer, sodass die Rechnung stimmt: 68 + 4 · 3 : 4 = 20",
+   "options": [
+    "(68 + 4 · 3) : 4",
+    "(68 + 4) · 3 : 4",
+    "68 + (4 · 3) : 4",
+    "68 + 4 · (3 : 4)"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Ohne Klammer ergibt die Rechnung 71.",
+    "Gesucht ist 20."
+   ],
+   "explanation": "(68 + 4 · 3) : 4 = 20.",
+   "difficulty": 3
+  },
+  {
+   "id": "s-89d",
+   "type": "single",
+   "prompt": "Setze eine Klammer, sodass die Rechnung stimmt: 72 : 3 · 7 − 5 = 48",
+   "options": [
+    "72 : 3 · (7 − 5)",
+    "(72 : 3) · 7 − 5",
+    "72 : (3 · 7) − 5",
+    "72 : (3 · 7 − 5)"
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Ohne Klammer ergibt die Rechnung 163.",
+    "Gesucht ist 48."
+   ],
+   "explanation": "72 : 3 · (7 − 5) = 48.",
+   "difficulty": 3
+  },
+  {
+   "id": "w-91a",
+   "type": "input",
+   "prompt": "Notiere die Rechnung und bestimme das Ergebnis. Bilde die Summe von 15 und 25. Dividiere dann durch 10.",
+   "answer": "4",
+   "accept": [
+    "4"
+   ],
+   "hints": [
+    "Schreibe zuerst den Term auf.",
+    "Der Term lautet (15 + 25) : 10."
+   ],
+   "explanation": "(15 + 25) : 10 = 4.",
+   "difficulty": 1
+  },
+  {
+   "id": "w-91b",
+   "type": "input",
+   "prompt": "Notiere die Rechnung und bestimme das Ergebnis. Addiere 10 zum Produkt der beiden Zahlen 14 und 3.",
+   "answer": "52",
+   "accept": [
+    "52"
+   ],
+   "hints": [
+    "Schreibe zuerst den Term auf.",
+    "Der Term lautet 14 · 3 + 10."
+   ],
+   "explanation": "14 · 3 + 10 = 52.",
+   "difficulty": 1
+  },
+  {
+   "id": "w-91c",
+   "type": "input",
+   "prompt": "Notiere die Rechnung und bestimme das Ergebnis. Bilde das Produkt von 11 und 4. Subtrahiere dann die Summe dieser beiden Zahlen.",
+   "answer": "29",
+   "accept": [
+    "29"
+   ],
+   "hints": [
+    "Schreibe zuerst den Term auf.",
+    "Der Term lautet 11 · 4 − (11 + 4)."
+   ],
+   "explanation": "11 · 4 − (11 + 4) = 29.",
+   "difficulty": 2
+  },
+  {
+   "id": "w-91d",
+   "type": "input",
+   "prompt": "Notiere die Rechnung und bestimme das Ergebnis. Teile 144 durch 12. Dividiere dann durch die zweite Potenz von 2.",
+   "answer": "3",
+   "accept": [
+    "3"
+   ],
+   "hints": [
+    "Schreibe zuerst den Term auf.",
+    "Der Term lautet (144 : 12) : 2²."
+   ],
+   "explanation": "(144 : 12) : 2² = 3.",
+   "difficulty": 2
+  },
+  {
+   "id": "w-91e",
+   "type": "input",
+   "prompt": "Notiere die Rechnung und bestimme das Ergebnis. Bilde die 4. Potenz von 5. Subtrahiere davon 25 und teile das Resultat durch 100.",
+   "answer": "6",
+   "accept": [
+    "6"
+   ],
+   "hints": [
+    "Schreibe zuerst den Term auf.",
+    "Der Term lautet (5⁴ − 25) : 100."
+   ],
+   "explanation": "(5⁴ − 25) : 100 = 6.",
+   "difficulty": 3
+  },
+  {
+   "id": "w-91f",
+   "type": "input",
+   "prompt": "Notiere die Rechnung und bestimme das Ergebnis. Subtrahiere 34 von 74. Quadriere das Ergebnis.",
+   "answer": "1600",
+   "accept": [
+    "1600"
+   ],
+   "hints": [
+    "Schreibe zuerst den Term auf.",
+    "Der Term lautet (74 − 34)²."
+   ],
+   "explanation": "(74 − 34)² = 1600.",
+   "difficulty": 2
+  },
+  {
+   "id": "w-91g",
+   "type": "input",
+   "prompt": "Notiere die Rechnung und bestimme das Ergebnis. Addiere zum Produkt der beiden Zahlen 11 und 9 ihre Differenz.",
+   "answer": "101",
+   "accept": [
+    "101"
+   ],
+   "hints": [
+    "Schreibe zuerst den Term auf.",
+    "Der Term lautet 11 · 9 + (11 − 9)."
+   ],
+   "explanation": "11 · 9 + (11 − 9) = 101.",
+   "difficulty": 2
+  },
+  {
+   "id": "w-91h",
+   "type": "input",
+   "prompt": "Notiere die Rechnung und bestimme das Ergebnis. Multipliziere 3 mit der 4. Potenz von 2.",
+   "answer": "48",
+   "accept": [
+    "48"
+   ],
+   "hints": [
+    "Schreibe zuerst den Term auf.",
+    "Der Term lautet 3 · 2⁴."
+   ],
+   "explanation": "3 · 2⁴ = 48.",
+   "difficulty": 2
+  },
+  {
+   "id": "b-92a",
+   "type": "single",
+   "prompt": "Suche die passende Beschreibung für 62 − (18 + 4).",
+   "options": [
+    "Subtrahiere von 62 die Summe von 18 und 4.",
+    "Subtrahiere von 62 die Differenz von 18 und 4.",
+    "Addiere zu 62 die Summe von 18 und 4.",
+    "Subtrahiere 62 von der Summe von 18 und 4."
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lies den Term von innen nach aussen."
+   ],
+   "explanation": "62 − (18 + 4): Subtrahiere von 62 die Summe von 18 und 4. Das Ergebnis ist 40.",
+   "difficulty": 2
+  },
+  {
+   "id": "bv-92a",
+   "type": "input",
+   "prompt": "62 − (18 + 4) = ?",
+   "answer": "40",
+   "accept": [
+    "40"
+   ],
+   "hints": [
+    "Klammer zuerst."
+   ],
+   "explanation": "62 − (18 + 4) = 40.",
+   "difficulty": 1
+  },
+  {
+   "id": "b-92b",
+   "type": "single",
+   "prompt": "Suche die passende Beschreibung für 4 · (35 − 15).",
+   "options": [
+    "Multipliziere 4 mit der Differenz von 35 und 15.",
+    "Multipliziere 4 mit der Summe von 35 und 15.",
+    "Subtrahiere 15 vom Produkt von 4 und 35.",
+    "Subtrahiere das Produkt von 4 und 15 von 35."
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lies den Term von innen nach aussen."
+   ],
+   "explanation": "4 · (35 − 15): Multipliziere 4 mit der Differenz von 35 und 15. Das Ergebnis ist 80.",
+   "difficulty": 2
+  },
+  {
+   "id": "bv-92b",
+   "type": "input",
+   "prompt": "4 · (35 − 15) = ?",
+   "answer": "80",
+   "accept": [
+    "80"
+   ],
+   "hints": [
+    "Klammer zuerst."
+   ],
+   "explanation": "4 · (35 − 15) = 80.",
+   "difficulty": 1
+  },
+  {
+   "id": "b-92c",
+   "type": "single",
+   "prompt": "Suche die passende Beschreibung für 2⁷ − 4.",
+   "options": [
+    "Subtrahiere 4 von der 7. Potenz von 2.",
+    "Subtrahiere die 7. Potenz von 2 von 4.",
+    "Multipliziere 2 mit 7 und subtrahiere 4.",
+    "Bilde die 7. Potenz von 2 und addiere 4."
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lies den Term von innen nach aussen."
+   ],
+   "explanation": "2⁷ − 4: Subtrahiere 4 von der 7. Potenz von 2. Das Ergebnis ist 124.",
+   "difficulty": 2
+  },
+  {
+   "id": "bv-92c",
+   "type": "input",
+   "prompt": "2⁷ − 4 = ?",
+   "answer": "124",
+   "accept": [
+    "124"
+   ],
+   "hints": [
+    "Klammer zuerst."
+   ],
+   "explanation": "2⁷ − 4 = 124.",
+   "difficulty": 1
+  },
+  {
+   "id": "b-92d",
+   "type": "single",
+   "prompt": "Suche die passende Beschreibung für (65 : 13) − 2.",
+   "options": [
+    "Dividiere 65 durch 13 und subtrahiere dann 2.",
+    "Dividiere 65 durch die Differenz von 13 und 2.",
+    "Dividiere 65 durch 13 und addiere dann 2.",
+    "Subtrahiere 2 von 65 und dividiere dann durch 13."
+   ],
+   "correct": [
+    0
+   ],
+   "hints": [
+    "Lies den Term von innen nach aussen."
+   ],
+   "explanation": "(65 : 13) − 2: Dividiere 65 durch 13 und subtrahiere dann 2. Das Ergebnis ist 3.",
+   "difficulty": 2
+  },
+  {
+   "id": "bv-92d",
+   "type": "input",
+   "prompt": "(65 : 13) − 2 = ?",
+   "answer": "3",
+   "accept": [
+    "3"
+   ],
+   "hints": [
+    "Klammer zuerst."
+   ],
+   "explanation": "(65 : 13) − 2 = 3.",
+   "difficulty": 1
+  }
+ ]
+}
