@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V102';
+const APPVER='V103';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -3387,6 +3387,170 @@ function hoerLaden(melde){
    kein MediaRecorder, keine Kodierung, keine Dekodierung. Jedes dieser
    Stuecke war eine eigene Fehlerquelle - auf dem iPad liefert Safari ein
    anderes Format, und das Zurueckwandeln schlug fehl. */
+
+/* ===== Fragestelle: gesprochenes Gespraech mit dem Lernhilfe-Agenten =====
+   Der Schluessel liegt im Vermittler, nie im Browser. Die App holt dort eine
+   signierte Adresse und spricht danach unmittelbar mit ElevenLabs.
+   Der Agent kennt die Aufgabe samt Loesung; verraten darf er sie nicht. */
+const LERNHILFE_AGENT='agent_0701m6y49tf5ew4anpdqt6yy5b7e';
+
+function pcmNachBase64(f32){
+ const n=f32.length,b=new ArrayBuffer(n*2),v=new DataView(b);
+ for(let i=0;i<n;i++){const s=Math.max(-1,Math.min(1,f32[i]));v.setInt16(i*2,s<0?s*0x8000:s*0x7FFF,true);}
+ const u=new Uint8Array(b);let bin='';
+ for(let i=0;i<u.length;i+=0x8000)bin+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));
+ return btoa(bin);}
+function base64NachPcm(s){
+ const bin=atob(s),n=bin.length>>1,f=new Float32Array(n);
+ for(let i=0;i<n;i++){let v=(bin.charCodeAt(i*2+1)<<8)|bin.charCodeAt(i*2);
+  if(v>32767)v-=65536;f[i]=v/32768;}
+ return f;}
+async function signierteAdresse(agent){
+ const prox=await vermittler();
+ if(!prox)throw new Error('kein-vermittler');
+ let r;
+ try{ r=await fetch(prox+'/agent',{method:'POST',headers:{'content-type':'application/json'},
+  body:JSON.stringify({agent_id:agent})}); }
+ catch(e){ throw new Error('netz'); }
+ const d=await r.json().catch(()=>null);
+ if(!r.ok||!d||!d.signed_url)throw new Error(String((d&&d.error)||('HTTP '+r.status)).slice(0,120));
+ return d.signed_url;}
+
+/* Ein laufendes Gespraech. Nur eines zur Zeit. */
+let GESPRAECH=null;
+async function gespraechStarten(vars,melde){
+ if(GESPRAECH)gespraechBeenden();
+ const sage=(was,wert)=>{try{melde&&melde(was,wert);}catch(_){}};
+ sage('zustand','verbinde');
+ const adresse=await signierteAdresse(LERNHILFE_AGENT);
+ let strom=null,ctx=null,quelle=null,knoten=null,stumm=null,ws=null;
+ let zu=false,naechste=0;const laufende=[];
+ const schliesse=()=>{
+  if(zu)return;zu=true;
+  for(const q of laufende){try{q.stop();}catch(_){}}
+  laufende.length=0;
+  try{if(ws&&ws.readyState<=1)ws.close();}catch(_){}
+  try{if(knoten)knoten.disconnect();}catch(_){}
+  try{if(quelle)quelle.disconnect();}catch(_){}
+  try{if(stumm)stumm.disconnect();}catch(_){}
+  try{if(strom)strom.getTracks().forEach(t=>t.stop());}catch(_){}
+  try{if(ctx&&ctx.state!=='closed')ctx.close();}catch(_){}
+  mikroAn(false);
+  if(GESPRAECH&&GESPRAECH.schliesse===schliesse)GESPRAECH=null;
+  sage('zustand','aus');};
+ try{
+  strom=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,
+   echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+ }catch(e){schliesse();throw new Error('kein-mikrofon');}
+ const AC=window.AudioContext||window.webkitAudioContext;
+ if(!AC){schliesse();throw new Error('kein-ton-system');}
+ try{ctx=new AC({sampleRate:16000});}catch(_){try{ctx=new AC();}catch(e){schliesse();throw new Error('kein-ton-system');}}
+ try{if(ctx.state==='suspended')await ctx.resume();}catch(_){}
+ const rate=ctx.sampleRate;
+ mikroAn(true);
+ ws=new WebSocket(adresse);
+ GESPRAECH={schliesse};
+ ws.onopen=()=>{
+  ws.send(JSON.stringify({type:'conversation_initiation_client_data',dynamic_variables:vars}));
+  quelle=ctx.createMediaStreamSource(strom);
+  knoten=ctx.createScriptProcessor?ctx.createScriptProcessor(4096,1,1)
+        :(ctx.createJavaScriptNode?ctx.createJavaScriptNode(4096,1,1):null);
+  if(!knoten){schliesse();return;}
+  stumm=ctx.createGain();stumm.gain.value=0;
+  knoten.onaudioprocess=ev=>{
+   if(zu||ws.readyState!==1)return;
+   let d=ev.inputBuffer.getChannelData(0);
+   if(Math.abs(rate-16000)>1){
+    const n=Math.max(1,Math.round(d.length*16000/rate)),um=new Float32Array(n);
+    for(let i=0;i<n;i++){const x=i*rate/16000,i0=Math.floor(x),
+     i1=Math.min(d.length-1,i0+1),f=x-i0;um[i]=d[i0]*(1-f)+d[i1]*f;}
+    d=um;}
+   try{ws.send(JSON.stringify({user_audio_chunk:pcmNachBase64(d)}));}catch(_){}};
+  quelle.connect(knoten);knoten.connect(stumm);stumm.connect(ctx.destination);
+  sage('zustand','laeuft');};
+ ws.onmessage=ev=>{
+  let m=null;try{m=JSON.parse(ev.data);}catch(_){return;}
+  if(!m||!m.type)return;
+  if(m.type==='ping'){
+   const id=m.ping_event&&m.ping_event.event_id;
+   const warte=(m.ping_event&&m.ping_event.ping_ms)||0;
+   setTimeout(()=>{try{if(ws.readyState===1)ws.send(JSON.stringify({type:'pong',event_id:id}));}catch(_){}} ,warte);
+   return;}
+  if(m.type==='audio'){
+   const b64=m.audio_event&&m.audio_event.audio_base_64;
+   if(!b64||zu)return;
+   const f=base64NachPcm(b64);if(!f.length)return;
+   let puffer;
+   try{puffer=ctx.createBuffer(1,f.length,16000);}catch(_){return;}
+   puffer.getChannelData(0).set(f);
+   const q=ctx.createBufferSource();q.buffer=puffer;q.connect(ctx.destination);
+   const jetzt=ctx.currentTime;
+   if(naechste<jetzt)naechste=jetzt+0.06;
+   q.start(naechste);naechste+=puffer.duration;
+   laufende.push(q);
+   q.onended=()=>{const i=laufende.indexOf(q);if(i>=0)laufende.splice(i,1);};
+   return;}
+  if(m.type==='interruption'){
+   for(const q of laufende){try{q.stop();}catch(_){}}
+   laufende.length=0;naechste=0;return;}
+  if(m.type==='user_transcript'){
+   const s=m.user_transcription_event&&m.user_transcription_event.user_transcript;
+   if(s)sage('kind',String(s));return;}
+  if(m.type==='agent_response'){
+   const s=m.agent_response_event&&m.agent_response_event.agent_response;
+   if(s)sage('hilfe',String(s));return;}};
+ ws.onerror=()=>{sage('fehler','netz');schliesse();};
+ ws.onclose=()=>{schliesse();};
+ return {schliesse};}
+function gespraechBeenden(){if(GESPRAECH)GESPRAECH.schliesse();}
+function gespraechLaeuft(){return !!GESPRAECH;}
+
+/* Der Knopf unter der Aufgabe. Ohne Vermittler gibt es ihn nicht:
+   ohne ihn muesste der Schluessel im Geraet stehen. */
+function fragestelleBox(kontext){
+ if(!kontext||!kontext.aufgabe)return null;
+ if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia))return null;
+ const lauf=h('p',{class:'small muted',style:'margin:6px 0 0;min-height:1.2em','aria-live':'polite'},'');
+ const spur=h('p',{class:'small',style:'margin:4px 0 0;white-space:pre-wrap'},'');
+ const knopf=h('button',{class:'btn ghost small',type:'button'},
+  '🎤 '+X('Fragen','Ask','Demander'));
+ const box=h('div',{class:'stack',style:'gap:4px;margin-top:8px'},knopf,lauf,spur);
+ let zeilen=[];
+ const melde=(was,wert)=>{
+  if(was==='zustand'){
+   lauf.textContent=wert==='verbinde'?X('verbinde …','connecting …','connexion …')
+    :wert==='laeuft'?X('Sprich einfach.','Just speak.','Parle simplement.'):'';
+   knopf.textContent=(wert==='aus')?('🎤 '+X('Fragen','Ask','Demander'))
+    :('■ '+X('Beenden','Stop','Terminer'));
+   if(wert==='aus')zeilen=[];
+   return;}
+  if(was==='fehler'){lauf.textContent=X('Es klappt gerade nicht.','It is not working just now.','Cela ne marche pas pour l’instant.');return;}
+  const wer=was==='kind'?'›':'‹';
+  zeilen.push(wer+' '+wert);
+  if(zeilen.length>4)zeilen=zeilen.slice(-4);
+  spur.textContent=zeilen.join('\n');};
+ knopf.onclick=async()=>{
+  if(gespraechLaeuft()){gespraechBeenden();return;}
+  knopf.disabled=true;
+  try{
+   const p=S.profiles&&S.profiles[0];
+   await gespraechStarten({
+    vorname:String((kontext.vorname||(p&&p.name)||'')).slice(0,40)||'du',
+    alter:String(kontext.alter||''),
+    fach:String(kontext.fach||'').slice(0,60),
+    thema:String(kontext.thema||'').slice(0,120),
+    aufgabe:String(kontext.aufgabe||'').slice(0,600),
+    schritte:String(kontext.schritte||'').slice(0,800),
+    loesung:String(kontext.loesung||'').slice(0,200)},melde);
+  }catch(e){
+   const f=String((e&&e.message)||e);
+   melde('zustand','aus');              /* sonst bliebe der Knopf auf Beenden stehen */
+   lauf.textContent=f==='kein-mikrofon'?t('speakNoMic')
+    :f==='kein-vermittler'?X('Dafür braucht es den Vermittler.','This needs the gateway.','Il faut le relais pour cela.')
+    :X('Es klappt gerade nicht.','It is not working just now.','Cela ne marche pas pour l’instant.');
+  }finally{knopf.disabled=false;}};
+ return box;}
+
 function hoerAufnahme(o){
  o = o || {};
  mikroAn(true);
@@ -4855,7 +5019,7 @@ function renderQuestion(R,Q){
    it.satz?h('p',{class:'beispiel'},it.satz):null,
    h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre,it.spr||'fr')):null,
    it.nat?sndBtn(it.nat,true,it.natSpr||'de'):null,
-   it.type==='speak'?null:leseBtn(R,Q,it)),figEl,h('div',{class:'hint'},t(hinweisSchluessel(it))),area,helpEl,fragEl,retryMsg,fb),padBox));
+   it.type==='speak'?null:leseBtn(R,Q,it)),figEl,h('div',{class:'hint'},t(hinweisSchluessel(it))),area,helpEl,fragEl,fragestelleBox({fach:R.game.title,thema:it.topic||'',aufgabe:plain(Q.prompt||it.prompt||''),schritte:(it.steps||[]).join(' '),loesung:answerText(it),vorname:(R.players[curIdx(R)]||{}).name,alter:alterJahre(R.players[curIdx(R)])}),retryMsg,fb),padBox));
  if(pen)area.querySelectorAll('input[type=text],input[type=number]').forEach(i=>{i.classList.add('penfield');
   i.setAttribute('autocomplete','off');i.setAttribute('autocorrect','off');i.setAttribute('autocapitalize','off');i.setAttribute('spellcheck','false');
   const ph=i.getAttribute('placeholder');if(ph)i.addEventListener('input',()=>{if(i.value)i.removeAttribute('placeholder');else i.setAttribute('placeholder',ph);});});
@@ -7977,7 +8141,12 @@ function kBoard(task,o={}){
   h('button',{class:'btn ghost small',type:'button',onclick:clear},'\ud83d\uddd1 '+t('padClear')),
   zStart);
  mark();draw();zMalen();
- return {el:h('div',{class:'stack'},palette,svg,bar,zBox),objs,draw,
+ const spr=S.lang==='en'?1:S.lang==='fr'?2:0;
+ const fragBoxK=fragestelleBox({fach:X('Geometrie','Geometry','Géométrie'),
+  thema:(task.n&&task.n[spr])||'',aufgabe:(task.goal&&task.goal[spr])||'',
+  schritte:((task.steps&&task.steps[spr])||[]).join(' '),
+  loesung:((task.steps&&task.steps[spr])||[]).slice(-1)[0]||''});
+ return {el:h('div',{class:'stack'},palette,svg,bar,zBox,fragBoxK),objs,draw,
   data:()=>objs.map(o=>Object.assign({},o))};
 }
 
