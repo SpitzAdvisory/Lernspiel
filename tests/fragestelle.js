@@ -10,6 +10,7 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
 
 /* --- Nachgebauter Vermittler und nachgebauter Dienst --- */
 let gesehen={init:null,tonStuecke:0,pong:null,agentAngefragt:null,herkunft:null};
+let LIMIT=false;   /* schaltet den nachgebauten Vermittler auf «Tagesbudget erreicht» */
 const wss=new WebSocketServer({port:8891});
 wss.on('connection',(ws,req)=>{
  gesehen.pfad=req.url;
@@ -35,6 +36,9 @@ const srv=http.createServer((q,s)=>{
   let leib='';q.on('data',c=>leib+=c);
   q.on('end',()=>{let j=null;try{j=JSON.parse(leib);}catch(_){}
    gesehen.agentAngefragt=j&&j.agent_id;
+   if(LIMIT){
+    s.writeHead(429,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
+    return s.end(JSON.stringify({error:'limit'}));}
    s.writeHead(200,{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
    s.end(JSON.stringify({signed_url:'ws://127.0.0.1:8891/probe'}));});
   return;}
@@ -119,6 +123,63 @@ const srv=http.createServer((q,s)=>{
   return {text:box.textContent,laeuft:gespraechLaeuft()};});
  pruef('Ohne Vermittler startet kein Gespräch',ohne.laeuft===false);
  pruef('Und es wird gesagt, woran es liegt',/Vermittler|gateway|relais/i.test(ohne.text),ohne.text.slice(0,90));
+
+
+ /* ---------- Tagesbudget erreicht ---------- */
+ LIMIT=true;
+ const grenze=await pg.evaluate(async()=>{
+  window.vermittler=async()=>'http://127.0.0.1:8890';
+  const box=fragestelleBox({aufgabe:'7 · 8 = ?',loesung:'56'});
+  document.body.appendChild(box);
+  [...box.querySelectorAll('button')][0].click();
+  await new Promise(r=>setTimeout(r,700));
+  return {text:box.textContent,laeuft:gespraechLaeuft(),
+   knopf:[...box.querySelectorAll('button')][0].textContent.trim()};});
+ pruef('Bei erreichtem Tagesbudget startet kein Gespräch',grenze.laeuft===false);
+ pruef('Das Kind erfährt, dass es heute genug war',
+  /heute genug|today|aujourd/i.test(grenze.text),grenze.text.slice(0,110));
+ pruef('Es steht nicht «klappt gerade nicht» dort, wo das Budget schuld ist',
+  !/klappt gerade nicht/.test(grenze.text),grenze.text.slice(0,110));
+ pruef('Der Knopf steht nach der Absage wieder auf Fragen',
+  /Fragen|Ask|Demander/.test(grenze.knopf),grenze.knopf);
+ LIMIT=false;
+
+ /* ---------- Emilia meldet sich beim Beginn einer Stunde ---------- */
+ const gruss=await pg.evaluate(async()=>{
+  const gesagt=[];
+  const echt=window.sprich;
+  window.sprich=async(txt,spr)=>{gesagt.push([String(txt),String(spr)]);return true;};
+  window.vermittler=async()=>'http://127.0.0.1:8890';
+  S.lang='de';
+  await emiliaMeldung({players:[{id:'a',name:'Johannes'}]});
+  const einer=gesagt.length;
+  await emiliaMeldung({players:[{id:'a',name:'Johannes'},{id:'b',name:'Valentin'}]});
+  const zwei=gesagt[gesagt.length-1];
+  S.lang='fr';
+  await emiliaMeldung({players:[{id:'a',name:'Felix'}]});
+  const franz=gesagt[gesagt.length-1];
+  S.lang='de';
+  window.vermittler=async()=>null;
+  const vorher=gesagt.length;
+  await emiliaMeldung({players:[{id:'a',name:'Johannes'}]});
+  const ohneVermittler=gesagt.length===vorher;
+  await emiliaMeldung({players:[]});
+  const ohneSpieler=gesagt.length===vorher;
+  window.sprich=echt;
+  return {einer,erster:gesagt[0],zwei,franz,ohneVermittler,ohneSpieler};});
+ pruef('Emilia meldet sich genau einmal pro Durchgang',gruss.einer===1,gruss.einer);
+ pruef('Sie spricht das Kind mit dem Namen an',
+  /^Hoi Johannes\./.test(gruss.erster[0]),gruss.erster[0]);
+ pruef('Sie nennt sich Emilia',/Ich bin Emilia/.test(gruss.erster[0]),gruss.erster[0]);
+ pruef('Sie sagt, wozu der Knopf da ist',/Fragen/.test(gruss.erster[0]),gruss.erster[0]);
+ pruef('Der Gruss geht in der Sprache der Stunde hinaus',gruss.erster[1]==='de',gruss.erster[1]);
+ pruef('Im Duell bleibt der Name weg',
+  !/Hoi /.test(gruss.zwei[0])&&/Ich bin Emilia/.test(gruss.zwei[0]),gruss.zwei[0]);
+ pruef('Auf Französisch heisst sie Emilie',
+  /^Salut Felix\./.test(gruss.franz[0])&&/Je suis Emilie/.test(gruss.franz[0]),gruss.franz[0]);
+ pruef('Der Gruss geht auf Französisch hinaus',gruss.franz[1]==='fr',gruss.franz[1]);
+ pruef('Ohne Vermittler schweigt sie',gruss.ohneVermittler===true);
+ pruef('Ohne Spieler schweigt sie',gruss.ohneSpieler===true);
 
  for(const [s,n,x] of aus)console.log(s,n,x);
  if(perr.length)console.log('SEITENFEHLER:',perr.slice(0,3).join(' | '));

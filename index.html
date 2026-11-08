@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V103';
+const APPVER='V104';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -2099,6 +2099,10 @@ async function startRun(o){
     will - und weiss nicht, worauf. */
  try{ if(R.gen && hoerMoeglich() && (o.topics||[]).some(id=>{const tp=mtopic(id);return tp&&tp.dd;}))
   hoerLaden(()=>{}).catch(()=>{}); }catch(_){}
+ /* Die Begruessung laeuft vor der ersten Frage, sonst reden sie
+    uebereinander. Haengt die Leitung, geht es nach acht Sekunden ohne
+    sie weiter. */
+ try{ await Promise.race([emiliaMeldung(R),new Promise(f=>setTimeout(f,8000))]); }catch(_){}
  nextQuestion(R);
 }
 function curIdx(R){return R.mode==='duel'?R.q%2:0;}
@@ -3413,6 +3417,10 @@ async function signierteAdresse(agent){
   body:JSON.stringify({agent_id:agent})}); }
  catch(e){ throw new Error('netz'); }
  const d=await r.json().catch(()=>null);
+ /* Der Vermittler gibt 429 und error:'limit', sobald das Tagesbudget
+    erreicht ist. Das ist kein Fehler, sondern eine Abmachung - und muss
+    darum anders gemeldet werden als eine kaputte Leitung. */
+ if(r.status===429||(d&&d.error==='limit'))throw new Error('tageslimit');
  if(!r.ok||!d||!d.signed_url)throw new Error(String((d&&d.error)||('HTTP '+r.status)).slice(0,120));
  return d.signed_url;}
 
@@ -3502,6 +3510,29 @@ async function gespraechStarten(vars,melde){
  ws.onerror=()=>{sage('fehler','netz');schliesse();};
  ws.onclose=()=>{schliesse();};
  return {schliesse};}
+/* Emilia sagt beim Beginn einer Stunde Hallo, damit das Kind weiss, dass
+   es fragen darf - und nicht erst sucht, wenn es schon steckt. Der Satz
+   kommt aus demselben Ablagespeicher wie alles Vorgelesene: nach dem
+   ersten Mal kostet er keine Umwandlung mehr. */
+async function emiliaMeldung(R){
+ if(!R||!Array.isArray(R.players)||!R.players.length)return;
+ if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia))return;
+ let prox=null;
+ try{prox=await vermittler();}catch(_){}
+ if(!prox)return;
+ const spr=(S.lang&&TUTORNAME[S.lang])?S.lang:'de';
+ const ich=TUTORNAME[spr];
+ /* Im Duell sitzen zwei vor dem Schirm; dann bleibt der Name weg. */
+ const namen=R.players.map(p=>String((p&&p.name)||'').trim()).filter(Boolean);
+ const nam=namen.length===1?namen[0]:'';
+ const anrede=nam?(spr==='fr'?'Salut '+nam+'. ':spr==='en'?'Hi '+nam+'. ':'Hoi '+nam+'. '):'';
+ const satz=anrede+(spr==='fr'
+  ?('Je suis '+ich+'. Appuie sur Demander si tu bloques.')
+  :spr==='en'
+  ?('I am '+ich+'. Press Ask if you get stuck.')
+  :('Ich bin '+ich+'. Drück auf Fragen, wenn Du nicht weiterkommst.'));
+ try{ await sprich(satz,spr); }catch(_){}
+}
 function gespraechBeenden(){if(GESPRAECH)GESPRAECH.schliesse();}
 function gespraechLaeuft(){return !!GESPRAECH;}
 
@@ -3546,6 +3577,7 @@ function fragestelleBox(kontext){
    const f=String((e&&e.message)||e);
    melde('zustand','aus');              /* sonst bliebe der Knopf auf Beenden stehen */
    lauf.textContent=f==='kein-mikrofon'?t('speakNoMic')
+    :f==='tageslimit'?X('Emilia hat für heute genug geredet. Morgen geht es wieder.','Emilia has talked enough for today. Tomorrow it works again.','Emilia a assez parlé pour aujourd’hui. Demain, cela remarchera.')
     :f==='kein-vermittler'?X('Dafür braucht es den Vermittler.','This needs the gateway.','Il faut le relais pour cela.')
     :X('Es klappt gerade nicht.','It is not working just now.','Cela ne marche pas pour l’instant.');
   }finally{knopf.disabled=false;}};
