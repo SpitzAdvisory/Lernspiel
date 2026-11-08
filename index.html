@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V101';
+const APPVER='V102';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -7746,7 +7746,7 @@ const KTASKS=[
  steps:[['Kreis um P durch G: er schneidet g in zwei Punkten.','Kreis um den einen Schnittpunkt durch P.','Kreis um den anderen Schnittpunkt durch P.','Die Gerade durch die beiden Schnittpunkte dieser Kreise ist das Lot.'],
         ['Circle around P through G: it cuts g in two points.','Circle around one of them through P.','Circle around the other through P.','The line through the two intersections of these circles is the perpendicular.'],
         ['Cercle de centre P passant par G : il coupe g en deux points.','Cercle de centre l’un d’eux passant par P.','Cercle de centre l’autre passant par P.','La droite par les deux intersections est la perpendiculaire.']],
- geg:()=>[{k:'P',x:18,y:52,given:1,n:'G'},{k:'P',x:114,y:52,given:1,n:'H'},{k:'L',a:0,b:1},{k:'P',x:66,y:22,given:1,n:'P'}],
+ geg:()=>[{k:'P',x:18,y:52,given:1,n:'G'},{k:'P',x:114,y:52,given:1,n:'H'},{k:'L',a:0,b:1},{k:'P',x:54,y:22,given:1,n:'P'}],
  ok:(o,R)=>{const G=kByName(o,R,'G'),H=kByName(o,R,'H'),P=kByName(o,R,'P');if(!G||!H||!P)return false;
   const L=kdist(G,H);
   return kLines(o,R).some(l=>kPerpTo(l,G,H)&&kThrough(l,P,L));}},
@@ -7828,6 +7828,7 @@ function kBoard(task,o={}){
  const objs=task.geg().slice();
  const given=objs.length;
  let tool=task.tools[0],sel=[],drag=null,msg='';
+ let zeigen=null;                       /* Vormachen: {i,objs,geg,grenzen,texte} */
  const svg=svgBox(KW,KH,'kboard');
  svg.setAttribute('style','max-width:100%;width:100%;touch-action:none;background:#fff;border:2px solid var(--grid);border-radius:10px');
  const pxOf=ev=>{const r=svg.getBoundingClientRect();
@@ -7891,26 +7892,35 @@ function kBoard(task,o={}){
  /* ---- zeichnen ---- */
  const draw=()=>{
   while(svg.firstChild)svg.removeChild(svg.firstChild);
+  /* Beim Vormachen wird nicht die eigene Zeichnung gezeigt, sondern das
+     Rezept bis zum aktuellen Schritt. */
+  const A=zeigen?zeigen.objs.slice(0,zeigen.grenzen[zeigen.i]):objs;
+  const gv=zeigen?zeigen.geg:given;
+  /* Was in diesem Schritt dazukommt, wird hervorgehoben. */
+  const neu=zeigen?(zeigen.i>0?zeigen.grenzen[zeigen.i-1]:zeigen.geg):A.length+1;
   for(let x=0;x<=KW;x+=8)svg.append(sv('line',{x1:x,y1:0,x2:x,y2:KH,stroke:GRID,'stroke-width':.4}));
   for(let y=0;y<=KH;y+=8)svg.append(sv('line',{x1:0,y1:y,x2:KW,y2:y,stroke:GRID,'stroke-width':.4}));
-  const R=kResolve(objs,null);
+  const R=kResolve(A,null);
   const ext=(p,q)=>{const d=kunit(kv(p,q));const m=KW+KH;
    return [[p[0]-d[0]*m,p[1]-d[1]*m],[p[0]+d[0]*m,p[1]+d[1]*m]];};
-  for(let i=0;i<objs.length;i++){const o=objs[i],g=R[i];if(!g)continue;
-   const own=i>=given;const col=own?INK:'#6B7B8E';const w=own?1.5:1.8;
-   if(o.k==='C')svg.append(sv('circle',{cx:g.x,cy:g.y,r:g.r,fill:'none',stroke:own?'#4FB8B0':'#A8B4C2','stroke-width':1.1,'stroke-dasharray':'3 2'}));
+  for(let i=0;i<A.length;i++){const o=A[i],g=R[i];if(!g)continue;
+   const own=i>=gv;const frisch=i>=neu;
+   const col=frisch?'#C89035':(own?INK:'#6B7B8E');const w=frisch?2.6:(own?1.5:1.8);
+   if(o.k==='C')svg.append(sv('circle',{cx:g.x,cy:g.y,r:g.r,fill:'none',stroke:frisch?'#C89035':(own?'#4FB8B0':'#A8B4C2'),'stroke-width':frisch?1.9:1.1,'stroke-dasharray':'3 2'}));
    else if(o.k==='L'){const e=ext(g.p,g.q);svg.append(sv('line',{x1:e[0][0],y1:e[0][1],x2:e[1][0],y2:e[1][1],stroke:col,'stroke-width':w}));}
    else if(o.k==='R'){const e=ext(g.p,g.q);svg.append(sv('line',{x1:g.p[0],y1:g.p[1],x2:e[1][0],y2:e[1][1],stroke:col,'stroke-width':w}));}
    else if(o.k==='S')svg.append(sv('line',{x1:g.p[0],y1:g.p[1],x2:g.q[0],y2:g.q[1],stroke:col,'stroke-width':w}));}
   /* Punkte zuoberst */
-  for(let i=0;i<objs.length;i++){const o=objs[i],g=R[i];if(o.k!=='P'||!g)continue;
-   const isSel=sel.indexOf(i)>=0;
-   svg.append(sv('circle',{cx:g[0],cy:g[1],r:isSel?2.6:1.9,fill:isSel?'#C89035':(o.given?INK:(i>=given?'#2E8A82':INK))}));
+  for(let i=0;i<A.length;i++){const o=A[i],g=R[i];if(o.k!=='P'||!g)continue;
+   const isSel=!zeigen&&sel.indexOf(i)>=0;
+   const frisch=i>=neu;
+   svg.append(sv('circle',{cx:g[0],cy:g[1],r:(isSel||frisch)?2.9:1.9,fill:(isSel||frisch)?'#C89035':(o.given?INK:(i>=gv?'#2E8A82':INK))}));
    if(o.n)svg.append(stx(g[0]+3.6,g[1]-3,o.n,{'font-size':6,fill:'#3F4A5C','text-anchor':'start'}));}
  };
 
  /* ---- Eingabe ---- */
  svg.addEventListener('pointerdown',ev=>{
+  if(zeigen)return;
   if(ev.pointerType==='pen')S.sawPen=true;
   if(ev.pointerType==='touch'&&S.sawPen)return;
   ev.preventDefault();const xy=pxOf(ev);
@@ -7928,11 +7938,46 @@ function kBoard(task,o={}){
  const palette=h('div',{class:'row',style:'gap:6px;flex-wrap:wrap'},
   task.tools.concat(['mv']).map(k=>{const b=h('button',{class:'btn ghost small',type:'button',
    onclick:()=>{tool=k;sel=[];mark();draw();}},kToolLabel(k));tbtns[k]=b;return b;}));
+ /* ---- Vormachen ---- */
+ const zText=h('p',{class:'small',style:'margin:0;line-height:1.45;min-height:2.6em'},'');
+ const zZaehler=h('span',{class:'small muted',style:'align-self:center'},'');
+ const zZurueck=h('button',{class:'btn ghost small',type:'button'},'\u2039');
+ const zWeiter=h('button',{class:'btn small',type:'button'},'');
+ const zEnde=h('button',{class:'btn ghost small',type:'button'},'');
+ const zStart=h('button',{class:'btn ghost small',type:'button'},'');
+ const zbar=h('div',{class:'row',style:'gap:6px;flex-wrap:wrap;margin-top:6px;align-items:center'},
+   zZurueck,zWeiter,zZaehler,zEnde);
+ const zBox=h('div',{class:'stack',style:'gap:6px;margin-top:6px'},zText,zbar);
+ const hatRezept=()=>typeof KZEIG!=='undefined'&&!!KZEIG[task.id];
+ const zMalen=()=>{
+  const an=!!zeigen;
+  zBox.style.display=an?'':'none';
+  palette.style.display=an?'none':'';
+  bar.style.display=an?'none':'';
+  zStart.style.display=(an||!hatRezept())?'none':'';
+  if(!an){zText.textContent='';draw();return;}
+  const i=zeigen.i, n=zeigen.grenzen.length;
+  const tx=zeigen.texte[i];
+  zText.textContent=tx[S.lang==='en'?1:S.lang==='fr'?2:0];
+  zZaehler.textContent=X('Schritt ','Step ','\u00c9tape ')+(i+1)+X(' von ',' of ',' sur ')+n;
+  zZurueck.disabled=(i===0);
+  zWeiter.textContent=(i===n-1)?X('Fertig','Done','Termin\u00e9'):X('Weiter \u203a','Next \u203a','Suite \u203a');
+  zEnde.textContent=X('Selber zeichnen','Draw it yourself','Dessine toi-m\u00eame');
+  draw();};
+ zZurueck.onclick=()=>{if(zeigen&&zeigen.i>0){zeigen.i--;zMalen();}};
+ zWeiter.onclick=()=>{if(!zeigen)return;
+  if(zeigen.i<zeigen.grenzen.length-1){zeigen.i++;zMalen();}
+  else{zeigen=null;zMalen();}};
+ zEnde.onclick=()=>{zeigen=null;zMalen();};
+ zStart.textContent='\u25b6 '+X('Vormachen','Show me','Montre-moi');
+ zStart.onclick=()=>{const z=kZeigBau(task);if(!z)return;
+  zeigen={i:0,objs:z.objs,geg:z.geg,grenzen:z.grenzen,texte:z.texte};zMalen();};
  const bar=h('div',{class:'row',style:'gap:6px;flex-wrap:wrap;margin-top:6px'},
-  h('button',{class:'btn ghost small',type:'button',onclick:undo},'↶ '+t('padUndo')),
-  h('button',{class:'btn ghost small',type:'button',onclick:clear},'🗑 '+t('padClear')));
- mark();draw();
- return {el:h('div',{class:'stack'},palette,svg,bar),objs,draw,
+  h('button',{class:'btn ghost small',type:'button',onclick:undo},'\u21b6 '+t('padUndo')),
+  h('button',{class:'btn ghost small',type:'button',onclick:clear},'\ud83d\uddd1 '+t('padClear')),
+  zStart);
+ mark();draw();zMalen();
+ return {el:h('div',{class:'stack'},palette,svg,bar,zBox),objs,draw,
   data:()=>objs.map(o=>Object.assign({},o))};
 }
 
@@ -7978,7 +8023,7 @@ const KTASKS2=[
  steps:[['Spiegle den Kreis k am Punkt M: der Bildkreis k₁ hat denselben Radius.','Der Mittelpunkt von k₁ ist der an M gespiegelte Punkt K.','Der Schnittpunkt von k₁ mit g ist B.','A ist der an M gespiegelte Punkt B; zeichne die Strecke AB.'],
         ['Reflect the circle k in the point M: the image circle k₁ has the same radius.','Its centre is the reflection of K in M.','The intersection of k₁ with g is B.','A is the reflection of B in M; draw the segment AB.'],
         ['Applique la symétrie de centre M au cercle k : le cercle image k₁ a le même rayon.','Son centre est l’image de K par M.','L’intersection de k₁ avec g est B.','A est l’image de B par M ; trace le segment AB.']],
- geg:()=>[{k:'P',x:50,y:30,given:1,n:'K'},{k:'P',x:68,y:30,given:1,n:'k'},{k:'C',c:0,p:1},
+ geg:()=>[{k:'P',x:50,y:30,given:1,n:'K'},{k:'P',x:50,y:48,given:1,n:'k'},{k:'C',c:0,p:1},
           {k:'P',x:16,y:74,given:1,n:'G'},{k:'P',x:116,y:74,given:1,n:'H'},{k:'L',a:3,b:4},
           {k:'P',x:62,y:52,given:1,n:'M'}],
  ok:(o,R)=>{const K=kByName(o,R,'K'),kp=kByName(o,R,'k'),G=kByName(o,R,'G'),H=kByName(o,R,'H'),M=kByName(o,R,'M');
@@ -8096,7 +8141,7 @@ const KTASKS3=[
  steps:[['Verlängere BC bis zum Schnittpunkt S mit g.','Die Achse geht durch S und halbiert den Winkel zwischen BC und g.','Konstruiere diese Winkelhalbierende: Kreis um S, dann Mittelsenkrechte der beiden Schnittpunkte.','Beide Winkelhalbierenden sind Lösungen; eine genügt.'],
   ['Extend BC to its intersection S with g.','The axis passes through S and bisects the angle between BC and g.','Construct that bisector: circle around S, then the perpendicular bisector of the two intersections.','Both bisectors work; one is enough.'],
   ['Prolonge BC jusqu’à son intersection S avec g.','L’axe passe par S et partage l’angle entre BC et g.','Construis cette bissectrice : cercle de centre S, puis médiatrice des deux intersections.','Les deux bissectrices conviennent ; une suffit.']],
- geg:()=>[{k:'P',x:30,y:20,given:1,n:'A'},{k:'P',x:58,y:28,given:1,n:'B'},{k:'P',x:40,y:50,given:1,n:'C'},
+ geg:()=>[{k:'P',x:30,y:20,given:1,n:'A'},{k:'P',x:58,y:28,given:1,n:'B'},{k:'P',x:44,y:50,given:1,n:'C'},
           {k:'S',a:0,b:1},{k:'S',a:1,b:2},{k:'S',a:2,b:0},
           {k:'P',x:18,y:78,given:1,n:'g'},{k:'P',x:112,y:66,given:1,n:'g′'},{k:'L',a:6,b:7}],
  ok:(o,R)=>{const B=kByName(o,R,'B'),C=kByName(o,R,'C'),
@@ -8120,7 +8165,7 @@ const KTASKS3=[
  geg:()=>[{k:'P',x:16,y:60,given:1,n:'A'},{k:'P',x:34,y:26,given:1,n:'B'},{k:'P',x:10,y:38,given:1,n:'C'},
           {k:'S',a:0,b:1},{k:'S',a:1,b:2},{k:'S',a:2,b:0},
           {k:'P',x:46,y:14,given:1,n:'g'},{k:'P',x:32,y:78,given:1,n:'g′'},{k:'L',a:6,b:7},
-          {k:'P',x:76,y:14,given:1,n:'h'},{k:'P',x:62,y:78,given:1,n:'h′'},{k:'L',a:9,b:10}],
+          {k:'P',x:96,y:14,given:1,n:'h'},{k:'P',x:82,y:78,given:1,n:'h′'},{k:'L',a:9,b:10}],
  ok:(o,R)=>{const A=kByName(o,R,'A'),B=kByName(o,R,'B'),C=kByName(o,R,'C');
   const g1=kByName(o,R,'g'),g2=kByName(o,R,'g′'),
         h1=kByName(o,R,'h'),h2=kByName(o,R,'h′');
@@ -8246,6 +8291,410 @@ const KTASKS4=[
   return kPoints(o,R).some(P=>kdist(P,C)<=KTOLR*kScale(L)*1.6);}}
 ];
 KTASKS4.forEach(t=>KTASKS.push(t));
+
+/* ===== Zwei Konstruktionen aus dem Aufgabenblatt Geometrie 6/7 =====
+   Beide verlangen den Schritt, der Johannes schwerfaellt: eine Abbildung
+   rueckwaerts lesen. Bei der einen ist die Achse gesucht, bei der anderen
+   der Endpunkt, dessen Mittelpunkt feststeht. */
+function kEinheit(d){const n=Math.hypot(d[0],d[1]);return n<KEPS?null:[d[0]/n,d[1]/n];}
+/* Spiegelung von P an der Geraden durch C mit Richtung a (a normiert) */
+function kSpiegelAchse(P,C,a){const w=kv(C,P);const t=w[0]*a[0]+w[1]*a[1];
+ return [C[0]+2*t*a[0]-w[0], C[1]+2*t*a[1]-w[1]];}
+/* Spiegelung von P am Punkt M */
+function kSpiegelPunkt(P,M){return [2*M[0]-P[0], 2*M[1]-P[1]];}
+
+const KTASKS5=[
+{id:'k-zwei-spiegelachsen',y:8,tools:['pt','ln','sg','ci','pl'],
+ n:['Zwei Spiegelachsen','Two axes of reflection','Deux axes de symétrie'],
+ goal:['Die Geraden GH und IJ gehen durch Spiegelung auseinander hervor. Konstruiere beide Spiegelachsen und dazu eine der beiden Bildstrecken von EF.',
+  'The lines GH and IJ are reflections of each other. Construct both axes of reflection, and one of the two image segments of EF.',
+  'Les droites GH et IJ sont images l’une de l’autre par symétrie. Construis les deux axes, et une des deux images du segment EF.'],
+ steps:[['Die beiden Geraden schneiden sich in einem Punkt. Jede Spiegelachse geht durch diesen Punkt.',
+         'Die Achsen sind die beiden Winkelhalbierenden des Geradenpaars: ein Kreis um den Schnittpunkt, dann die Winkel halbieren. Die zweite Achse steht senkrecht auf der ersten.',
+         'Wähle eine Achse. Fälle von E das Lot auf sie und trage den gleichen Abstand auf der anderen Seite ab: das ist E′.',
+         'Dasselbe für F. Verbinde E′ und F′.'],
+        ['The two lines meet in one point. Every axis of reflection passes through it.',
+         'The axes are the two angle bisectors of the pair: draw a circle around the intersection, then bisect the angles. The second axis is perpendicular to the first.',
+         'Choose one axis. Drop the perpendicular from E onto it and step off the same distance on the other side: that is E′.',
+         'Do the same for F. Join E′ and F′.'],
+        ['Les deux droites se coupent en un point. Chaque axe passe par ce point.',
+         'Les axes sont les deux bissectrices du couple de droites : un cercle centré sur l’intersection, puis bissecte les angles. Le second axe est perpendiculaire au premier.',
+         'Choisis un axe. Abaisse la perpendiculaire de E sur cet axe et reporte la même distance de l’autre côté : c’est E′.',
+         'Fais de même pour F. Relie E′ et F′.']],
+ geg:()=>[{k:'P',x:30,y:83,given:1,n:'G'},{k:'P',x:95,y:22,given:1,n:'H'},{k:'L',a:0,b:1},
+          {k:'P',x:37,y:36,given:1,n:'I'},{k:'P',x:85,y:78,given:1,n:'J'},{k:'L',a:3,b:4},
+          {k:'P',x:28,y:72,given:1,n:'E'},{k:'P',x:70,y:86,given:1,n:'F'},{k:'S',a:6,b:7}],
+ ok:(o,R)=>{const G=kByName(o,R,'G'),H=kByName(o,R,'H'),I=kByName(o,R,'I'),
+   J=kByName(o,R,'J'),E=kByName(o,R,'E'),F=kByName(o,R,'F');
+  if(!G||!H||!I||!J||!E||!F)return false;
+  const tr=kIntLL(G,H,I,J);if(!tr.length)return false;
+  const C=tr[0], ref=kdist(G,H);
+  const u=kEinheit(kv(G,H)), v=kEinheit(kv(I,J));
+  if(!u||!v)return false;
+  const achsen=[kEinheit([u[0]+v[0],u[1]+v[1]]),kEinheit([u[0]-v[0],u[1]-v[1]])];
+  if(achsen.some(a=>!a))return false;
+  /* Beide Achsen muessen gezeichnet sein */
+  const gezeichnet=a=>kLines(o,R).some(l=>kThrough(l,C,ref)
+   && kParTo(l,C,[C[0]+a[0],C[1]+a[1]]));
+  if(!achsen.every(gezeichnet))return false;
+  /* Und eine der beiden Bildstrecken */
+  return achsen.some(a=>{
+   const E2=kSpiegelAchse(E,C,a), F2=kSpiegelAchse(F,C,a);
+   return kHasPoint(o,R,E2)&&kHasPoint(o,R,F2)&&kEdge(o,R,E2,F2,ref);});}},
+
+{id:'k-strecke-mittelpunkt',y:7,tools:['pt','ln','sg','ci','pp'],
+ n:['Strecke mit vorgegebenem Mittelpunkt','Segment with a given midpoint','Segment de milieu donné'],
+ goal:['Konstruiere eine Strecke mit dem Mittelpunkt M. Der eine Endpunkt soll auf der Geraden GH liegen, der andere auf der Geraden IJ.',
+  'Construct a segment with midpoint M. One endpoint is to lie on the line GH, the other on the line IJ.',
+  'Construis un segment de milieu M. Une extrémité doit se trouver sur la droite GH, l’autre sur la droite IJ.'],
+ steps:[['Spiegle die Gerade GH am Punkt M: nimm zwei Punkte auf GH und trage sie durch M hindurch im gleichen Abstand ab.',
+         'Die gespiegelte Gerade schneidet IJ. Dieser Schnittpunkt ist der eine Endpunkt.',
+         'Spiegle diesen Endpunkt an M zurück: der zweite Endpunkt liegt auf GH.',
+         'Verbinde die beiden Endpunkte. M liegt genau in der Mitte.'],
+        ['Reflect the line GH in the point M: take two points on GH and step them through M to the same distance.',
+         'The reflected line cuts IJ. That intersection is one endpoint.',
+         'Reflect that endpoint back through M: the second endpoint lies on GH.',
+         'Join the two endpoints. M is exactly in the middle.'],
+        ['Fais le symétrique de la droite GH par rapport au point M : prends deux points de GH et reporte-les de l’autre côté de M, à la même distance.',
+         'La droite image coupe IJ. Cette intersection est une extrémité.',
+         'Fais le symétrique de cette extrémité par rapport à M : la seconde extrémité est sur GH.',
+         'Relie les deux extrémités. M est exactement au milieu.']],
+ geg:()=>[{k:'P',x:20,y:86,given:1,n:'G'},{k:'P',x:115,y:86,given:1,n:'H'},{k:'L',a:0,b:1},
+          {k:'P',x:35,y:28,given:1,n:'I'},{k:'P',x:105,y:62,given:1,n:'J'},{k:'L',a:3,b:4},
+          {k:'P',x:62,y:70,given:1,n:'M'}],
+ ok:(o,R)=>{const G=kByName(o,R,'G'),H=kByName(o,R,'H'),I=kByName(o,R,'I'),
+   J=kByName(o,R,'J'),M=kByName(o,R,'M');
+  if(!G||!H||!I||!J||!M)return false;
+  const ref=kdist(G,H);
+  /* GH an M gespiegelt */
+  const G2=kSpiegelPunkt(G,M), H2=kSpiegelPunkt(H,M);
+  const tr=kIntLL(G2,H2,I,J);if(!tr.length)return false;
+  const B=tr[0], A=kSpiegelPunkt(B,M);
+  return kHasPoint(o,R,A)&&kHasPoint(o,R,B)&&kEdge(o,R,A,B,ref);}}
+];
+KTASKS5.forEach(t=>KTASKS.push(t));
+
+/* ===== Vormachen: jede Konstruktion Schritt fuer Schritt =====
+   Ein Rezept ist keine gemalte Loesung. Jeder Schritt haengt echte
+   Konstruktionsobjekte an die Ausgangsfigur an; gerechnet wird mit
+   derselben Aufloesung wie beim eigenen Zeichnen. Am Ende muss die Figur
+   die Pruefung der Aufgabe bestehen, Verschiebungstest eingeschlossen. */
+function kZeigBau(task){
+ const rez=(typeof KZEIG!=='undefined')?KZEIG[task.id]:null;
+ if(!rez)return null;
+ const objs=task.geg();const geg=objs.length;const marke={};
+ for(let i=0;i<geg;i++)if(objs[i].n!=null&&marke[objs[i].n]==null)marke[objs[i].n]=i;
+ const idx=v=>typeof v==='number'?v:(marke[v]!=null?marke[v]:-1);
+ /* Von zwei Schnittpunkten den richtigen waehlen: der eine ist oft schon
+    bekannt. Die Wahl faellt einmal beim Aufbau; eine Aehnlichkeitsabbildung
+    dreht die Reihenfolge der Loesungen nicht um. */
+ const waehle=(ints,nah,weg)=>{
+  const probe=objs.concat([{k:'P',int:[ints[0],ints[1],0]},{k:'P',int:[ints[0],ints[1],1]}]);
+  const R=kResolve(probe,null);
+  const P0=R[probe.length-2],P1=R[probe.length-1];
+  if(!P0||!P1)return 0;
+  const Z=R[idx(nah!=null?nah:weg)];
+  if(!Z||Z.length!==2)return 0;
+  const d0=kdist(P0,Z),d1=kdist(P1,Z);
+  return (nah!=null)?(d0<=d1?0:1):(d0>d1?0:1);};
+ const grenzen=[],texte=[];
+ for(const s of rez){
+  for(const b of s.o){const o={};
+   for(const k in b)if(k!=='_'&&k!=='nah'&&k!=='weg')o[k]=b[k];
+   for(const k of ['a','b','c','p','ra','rb','at','perp','par'])if(o[k]!=null)o[k]=idx(o[k]);
+   if(o.int){const ii=[idx(o.int[0]),idx(o.int[1])];
+    o.int=[ii[0],ii[1],(b.nah!=null||b.weg!=null)?waehle(ii,b.nah,b.weg):(o.int[2]||0)];}
+   objs.push(o);if(b._)marke[b._]=objs.length-1;}
+  grenzen.push(objs.length);texte.push(s.t);}
+ return {objs,geg,grenzen,texte};}
+
+/* Bausteine, die in fast jedem Rezept vorkommen. */
+const kzMS=(P,Q,pre)=>[                       /* Mittelsenkrechte von PQ */
+ {_:pre+'a',k:'C',c:P,p:Q},{_:pre+'b',k:'C',c:Q,p:P},
+ {_:pre+'0',k:'P',int:[pre+'a',pre+'b',0]},{_:pre+'1',k:'P',int:[pre+'a',pre+'b',1]},
+ {_:pre,k:'L',a:pre+'0',b:pre+'1'}];
+const kzSpA=(P,U,V,pre,nm)=>[                 /* P an der Geraden UV spiegeln */
+ {_:pre+'a',k:'C',c:U,p:P},{_:pre+'b',k:'C',c:V,p:P},
+ {_:pre,k:'P',n:nm,int:[pre+'a',pre+'b'],weg:P}];
+const kzSpZ=(P,Z,pre,nm)=>[                   /* P am Punkt Z spiegeln */
+ {_:pre+'a',k:'C',c:Z,p:P},{_:pre+'b',k:'L',a:P,b:Z},
+ {_:pre,k:'P',n:nm,int:[pre+'a',pre+'b'],weg:P}];
+const T3Z=(de,en,fr)=>[de,en,fr];
+
+const KZEIG={
+'k-mittelsenkrechte':[
+ {t:T3Z('Kreis um A durch B.','Circle around A through B.','Cercle de centre A passant par B.'),
+  o:[{_:'c1',k:'C',c:'A',p:'B'}]},
+ {t:T3Z('Gleich grosser Kreis um B durch A. Die zwei Kreise schneiden sich oben und unten.','A circle of the same size around B through A. The two circles meet above and below.','Un cercle de même taille autour de B passant par A. Les deux cercles se coupent en haut et en bas.'),
+  o:[{_:'c2',k:'C',c:'B',p:'A'}]},
+ {t:T3Z('Beide Schnittpunkte markieren. Jeder von ihnen ist von A und von B gleich weit weg.','Mark both intersections. Each of them is equally far from A and from B.','Marque les deux intersections. Chacune est à égale distance de A et de B.'),
+  o:[{_:'z0',k:'P',int:['c1','c2',0]},{_:'z1',k:'P',int:['c1','c2',1]}]},
+ {t:T3Z('Die Gerade durch die beiden Punkte ist die Mittelsenkrechte.','The line through the two points is the perpendicular bisector.','La droite passant par ces deux points est la médiatrice.'),
+  o:[{k:'L',a:'z0',b:'z1'}]}],
+
+'k-gleichseitig':[
+ {t:T3Z('Kreis um A durch B. Jeder Punkt darauf ist von A so weit weg wie B.','Circle around A through B. Every point on it is as far from A as B is.','Cercle de centre A passant par B. Chaque point est aussi loin de A que B.'),
+  o:[{_:'c1',k:'C',c:'A',p:'B'}]},
+ {t:T3Z('Kreis um B durch A. Jeder Punkt darauf ist von B so weit weg wie A.','Circle around B through A. Every point on it is as far from B as A is.','Cercle de centre B passant par A. Chaque point est aussi loin de B que A.'),
+  o:[{_:'c2',k:'C',c:'B',p:'A'}]},
+ {t:T3Z('Der Schnittpunkt C ist von A und von B genau so weit weg wie A von B.','The intersection C is exactly as far from A and from B as A is from B.','L’intersection C est exactement aussi loin de A et de B que A l’est de B.'),
+  o:[{_:'C',k:'P',n:'C',int:['c1','c2',1]}]},
+ {t:T3Z('Verbinde A mit C und B mit C. Alle drei Seiten sind gleich lang.','Join A to C and B to C. All three sides are the same length.','Relie A à C et B à C. Les trois côtés ont la même longueur.'),
+  o:[{k:'S',a:'A',b:'C'},{k:'S',a:'B',b:'C'}]}],
+
+'k-winkel60':[
+ {t:T3Z('Kreis um A durch B.','Circle around A through B.','Cercle de centre A passant par B.'),
+  o:[{_:'c1',k:'C',c:'A',p:'B'}]},
+ {t:T3Z('Kreis um B durch A.','Circle around B through A.','Cercle de centre B passant par A.'),
+  o:[{_:'c2',k:'C',c:'B',p:'A'}]},
+ {t:T3Z('Der Schnittpunkt C bildet mit A und B ein gleichseitiges Dreieck.','The intersection C forms an equilateral triangle with A and B.','L’intersection C forme un triangle équilatéral avec A et B.'),
+  o:[{_:'C',k:'P',n:'C',int:['c1','c2',1]}]},
+ {t:T3Z('Im gleichseitigen Dreieck ist jeder Winkel 60°. Der Strahl von A durch C ist der gesuchte Schenkel.','Every angle of an equilateral triangle is 60°. The ray from A through C is the arm you want.','Dans un triangle équilatéral chaque angle vaut 60°. La demi-droite de A par C est le côté cherché.'),
+  o:[{k:'R',a:'A',b:'C'}]}],
+
+'k-lot-faellen':[
+ {t:T3Z('Kreis um P durch G. Er trifft die Gerade noch ein zweites Mal.','Circle around P through G. It meets the line a second time.','Cercle de centre P passant par G. Il recoupe la droite une seconde fois.'),
+  o:[{_:'c1',k:'C',c:'P',p:'G'}]},
+ {t:T3Z('Diesen zweiten Schnittpunkt Q markieren. P ist von G und von Q gleich weit weg.','Mark that second intersection Q. P is equally far from G and from Q.','Marque cette seconde intersection Q. P est à égale distance de G et de Q.'),
+  o:[{_:'Q',k:'P',n:'Q',int:['c1',2],weg:'G'}]},
+ {t:T3Z('Darum liegt P auf der Mittelsenkrechten von GQ. Kreis um G durch Q und Kreis um Q durch G.','So P lies on the perpendicular bisector of GQ. Circle around G through Q and circle around Q through G.','Donc P est sur la médiatrice de GQ. Cercle de centre G passant par Q, et de centre Q passant par G.'),
+  o:[{_:'m1a',k:'C',c:'G',p:'Q'},{_:'m1b',k:'C',c:'Q',p:'G'}]},
+ {t:T3Z('Beide Schnittpunkte markieren.','Mark both intersections.','Marque les deux intersections.'),
+  o:[{_:'m10',k:'P',int:['m1a','m1b',0]},{_:'m11',k:'P',int:['m1a','m1b',1]}]},
+ {t:T3Z('Die Gerade durch sie geht durch P und steht senkrecht auf g. Das ist das Lot.','The line through them passes through P and is perpendicular to g. That is the perpendicular.','La droite qui les joint passe par P et est perpendiculaire à g. C’est la perpendiculaire cherchée.'),
+  o:[{k:'L',a:'m10',b:'m11'}]}],
+
+'k-lot-errichten':[
+ {t:T3Z('Kreis um F mit der gegebenen Zirkelöffnung r. Er schneidet die Gerade links und rechts von F.','Circle around F with the given compass opening r. It cuts the line left and right of F.','Cercle de centre F avec l’ouverture donnée r. Il coupe la droite à gauche et à droite de F.'),
+  o:[{_:'c1',k:'C',c:'F',ra:'r',rb:'r′'}]},
+ {t:T3Z('Die beiden Schnittpunkte X und Y markieren. F liegt genau zwischen ihnen.','Mark the two intersections X and Y. F lies exactly between them.','Marque les deux intersections X et Y. F est exactement entre elles.'),
+  o:[{_:'X',k:'P',n:'X',int:['c1',2,0]},{_:'Y',k:'P',n:'Y',int:['c1',2,1]}]},
+ {t:T3Z('Kreis um X mit dem Abstand XY, und ein gleich grosser um Y.','Circle around X with radius XY, and one of the same size around Y.','Cercle de centre X de rayon XY, et un identique autour de Y.'),
+  o:[{_:'c2',k:'C',c:'X',ra:'X',rb:'Y'},{_:'c3',k:'C',c:'Y',ra:'X',rb:'Y'}]},
+ {t:T3Z('Beide Schnittpunkte markieren.','Mark both intersections.','Marque les deux intersections.'),
+  o:[{_:'w0',k:'P',int:['c2','c3',0]},{_:'w1',k:'P',int:['c2','c3',1]}]},
+ {t:T3Z('Die Gerade durch sie geht durch F und steht senkrecht auf g.','The line through them passes through F and is perpendicular to g.','La droite qui les joint passe par F et est perpendiculaire à g.'),
+  o:[{k:'L',a:'w0',b:'w1'}]}],
+
+'k-winkelhalbierende':[
+ {t:T3Z('Kreis um S mit der Zirkelöffnung r. Er schneidet beide Schenkel.','Circle around S with the compass opening r. It cuts both arms.','Cercle de centre S avec l’ouverture r. Il coupe les deux côtés.'),
+  o:[{_:'c1',k:'C',c:'S',ra:'r',rb:'r′'}]},
+ {t:T3Z('Auf dem ersten Schenkel den Schnittpunkt X markieren, auf dem zweiten Y. Beide sind von S gleich weit weg.','Mark X on the first arm and Y on the second. Both are equally far from S.','Marque X sur le premier côté et Y sur le second. Les deux sont à égale distance de S.'),
+  o:[{_:'X',k:'P',n:'X',int:['c1',3],nah:'A'},{_:'Y',k:'P',n:'Y',int:['c1',4],nah:'B'}]},
+ {t:T3Z('Kreis um X mit r und Kreis um Y mit r.','Circle around X with r and circle around Y with r.','Cercle de centre X de rayon r et cercle de centre Y de rayon r.'),
+  o:[{_:'c2',k:'C',c:'X',ra:'r',rb:'r′'},{_:'c3',k:'C',c:'Y',ra:'r',rb:'r′'}]},
+ {t:T3Z('Ihr Schnittpunkt im Winkel liegt von beiden Schenkeln gleich weit weg.','Their intersection inside the angle is equally far from both arms.','Leur intersection dans l’angle est à égale distance des deux côtés.'),
+  o:[{_:'W',k:'P',n:'W',int:['c2','c3'],weg:'S'}]},
+ {t:T3Z('Der Strahl von S durch diesen Punkt halbiert den Winkel.','The ray from S through that point bisects the angle.','La demi-droite de S par ce point partage l’angle en deux.'),
+  o:[{k:'R',a:'S',b:'W'}]}],
+
+'k-parallele':[
+ {t:T3Z('Kreis um P mit der Zirkelöffnung r. Er trifft die Gerade g.','Circle around P with the compass opening r. It meets the line g.','Cercle de centre P avec l’ouverture r. Il rencontre la droite g.'),
+  o:[{_:'c1',k:'C',c:'P',ra:'r',rb:'r′'},{_:'X',k:'P',n:'X',int:['c1',2,0]}]},
+ {t:T3Z('Kreis um X mit derselben Öffnung r. Er trifft g ein zweites Mal: dort liegt Y.','Circle around X with the same opening r. It meets g a second time: that is Y.','Cercle de centre X avec la même ouverture r. Il recoupe g : c’est Y.'),
+  o:[{_:'c2',k:'C',c:'X',ra:'r',rb:'r′'},{_:'Y',k:'P',n:'Y',int:['c2',2,1]}]},
+ {t:T3Z('Kreis um Y mit r. Er schneidet den ersten Kreis in einem neuen Punkt Q.','Circle around Y with r. It cuts the first circle at a new point Q.','Cercle de centre Y de rayon r. Il coupe le premier cercle en un nouveau point Q.'),
+  o:[{_:'c3',k:'C',c:'Y',ra:'r',rb:'r′'},{_:'Q',k:'P',n:'Q',int:['c3','c1'],weg:'X'}]},
+ {t:T3Z('P, X, Y und Q bilden eine Raute: alle vier Seiten sind r lang. Darum ist PQ parallel zu g.','P, X, Y and Q form a rhombus: all four sides are r long. So PQ is parallel to g.','P, X, Y et Q forment un losange : les quatre côtés valent r. Donc PQ est parallèle à g.'),
+  o:[{k:'L',a:'P',b:'Q'}]}],
+
+'k-sss':[
+ {t:T3Z('Kreis um A mit der Länge b. Jeder Punkt darauf ist b von A entfernt.','Circle around A with length b. Every point on it is b away from A.','Cercle de centre A de rayon b. Chaque point en est à la distance b.'),
+  o:[{_:'c1',k:'C',c:'A',ra:'b',rb:'b′'}]},
+ {t:T3Z('Kreis um B mit der Länge a. Jeder Punkt darauf ist a von B entfernt.','Circle around B with length a. Every point on it is a away from B.','Cercle de centre B de rayon a. Chaque point en est à la distance a.'),
+  o:[{_:'c2',k:'C',c:'B',ra:'a',rb:'a′'}]},
+ {t:T3Z('Nur der Schnittpunkt erfüllt beides. Das ist C.','Only the intersection satisfies both. That is C.','Seule l’intersection satisfait les deux. C’est C.'),
+  o:[{_:'C',k:'P',n:'C',int:['c1','c2',1]}]},
+ {t:T3Z('Verbinde A mit C und B mit C. Das Dreieck ist fertig.','Join A to C and B to C. The triangle is finished.','Relie A à C et B à C. Le triangle est terminé.'),
+  o:[{k:'S',a:'A',b:'C'},{k:'S',a:'B',b:'C'}]}],
+
+'k-achse-kreise':[
+ {t:T3Z('Die Achse muss den Mittelpunkt M auf M′ schieben. Verbinde die beiden Mittelpunkte.','The axis has to take the centre M to M′. Join the two centres.','L’axe doit amener le centre M sur M′. Relie les deux centres.'),
+  o:[{k:'S',a:'M',b:'M′'}]},
+ {t:T3Z('Gesucht ist die Mittelsenkrechte von MM′. Kreis um M durch M′ und umgekehrt.','What you need is the perpendicular bisector of MM′. Circle around M through M′ and the other way round.','Il faut la médiatrice de MM′. Cercle de centre M passant par M′, et inversement.'),
+  o:[{_:'c1',k:'C',c:'M',p:'M′'},{_:'c2',k:'C',c:'M′',p:'M'}]},
+ {t:T3Z('Beide Schnittpunkte markieren.','Mark both intersections.','Marque les deux intersections.'),
+  o:[{_:'z0',k:'P',int:['c1','c2',0]},{_:'z1',k:'P',int:['c1','c2',1]}]},
+ {t:T3Z('Die Gerade durch sie ist die Spiegelachse.','The line through them is the axis of reflection.','La droite qui les joint est l’axe de symétrie.'),
+  o:[{k:'L',a:'z0',b:'z1'}]}],
+
+'k-spiegelzentrum':[
+ {t:T3Z('Bei einer Punktspiegelung liegt das Zentrum auf jeder Verbindung von Punkt und Bildpunkt. Verbinde A mit A′.','In a point reflection the centre lies on every line from a point to its image. Join A to A′.','Dans une symétrie centrale le centre est sur chaque droite reliant un point à son image. Relie A à A′.'),
+  o:[{_:'l1',k:'L',a:'A',b:'A′'}]},
+ {t:T3Z('Dasselbe gilt für B und B′. Verbinde auch diese beiden.','The same holds for B and B′. Join those two as well.','Il en va de même pour B et B′. Relie-les aussi.'),
+  o:[{_:'l2',k:'L',a:'B',b:'B′'}]},
+ {t:T3Z('Die beiden Geraden schneiden sich im Spiegelzentrum Z.','The two lines meet at the centre of reflection Z.','Les deux droites se coupent au centre de symétrie Z.'),
+  o:[{_:'Z',k:'P',n:'Z',int:['l1','l2',0]}]}],
+
+'k-strecke-mitte':[
+ {t:T3Z('Spiegle den Kreismittelpunkt K am Punkt M: Kreis um M durch K, dazu die Gerade KM.','Reflect the circle centre K in the point M: circle around M through K, plus the line KM.','Fais le symétrique du centre K par rapport à M : cercle de centre M passant par K, et la droite KM.'),
+  o:[{_:'c1',k:'C',c:'M',p:'K'},{_:'l1',k:'L',a:'K',b:'M'}]},
+ {t:T3Z('Der zweite Schnittpunkt ist K′, der gespiegelte Mittelpunkt.','The second intersection is K′, the reflected centre.','La seconde intersection est K′, le centre image.'),
+  o:[{_:'K2',k:'P',n:'K′',int:['c1','l1'],weg:'K'}]},
+ {t:T3Z('Kreis um K′ mit demselben Radius wie k. Das ist der gespiegelte Kreis.','Circle around K′ with the same radius as k. That is the reflected circle.','Cercle de centre K′ de même rayon que k. C’est le cercle image.'),
+  o:[{_:'c2',k:'C',c:'K2',ra:'K',rb:'k'}]},
+ {t:T3Z('Dort, wo der gespiegelte Kreis die Gerade g trifft, liegt B.','Where the reflected circle meets the line g, there is B.','Là où le cercle image rencontre la droite g se trouve B.'),
+  o:[{_:'B',k:'P',n:'B',int:['c2',5,0]}]},
+ {t:T3Z('Spiegle B zurück an M: Kreis um M durch B und die Gerade BM.','Reflect B back through M: circle around M through B and the line BM.','Ramène B par M : cercle de centre M passant par B et la droite BM.'),
+  o:[{_:'c3',k:'C',c:'M',p:'B'},{_:'l2',k:'L',a:'B',b:'M'}]},
+ {t:T3Z('Der zweite Schnittpunkt ist A. Er liegt auf dem Kreis k.','The second intersection is A. It lies on the circle k.','La seconde intersection est A. Elle est sur le cercle k.'),
+  o:[{_:'A',k:'P',n:'A',int:['c3','l2'],weg:'B'}]},
+ {t:T3Z('Verbinde A und B. M liegt genau in der Mitte.','Join A and B. M lies exactly in the middle.','Relie A et B. M est exactement au milieu.'),
+  o:[{k:'S',a:'A',b:'B'}]}],
+
+'k-billard':[
+ {t:T3Z('Spiegle die weisse Kugel an der Bande: Kreis um a durch W und Kreis um a′ durch W.','Reflect the white ball in the cushion: circle around a through W and circle around a′ through W.','Fais le symétrique de la boule blanche par rapport à la bande : cercle de centre a passant par W, et de centre a′ passant par W.'),
+  o:[{_:'q1',k:'C',c:'a',p:'W'},{_:'q2',k:'C',c:'a′',p:'W'}]},
+ {t:T3Z('Der zweite Schnittpunkt ist das Spiegelbild W′.','The second intersection is the mirror image W′.','La seconde intersection est l’image W′.'),
+  o:[{_:'W2',k:'P',n:'W′',int:['q1','q2'],weg:'W'}]},
+ {t:T3Z('Verbinde W′ mit der schwarzen Kugel. Diese Gerade trifft die Bande genau dort, wo die Kugel auftreffen muss.','Join W′ to the black ball. That line meets the cushion exactly where the ball has to hit.','Relie W′ à la boule noire. Cette droite rencontre la bande exactement au point d’impact.'),
+  o:[{_:'ls',k:'L',a:'W2',b:'S'},{_:'C',k:'P',n:'C',int:['ls',2,0]}]},
+ {t:T3Z('Der Weg geht von W zu diesem Punkt und von dort zur schwarzen Kugel. Einfallswinkel und Ausfallswinkel sind gleich.','The path runs from W to that point and on to the black ball. The angle in equals the angle out.','Le trajet va de W à ce point, puis à la boule noire. L’angle d’entrée égale l’angle de sortie.'),
+  o:[{k:'S',a:'W',b:'C'},{k:'S',a:'C',b:'S'}]}],
+
+'k-fuenfeck-achse':[
+ {t:T3Z('A soll auf sich selbst fallen, also geht die Achse durch A. M′ ist von A gleich weit weg wie M: Kreis um A durch M.','A is to stay where it is, so the axis passes through A. M′ is as far from A as M: circle around A through M.','A doit rester sur place, donc l’axe passe par A. M′ est aussi loin de A que M : cercle de centre A passant par M.'),
+  o:[{_:'c1',k:'C',c:'A',p:'M'}]},
+ {t:T3Z('M′ soll auch auf g liegen. Dort, wo der Kreis g schneidet, liegt M′.','M′ also has to lie on g. Where the circle cuts g, there is M′.','M′ doit aussi être sur g. Là où le cercle coupe g se trouve M′.'),
+  o:[{_:'M2',k:'P',n:'M′',int:['c1',13],weg:'M'}]},
+ {t:T3Z('Die Achse ist die Mittelsenkrechte von M und M′: Kreis um M durch M′ und umgekehrt.','The axis is the perpendicular bisector of M and M′: circle around M through M′ and the other way round.','L’axe est la médiatrice de M et M′ : cercle de centre M passant par M′, et inversement.'),
+  o:[{_:'c2',k:'C',c:'M',p:'M2'},{_:'c3',k:'C',c:'M2',p:'M'}]},
+ {t:T3Z('Beide Schnittpunkte markieren.','Mark both intersections.','Marque les deux intersections.'),
+  o:[{_:'z0',k:'P',int:['c2','c3',0]},{_:'z1',k:'P',int:['c2','c3',1]}]},
+ {t:T3Z('Die Gerade durch sie geht durch A und ist die gesuchte Achse.','The line through them passes through A and is the axis you want.','La droite qui les joint passe par A : c’est l’axe cherché.'),
+  o:[{k:'L',a:'z0',b:'z1'}]}],
+
+'k-achse-auf-g':[
+ {t:T3Z('Die Bildstrecke soll auf g liegen. Also muss die Spiegelung die Gerade BC auf g legen. Zeichne zuerst die Gerade BC.','The image segment is to lie on g, so the reflection has to take the line BC onto g. Draw the line BC first.','Le segment image doit être sur g : la symétrie doit amener la droite BC sur g. Trace d’abord la droite BC.'),
+  o:[{_:'l1',k:'L',a:'B',b:'C'}]},
+ {t:T3Z('Die beiden Geraden schneiden sich in X. Die Achse geht durch X.','The two lines meet at X. The axis passes through X.','Les deux droites se coupent en X. L’axe passe par X.'),
+  o:[{_:'X',k:'P',n:'X',int:['l1',8,0]}]},
+ {t:T3Z('Kreis um X durch B. Er trifft beide Geraden.','Circle around X through B. It meets both lines.','Cercle de centre X passant par B. Il rencontre les deux droites.'),
+  o:[{_:'c1',k:'C',c:'X',p:'B'}]},
+ {t:T3Z('Auf g den Punkt Q markieren. Er ist von X gleich weit weg wie B.','Mark Q on g. It is as far from X as B is.','Marque Q sur g. Il est aussi loin de X que B.'),
+  o:[{_:'Q',k:'P',n:'Q',int:['c1',8,1]}]},
+ {t:T3Z('Die Mittelsenkrechte von BQ halbiert den Winkel zwischen den Geraden: Kreis um B durch Q und umgekehrt.','The perpendicular bisector of BQ bisects the angle between the lines: circle around B through Q and the other way round.','La médiatrice de BQ partage l’angle entre les droites : cercle de centre B passant par Q, et inversement.'),
+  o:[{_:'c2',k:'C',c:'B',p:'Q'},{_:'c3',k:'C',c:'Q',p:'B'}]},
+ {t:T3Z('Beide Schnittpunkte markieren.','Mark both intersections.','Marque les deux intersections.'),
+  o:[{_:'z0',k:'P',int:['c2','c3',0]},{_:'z1',k:'P',int:['c2','c3',1]}]},
+ {t:T3Z('Die Gerade durch sie ist die Spiegelachse. An ihr fällt BC auf g.','The line through them is the axis. It takes BC onto g.','La droite qui les joint est l’axe. Il amène BC sur g.'),
+  o:[{k:'L',a:'z0',b:'z1'}]}],
+
+'k-zwei-parallelen':[
+ {t:T3Z('Spiegle A an g: zwei Kreise um die Punkte g und g′, beide durch A. Der zweite Schnittpunkt ist A₁.','Reflect A in g: two circles around the points g and g′, both through A. The second intersection is A₁.','Symétrique de A par rapport à g : deux cercles de centres g et g′ passant par A. La seconde intersection est A₁.'),
+  o:kzSpA('A','g','g′','A1','A₁')},
+ {t:T3Z('Dasselbe mit B.','The same with B.','De même avec B.'),o:kzSpA('B','g','g′','B1','B₁')},
+ {t:T3Z('Dasselbe mit C. Das erste Bilddreieck steht.','The same with C. The first image triangle is there.','De même avec C. Le premier triangle image est en place.'),o:kzSpA('C','g','g′','C1','C₁')},
+ {t:T3Z('Jetzt an h spiegeln: zwei Kreise um h und h′ durch A₁.','Now reflect in h: two circles around h and h′ through A₁.','Maintenant par rapport à h : deux cercles de centres h et h′ passant par A₁.'),
+  o:kzSpA('A1','h','h′','A2','A₂')},
+ {t:T3Z('Dasselbe mit B₁.','The same with B₁.','De même avec B₁.'),o:kzSpA('B1','h','h′','B2','B₂')},
+ {t:T3Z('Dasselbe mit C₁.','The same with C₁.','De même avec C₁.'),o:kzSpA('C1','h','h′','C2','C₂')},
+ {t:T3Z('Verbinde die drei Bildpunkte. Zwei Spiegelungen an Parallelen verschieben die Figur nur.','Join the three image points. Two reflections in parallel lines simply shift the figure.','Relie les trois points images. Deux symétries d’axes parallèles ne font que translater la figure.'),
+  o:[{k:'S',a:'A2',b:'B2'},{k:'S',a:'B2',b:'C2'},{k:'S',a:'C2',b:'A2'}]}],
+
+'k-doppelspiegelung':[
+ {t:T3Z('Das Rechteck schliessen: Parallele zu AB durch D und Parallele zu AD durch B.','Close the rectangle: parallel to AB through D and parallel to AD through B.','Ferme le rectangle : parallèle à AB par D et parallèle à AD par B.'),
+  o:[{_:'p1',k:'L',par:3,at:'D'},{_:'p2',k:'L',par:4,at:'B'}]},
+ {t:T3Z('Ihr Schnittpunkt ist die vierte Ecke C. Die zwei fehlenden Seiten einzeichnen.','Their intersection is the fourth corner C. Draw the two missing sides.','Leur intersection est le quatrième sommet C. Trace les deux côtés manquants.'),
+  o:[{_:'C',k:'P',n:'C',int:['p1','p2',0]},{k:'S',a:'B',b:'C'},{k:'S',a:'C',b:'D'}]},
+ {t:T3Z('Jetzt am Punkt Z spiegeln. Für A: Kreis um Z durch A und die Gerade AZ; der zweite Schnittpunkt ist A₁.','Now reflect in the point Z. For A: circle around Z through A and the line AZ; the second intersection is A₁.','Maintenant la symétrie de centre Z. Pour A : cercle de centre Z passant par A et la droite AZ ; la seconde intersection est A₁.'),
+  o:kzSpZ('A','Z','A1','A₁')},
+ {t:T3Z('Dasselbe mit B.','The same with B.','De même avec B.'),o:kzSpZ('B','Z','B1','B₁')},
+ {t:T3Z('Dasselbe mit C.','The same with C.','De même avec C.'),o:kzSpZ('C','Z','C1','C₁')},
+ {t:T3Z('Dasselbe mit D.','The same with D.','De même avec D.'),o:kzSpZ('D','Z','D1','D₁')},
+ {t:T3Z('Das erste Bild zeichnen.','Draw the first image.','Trace la première image.'),
+  o:[{k:'S',a:'A1',b:'B1'},{k:'S',a:'B1',b:'C1'},{k:'S',a:'C1',b:'D1'},{k:'S',a:'D1',b:'A1'}]},
+ {t:T3Z('Jetzt an der Achse s spiegeln. Für A₁: zwei Kreise um die Achsenpunkte s und s′, beide durch A₁.','Now reflect in the axis s. For A₁: two circles around the axis points s and s′, both through A₁.','Maintenant par rapport à l’axe s. Pour A₁ : deux cercles de centres s et s′ passant par A₁.'),
+  o:kzSpA('A1','s','s′','A2','A₂')},
+ {t:T3Z('Dasselbe mit B₁.','The same with B₁.','De même avec B₁.'),o:kzSpA('B1','s','s′','B2','B₂')},
+ {t:T3Z('Dasselbe mit C₁.','The same with C₁.','De même avec C₁.'),o:kzSpA('C1','s','s′','C2','C₂')},
+ {t:T3Z('Dasselbe mit D₁.','The same with D₁.','De même avec D₁.'),o:kzSpA('D1','s','s′','D2','D₂')},
+ {t:T3Z('Das zweite Bild zeichnen. Jetzt stehen alle drei Figuren da.','Draw the second image. All three figures are now there.','Trace la seconde image. Les trois figures sont là.'),
+  o:[{k:'S',a:'A2',b:'B2'},{k:'S',a:'B2',b:'C2'},{k:'S',a:'C2',b:'D2'},{k:'S',a:'D2',b:'A2'}]}],
+
+'k-billard2':[
+ {t:T3Z('Spiegle W an der unteren Bande: zwei Kreise um D und um C, beide durch W.','Reflect W in the bottom cushion: two circles around D and C, both through W.','Symétrique de W par rapport à la bande du bas : deux cercles de centres D et C passant par W.'),
+  o:kzSpA('W','D','C','W1','W₁')},
+ {t:T3Z('Spiegle das Ergebnis an der rechten Bande: zwei Kreise um B und um C, beide durch W₁.','Reflect that result in the right cushion: two circles around B and C, both through W₁.','Symétrique du résultat par rapport à la bande de droite : deux cercles de centres B et C passant par W₁.'),
+  o:kzSpA('W1','B','C','W2','W₂')},
+ {t:T3Z('Verbinde W₂ mit der schwarzen Kugel. Dort, wo die Gerade die rechte Bande trifft, liegt der zweite Auftreffpunkt.','Join W₂ to the black ball. Where that line meets the right cushion is the second point of impact.','Relie W₂ à la boule noire. Là où la droite rencontre la bande de droite se trouve le second point d’impact.'),
+  o:[{_:'ls',k:'L',a:'W2',b:'S'},{_:'P2',k:'P',n:'P₂',int:['ls',5,0]}]},
+ {t:T3Z('Verbinde W₁ mit diesem Punkt. Dort, wo diese Gerade die untere Bande trifft, liegt der erste Auftreffpunkt.','Join W₁ to that point. Where this line meets the bottom cushion is the first point of impact.','Relie W₁ à ce point. Là où cette droite rencontre la bande du bas se trouve le premier point d’impact.'),
+  o:[{_:'l2',k:'L',a:'W1',b:'P2'},{_:'P1',k:'P',n:'P₁',int:['l2',6,0]}]},
+ {t:T3Z('Der Weg: von W zum ersten Punkt, zum zweiten, dann zur schwarzen Kugel.','The path: from W to the first point, to the second, then to the black ball.','Le trajet : de W au premier point, puis au second, puis à la boule noire.'),
+  o:[{k:'S',a:'W',b:'P1'},{k:'S',a:'P1',b:'P2'},{k:'S',a:'P2',b:'S'}]}],
+
+'k-mittelparallele':[
+ {t:T3Z('Verbinde G mit I und H mit J. Zwei Querstrecken von der einen Geraden zur anderen.','Join G to I and H to J. Two crossing segments from one line to the other.','Relie G à I et H à J. Deux segments d’une droite à l’autre.'),
+  o:[{_:'t1',k:'S',a:'G',b:'I'},{_:'t2',k:'S',a:'H',b:'J'}]},
+ {t:T3Z('Die Mitte einer solchen Querstrecke liegt genau zwischen den beiden Geraden. Kreis um G durch I und Kreis um I durch G.','The middle of such a segment lies exactly between the two lines. Circle around G through I and circle around I through G.','Le milieu d’un tel segment est exactement entre les deux droites. Cercle de centre G passant par I, et de centre I passant par G.'),
+  o:[{_:'c1',k:'C',c:'G',p:'I'},{_:'c2',k:'C',c:'I',p:'G'}]},
+ {t:T3Z('Die Mittelsenkrechte schneidet die Querstrecke in ihrer Mitte M₁.','The perpendicular bisector cuts the segment at its middle M₁.','La médiatrice coupe le segment en son milieu M₁.'),
+  o:[{_:'z0',k:'P',int:['c1','c2',0]},{_:'z1',k:'P',int:['c1','c2',1]},{_:'ms1',k:'L',a:'z0',b:'z1'},
+     {_:'M1',k:'P',n:'M₁',int:['ms1','t1',0]}]},
+ {t:T3Z('Dasselbe bei der zweiten Querstrecke: Kreis um H durch J und Kreis um J durch H.','The same on the second segment: circle around H through J and circle around J through H.','De même sur le second segment : cercle de centre H passant par J, et de centre J passant par H.'),
+  o:[{_:'c3',k:'C',c:'H',p:'J'},{_:'c4',k:'C',c:'J',p:'H'}]},
+ {t:T3Z('Das ergibt die zweite Mitte M₂.','That gives the second middle M₂.','On obtient le second milieu M₂.'),
+  o:[{_:'w0',k:'P',int:['c3','c4',0]},{_:'w1',k:'P',int:['c3','c4',1]},{_:'ms2',k:'L',a:'w0',b:'w1'},
+     {_:'M2',k:'P',n:'M₂',int:['ms2','t2',0]}]},
+ {t:T3Z('Die Gerade durch M₁ und M₂ läuft genau in der Mitte zwischen g und h.','The line through M₁ and M₂ runs exactly midway between g and h.','La droite par M₁ et M₂ passe exactement à mi-chemin entre g et h.'),
+  o:[{k:'L',a:'M1',b:'M2'}]}],
+
+'k-punkt-zwei-bedingungen':[
+ {t:T3Z('Erste Bedingung: gleich weit von A und B. Alle solchen Punkte liegen auf der Mittelsenkrechten von AB.','First condition: equally far from A and B. All such points lie on the perpendicular bisector of AB.','Première condition : à égale distance de A et B. Tous ces points sont sur la médiatrice de AB.'),
+  o:[{_:'c1',k:'C',c:'A',p:'B'},{_:'c2',k:'C',c:'B',p:'A'}]},
+ {t:T3Z('Beide Schnittpunkte markieren und verbinden. Das ist die erste Ortslinie.','Mark both intersections and join them. That is the first locus.','Marque les deux intersections et joins-les. C’est le premier lieu.'),
+  o:[{_:'z0',k:'P',int:['c1','c2',0]},{_:'z1',k:'P',int:['c1','c2',1]},{_:'ms',k:'L',a:'z0',b:'z1'}]},
+ {t:T3Z('Zweite Bedingung: gleich weit von g und h. Verbinde dazu G mit I und H mit J.','Second condition: equally far from g and h. For that, join G to I and H to J.','Deuxième condition : à égale distance de g et h. Pour cela, relie G à I et H à J.'),
+  o:[{_:'t1',k:'S',a:'G',b:'I'},{_:'t2',k:'S',a:'H',b:'J'}]},
+ {t:T3Z('Die Mitte von GI liegt genau zwischen den Geraden: Kreis um G durch I und Kreis um I durch G.','The middle of GI lies exactly between the lines: circle around G through I and circle around I through G.','Le milieu de GI est exactement entre les droites : cercle de centre G passant par I, et de centre I passant par G.'),
+  o:[{_:'c3',k:'C',c:'G',p:'I'},{_:'c4',k:'C',c:'I',p:'G'},
+     {_:'w0',k:'P',int:['c3','c4',0]},{_:'w1',k:'P',int:['c3','c4',1]},{_:'ms1',k:'L',a:'w0',b:'w1'},
+     {_:'M1',k:'P',n:'M₁',int:['ms1','t1',0]}]},
+ {t:T3Z('Dasselbe bei HJ ergibt die zweite Mitte M₂.','The same on HJ gives the second middle M₂.','De même sur HJ, on obtient le second milieu M₂.'),
+  o:[{_:'c5',k:'C',c:'H',p:'J'},{_:'c6',k:'C',c:'J',p:'H'},
+     {_:'v0',k:'P',int:['c5','c6',0]},{_:'v1',k:'P',int:['c5','c6',1]},{_:'ms2',k:'L',a:'v0',b:'v1'},
+     {_:'M2',k:'P',n:'M₂',int:['ms2','t2',0]}]},
+ {t:T3Z('Die Gerade durch M₁ und M₂ ist die Mittelparallele, die zweite Ortslinie.','The line through M₁ and M₂ is the mid-parallel, the second locus.','La droite par M₁ et M₂ est la parallèle médiane, le second lieu.'),
+  o:[{_:'mp',k:'L',a:'M1',b:'M2'}]},
+ {t:T3Z('Zwei Bedingungen, zwei Linien. Ihr Schnittpunkt ist C.','Two conditions, two lines. Their intersection is C.','Deux conditions, deux lignes. Leur intersection est C.'),
+  o:[{_:'C',k:'P',n:'C',int:['ms','mp',0]}]}],
+
+'k-zwei-spiegelachsen':[
+ {t:T3Z('Die beiden Geraden schneiden sich. Jede Spiegelachse geht durch diesen Punkt.','The two lines meet. Every axis of reflection passes through that point.','Les deux droites se coupent. Chaque axe passe par ce point.'),
+  o:[{_:'S0',k:'P',n:'S',int:[2,5,0]}]},
+ {t:T3Z('Kreis um diesen Punkt durch G. Er schneidet beide Geraden je zweimal.','Circle around that point through G. It cuts each line twice.','Cercle de centre ce point passant par G. Il coupe chaque droite deux fois.'),
+  o:[{_:'c1',k:'C',c:'S0',p:'G'}]},
+ {t:T3Z('Auf der zweiten Geraden den Schnittpunkt Q markieren. Er ist von S gleich weit weg wie G.','Mark the intersection Q on the second line. It is as far from S as G is.','Marque l’intersection Q sur la seconde droite. Elle est aussi loin de S que G.'),
+  o:[{_:'Q',k:'P',n:'Q',int:['c1',5],nah:'J'}]},
+ {t:T3Z('Die Mittelsenkrechte von GQ ist die erste Achse: Kreis um G durch Q und umgekehrt.','The perpendicular bisector of GQ is the first axis: circle around G through Q and the other way round.','La médiatrice de GQ est le premier axe : cercle de centre G passant par Q, et inversement.'),
+  o:[{_:'c2',k:'C',c:'G',p:'Q'},{_:'c3',k:'C',c:'Q',p:'G'}]},
+ {t:T3Z('Beide Schnittpunkte markieren und verbinden. Erste Achse.','Mark both intersections and join them. First axis.','Marque les deux intersections et joins-les. Premier axe.'),
+  o:[{_:'z0',k:'P',int:['c2','c3',0]},{_:'z1',k:'P',int:['c2','c3',1]},{_:'a1',k:'L',a:'z0',b:'z1'}]},
+ {t:T3Z('Auf der zweiten Geraden gibt es noch einen Schnittpunkt Q′. Er führt zur zweiten Achse.','There is a second intersection Q′ on the second line. It leads to the second axis.','Il y a une seconde intersection Q′ sur la seconde droite. Elle donne le second axe.'),
+  o:[{_:'Q2',k:'P',n:'Q′',int:['c1',5],weg:'Q'}]},
+ {t:T3Z('Die Mittelsenkrechte von G und Q′ ist die zweite Achse. Sie steht senkrecht auf der ersten.','The perpendicular bisector of G and Q′ is the second axis. It is perpendicular to the first.','La médiatrice de G et Q′ est le second axe. Il est perpendiculaire au premier.'),
+  o:[{_:'c4',k:'C',c:'G',p:'Q2'},{_:'c5',k:'C',c:'Q2',p:'G'},
+     {_:'v0',k:'P',int:['c4','c5',0]},{_:'v1',k:'P',int:['c4','c5',1]},{_:'a2',k:'L',a:'v0',b:'v1'}]},
+ {t:T3Z('Jetzt E an der ersten Achse spiegeln: zwei Kreise um die Achsenpunkte, beide durch E.','Now reflect E in the first axis: two circles around the axis points, both through E.','Maintenant le symétrique de E par rapport au premier axe : deux cercles de centres les points de l’axe passant par E.'),
+  o:kzSpA('E','z0','z1','E2','E′')},
+ {t:T3Z('Dasselbe mit F.','The same with F.','De même avec F.'),o:kzSpA('F','z0','z1','F2','F′')},
+ {t:T3Z('Verbinde die beiden Bildpunkte. Das ist die Bildstrecke.','Join the two image points. That is the image segment.','Relie les deux points images. C’est le segment image.'),
+  o:[{k:'S',a:'E2',b:'F2'}]}],
+
+'k-strecke-mittelpunkt':[
+ {t:T3Z('Spiegle G am Punkt M: Kreis um M durch G und die Gerade GM. Der zweite Schnittpunkt ist G′.','Reflect G in the point M: circle around M through G and the line GM. The second intersection is G′.','Symétrique de G par rapport à M : cercle de centre M passant par G et la droite GM. La seconde intersection est G′.'),
+  o:kzSpZ('G','M','G2','G′')},
+ {t:T3Z('Dasselbe mit H.','The same with H.','De même avec H.'),o:kzSpZ('H','M','H2','H′')},
+ {t:T3Z('Die Gerade durch G′ und H′ ist die ganze erste Gerade, an M gespiegelt.','The line through G′ and H′ is the whole first line, reflected in M.','La droite par G′ et H′ est la première droite tout entière, symétrique par rapport à M.'),
+  o:[{_:'lg2',k:'L',a:'G2',b:'H2'}]},
+ {t:T3Z('Sie schneidet die zweite Gerade. Dort liegt der eine Endpunkt B.','It cuts the second line. That is where one endpoint B lies.','Elle coupe la seconde droite. C’est là que se trouve une extrémité B.'),
+  o:[{_:'B',k:'P',n:'B',int:['lg2',5,0]}]},
+ {t:T3Z('Spiegle B zurück an M. Der zweite Endpunkt A liegt auf der ersten Geraden.','Reflect B back through M. The second endpoint A lies on the first line.','Ramène B par M. La seconde extrémité A est sur la première droite.'),
+  o:kzSpZ('B','M','A','A')},
+ {t:T3Z('Verbinde A und B. M liegt genau in der Mitte.','Join A and B. M lies exactly in the middle.','Relie A et B. M est exactement au milieu.'),
+  o:[{k:'S',a:'A',b:'B'}]}]
+};
 
 /* ---------------- Wissensaufgaben aus der Prüfung ---------------- */
 /* Aufgabe 2: Symmetrie der Grossbuchstaben (Blockschrift) */
