@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V100';
+const APPVER='V101';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -6611,6 +6611,223 @@ topic('m7-rechenworte',7,1,['Rechenausdruck und Worte','Expressions in words','E
   return steps(numItem(X('Notiere die Rechnung und bestimme das Ergebnis. ','Write down the calculation and work out the result. ','Note le calcul et détermine le résultat. ')+g.t,g.v),
    [X('Schreibe zuerst den Term auf.','Write down the expression first.','Note d’abord l’expression.'),
     g.r,g.r+' = '+fmtN(g.v)]);});
+/* ---------- Potenzen: Produkt, Vorzeichen, Vergleich, Anwendung ---------- */
+const potS=(b,e)=>String(b)+(SUPZ[e]||('^'+e));
+topic('m7-potenz-produkt',7,1,['Potenz und Produkt','Powers and products','Puissances et produits'],
+ ['3⁵ ist die kurze Schreibweise für 3 · 3 · 3 · 3 · 3. Unten steht die Basis, oben der Exponent. Der Exponent zählt die Faktoren, nicht das Ergebnis. a¹ = a, und a⁰ = 1 für jede Basis ausser null.',
+  '3⁵ is the short way of writing 3 · 3 · 3 · 3 · 3. The base is below, the exponent above. The exponent counts the factors, not the result. a¹ = a, and a⁰ = 1 for every base except zero.',
+  '3⁵ est l’écriture courte de 3 · 3 · 3 · 3 · 3. La base est en bas, l’exposant en haut. L’exposant compte les facteurs, pas le résultat. a¹ = a, et a⁰ = 1 pour toute base sauf zéro.'],
+ ['power','base','exponent'],
+ lv=>{const k=ri(0,4);const e=ri(2,lv===1?4:6);
+  /* b^e und e^b duerfen nicht denselben Wert haben, sonst faellt ein
+     Ablenker mit der richtigen Antwort zusammen (b===e, und 2 gegen 4). */
+  let b=ri(2,lv===1?6:12);
+  for(let t=0;t<12&&Math.pow(b,e)===Math.pow(e,b);t++)b=ri(2,lv===1?6:12);
+  if(Math.pow(b,e)===Math.pow(e,b))b=e+3;
+  const prod=n=>Array(n).fill(b).join(' · ');
+  const V=Math.pow(b,e);
+  const nurAndere=l=>l.filter(x=>x[1]!==V).map(x=>x[0]);
+  if(k===0)return steps(choiceItem(X('Schreibe ','Write ','Écris ')+potS(b,e)+X(' als Produkt.',' as a product.',' sous forme de produit.'),
+    prod(e),nurAndere([[b+' · '+e,b*e],[Array(b).fill(e).join(' · '),Math.pow(e,b)],[prod(e-1),Math.pow(b,e-1)]])),
+   [X('Der Exponent sagt, wie viele Faktoren dastehen.','The exponent says how many factors there are.','L’exposant dit combien il y a de facteurs.'),
+    X('Hier sind es ','Here there are ','Ici il y en a ')+e+'.',potS(b,e)+' = '+prod(e)]);
+  if(k===1)return steps(choiceItem(X('Schreibe ','Write ','Écris ')+prod(e)+X(' als Potenz.',' as a power.',' sous forme de puissance.'),
+    potS(b,e),nurAndere([[potS(e,b),Math.pow(e,b)],[b+' · '+e,b*e],[potS(b,e-1),Math.pow(b,e-1)]])),
+   [X('Dieselbe Zahl steht ','The same number appears ','Le même nombre apparaît ')+e+X('-mal.',' times.',' fois.'),
+    X('Die Zahl ist die Basis, die Anzahl der Exponent.','The number is the base, the count is the exponent.','Le nombre est la base, le compte est l’exposant.'),
+    prod(e)+' = '+potS(b,e)]);
+  if(k===2){const basis=Math.random()<.5;
+   return steps(numItem(X('Nenne ','Name ','Nomme ')+(basis?X('die Basis von ','the base of ','la base de '):X('den Exponenten von ','the exponent of ','l’exposant de '))+potS(b,e)+'.',basis?b:e),
+    [X('Unten steht die Basis, oben der Exponent.','The base is below, the exponent above.','La base est en bas, l’exposant en haut.'),
+     potS(b,e)+': '+X('Basis ','base ','base ')+b+', '+X('Exponent ','exponent ','exposant ')+e+'.']);}
+  if(k===3){const eins=Math.random()<.5;
+   return steps(numItem(potS(b,eins?1:0)+' = ?',eins?b:1),
+    eins?[X('Ein einziger Faktor.','A single factor.','Un seul facteur.'),b+'¹ = '+b]
+        :[X('Null Faktoren, und das Ergebnis ist immer 1.','No factors at all, and the result is always 1.','Aucun facteur, et le résultat est toujours 1.'),
+          X('Das gilt für jede Basis ausser null.','This holds for every base except zero.','Cela vaut pour toute base sauf zéro.'),b+'⁰ = 1']);}
+  const b2=ri(2,lv===1?5:9),e2=ri(2,lv===1?3:5);
+  return steps(numItem(potS(b2,e2)+' = ?',Math.pow(b2,e2)),
+   [potS(b2,e2)+' = '+Array(e2).fill(b2).join(' · ')+'.',
+    X('Schritt für Schritt: ','Step by step: ','Pas à pas : ')+b2+' · '+b2+' = '+(b2*b2)+' …',
+    fmtN(Math.pow(b2,e2))]);});
+topic('m7-potenz-vorzeichen',7,1,['Vorzeichen bei Potenzen','Signs in powers','Le signe des puissances'],
+ ['(−2)⁴ heisst (−2) · (−2) · (−2) · (−2) = 16. Ohne Klammer gilt −2⁴ = −(2 · 2 · 2 · 2) = −16: Die Potenz kommt vor dem Minus. Eine negative Basis ergibt bei geradem Exponenten ein Plus, bei ungeradem ein Minus.',
+  '(−2)⁴ means (−2) · (−2) · (−2) · (−2) = 16. Without brackets, −2⁴ = −(2 · 2 · 2 · 2) = −16: the power comes before the minus sign. A negative base gives a plus for an even exponent and a minus for an odd one.',
+  '(−2)⁴ veut dire (−2) · (−2) · (−2) · (−2) = 16. Sans parenthèse, −2⁴ = −(2 · 2 · 2 · 2) = −16 : la puissance passe avant le signe moins. Une base négative donne un plus si l’exposant est pair, un moins s’il est impair.'],
+ ['power','brackets','negative'],
+ lv=>{const k=ri(0,3);const b=ri(2,lv===1?4:7),e=ri(2,lv===1?4:6);
+  const P=Math.pow(b,e), gerade=e%2===0;
+  if(k===0)return steps(numItem('(−'+b+')'+SUPZ[e]+' = ?',gerade?P:-P),
+   [X('Die Klammer nimmt das Minus mit.','The brackets take the minus along.','La parenthèse emporte le signe moins.'),
+    X(gerade?'Gerader Exponent, also ein Plus.':'Ungerader Exponent, also ein Minus.',
+      gerade?'Even exponent, so a plus.':'Odd exponent, so a minus.',
+      gerade?'Exposant pair, donc un plus.':'Exposant impair, donc un moins.'),
+    (gerade?'':'−')+fmtN(P)]);
+  if(k===1)return steps(numItem('−'+b+SUPZ[e]+' = ?',-P),
+   [X('Ohne Klammer gilt die Potenz zuerst.','Without brackets the power comes first.','Sans parenthèse, la puissance passe d’abord.'),
+    b+SUPZ[e]+' = '+fmtN(P)+X(', davor das Minus.',', then the minus.',', puis le moins.'),'−'+fmtN(P)]);
+  if(k===2){const g=e%2===0?e:e+1;const Pg=Math.pow(b,g);
+   return steps(choiceItem(X('Vergleiche (−','Compare (−','Compare (−')+b+')'+SUPZ[g]+X(' und −',' and −',' et −')+b+SUPZ[g]+X('. Suche die richtige Aussage.','. Find the true statement.','. Cherche l’affirmation correcte.'),
+     '(−'+b+')'+SUPZ[g]+' = '+fmtN(Pg)+X(' und −',' and −',' et −')+b+SUPZ[g]+' = −'+fmtN(Pg),
+     ['(−'+b+')'+SUPZ[g]+X(' und −',' and −',' et −')+b+SUPZ[g]+X(' ergeben beide ',' both give ',' donnent tous deux ')+fmtN(Pg),
+      '(−'+b+')'+SUPZ[g]+X(' und −',' and −',' et −')+b+SUPZ[g]+X(' ergeben beide −',' both give −',' donnent tous deux −')+fmtN(Pg),
+      '(−'+b+')'+SUPZ[g]+' = −'+fmtN(Pg)+X(' und −',' and −',' et −')+b+SUPZ[g]+' = '+fmtN(Pg)]),
+    [X('Die Klammer entscheidet, ob das Minus mitgenommen wird.','The brackets decide whether the minus comes along.','La parenthèse décide si le moins est emporté.'),
+     X('Der Exponent ist gerade, also wird aus Minus mal Minus ein Plus.','The exponent is even, so minus times minus becomes plus.','L’exposant est pair, donc moins par moins fait plus.')]);}
+  const u=e%2===0?e+1:e;
+  return steps(choiceItem(X('Bestimme das Vorzeichen von (−','Determine the sign of (−','Détermine le signe de (−')+b+')'+SUPZ[u]+'.',
+    X('negativ','negative','négatif'),[X('positiv','positive','positif'),X('null','zero','zéro')]),
+   [X('Zähle die Faktoren: ','Count the factors: ','Compte les facteurs : ')+u+'.',
+    X('Eine ungerade Anzahl Minuszeichen ergibt ein Minus.','An odd number of minus signs gives a minus.','Un nombre impair de signes moins donne un moins.')]);});
+topic('m7-potenz-vergleich',7,1,['Potenzen vergleichen','Comparing powers','Comparer des puissances'],
+ ['2⁵ = 32 und 5² = 25: Basis und Exponent darf man nicht vertauschen. Zum Vergleichen rechnet man beide Potenzen aus. Quadratzahlen sind 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 und so weiter.',
+  '2⁵ = 32 and 5² = 25: base and exponent must not be swapped. To compare, work out both powers. Square numbers are 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 and so on.',
+  '2⁵ = 32 et 5² = 25 : on ne peut pas échanger la base et l’exposant. Pour comparer, on calcule les deux puissances. Les nombres carrés sont 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 et ainsi de suite.'],
+ ['power','square','base'],
+ lv=>{const k=ri(0,3);
+  if(k===0){for(let n=0;n<40;n++){const a=ri(2,6),b=ri(2,6);
+    if(a===b)continue;const A=Math.pow(a,b),B=Math.pow(b,a);if(A===B)continue;
+    const gross=A>B?potS(a,b):potS(b,a), klein=A>B?potS(b,a):potS(a,b);
+    return steps(choiceItem(X('Suche die grössere Zahl.','Find the larger number.','Cherche le plus grand nombre.')+' '+potS(a,b)+X(' oder ',' or ',' ou ')+potS(b,a),
+      gross,[klein,X('beide gleich gross','both the same','les deux égaux')]),
+     [potS(a,b)+' = '+fmtN(A)+', '+potS(b,a)+' = '+fmtN(B)+'.',
+      X('Basis und Exponent darf man nicht vertauschen.','Base and exponent must not be swapped.','On ne peut pas échanger la base et l’exposant.'),
+      gross+X(' ist grösser.',' is larger.',' est plus grand.')]);}}
+  if(k===1){const paare=[[2,5],[2,6],[3,3],[3,4],[2,7],[4,3],[5,3],[2,8],[6,2],[10,2]];
+   const drei=[];while(drei.length<3){const p=paare[ri(0,paare.length-1)];
+    const w=Math.pow(p[0],p[1]);if(!drei.some(d=>d[2]===w))drei.push([p[0],p[1],w]);}
+   const sortiert=drei.slice().sort((x,y)=>x[2]-y[2]);
+   return steps(choiceItem(X('Suche die kleinste der drei Zahlen.','Find the smallest of the three numbers.','Cherche le plus petit des trois nombres.')+' '+drei.map(d=>potS(d[0],d[1])).join(', '),
+     potS(sortiert[0][0],sortiert[0][1]),sortiert.slice(1).map(d=>potS(d[0],d[1]))),
+    [drei.map(d=>potS(d[0],d[1])+' = '+fmtN(d[2])).join(', ')+'.',
+     X('Der Reihe nach: ','In order: ','Dans l’ordre : ')+sortiert.map(d=>fmtN(d[2])).join(' < ')+'.']);}
+  if(k===2){const n=ri(4,lv===1?10:15);const q=n*n;
+   const andere=[];while(andere.length<3){const x=q+ri(-9,9);
+    if(x>1&&!Number.isInteger(Math.sqrt(x))&&!andere.includes(x))andere.push(x);}
+   return steps(choiceItem(X('Suche die Quadratzahl.','Find the square number.','Cherche le nombre carré.'),String(q),andere.map(String)),
+    [X('Eine Quadratzahl ist eine Zahl mal sich selbst.','A square number is a number times itself.','Un nombre carré est un nombre multiplié par lui-même.'),
+     n+' · '+n+' = '+q+'.']);}
+  const n2=ri(4,lv===1?10:15);const ziel=n2*n2+ri(1,2*n2);
+  return steps(numItem(X('Nenne die grösste Quadratzahl, die kleiner ist als ','Name the largest square number below ','Nomme le plus grand nombre carré inférieur à ')+ziel+'.',n2*n2),
+   [X('Probiere der Reihe nach: ','Try them in order: ','Essaie dans l’ordre : ')+n2+'² = '+(n2*n2)+', '+(n2+1)+'² = '+((n2+1)*(n2+1))+'.',
+    (n2+1)*(n2+1)+X(' ist schon zu gross.',' is already too large.',' est déjà trop grand.'),String(n2*n2)]);});
+topic('m7-potenz-anwenden',7,1,['Potenzen anwenden','Powers in use','Les puissances en pratique'],
+ ['Eine Zehnerpotenz verschiebt die Stellen: 3 · 10⁴ = 30 000. Ein Quadrat mit der Seite a hat den Flächeninhalt a², ein Würfel mit der Kante a das Volumen a³. Verdoppelt sich etwas n-mal, steht am Ende der Faktor 2ⁿ.',
+  'A power of ten shifts the digits: 3 · 10⁴ = 30 000. A square with side a has area a², a cube with edge a has volume a³. If something doubles n times, the factor at the end is 2ⁿ.',
+  'Une puissance de dix décale les chiffres : 3 · 10⁴ = 30 000. Un carré de côté a a pour aire a², un cube d’arête a a pour volume a³. Si quelque chose double n fois, le facteur final est 2ⁿ.'],
+ ['power','square','cube'],
+ lv=>{const k=ri(0,4);
+  if(k===0){const f=ri(2,9),e=ri(2,lv===1?4:6);const v=f*Math.pow(10,e);
+   return steps(numItem(f+' · 10'+SUPZ[e]+' = ?',v),
+    [X('10','10','10')+SUPZ[e]+X(' ist eine 1 mit ',' is a 1 with ',' est un 1 suivi de ')+e+X(' Nullen.',' zeros.',' zéros.'),
+     X('Also ','So ','Donc ')+f+X(' mit ',' with ',' avec ')+e+X(' Nullen dahinter.',' zeros after it.',' zéros derrière.'),fmtN(v)]);}
+  if(k===1){const f=ri(2,9),e=ri(3,lv===1?4:6);const v=f*Math.pow(10,e);
+   const falsch=[f+' · 10'+SUPZ[e-1], f+' · 10'+SUPZ[e+1], (f*10)+' · 10'+SUPZ[e]];
+   return steps(choiceItem(X('Schreibe ','Write ','Écris ')+fmtN(v)+X(' mit einer Zehnerpotenz.',' using a power of ten.',' avec une puissance de dix.'),
+     f+' · 10'+SUPZ[e],falsch),
+    [X('Zähle die Nullen hinter der ','Count the zeros after the ','Compte les zéros après le ')+f+'.',
+     X('Es sind ','There are ','Il y en a ')+e+'.',fmtN(v)+' = '+f+' · 10'+SUPZ[e]]);}
+  if(k===2){const a=ri(3,lv===1?9:15);
+   return steps(numItem(X('Ein Quadrat hat die Seitenlänge '+a+' cm. Bestimme den Flächeninhalt in cm².',
+     'A square has side length '+a+' cm. Work out the area in cm².',
+     'Un carré a un côté de '+a+' cm. Détermine l’aire en cm².'),a*a),
+    [X('Fläche eines Quadrats: a · a = a².','Area of a square: a · a = a².','Aire d’un carré : a · a = a².'),
+     a+'² = '+a+' · '+a+' = '+(a*a)+'.']);}
+  if(k===3){const a=ri(2,lv===1?6:10);
+   return steps(numItem(X('Ein Würfel hat die Kantenlänge '+a+' cm. Bestimme das Volumen in cm³.',
+     'A cube has edge length '+a+' cm. Work out the volume in cm³.',
+     'Un cube a une arête de '+a+' cm. Détermine le volume en cm³.'),a*a*a),
+    [X('Volumen eines Würfels: a · a · a = a³.','Volume of a cube: a · a · a = a³.','Volume d’un cube : a · a · a = a³.'),
+     a+'³ = '+a+' · '+a+' · '+a+' = '+(a*a*a)+'.']);}
+  const n=ri(3,lv===1?6:10);const v=Math.pow(2,n);
+  const sach=pick([0,1]);
+  return steps(numItem(sach===0
+    ?X('Eine Zelle teilt sich jede Stunde in zwei. Bestimme die Anzahl Zellen nach '+n+' Stunden.',
+       'A cell divides into two every hour. Work out the number of cells after '+n+' hours.',
+       'Une cellule se divise en deux chaque heure. Détermine le nombre de cellules après '+n+' heures.')
+    :X('Ein Blatt Papier wird '+n+'-mal in der Mitte gefaltet. Bestimme die Anzahl Lagen.',
+       'A sheet of paper is folded in half '+n+' times. Work out the number of layers.',
+       'Une feuille est pliée en deux '+n+' fois. Détermine le nombre de couches.'),v),
+   [X('Jeder Schritt verdoppelt.','Every step doubles it.','Chaque étape double.'),
+    X('Nach ','After ','Après ')+n+X(' Schritten: 2',' steps: 2',' étapes : 2')+SUPZ[n]+'.',fmtN(v)]);});
+topic('m7-potenz-rechnen',7,1,['Rechnen mit Potenzen','Calculating with powers','Calculer avec des puissances'],
+ ['Die Potenz kommt vor Punkt und Strich: 3 + 4² = 3 + 16 = 19. Nur eine Klammer geht vor. Und Vorsicht: (3 + 4)² = 49, aber 3² + 4² = 25. Quadrieren darf man nicht auf die Summanden verteilen.',
+  'A power comes before multiplying and adding: 3 + 4² = 3 + 16 = 19. Only brackets come first. And take care: (3 + 4)² = 49, but 3² + 4² = 25. Squaring must not be spread over the terms.',
+  'La puissance passe avant la multiplication et l’addition : 3 + 4² = 3 + 16 = 19. Seule la parenthèse passe avant. Attention : (3 + 4)² = 49, mais 3² + 4² = 25. On ne distribue pas le carré sur les termes.'],
+ ['power','brackets'],
+ lv=>{const k=ri(0,4);const a=ri(2,lv===1?6:9),b=ri(2,lv===1?6:9),c=ri(2,9);
+  if(k===0)return steps(numItem(potS(a,2)+' + '+potS(b,2)+' = ?',a*a+b*b),
+   [X('Zuerst beide Potenzen.','Both powers first.','Les deux puissances d’abord.'),
+    a+'² = '+(a*a)+', '+b+'² = '+(b*b)+'.',String(a*a+b*b)]);
+  if(k===1)return steps(numItem(potS(a,3)+' · '+c+' = ?',a*a*a*c),
+   [X('Die Potenz kommt vor dem Malnehmen.','The power comes before the multiplication.','La puissance passe avant la multiplication.'),
+    a+'³ = '+(a*a*a)+', '+(a*a*a)+' · '+c+' = '+(a*a*a*c)+'.',String(a*a*a*c)]);
+  if(k===2){const gr=Math.max(a,b)+ri(1,6);const q=gr*gr;const abz=ri(2,9);
+   return steps(numItem(q+' − '+potS(abz,2)+' = ?',q-abz*abz),
+    [X('Zuerst die Potenz: ','Power first: ','La puissance d’abord : ')+abz+'² = '+(abz*abz)+'.',
+     q+' − '+(abz*abz)+' = '+(q-abz*abz)+'.']);}
+  if(k===3)return steps(choiceItem(X('Vergleiche (','Compare (','Compare (')+a+' + '+b+')² '+X('und ','and ','et ')+potS(a,2)+' + '+potS(b,2)+X('. Suche die richtige Aussage.','. Find the true statement.','. Cherche l’affirmation correcte.'),
+    '('+a+' + '+b+')² = '+((a+b)*(a+b))+X(', aber ',', but ',', mais ')+a+'² + '+b+'² = '+(a*a+b*b),
+    [X('beide ergeben ','both give ','les deux donnent ')+((a+b)*(a+b)),
+     X('beide ergeben ','both give ','les deux donnent ')+(a*a+b*b),
+     '('+a+' + '+b+')² = '+(a*a+b*b)+X(', aber ',', but ',', mais ')+a+'² + '+b+'² = '+((a+b)*(a+b))]),
+   [X('Rechne beides aus.','Work out both.','Calcule les deux.'),
+    '('+a+' + '+b+')² = '+(a+b)+'² = '+((a+b)*(a+b))+'; '+a+'² + '+b+'² = '+(a*a)+' + '+(b*b)+' = '+(a*a+b*b)+'.',
+    X('Quadrieren darf man nicht auf die Summanden verteilen.','Squaring must not be spread over the terms.','On ne distribue pas le carré sur les termes.')]);
+  const f=ri(2,5),g=ri(2,5);
+  return steps(choiceItem(X('Vergleiche ','Compare ','Compare ')+f+' · '+potS(g,2)+X(' und (',' and (',' et (')+f+' · '+g+')²'+X('. Suche die richtige Aussage.','. Find the true statement.','. Cherche l’affirmation correcte.'),
+    f+' · '+g+'² = '+(f*g*g)+X(', aber (',', but (',', mais (')+f+' · '+g+')² = '+(f*g*f*g),
+    [X('beide ergeben ','both give ','les deux donnent ')+(f*g*g),
+     X('beide ergeben ','both give ','les deux donnent ')+(f*g*f*g),
+     f+' · '+g+'² = '+(f*g*f*g)+X(', aber (',', but (',', mais (')+f+' · '+g+')² = '+(f*g*g)]),
+   [X('Ohne Klammer wird nur ','Without brackets only ','Sans parenthèse, seul ')+g+X(' quadriert.',' is squared.',' est élevé au carré.'),
+    f+' · '+(g*g)+' = '+(f*g*g)+X('; mit Klammer ','; with brackets ','; avec parenthèse ')+(f*g)+'² = '+(f*g*f*g)+'.']);});
+const POTW=[['die zweite Potenz von','the second power of','la deuxième puissance de',2],
+ ['die dritte Potenz von','the third power of','la troisième puissance de',3],
+ ['die vierte Potenz von','the fourth power of','la quatrième puissance de',4],
+ ['die fünfte Potenz von','the fifth power of','la cinquième puissance de',5]];
+const POTZ=['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun','zehn','elf','zwölf'];
+const POTZE=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+const POTZF=['zéro','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze'];
+topic('m7-potenz-woerter',7,1,['Potenzen in Worten','Powers in words','Puissances en mots'],
+ ['«Die dritte Potenz von 4» heisst 4³ = 64. Gesprochen: «vier hoch drei». Die erste Zahl ist immer die Basis, die zweite der Exponent. «Vier hoch drei» und «drei hoch vier» sind zwei verschiedene Zahlen.',
+  '"The third power of 4" means 4³ = 64, spoken as "four to the power of three". The first number is always the base, the second the exponent. "Four to the third" and "three to the fourth" are two different numbers.',
+  '« La troisième puissance de 4 » veut dire 4³ = 64, lu « quatre puissance trois ». Le premier nombre est toujours la base, le second l’exposant. « Quatre puissance trois » et « trois puissance quatre » sont deux nombres différents.'],
+ ['power','base','exponent'],
+ lv=>{const k=ri(0,3);const w=POTW[ri(0,lv===1?2:3)];const e=w[3];
+  let b=ri(2,lv===1?6:10);
+  for(let t=0;t<12&&Math.pow(b,e)===Math.pow(e,b);t++)b=ri(2,lv===1?6:10);
+  if(Math.pow(b,e)===Math.pow(e,b))b=e+3;
+  const wort=X(w[0],w[1],w[2])+' '+b;
+  if(k===0)return steps(numItem(X('Bestimme ','Work out ','Détermine ')+wort+'.',Math.pow(b,e)),
+   [wort+' = '+potS(b,e)+'.',potS(b,e)+' = '+Array(e).fill(b).join(' · ')+'.',fmtN(Math.pow(b,e))]);
+  if(k===1)return steps(choiceItem(X('Suche die Schreibweise für ','Find the notation for ','Cherche l’écriture de ')+'«'+wort+'».',
+    potS(b,e),[[potS(e,b),Math.pow(e,b)],[b+' · '+e,b*e],[potS(b,e+1),Math.pow(b,e+1)]]
+     .filter(x=>x[1]!==Math.pow(b,e)).map(x=>x[0])),
+   [X('Die genannte Zahl ist die Basis.','The number named is the base.','Le nombre nommé est la base.'),
+    X('Die Ordnungszahl ist der Exponent.','The ordinal is the exponent.','L’ordinal est l’exposant.'),wort+' = '+potS(b,e)]);
+  if(k===2){const lies=(x,y)=>X(POTZ[x]+' hoch '+POTZ[y],POTZE[x]+' to the power of '+POTZE[y],POTZF[x]+' puissance '+POTZF[y]);
+   return steps(choiceItem(X('Lies ','Read ','Lis ')+potS(b,e)+X(' vor.',' aloud.',' à voix haute.'),
+     lies(b,e),[lies(e,b),X(POTZ[b]+' mal '+POTZ[e],POTZE[b]+' times '+POTZE[e],POTZF[b]+' fois '+POTZF[e]),
+      X(POTZ[e]+' mal '+POTZ[b],POTZE[e]+' times '+POTZE[b],POTZF[e]+' fois '+POTZF[b])]),
+    [X('Zuerst die Basis, dann der Exponent.','Base first, then the exponent.','La base d’abord, puis l’exposant.'),
+     potS(b,e)+': '+lies(b,e)]);}
+  /* Zwei Potenzen, beide in Worten genannt */
+  for(let n=0;n<40;n++){
+   const w1=POTW[ri(0,3)],w2=POTW[ri(0,3)];
+   const a=ri(2,5),b=ri(2,5);
+   const A=Math.pow(a,w1[3]),B=Math.pow(b,w2[3]);
+   if(A===B)continue;
+   const t1=X(w1[0],w1[1],w1[2])+' '+a, t2=X(w2[0],w2[1],w2[2])+' '+b;
+   if(t1===t2)continue;
+   return steps(choiceItem(X('Suche die gr\u00f6ssere Zahl.','Find the larger number.','Cherche le plus grand nombre.')
+     +' \u00ab'+t1+'\u00bb '+X('oder','or','ou')+' \u00ab'+t2+'\u00bb',
+     A>B?t1:t2,[A>B?t2:t1,X('beide gleich gross','both the same','les deux \u00e9gaux')]),
+    [t1+' = '+potS(a,w1[3])+' = '+fmtN(A)+'.',
+     t2+' = '+potS(b,w2[3])+' = '+fmtN(B)+'.',
+     (A>B?t1:t2)+X(' ist gr\u00f6sser.',' is larger.',' est plus grand.')]);}
+  return steps(numItem(X('Bestimme die dritte Potenz von 4.','Work out the third power of 4.','D\u00e9termine la troisi\u00e8me puissance de 4.'),64),
+   ['4\u00b3 = 4 \u00b7 4 \u00b7 4 = 64.']);});
 topic('m7-parallelangles',7,2,['Winkel an Parallelen','Angles at parallel lines','Angles et droites parallèles'],
  ['Schneidet eine Gerade zwei Parallelen, sind Stufenwinkel und Wechselwinkel gleich gross. Nebenwinkel ergeben zusammen 180°.','When a line crosses two parallels, corresponding and alternate angles are equal. Adjacent angles add up to 180°.','Quand une droite coupe deux parallèles, les angles correspondants et alternes-internes sont égaux. Les angles adjacents font 180°.'],['angle','parallel'],
  lv=>{const a=ri(35,80);const cases=[[{p:2,dx:28,dy:-8},a,X('Stufenwinkel','corresponding angle','angle correspondant')],[{p:1,dx:-28,dy:-8},180-a,X('Nebenwinkel','adjacent angle','angle adjacent')],[{p:2,dx:-28,dy:24},a,''],[{p:1,dx:-26,dy:24},a,X('Scheitelwinkel','vertically opposite angle','angle opposé par le sommet')]];
@@ -6850,6 +7067,7 @@ const GLOSS3=({integer:['ganze Zahl','integer','entier relatif','Die Zahlen …,
  treediagram:['Baumdiagramm','tree diagram','arbre de probabilités','Eine Zeichnung mit Ästen für jeden Schritt eines Zufallsexperiments.','A drawing with branches for each step of a random experiment.','Un dessin avec des branches pour chaque étape d’une expérience aléatoire.'],
  system:['Gleichungssystem','system of equations','système d’équations','Mehrere Gleichungen, die gleichzeitig gelten müssen.','Several equations that must hold at the same time.','Plusieurs équations qui doivent être vraies en même temps.'],
  quadratic:['quadratische Gleichung','quadratic equation','équation du second degré','Eine Gleichung, in der x² vorkommt, zum Beispiel x² − 5x + 6 = 0.','An equation containing x², for example x² − 5x + 6 = 0.','Une équation contenant x², par exemple x² − 5x + 6 = 0.'],
+ base:['Basis','base','base','Die Zahl unten in einer Potenz: Sie wird malgenommen. In 3⁵ ist 3 die Basis.','The number at the bottom of a power: it is the one being multiplied. In 3⁵ the base is 3.','Le nombre en bas d’une puissance : c’est lui qu’on multiplie. Dans 3⁵, la base est 3.'],
  exponent:['Hochzahl (Exponent)','exponent (index)','exposant','Die kleine Zahl oben rechts: Sie sagt, wie oft die Basis malgenommen wird.','The small raised number: it says how many times the base is multiplied.','Le petit nombre en haut à droite : il dit combien de fois on multiplie la base.'],
  formula:['Formel','formula','formule','Eine Gleichung, die einen allgemeinen Zusammenhang beschreibt, zum Beispiel A = a · b.','An equation that describes a general relationship, for example A = a · b.','Une égalité qui décrit une relation générale, par exemple A = a · b.'],
  sector:['Kreissektor','sector','secteur circulaire','Ein «Tortenstück» eines Kreises, begrenzt von zwei Radien und einem Bogen.','A “slice” of a circle, bounded by two radii and an arc.','Une « part » de disque, limitée par deux rayons et un arc.'],
