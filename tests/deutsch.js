@@ -17,11 +17,33 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   S.lang='de';
 
   /* ---- Verbendaten ---- */
-  pruef('76 Verben aus Teil 1',DEV.length===76,DEV.length);
+  pruef('114 Verben aus Teil 1 und Teil 2',DEV.length===114,DEV.length);
   const schlecht=DEV.filter(v=>v.length!==5||!v[0]||!v[1]||!v[2]||!v[3]);
   pruef('Jedes Verb hat vier Formen',schlecht.length===0,schlecht.slice(0,3).map(v=>v[0]).join(' | '));
-  pruef('Erstes und letztes Verb wie in der Liste',DEV[0][0]==='backen'&&DEV[75][0]==='schreien',
-   DEV[0][0]+' … '+DEV[75][0]);
+  pruef('Erstes und letztes Verb wie in der Liste',DEV[0][0]==='backen'&&DEV[113][0]==='zwingen',
+   DEV[0][0]+' … '+DEV[113][0]);
+  pruef('Teil 2 schliesst an Teil 1 an',DEV[75][0]==='schreien'&&DEV[76][0]==='schweigen',
+   DEV[75][0]+' -> '+DEV[76][0]);
+  /* Die Liste des Lehrers ist alphabetisch; eine verrutschte Zeile faellt hier auf. */
+  const unsortiert=DEV.map(v=>v[0]).filter((x,i,a)=>i>0&&a[i-1].localeCompare(x,'de')>0);
+  pruef('Die Verben stehen alphabetisch',unsortiert.length===0,unsortiert.join(', '));
+  const scharf=DEV.filter(v=>v.slice(0,4).some(f=>/\u00df/.test(f)));
+  pruef('Kein scharfes s in den Formen',scharf.length===0,scharf.map(v=>v[0]).join(', '));
+  /* gelingen hat keine zweite Person; die Liste fuehrt dort «es gelingt».
+     Nur diese unpersoenliche Form darf ein Leerzeichen tragen. */
+  const wort=/^[a-z\u00e4\u00f6\u00fc]+$/;
+  const schiefeForm=DEV.filter(v=>
+   !wort.test(v[0])||!wort.test(v[1])||!wort.test(v[2])||
+   !(wort.test(v[3])||/^es [a-z\u00e4\u00f6\u00fc]+$/.test(v[3])));
+  pruef('Jede Form ist ein kleingeschriebenes Wort, unpersoenlich mit «es»',
+   schiefeForm.length===0,schiefeForm.map(v=>v[0]).join(', '));
+  const hilfFeld=DEV.filter(v=>v[4]!=='h'&&v[4]!=='s'&&v[4]!=='');
+  pruef('Das Hilfsverb ist h, s oder leer',hilfFeld.length===0,hilfFeld.map(v=>v[0]).join(', '));
+  /* liegen, sitzen und stehen gehen im Schweizer und im deutschen
+     Gebrauch auseinander; keines darf ein festes Hilfsverb tragen. */
+  const wackelig=['liegen','sitzen','stehen'].map(n=>DEV.find(v=>v[0]===n)).filter(v=>v&&v[4]!=='');
+  pruef('liegen, sitzen und stehen ohne festes Hilfsverb',wackelig.length===0,
+   wackelig.map(v=>v[0]+'='+v[4]).join(', '));
   const doppelt=DEV.map(v=>v[0]).filter((x,i,a)=>a.indexOf(x)!==i);
   pruef('Kein Verb doppelt',doppelt.length===0,doppelt.join(' | '));
   const hilf=DEV.filter(v=>v[4]==='h'||v[4]==='s').length;
@@ -131,7 +153,9 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   /* Die Lauttoleranz darf verschiedene Formen nicht verschmelzen.
      Gemessen ueber alle Formen der Verbenliste; erlaubt sind nur echte
      Homophone, die auch ein Mensch nur am Sinn unterscheidet. */
-  const echteHomophone=['rit','flist','genist'];
+  /* weist (weisen) und weisst (wissen) kamen mit Teil 2 dazu und klingen
+     gleich; auch ein Mensch hoert hier nur den Sinn. */
+  const echteHomophone=['rit','flist','genist','vaist'];
   const karte={};
   DEV.forEach(v=>[0,1,2,3].forEach(i=>{
    if(!v[i])return;
@@ -146,9 +170,10 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   let innenGleich=[];
   DEV.forEach(v=>{
    const k=[lautDe(v[0]),lautDe(v[1]),lautDe(v[2])];
-   /* genesen und geschehen haben im Deutschen gleiche Infinitiv- und
-      Partizipform - das ist die Sprache, nicht der Vergleich. */
-   if(new Set(k).size<3&&['genesen','geschehen'].indexOf(v[0])<0)
+   /* genesen, geschehen und vergessen haben im Deutschen gleiche
+      Infinitiv- und Partizipform - das ist die Sprache, nicht der
+      Vergleich. */
+   if(new Set(k).size<3&&['genesen','geschehen','vergessen'].indexOf(v[0])<0)
     innenGleich.push(v[0]);});
   pruef('Die drei Stammformen bleiben unterscheidbar',innenGleich.length===0,
    innenGleich.slice(0,4).join(', '));

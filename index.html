@@ -874,12 +874,12 @@ T.de.dep_title="Deutsch (Lehrplan 21)";T.en.dep_title="German (Lehrplan 21)";T.f
 T.de.de_title="Deutsch: Verben im Fokus";
 T.en.de_title="German: verbs in focus";
 T.fr.de_title="Allemand : le verbe";
-T.de.de_note="Die Theoriekapitel folgen dem Dossier «Verben im Fokus». Die Stammformen stammen aus der Verbenliste Teil 1 und reichen von «backen» bis «schreien»; Teil 2 fehlt noch.";
-T.en.de_note="The theory chapters follow the «Verben im Fokus» dossier. The principal parts come from part 1 of the verb list and run from «backen» to «schreien»; part 2 is not here yet.";
-T.fr.de_note="Les chapitres suivent le dossier « Verben im Fokus ». Les formes de base proviennent de la partie 1 de la liste, de « backen » à « schreien » ; la partie 2 manque encore.";
-T.de.de_sources="Grundlage: Theoriedossier «Verben im Fokus» und «Verbenliste: Stammformen (Teil 1)», Schuljahr 2026. Die Beispielsätze der Kapitel 1 bis 5 stammen aus dem Dossier; die übrigen Aufgaben wurden für dieses Programm geschrieben und sind nicht von einer Lehrperson geprüft.";
-T.en.de_sources="Based on the «Verben im Fokus» theory dossier and «Verbenliste: Stammformen (Teil 1)», school year 2026. The example sentences in chapters 1 to 5 come from the dossier; the remaining tasks were written for this program and have not been reviewed by a teacher.";
-T.fr.de_sources="D’après le dossier « Verben im Fokus » et « Verbenliste : Stammformen (Teil 1) », année scolaire 2026. Les phrases d’exemple des chapitres 1 à 5 proviennent du dossier ; les autres exercices ont été rédigés pour ce programme, sans relecture par un enseignant.";
+T.de.de_note="Die Theoriekapitel folgen dem Dossier «Verben im Fokus». Die Stammformen stammen aus der Verbenliste Teil 1 und Teil 2 und reichen von «backen» bis «zwingen».";
+T.en.de_note="The theory chapters follow the «Verben im Fokus» dossier. The principal parts come from parts 1 and 2 of the verb list and run from «backen» to «zwingen».";
+T.fr.de_note="Les chapitres suivent le dossier « Verben im Fokus ». Les formes de base proviennent des parties 1 et 2 de la liste, de « backen » à « zwingen ».";
+T.de.de_sources="Grundlage: Theoriedossier «Verben im Fokus» und «Verbenliste: Stammformen (Teil 1 und Teil 2)», Schuljahr 2026. Die Beispielsätze der Kapitel 1 bis 5 stammen aus dem Dossier; die übrigen Aufgaben wurden für dieses Programm geschrieben und sind nicht von einer Lehrperson geprüft.";
+T.en.de_sources="Based on the «Verben im Fokus» theory dossier and «Verbenliste: Stammformen (Teil 1 und Teil 2)», school year 2026. The example sentences in chapters 1 to 5 come from the dossier; the remaining tasks were written for this program and have not been reviewed by a teacher.";
+T.fr.de_sources="D’après le dossier « Verben im Fokus » et « Verbenliste : Stammformen (Teil 1 et Teil 2) », année scolaire 2026. Les phrases d’exemple des chapitres 1 à 5 proviennent du dossier ; les autres exercices ont été rédigés pour ce programme, sans relecture par un enseignant.";
 T.de.fr_note="Der Wortschatz der Jahre 7 bis 9 ist nach den Unités von «dis donc!» geordnet und entspricht dem Gesamtwortschatz Niveau G der jeweiligen Einheit. Die Jahre 5 und 6 sind nach Themen aufgebaut, weil für sie kein Lehrmittelzugang besteht.";
 T.en.fr_note="The vocabulary for years 7 to 9 follows the units of «dis donc!» and matches each unit’s full word list at level G. Years 5 and 6 are organised by theme, as no textbook access exists for them.";
 T.fr.fr_note="Le vocabulaire des années 7 à 9 suit les unités de « dis donc ! » et correspond au vocabulaire complet niveau G de chaque unité. Les années 5 et 6 sont organisées par thème, faute d’accès au moyen d’enseignement.";
@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V104';
+const APPVER='V105';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -3827,10 +3827,10 @@ function normDe(s){return String(s).toLowerCase().normalize('NFC')
 /* «fiel» und «viel» klingen im Deutschen gleich. Kein Erkenner kann sie
    akustisch trennen, nur der Zusammenhang entscheidet - und der steht in
    der Aufgabe. Darum wird nach dem Wortvergleich ein zweites Mal nach
-   Lauten verglichen. Gemessen an allen 304 Formen der Verbenliste treffen
-   dabei genau drei Paare zusammen (riet/ritt, fliehst/fliesst,
-   geniesst/geniest) - allesamt echte Homophone, die auch ein Mensch nur
-   am Sinn unterscheidet. */
+   Lauten verglichen. Gemessen an allen 456 Formen der Verbenliste (Teil 1
+   und Teil 2) treffen dabei genau vier Paare zusammen (riet/ritt,
+   fliehst/fliesst, geniesst/geniest, weist/weisst) - allesamt echte
+   Homophone, die auch ein Mensch nur am Sinn unterscheidet. */
 function lautDe(s){
  let x=String(s).toLowerCase().normalize('NFC')
   .replace(/ß/g,'ss').replace(/[^a-zäöü]/g,'');
@@ -3845,7 +3845,10 @@ function lautDe(s){
     .replace(/([bcdfgklmnprstvCS])\1/g,'$1')   /* Doppelkonsonant */
     .replace(/(.)\1/g,'$1')
     .replace(/ä/g,'e');
- return x.replace(/d$/,'t').replace(/g$/,'k').replace(/b$/,'p');}
+ /* Auslautverhaertung, aber nicht nach n: «sang» endet auf ng und klingt
+    nicht wie «sank». Ohne diese Ausnahme faellt das Paar sang/sank
+    zusammen, und das Kind bekaeme fuer «sang» ein Haekchen bei «sank». */
+ return x.replace(/d$/,'t').replace(/(^|[^n])g$/,'$1k').replace(/b$/,'p');}
 function hoerUrteilDe(varianten, formen){
  const kand=(varianten||[]).filter(Boolean);
  if(!kand.length)return {ok:false,text:'',leer:true};
@@ -10088,10 +10091,16 @@ function glossTerm(id){const g=GLOSS[id];if(!g)return null;const i=Math.max(0,LA
 /* ---------- the built-in game ---------- */
 
 /* ================= Deutsch: Verben im Fokus =================
-   Nach dem Theoriedossier und der Verbenliste (Stammformen, Teil 1).
-   Die Beispielsaetze der Kapitel 1, 2 und 5 stammen aus dem Dossier
-   selbst; die Stammformen kommen aus der Liste. Teil 2 der Liste fehlt
-   noch, darum enden die Verben bei «schreien».                        */
+   Nach dem Theoriedossier und der Verbenliste (Stammformen, Teil 1
+   und Teil 2). Die Beispielsaetze der Kapitel 1, 2 und 5 stammen aus
+   dem Dossier selbst; die Stammformen kommen aus den beiden Listen und
+   reichen von «backen» bis «zwingen».
+   Die fuenfte Spalte, das Hilfsverb im Perfekt, steht in keiner der
+   beiden Listen. Sie ist zugefuegt und gilt fuer den Satz «Er ...» ohne
+   Objekt. Wo das Hilfsverb vom Satz abhaengt, bleibt das Feld leer, und
+   das Verb kommt in der Perfekt-Aufgabe nicht vor - so schon in Teil 1
+   bei liegen, fahren und reiten, und nun ebenso bei sitzen und stehen,
+   wo Schweizer und deutscher Gebrauch auseinandergehen.                */
 const DEV=[
  ['backen','backte','gebacken','backst','h'],
  ['befehlen','befahl','befohlen','befiehlst','h'],
@@ -10168,7 +10177,45 @@ const DEV=[
  ['schliessen','schloss','geschlossen','schliesst','h'],
  ['schneiden','schnitt','geschnitten','schneidest','h'],
  ['schreiben','schrieb','geschrieben','schreibst','h'],
- ['schreien','schrie','geschrien','schreist','h']
+ ['schreien','schrie','geschrien','schreist','h'],
+ ['schweigen','schwieg','geschwiegen','schweigst','h'],
+ ['schwimmen','schwamm','geschwommen','schwimmst',''],
+ ['schwören','schwor','geschworen','schwörst','h'],
+ ['sehen','sah','gesehen','siehst','h'],
+ ['sein','war','gewesen','bist','s'],
+ ['singen','sang','gesungen','singst','h'],
+ ['sinken','sank','gesunken','sinkst','s'],
+ ['sitzen','sass','gesessen','sitzt',''],
+ ['sollen','sollte','gesollt','sollst','h'],
+ ['speisen','speiste','gespeist','speist','h'],
+ ['sprechen','sprach','gesprochen','sprichst','h'],
+ ['springen','sprang','gesprungen','springst','s'],
+ ['stechen','stach','gestochen','stichst','h'],
+ ['stehen','stand','gestanden','stehst',''],
+ ['stehlen','stahl','gestohlen','stiehlst','h'],
+ ['steigen','stieg','gestiegen','steigst','s'],
+ ['sterben','starb','gestorben','stirbst','s'],
+ ['stinken','stank','gestunken','stinkst','h'],
+ ['stossen','stiess','gestossen','stösst',''],
+ ['streichen','strich','gestrichen','streichst','h'],
+ ['streiten','stritt','gestritten','streitest','h'],
+ ['tragen','trug','getragen','trägst','h'],
+ ['treffen','traf','getroffen','triffst','h'],
+ ['treten','trat','getreten','trittst',''],
+ ['trinken','trank','getrunken','trinkst','h'],
+ ['tun','tat','getan','tust','h'],
+ ['verderben','verdarb','verdorben','verdirbst',''],
+ ['vergessen','vergass','vergessen','vergisst','h'],
+ ['verlieren','verlor','verloren','verlierst','h'],
+ ['verzeihen','verzieh','verziehen','verzeihst','h'],
+ ['waschen','wusch','gewaschen','wäschst','h'],
+ ['weisen','wies','gewiesen','weist','h'],
+ ['werben','warb','geworben','wirbst','h'],
+ ['werden','wurde','geworden','wirst','s'],
+ ['werfen','warf','geworfen','wirfst','h'],
+ ['wissen','wusste','gewusst','weisst','h'],
+ ['ziehen','zog','gezogen','ziehst',''],
+ ['zwingen','zwang','gezwungen','zwingst','h']
 ];
 const DET=[];
 function detopic(id,y,a,n,c,terms,g){DET.push({id,y,a,n,c,terms,g,de:true});}
