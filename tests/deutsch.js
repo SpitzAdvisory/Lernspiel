@@ -73,6 +73,54 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    /* Jede gezogene Form muss zu einem Verb aus Teil 2 gehoeren. */
    if(!DEV2.some(v=>v.slice(0,4).indexOf(w)>=0))fremd.push(w);}
   pruef('Stammformen Teil 2 zieht nur aus Teil 2',fremd.length===0,fremd.slice(0,4).join(', '));
+  /* Das Praesens muss in allen Stammformen-Themen vorkommen: dort hat
+     Johannes die meisten Fehler gemacht. */
+  const duVon=v=>(v[3]&&v[3].indexOf(' ')<0)?v[3]:null;
+  for(const id of ['de-stamm','de-stamm-teil2']){
+   const T=DET.find(t=>t.id===id);
+   let duFragen=0,falsch=[],zeilen=0;
+   for(let lv=1;lv<=3;lv++) for(let i=0;i<300;i++){
+    const it=T.g(lv);const p=String(it.prompt);
+    const m=p.match(/«([^»]+)»/);if(!m)continue;
+    const v=DEV.find(x=>x[0]===m[1]);if(!v)continue;
+    const du=duVon(v);
+    if(lv>=3){
+     const soll=(du?[v[1],v[2],du]:[v[1],v[2]]).join(' – ');
+     if(String(it.answer)!==soll)falsch.push({id,lv,p,ist:String(it.answer),soll});
+     if(du)zeilen++;
+     continue;}
+    if(/Du-Form|you-form|forme en tu/.test(p)){duFragen++;
+     if(String(it.answer)!==du)falsch.push({id,lv,p,ist:String(it.answer),soll:du});}
+    else if(/Partizip|participle|participe/.test(p)){
+     if(String(it.answer)!==v[2])falsch.push({id,lv,p,ist:String(it.answer),soll:v[2]});}
+    else if(String(it.answer)!==v[1])falsch.push({id,lv,p,ist:String(it.answer),soll:v[1]});}
+   pruef(id+': jede Antwort stimmt mit der Liste ueberein',falsch.length===0,JSON.stringify(falsch[0]||''));
+   pruef(id+': die Du-Form wird auf den unteren Stufen gefragt',duFragen>100,duFragen);
+   pruef(id+': Stufe 3 verlangt die ganze Zeile',zeilen>100,zeilen);}
+  /* Sprechen: die Du-Form gehoert zu den verlangten Formen. */
+  const TS=DET.find(t=>t.id==='de-stamm-sprechen');
+  let mitDu=0,ohne=0,schief=[];
+  for(let i=0;i<300;i++){
+   const it=TS.g(1+(i%3));const m=String(it.prompt).match(/«([^»]+)»/);
+   const v=m&&DEV.find(x=>x[0]===m[1]);if(!v)continue;
+   const du=duVon(v);
+   const soll=[v[0],v[1],v[2]].concat(du?[du]:[]);
+   if(JSON.stringify(it.formen)!==JSON.stringify(soll))schief.push({p:it.prompt,ist:it.formen,soll});
+   if(du)mitDu++;else ohne++;}
+  pruef('Sprechen: die verlangten Formen stimmen',schief.length===0,JSON.stringify(schief[0]||''));
+  pruef('Sprechen: die Du-Form ist meistens dabei',mitDu>200,mitDu+' mit, '+ohne+' ohne');
+  /* Rueckweg: ab Stufe 2 darf auch die Du-Form die Frage stellen. */
+  const TR=DET.find(t=>t.id==='de-stamm-rueck');
+  let ausDu=0,rFalsch=[];
+  for(let lv=1;lv<=3;lv++) for(let i=0;i<300;i++){
+   const it=TR.g(lv);const m=String(it.prompt).match(/«([^»]+)»/);if(!m)continue;
+   const form=m[1];
+   const v=DEV.find(x=>x[0]===String(it.answer));
+   if(!v||[v[1],v[2],v[3]].indexOf(form)<0)rFalsch.push({lv,p:it.prompt,ist:String(it.answer)});
+   else if(v[3]===form)ausDu++;}
+  pruef('Rueckweg: die gegebene Form gehoert zum genannten Verb',rFalsch.length===0,
+   JSON.stringify(rFalsch[0]||''));
+  pruef('Rueckweg: auch die Du-Form kommt vor',ausDu>50,ausDu);
   pruef('Die Verben mit zwei Bedeutungen sind dabei',
    DET.some(t=>t.id==='de-zweibedeutung'),DET.map(t=>t.id).join(' '));
   const fehlend=DET.filter(tp=>!mtopic(tp.id));
@@ -98,7 +146,11 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   const sp=mtopic('de-stamm-sprechen');
   const si=genItem(sp,1,{});
   pruef('Sprechaufgabe ist eine Sprechaufgabe',si.type==='speak'&&si.spr==='de',si.type+'/'+si.spr);
-  pruef('Drei Formen werden verlangt',si.formen&&si.formen.length===3,JSON.stringify(si.formen));
+  /* Seit V109 gehoert die Du-Form dazu; nur Verben ohne eigene Du-Form,
+     wie gelingen, bleiben bei drei Formen. */
+  pruef('Vier Formen werden verlangt, drei ohne eigene Du-Form',
+   si.formen&&(si.formen.length===4||(si.formen.length===3&&/ /.test(DEV.find(v=>v[0]===si.formen[0])[3]))),
+   JSON.stringify(si.formen));
   pruef('Emilia bekommt einen Satz zum Vorlesen',/^Die Stammformen von /.test(si.sound),si.sound);
   pruef('Die Frage wird von selbst gesprochen',si.autoSound===true&&si.soundPre===true);
   const v=DEV.find(x=>x[0]===si.formen[0]);

@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V108';
+const APPVER='V109';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -10578,29 +10578,52 @@ detopic('de-stamm',7,1,['Stammformen schreiben','Principal parts - writing','For
  ['Drei Formen machen ein Verb erkennbar: Infinitiv, Präteritum und Partizip Perfekt. Das Präteritum steht in der 3. Person Singular: er fuhr. Das Partizip Perfekt trägt bei den meisten Verben ein ge- am Anfang.',
   'Three forms identify a verb: infinitive, past tense and past participle. The past tense is given in the third person singular. Most past participles start with ge-.',
   'Trois formes identifient un verbe : infinitif, prétérit et participe passé. Le prétérit est à la troisième personne du singulier. La plupart des participes commencent par ge-.'],
- ['Stammformen','Präteritum','Partizip Perfekt'],
+ ['Stammformen','Präteritum','Partizip Perfekt','Präsens'],
  lv=>stammAufgabe(lv,dvPick()));
 
 /* Derselbe Aufgabenkoerper dient beiden Stammformen-Themen; sie
    unterscheiden sich allein darin, aus welchen Verben gezogen wird. */
+/* Die Liste des Lehrers hat vier Spalten, und die vierte ist die
+   Du-Form. Johannes hat dort die meisten Fehler gemacht, darum zieht
+   das Praesens auf den unteren Stufen doppelt so oft wie die beiden
+   anderen Formen, und auf Stufe 3 wird die ganze Zeile verlangt - so,
+   wie die Pruefung sie abfragt.
+   gelingen hat keine Du-Form; die Liste fuehrt dort «es gelingt». Bei
+   solchen Verben bleibt es bei den beiden alten Formen. */
 function stammAufgabe(lv,v){
+  const du=(v[3]&&v[3].indexOf(' ')<0)?v[3]:null;
+  const zeile=v[0]+' – '+v[1]+' – '+v[2]+(du?' – du '+du:'');
   if(lv>=3){
-   const it={type:'input',tippen:true,prompt:D('Nenne Präteritum und Partizip Perfekt von «'+v[0]+'».',
-     'Give the past tense and past participle of «'+v[0]+'».',
-     'Donne le prétérit et le participe passé de « '+v[0]+' ».'),
-    answer:v[1]+' – '+v[2],
-    accept:[v[1]+' - '+v[2],v[1]+' '+v[2],v[1]+', '+v[2],v[1]+' – '+v[2],v[1]+'/'+v[2]]};
+   const teile=du?[v[1],v[2],du]:[v[1],v[2]];
+   const it={type:'input',tippen:true,
+    prompt:du?D('Nenne Präteritum, Partizip Perfekt und die Du-Form von «'+v[0]+'».',
+      'Give the past tense, the past participle and the you-form of «'+v[0]+'».',
+      'Donne le prétérit, le participe passé et la forme en tu de « '+v[0]+' ».')
+     :D('Nenne Präteritum und Partizip Perfekt von «'+v[0]+'».',
+      'Give the past tense and past participle of «'+v[0]+'».',
+      'Donne le prétérit et le participe passé de « '+v[0]+' ».'),
+    answer:teile.join(' – '),
+    accept:[' - ',' ',', ','/','–'].map(t=>teile.join(t))};
    return steps(it,[D('Das Präteritum steht in der 3. Person Singular: er …','The past tense is third person singular.','Le prétérit est à la 3e personne du singulier.'),
     D('Das Partizip Perfekt beginnt meist mit ge-.','The past participle usually starts with ge-.','Le participe commence souvent par ge-.'),
-    v[0]+' – '+v[1]+' – '+v[2]]);}
-  const partizip=lv===2||Math.random()<.5;
-  const it={type:'input',tippen:true,
-   prompt:partizip?D('Wie heisst das Partizip Perfekt von «'+v[0]+'»?','What is the past participle of «'+v[0]+'»?','Quel est le participe passé de « '+v[0]+' » ?')
-                  :D('Wie heisst das Präteritum von «'+v[0]+'»? (3. Person Singular)','What is the past tense of «'+v[0]+'»? (third person singular)','Quel est le prétérit de « '+v[0]+' » ? (3e pers. sing.)'),
-   answer:partizip?v[2]:v[1]};
-  return steps(it,[partizip?D('Fast immer mit ge- am Anfang.','Almost always with ge- at the start.','Presque toujours avec ge- au début.')
-    :D('Nicht «ich», sondern «er»: er …','Not «I» but «he».','Pas « je » mais « il ».'),
-   v[0]+' – '+v[1]+' – '+v[2]]);}
+    du?D('Die Du-Form zuletzt. Achte auf den Stammvokal.','The you-form last. Watch the stem vowel.','La forme en tu à la fin. Attention à la voyelle du radical.'):'',
+    zeile].filter(Boolean));}
+  /* Praeteritum, Partizip, Praesens im Wechsel; das Praesens doppelt. */
+  const welche=du?['pt','pp','pr','pr']:['pt','pp'];
+  const was=welche[ri(0,welche.length-1)];
+  const frage=was==='pp'
+   ?D('Wie heisst das Partizip Perfekt von «'+v[0]+'»?','What is the past participle of «'+v[0]+'»?','Quel est le participe passé de « '+v[0]+' » ?')
+   :was==='pt'
+   ?D('Wie heisst das Präteritum von «'+v[0]+'»? (3. Person Singular)','What is the past tense of «'+v[0]+'»? (third person singular)','Quel est le prétérit de « '+v[0]+' » ? (3e pers. sing.)')
+   :D('Wie heisst die Du-Form von «'+v[0]+'»? (du …)','What is the you-form of «'+v[0]+'»?','Quelle est la forme en tu de « '+v[0]+' » ?');
+  const it={type:'input',tippen:true,prompt:frage,
+   answer:was==='pp'?v[2]:(was==='pt'?v[1]:du)};
+  const tipp=was==='pp'
+   ?D('Fast immer mit ge- am Anfang.','Almost always with ge- at the start.','Presque toujours avec ge- au début.')
+   :was==='pt'
+   ?D('Nicht «ich», sondern «er»: er …','Not «I» but «he».','Pas « je » mais « il ».')
+   :D('Der Stammvokal wechselt bei vielen Verben: e wird zu i, a wird zu ä.','The stem vowel often changes: e becomes i, a becomes ä.','La voyelle du radical change souvent : e devient i, a devient ä.');
+  return steps(it,[tipp,zeile]);}
 
 /* Johannes uebt den neuen Teil lieber fuer sich, bevor er in der ganzen
    Liste untergeht. */
@@ -10608,27 +10631,28 @@ detopic('de-stamm-teil2',7,1,['Stammformen Teil 2','Principal parts, part 2','Fo
  ['Die 38 Verben aus Teil 2 der Liste, von schweigen bis zwingen, ohne die Verben aus Teil 1. So kommt der neue Stoff bei jeder Aufgabe dran.',
   'The 38 verbs of part 2, from schweigen to zwingen, without those of part 1. The new material comes up in every question.',
   'Les 38 verbes de la partie 2, de schweigen à zwingen, sans ceux de la partie 1. La nouvelle matière revient à chaque question.'],
- ['Stammformen','Präteritum','Partizip Perfekt'],
+ ['Stammformen','Präteritum','Partizip Perfekt','Präsens'],
  lv=>stammAufgabe(lv,dv2Pick()));
 
 /* ---------- Stammformen sprechen ----------
-   Emilia fragt, das Kind antwortet laut. Beurteilt wird, ob alle drei
-   Formen gefallen sind - nicht, in welcher Reihenfolge. */
+   Emilia fragt, das Kind antwortet laut. Beurteilt wird, ob alle
+   Formen gefallen sind - nicht, in welcher Reihenfolge. Die Du-Form
+   gehoert dazu, ausser bei Verben wie gelingen, die keine haben. */
 detopic('de-stamm-sprechen',7,1,['Stammformen sprechen','Principal parts - aloud','Formes de base - à l’oral'],
- ['Emilia nennt das Verb, du sagst die drei Stammformen laut: Infinitiv, Präteritum, Partizip Perfekt. Die Reihenfolge ist frei, es müssen nur alle drei kommen.',
-  'Emilia names the verb and you say the three principal parts aloud. The order is free; all three must be there.',
-  'Emilia nomme le verbe et tu dis les trois formes à voix haute. L’ordre est libre, les trois doivent y être.'],
- ['Stammformen','Präteritum','Partizip Perfekt'],
- lv=>{const v=dvPick();
+  ['Emilia nennt das Verb, du sagst die Stammformen laut: Infinitiv, Präteritum, Partizip Perfekt und die Du-Form. Die Reihenfolge ist frei, es müssen nur alle kommen.',
+  'Emilia names the verb and you say the principal parts aloud: infinitive, past tense, participle and the you-form. The order is free; all of them must be there.',
+  'Emilia nomme le verbe et tu dis les formes à voix haute : infinitif, prétérit, participe et la forme en tu. L’ordre est libre, toutes doivent y être.'],
+ ['Stammformen','Präteritum','Partizip Perfekt','Präsens'],
+ lv=>{const v=dvPick();const du=(v[3]&&v[3].indexOf(' ')<0)?v[3]:null;
   const frage=D('Die Stammformen von '+v[0]+'.','The principal parts of '+v[0]+'.','Les formes de base de '+v[0]+'.');
   const it={type:'speak',mode:'formen',spr:'de',rounds:1,difficulty:lv,
    prompt:D('Sag die Stammformen von «'+v[0]+'» laut.','Say the principal parts of «'+v[0]+'» aloud.','Dis les formes de base de « '+v[0]+' » à voix haute.'),
    sound:frage,soundPre:true,autoSound:true,
-   answer:v[0]+' – '+v[1]+' – '+v[2],
-   formen:[v[0],v[1],v[2]],
-   accept:[v[0]+' '+v[1]+' '+v[2]]};
-  return steps(it,[D('Erst der Infinitiv, dann das Präteritum, dann das Partizip.','Infinitive first, then past tense, then participle.','D’abord l’infinitif, puis le prétérit, puis le participe.'),
-   v[0]+' – '+v[1]+' – '+v[2]]);});
+   answer:[v[0],v[1],v[2]].concat(du?[du]:[]).join(' – '),
+   formen:[v[0],v[1],v[2]].concat(du?[du]:[]),
+   accept:[[v[0],v[1],v[2]].concat(du?[du]:[]).join(' ')]};
+  return steps(it,[D('Erst der Infinitiv, dann das Präteritum, dann das Partizip, zuletzt die Du-Form.','Infinitive first, then past tense, then participle, then the you-form.','D’abord l’infinitif, puis le prétérit, le participe, et la forme en tu.'),
+   [v[0],v[1],v[2]].concat(du?['du '+du]:[]).join(' – ')]);});
 
 /* ---------- Rueckweg: von der Form zum Infinitiv ---------- */
 detopic('de-stamm-rueck',7,1,['Vom Partizip zum Infinitiv','From participle to infinitive','Du participe à l’infinitif'],
@@ -10637,8 +10661,11 @@ detopic('de-stamm-rueck',7,1,['Vom Partizip zum Infinitiv','From participle to i
   'On te donne une forme conjuguée. Donne le verbe à l’infinitif.'],
  ['Infinitiv','Grundform'],
  lv=>{const v=dvPick();
-  const ausPart=lv===1||Math.random()<.5;
-  const form=ausPart?v[2]:v[1];
+  /* Ab Stufe 2 kommt die Du-Form dazu: «du sprichst» zurueck auf
+     sprechen zu fuehren ist genau der Schritt, der in der Pruefung fehlt. */
+  const du=(v[3]&&v[3].indexOf(' ')<0)?v[3]:null;
+  const quellen=lv===1?[v[2]]:(du?[v[1],v[2],du]:[v[1],v[2]]);
+  const form=quellen[ri(0,quellen.length-1)];
   const it={type:'input',tippen:true,
    prompt:D('Wie heisst der Infinitiv zu «'+form+'»?','What is the infinitive of «'+form+'»?','Quel est l’infinitif de « '+form+' » ?'),
    answer:v[0]};
