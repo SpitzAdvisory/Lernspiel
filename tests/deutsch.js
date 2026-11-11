@@ -60,8 +60,19 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   pruef('Stichproben stimmen mit der Liste überein',ab.length===0,ab.join(' | '));
 
   /* ---- Themen ---- */
-  pruef('Vierzehn Themen',DET.length===14,DET.length);
-  pruef('Das Modul ist eine eingebaute Kachel',DE_GAME.builtin===true&&DE_GAME.gen.topics.length===14,DE_GAME.gen.topics.length);
+  pruef('Fuenfzehn Themen',DET.length===15,DET.length);
+  pruef('Das Modul ist eine eingebaute Kachel',DE_GAME.builtin===true&&DE_GAME.gen.topics.length===15,DE_GAME.gen.topics.length);
+  /* Teil 2 muss fuer sich allein uebbar sein. */
+  pruef('Teil 2 umfasst 38 Verben von schweigen bis zwingen',
+   DEV2.length===38&&DEV2[0][0]==='schweigen'&&DEV2[37][0]==='zwingen',
+   DEV2.length+': '+DEV2[0][0]+' … '+DEV2[DEV2.length-1][0]);
+  const fremd=[];
+  for(let i=0;i<400;i++){const it=DET.find(t=>t.id==='de-stamm-teil2').g(1+(i%3));
+   const m=String(it.prompt).match(/«([^»]+)»/);
+   if(!m)continue;const w=m[1];
+   /* Jede gezogene Form muss zu einem Verb aus Teil 2 gehoeren. */
+   if(!DEV2.some(v=>v.slice(0,4).indexOf(w)>=0))fremd.push(w);}
+  pruef('Stammformen Teil 2 zieht nur aus Teil 2',fremd.length===0,fremd.slice(0,4).join(', '));
   pruef('Die Verben mit zwei Bedeutungen sind dabei',
    DET.some(t=>t.id==='de-zweibedeutung'),DET.map(t=>t.id).join(' '));
   const fehlend=DET.filter(tp=>!mtopic(tp.id));

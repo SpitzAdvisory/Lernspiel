@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V106';
+const APPVER='V107';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -10420,6 +10420,11 @@ const DET=[];
 function detopic(id,y,a,n,c,terms,g){DET.push({id,y,a,n,c,terms,g,de:true});}
 const dvPick=()=>DEV[Math.floor(Math.random()*DEV.length)];
 const dvMit=f=>{const a=DEV.filter(f);return a[Math.floor(Math.random()*a.length)];};
+/* Teil 2 der Liste beginnt bei schweigen. Die Grenze wird gesucht und
+   nicht gezaehlt, damit sie beim Nachtragen eines Verbs nicht
+   verrutscht. */
+const DEV2=DEV.slice(DEV.findIndex(v=>v[0]==='schweigen'));
+const dv2Pick=()=>DEV2[Math.floor(Math.random()*DEV2.length)];
 /* D(de,en,fr): die Oberflaeche spricht drei Sprachen, der Lernstoff nur eine. */
 function D(de,en,fr){return S.lang==='en'?en:S.lang==='fr'?fr:de;}
 
@@ -10429,7 +10434,11 @@ detopic('de-stamm',7,1,['Stammformen schreiben','Principal parts - writing','For
   'Three forms identify a verb: infinitive, past tense and past participle. The past tense is given in the third person singular. Most past participles start with ge-.',
   'Trois formes identifient un verbe : infinitif, prétérit et participe passé. Le prétérit est à la troisième personne du singulier. La plupart des participes commencent par ge-.'],
  ['Stammformen','Präteritum','Partizip Perfekt'],
- lv=>{const v=dvPick();
+ lv=>stammAufgabe(lv,dvPick()));
+
+/* Derselbe Aufgabenkoerper dient beiden Stammformen-Themen; sie
+   unterscheiden sich allein darin, aus welchen Verben gezogen wird. */
+function stammAufgabe(lv,v){
   if(lv>=3){
    const it={type:'input',tippen:true,prompt:D('Nenne Präteritum und Partizip Perfekt von «'+v[0]+'».',
      'Give the past tense and past participle of «'+v[0]+'».',
@@ -10446,7 +10455,16 @@ detopic('de-stamm',7,1,['Stammformen schreiben','Principal parts - writing','For
    answer:partizip?v[2]:v[1]};
   return steps(it,[partizip?D('Fast immer mit ge- am Anfang.','Almost always with ge- at the start.','Presque toujours avec ge- au début.')
     :D('Nicht «ich», sondern «er»: er …','Not «I» but «he».','Pas « je » mais « il ».'),
-   v[0]+' – '+v[1]+' – '+v[2]]);});
+   v[0]+' – '+v[1]+' – '+v[2]]);}
+
+/* Johannes uebt den neuen Teil lieber fuer sich, bevor er in der ganzen
+   Liste untergeht. */
+detopic('de-stamm-teil2',7,1,['Stammformen Teil 2','Principal parts, part 2','Formes de base, partie 2'],
+ ['Die 38 Verben aus Teil 2 der Liste, von schweigen bis zwingen, ohne die Verben aus Teil 1. So kommt der neue Stoff bei jeder Aufgabe dran.',
+  'The 38 verbs of part 2, from schweigen to zwingen, without those of part 1. The new material comes up in every question.',
+  'Les 38 verbes de la partie 2, de schweigen à zwingen, sans ceux de la partie 1. La nouvelle matière revient à chaque question.'],
+ ['Stammformen','Präteritum','Partizip Perfekt'],
+ lv=>stammAufgabe(lv,dv2Pick()));
 
 /* ---------- Stammformen sprechen ----------
    Emilia fragt, das Kind antwortet laut. Beurteilt wird, ob alle drei
