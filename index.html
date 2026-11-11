@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V107';
+const APPVER='V108';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -5795,6 +5795,151 @@ topic('m2-data',2,3,['Strichlisten und Diagramme','Tally charts and bar charts',
   else{const hi=rows[a].v>=rows[b].v?a:b,lo=hi===a?b:a;q=X('Wie viele ','How many ','Combien de ')+rows[hi].label+X(' mehr als ',' more than ',' de plus que de ')+rows[lo].label+'?';val=rows[hi].v-rows[lo].v;st=[rows[hi].label+': '+rows[hi].v+', '+rows[lo].label+': '+rows[lo].v+'.',X('«Wie viele mehr» heisst: Unterschied rechnen, also minus.','“How many more” means finding the difference: subtract.','« Combien de plus » veut dire calculer la différence : soustraire.'),rows[hi].v+' − '+rows[lo].v+' = '+val];}
   const it=numItem(q,val,{fig:()=>tally?figTally(rows):figBars(rows,lv===1?1:2)});return steps(it,st);});
 /* ---- Year 3 ---- */
+/* ================= Einmaleins, Primzahlen und Kubikzahlen =================
+   Die Bilder tragen diese drei Themen. Ein Produkt ist eine Mauer aus
+   Bloecken, eine Primzahl eine Reihe, die sich in keine gleich langen
+   Reihen zerlegen laesst, eine Kubikzahl ein Wuerfel aus Schichten.
+   Minecraft und Numberblocks stehen Pate.
+
+   m3-primzahlen und m3-kubikzahlen stehen zwei Jahre vor dem Lehrplan 21,
+   der beides um Klasse 5 ansetzt. Urs hat die Abweichung am 11.11.2026
+   gewollt und verlangt, dass sie gekennzeichnet ist: LP21ABW haelt sie
+   fest, und derselbe Satz steht am Ende der Erklaerung.                */
+const LP21ABW={
+ 'm3-primzahlen':['Das steht vor dem Lehrplan 21: dort kommen Primzahlen in Klasse 5.',
+  'This runs ahead of the curriculum: Lehrplan 21 places primes in year 5.',
+  'Cela devance le plan d’études : les nombres premiers y figurent en 5e.'],
+ 'm3-kubikzahlen':['Das steht vor dem Lehrplan 21: dort kommen Kubikzahlen in Klasse 5.',
+  'This runs ahead of the curriculum: Lehrplan 21 places cube numbers in year 5.',
+  'Cela devance le plan d’études : les nombres cubes y figurent en 5e.']
+};
+const lpAbw=id=>X(LP21ABW[id][0],LP21ABW[id][1],LP21ABW[id][2]);
+
+/* Eine Mauer aus Bloecken, spalten mal zeilen. Die Kantenlaenge richtet
+   sich nach der groesseren Seite, damit das Bild auf die Karte passt. */
+function figMauer(spalten,zeilen,farbe){
+ const gross=Math.max(spalten,zeilen,1);
+ const k=Math.max(14,Math.min(34,Math.floor(300/gross)));
+ const s=svgBox(spalten*k+8,zeilen*k+8);
+ for(let z=0;z<zeilen;z++)for(let sp=0;sp<spalten;sp++)
+  s.append(sv('rect',{x:4+sp*k,y:4+z*k,width:k-3,height:k-3,rx:3,
+   fill:farbe||GRN,stroke:INK,'stroke-width':1.5}));
+ return s;}
+
+/* Ein Wuerfel, Schicht fuer Schicht nebeneinander gelegt. Ueber vier
+   Bloecken Kantenlaenge wird das Bild unleserlich; dann entfaellt es. */
+function figSchichten(kante){
+ const k=Math.max(12,Math.min(26,Math.floor(360/(kante*kante+kante))));
+ const breit=kante*(kante*k+10);
+ const s=svgBox(breit+6,kante*k+30);
+ for(let i=0;i<kante;i++){const ox=4+i*(kante*k+10);
+  for(let z=0;z<kante;z++)for(let sp=0;sp<kante;sp++)
+   s.append(sv('rect',{x:ox+sp*k,y:4+z*k,width:k-3,height:k-3,rx:3,
+    fill:GRN,stroke:INK,'stroke-width':1.2}));
+  s.append(stx(ox+kante*k/2,kante*k+22,String(i+1),{'font-size':13}));}
+ return s;}
+
+/* Einmaleins. Derselbe Koerper dient beiden Klassen; nur die groesste
+   Reihe unterscheidet sie. Auf Stufe 1 steht die Mauer dabei und das
+   Kind zaehlt; danach faellt sie weg und es wird Tempoarbeit. */
+function einmaleinsAufgabe(lv,maxReihe){
+ const b=ri(2,maxReihe),q=ri(2,10),pr=b*q;
+ const bild=lv===1?{fig:()=>figMauer(q,b)}:undefined;
+ const zaehl=X('Zaehle die Bloecke: ','Count the blocks: ','Compte les blocs : ')
+  +b+X(' Reihen zu ',' rows of ',' rangées de ')+q+'.';
+ const k=ri(0,2);
+ if(k===0)return steps(numItem(b+' · '+q+' = ?',pr,bild),
+  [zaehl,b+' · '+q+' = '+pr]);
+ if(k===1)return steps(numItem(pr+' : '+q+' = ?',b,bild),
+  [X('Teilen heisst: wie viele Reihen zu ','Dividing asks: how many rows of ','Diviser demande : combien de rangées de ')+q+X(' ergeben ',' make ',' font ')+pr+'?',
+   b+' · '+q+' = '+pr+X(', also ',', so ',', donc ')+pr+' : '+q+' = '+b]);
+ return steps(numItem(b+' · ? = '+pr,q,bild),
+  [X('Suche die fehlende Reihenlaenge.','Find the missing row length.','Cherche la longueur de rangée qui manque.'),
+   b+' · '+q+' = '+pr]);}
+
+topic('m2-einmaleins',2,1,['Einmaleins üben','Times table drill','Entraînement des tables'],
+ ['Eine Mal-Rechnung ist eine Mauer aus Blöcken: 3 · 4 sind 3 Reihen zu 4 Blöcken, zusammen 12. Teilen dreht die Frage um: 12 Blöcke in Reihen zu 4 geben 3 Reihen. Auf der ersten Stufe steht die Mauer daneben, später rechnest du sie im Kopf.',
+  'A multiplication is a wall of blocks: 3 · 4 is 3 rows of 4, which makes 12. Dividing turns the question round: 12 blocks in rows of 4 make 3 rows. At the first level the wall is drawn for you, later you picture it yourself.',
+  'Une multiplication est un mur de blocs : 3 · 4, c’est 3 rangées de 4, donc 12. Diviser retourne la question : 12 blocs en rangées de 4 font 3 rangées. Au premier niveau le mur est dessiné, ensuite tu le vois dans ta tête.'],
+ ['factor','product','quotient'],
+ lv=>einmaleinsAufgabe(lv,lv===1?5:10));
+
+topic('m4-einmaleins',4,1,['Einmaleins sicher und schnell','Times tables, fast','Tables, vite et sûr'],
+ ['Das kleine Einmaleins muss sitzen, in alle Richtungen: 7 · 8, 56 : 8 und 7 · ? = 56 sind dieselbe Tatsache. Wer sie kennt, rechnet alles Spätere schneller.',
+  'The times tables need to be automatic in every direction: 7 · 8, 56 : 8 and 7 · ? = 56 are the same fact. Knowing them makes everything later faster.',
+  'Les tables doivent être automatiques dans tous les sens : 7 · 8, 56 : 8 et 7 · ? = 56 sont le même fait. Les connaître rend tout le reste plus rapide.'],
+ ['factor','product','quotient','dividend','divisor'],
+ lv=>einmaleinsAufgabe(lv===1?2:lv,10));
+
+/* Teiler werden gesucht, nicht nachgeschlagen: so stimmt die Antwort
+   auch fuer Zahlen, an die beim Schreiben niemand gedacht hat. */
+function istPrim(n){if(n<2)return false;for(let t=2;t*t<=n;t++)if(n%t===0)return false;return true;}
+function kleinsterTeiler(n){for(let t=2;t*t<=n;t++)if(n%t===0)return t;return n;}
+
+topic('m3-primzahlen',3,1,['Primzahlen: Blöcke in Reihen','Primes: blocks in rows','Nombres premiers : en rangées'],
+ ['Lege eine Zahl als Blöcke hin. 12 Blöcke geben 2 Reihen zu 6, 3 Reihen zu 4 oder 4 Reihen zu 3. Aus 7 Blöcken wird nur eine einzige Reihe zu 7 – mehr geht nicht. Genau solche Zahlen heissen Primzahlen. Die 1 zählt nicht dazu. '
+  +'Das steht vor dem Lehrplan 21: dort kommen Primzahlen in Klasse 5.',
+  'Lay a number out as blocks. 12 blocks make 2 rows of 6, 3 rows of 4 or 4 rows of 3. 7 blocks make only one row of 7 and nothing else. Numbers like that are called primes. 1 does not count as one. '
+  +'This runs ahead of the curriculum: Lehrplan 21 places primes in year 5.',
+  'Pose un nombre en blocs. 12 blocs font 2 rangées de 6, 3 rangées de 4 ou 4 rangées de 3. 7 blocs ne font qu’une seule rangée de 7. Ces nombres-là s’appellent nombres premiers. 1 n’en est pas un. '
+  +'Cela devance le plan d’études : les nombres premiers y figurent en 5e.'],
+ ['prime','factor','divisor'],
+ lv=>{const max=lv===1?12:(lv===2?20:30);
+  const k=lv===1?ri(0,1):ri(0,2);
+  if(k===0){const n=ri(2,max);const prim=istPrim(n);
+   return steps(choiceItem(X('Kannst Du aus ','Can you build several equal rows from ','Peux-tu faire plusieurs rangées égales avec ')+n
+     +X(' Blöcken mehrere gleich lange Reihen bauen?',' blocks?',' blocs ?'),
+    prim?X('Nein','No','Non'):X('Ja','Yes','Oui'),[prim?X('Ja','Yes','Oui'):X('Nein','No','Non')],
+    {fig:()=>figMauer(n,1)}),
+   [prim?X('Versuche es mit 2, mit 3, mit 4 Reihen.','Try 2 rows, 3 rows, 4 rows.','Essaie 2 rangées, 3, puis 4.')
+        :X('Teile die Reihe in gleich lange Stücke.','Split the row into equal pieces.','Partage la rangée en morceaux égaux.'),
+    prim?(n+X(' ist eine Primzahl.',' is a prime.',' est un nombre premier.'))
+        :(n+' = '+kleinsterTeiler(n)+' · '+(n/kleinsterTeiler(n)))]);}
+  if(k===1){const kandidaten=[];for(let i=2;i<=max;i++)kandidaten.push(i);
+   const primzahlen=kandidaten.filter(istPrim),andere=kandidaten.filter(x=>!istPrim(x));
+   const richtig=primzahlen[ri(0,primzahlen.length-1)];
+   const falsch=[];const rest=andere.slice();
+   while(falsch.length<3&&rest.length)falsch.push(rest.splice(ri(0,rest.length-1),1)[0]);
+   return steps(choiceItem(X('Welche dieser Zahlen ist eine Primzahl?','Which of these is a prime?','Lequel de ces nombres est premier ?'),
+     String(richtig),falsch.map(String)),
+    [X('Eine Primzahl lässt sich nur in eine einzige Reihe legen.','A prime makes only one row.','Un nombre premier ne fait qu’une rangée.'),
+     falsch.map(x=>x+' = '+kleinsterTeiler(x)+' · '+(x/kleinsterTeiler(x))).join(', '),
+     richtig+X(' ist eine Primzahl.',' is a prime.',' est un nombre premier.')]);}
+  let n=ri(4,max);while(istPrim(n))n=ri(4,max);
+  const t=kleinsterTeiler(n);
+  return steps(numItem(X('Durch welche kleinste Zahl ausser 1 lässt sich ','What is the smallest number apart from 1 that divides ','Quel est le plus petit nombre, à part 1, qui divise ')+n+X(' teilen?','?',' ?'),t),
+   [X('Versuche der Reihe nach 2, 3, 4, 5.','Try 2, then 3, then 4, then 5.','Essaie 2, puis 3, puis 4, puis 5.'),
+    n+' = '+t+' · '+(n/t)]);});
+
+topic('m3-kubikzahlen',3,1,['Kubikzahlen: Würfel aus Blöcken','Cube numbers: cubes of blocks','Nombres cubes : cubes de blocs'],
+ ['Ein Würfel ist gleich breit, gleich tief und gleich hoch. Mit 3 Blöcken Kantenlänge brauchst du 3 Schichten zu 3 · 3 Blöcken, also 27. Das schreibt man 3³ und sagt «drei hoch drei». '
+  +'Das steht vor dem Lehrplan 21: dort kommen Kubikzahlen in Klasse 5.',
+  'A cube is as wide as it is deep and high. With an edge of 3 blocks you need 3 layers of 3 · 3 blocks, which is 27. That is written 3³. '
+  +'This runs ahead of the curriculum: Lehrplan 21 places cube numbers in year 5.',
+  'Un cube est aussi large que profond et haut. Avec une arête de 3 blocs, il faut 3 couches de 3 · 3 blocs, donc 27. On écrit 3³. '
+  +'Cela devance le plan d’études : les nombres cubes y figurent en 5e.'],
+ ['power','base','exponent','cube'],
+ lv=>{const maxK=lv===1?4:(lv===2?6:10);
+  const k=lv===1?0:ri(0,2);
+  if(k===0){const e=ri(2,Math.min(maxK,lv===1?4:5));const v=e*e*e;
+   return steps(numItem(X('Ein Würfel ist ','A cube is ','Un cube fait ')+e+X(' Blöcke breit, ',' blocks wide, ',' blocs de large, ')+e+X(' tief und ',' deep and ',' de profondeur et ')+e+X(' hoch. Wie viele Blöcke sind das?',' high. How many blocks is that?',' de haut. Combien de blocs cela fait-il ?'),v,
+     e<=4?{fig:()=>figSchichten(e)}:undefined),
+    [X('Eine Schicht hat ','One layer holds ','Une couche contient ')+e+' · '+e+' = '+e*e+X(' Blöcke.',' blocks.',' blocs.'),
+     X('Und es gibt ','And there are ','Et il y a ')+e+X(' Schichten.',' layers.',' couches.'),
+     e+'³ = '+e+' · '+e+' · '+e+' = '+fmtN(v)]);}
+  if(k===1){const e=ri(2,maxK);const v=e*e*e;
+   return steps(numItem(X('Ein Würfel braucht ','A cube uses ','Un cube utilise ')+fmtN(v)+X(' Blöcke. Wie lang ist eine Kante?',' blocks. How long is one edge?',' blocs. Quelle est la longueur d’une arête ?'),e),
+    [X('Suche die Zahl, die dreimal mit sich selbst malgenommen ','Find the number that multiplied by itself three times gives ','Cherche le nombre qui, multiplié trois fois par lui-même, donne ')+fmtN(v)+X(' ergibt.','.','.'),
+     e+' · '+e+' · '+e+' = '+fmtN(v)]);}
+  const e=ri(2,maxK);const v=e*e*e;
+  const falsch=[];
+  while(falsch.length<3){const c=ri(2,v+20);
+   if(c!==v&&falsch.indexOf(c)<0&&Math.round(Math.cbrt(c))**3!==c)falsch.push(c);}
+  return steps(choiceItem(X('Welche Zahl ist eine Kubikzahl?','Which number is a cube number?','Quel nombre est un nombre cube ?'),
+    String(fmtN(v)),falsch.map(x=>String(fmtN(x)))),
+   [X('Eine Kubikzahl ist die Zahl der Blöcke in einem Würfel.','A cube number counts the blocks in a cube.','Un nombre cube compte les blocs d’un cube.'),
+    fmtN(v)+' = '+e+'³']);});
+
 /* ================= Fachwoerter der Grundrechenarten =================
    Die Namen der Teile, wie sie das Merkblatt der Schule zeigt:
    Summand + Summand = Summe, Minuend - Subtrahend = Differenz,
