@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V105';
+const APPVER='V106';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -5795,6 +5795,156 @@ topic('m2-data',2,3,['Strichlisten und Diagramme','Tally charts and bar charts',
   else{const hi=rows[a].v>=rows[b].v?a:b,lo=hi===a?b:a;q=X('Wie viele ','How many ','Combien de ')+rows[hi].label+X(' mehr als ',' more than ',' de plus que de ')+rows[lo].label+'?';val=rows[hi].v-rows[lo].v;st=[rows[hi].label+': '+rows[hi].v+', '+rows[lo].label+': '+rows[lo].v+'.',X('«Wie viele mehr» heisst: Unterschied rechnen, also minus.','“How many more” means finding the difference: subtract.','« Combien de plus » veut dire calculer la différence : soustraire.'),rows[hi].v+' − '+rows[lo].v+' = '+val];}
   const it=numItem(q,val,{fig:()=>tally?figTally(rows):figBars(rows,lv===1?1:2)});return steps(it,st);});
 /* ---- Year 3 ---- */
+/* ================= Fachwoerter der Grundrechenarten =================
+   Die Namen der Teile, wie sie das Merkblatt der Schule zeigt:
+   Summand + Summand = Summe, Minuend - Subtrahend = Differenz,
+   Faktor · Faktor = Produkt, Dividend : Divisor = Quotient.
+   Die Woerter sind deutsch; Englisch und Franzoesisch stehen daneben.
+   Das Franzoesische kennt fuer Minuend und Subtrahend keine eigenen
+   Woerter, dort heissen beide schlicht «terme».                      */
+const GRA=[
+ {z:'+',f:(a,b)=>a+b,n:[['Summand','addend','premier terme','der','le'],['Summand','addend','second terme','der','le'],['Summe','sum','somme','die','la']]},
+ {z:'−',f:(a,b)=>a-b,n:[['Minuend','minuend','premier terme','der','le'],['Subtrahend','subtrahend','second terme','der','le'],['Differenz','difference','différence','die','la']]},
+ {z:'·',f:(a,b)=>a*b,n:[['Faktor','factor','facteur','der','le'],['Faktor','factor','facteur','der','le'],['Produkt','product','produit','das','le']]},
+ {z:':',f:(a,b)=>a/b,n:[['Dividend','dividend','dividende','der','le'],['Divisor','divisor','diviseur','der','le'],['Quotient','quotient','quotient','der','le']]}
+];
+const graW=t=>X(t[0],t[1],t[2]);
+const graArt=t=>X(t[3]+' ','the ',t[4]+' ');
+/* Alle Namen einmal, fuer die Ablenker. */
+function graAlle(){const l=[];for(const o of GRA)for(const t of o.n){const w=graW(t);if(l.indexOf(w)<0)l.push(w);}return l;}
+/* Zwei Zahlen, die zur Rechenart passen: bei : muss es aufgehen. */
+function graZahlen(o,max){
+ if(o.z===':'){const b=ri(2,Math.max(2,Math.min(12,Math.floor(max/2))));const q=ri(2,Math.max(2,Math.floor(max/b)));return [b*q,b];}
+ if(o.z==='·'){const a=ri(2,Math.min(12,max));const b=ri(2,Math.min(12,max));return [a,b];}
+ if(o.z==='−'){const a=ri(Math.ceil(max/3),max);const b=ri(1,a-1);return [a,b];}
+ const a=ri(2,max);return [a,ri(1,Math.max(1,max-a))];}
+/* Eine Aufgabe zu den Namen. rolle 0,1,2 ist erster Teil, zweiter Teil,
+   Ergebnis. richtung 'name' fragt nach dem Wort, 'zahl' nach der Zahl. */
+function graItem(o,max,richtung,rolle){
+ const [a,b]=graZahlen(o,max);const r=o.f(a,b);
+ const zahlen=[a,b,r];const z=zahlen[rolle];
+ const term=a+' '+o.z+' '+b+' = '+fmtN(r);
+ const wort=graW(o.n[rolle]);
+ if(richtung==='name'){
+  const ablenker=graAlle().filter(w=>w!==wort);
+  const drei=[];while(drei.length<3&&ablenker.length)drei.push(ablenker.splice(ri(0,ablenker.length-1),1)[0]);
+  return steps(choiceItem(X('In ','In ','Dans ')+term+X(': Wie heisst die ',': what is ',' : comment s’appelle ')+fmtN(z)+'?',wort,drei),
+   [X('Erster Teil, zweiter Teil, Ergebnis - jedes hat seinen Namen.',
+      'First part, second part, result - each has its own name.',
+      'Premier terme, second terme, résultat : chacun a son nom.'),
+    graW(o.n[0])+' '+o.z+' '+graW(o.n[1])+' = '+graW(o.n[2]),
+    fmtN(z)+' = '+wort]);}
+ /* Bei Plus und Mal heissen beide Teile gleich. Ohne «erster» oder
+    «zweiter» haette die Frage zwei richtige Antworten. */
+ const gleich=graW(o.n[0])===graW(o.n[1]);
+ const ordnung=(gleich&&rolle<2)?X(rolle===0?'erste ':'zweite ',rolle===0?'first ':'second ','')
+                                :'';
+ return steps(numItem(X('Welche Zahl ist ','Which number is ','Quel nombre est ')+
+   graArt(o.n[rolle])+ordnung+wort+X(' in ',' in ',' dans ')+term+'?',z),
+  [graW(o.n[0])+' '+o.z+' '+graW(o.n[1])+' = '+graW(o.n[2]),
+   wort+' = '+fmtN(z)]);}
+
+topic('m3-wortplusminus',3,1,['Plus und Minus: die Namen','Adding and subtracting: the names','Addition et soustraction : les noms'],
+ ['15 + 5 = 20: Die 15 und die 5 sind die Summanden, die 20 ist die Summe. 15 − 5 = 10: Die 15 ist der Minuend, die 5 der Subtrahend, die 10 die Differenz. Die Namen stehen immer an derselben Stelle.',
+  '15 + 5 = 20: 15 and 5 are the addends, 20 is the sum. 15 − 5 = 10: 15 is the minuend, 5 the subtrahend, 10 the difference. Each name always sits in the same place.',
+  '15 + 5 = 20 : 15 et 5 sont les termes, 20 est la somme. 15 − 5 = 10 : 15 est le premier terme, 5 le second, 10 la différence. Chaque nom est toujours à la même place.'],
+ ['summand','sum','minuend','subtrahend','difference'],
+ lv=>{const o=GRA[ri(0,1)];const max=lv===1?20:(lv===2?100:1000);
+  return graItem(o,max,Math.random()<.6?'name':'zahl',ri(0,2));});
+
+topic('m4-wortmalgeteilt',4,1,['Mal und Geteilt: die Namen','Times and divided: the names','Multiplication et division : les noms'],
+ ['3 · 5 = 15: Die 3 und die 5 sind die Faktoren, die 15 ist das Produkt. 15 : 3 = 5: Die 15 ist der Dividend, die 3 der Divisor, die 5 der Quotient.',
+  '3 · 5 = 15: 3 and 5 are the factors, 15 is the product. 15 : 3 = 5: 15 is the dividend, 3 the divisor, 5 the quotient.',
+  '3 · 5 = 15 : 3 et 5 sont les facteurs, 15 est le produit. 15 : 3 = 5 : 15 est le dividende, 3 le diviseur, 5 le quotient.'],
+ ['factor','product','dividend','divisor','quotient'],
+ lv=>{const o=GRA[ri(2,3)];const max=lv===1?50:(lv===2?100:144);
+  return graItem(o,max,Math.random()<.6?'name':'zahl',ri(0,2));});
+
+topic('m5-wortalle',5,1,['Alle vier Rechenarten benennen','Naming all four operations','Nommer les quatre opérations'],
+ ['Zehn Namen, vier Rechenarten: Summand und Summe, Minuend, Subtrahend und Differenz, Faktor und Produkt, Dividend, Divisor und Quotient. Wer sie kennt, versteht jede Aufgabenstellung sofort.',
+  'Ten names for four operations: addend and sum; minuend, subtrahend and difference; factor and product; dividend, divisor and quotient. Knowing them makes every question readable.',
+  'Dix noms pour quatre opérations : terme et somme ; premier terme, second terme et différence ; facteur et produit ; dividende, diviseur et quotient. Les connaître rend chaque énoncé lisible.'],
+ ['summand','sum','minuend','subtrahend','difference','factor','product','dividend','divisor','quotient'],
+ lv=>{const o=GRA[ri(0,3)];const max=lv===1?50:(lv===2?200:1000);
+  return graItem(o,max,lv>=2&&Math.random()<.5?'zahl':'name',ri(0,2));});
+
+/* Vom Wort zur Rechnung. Fuehrt auf m7-rechenworte hin, bleibt aber bei
+   kleinen Zahlen und einem einzigen Schritt, solange die Stufe tief ist. */
+const GRW=[
+ {w:['Summe','sum','somme'],z:'+',f:(a,b)=>a+b},
+ {w:['Differenz','difference','différence'],z:'−',f:(a,b)=>a-b},
+ {w:['Produkt','product','produit'],z:'·',f:(a,b)=>a*b},
+ {w:['Quotient','quotient','quotient'],z:':',f:(a,b)=>a/b}
+];
+topic('m6-wortrechnen',6,1,['Vom Wort zur Rechnung','From words to the calculation','Du mot au calcul'],
+ ['«Bilde die Differenz von 20 und 8» heisst 20 − 8. Die erste Zahl steht vorn. Summe heisst plus, Differenz minus, Produkt mal, Quotient geteilt.',
+  '«Form the difference of 20 and 8» means 20 − 8. The first number comes first. Sum means plus, difference minus, product times, quotient divided.',
+  '« Forme la différence de 20 et 8 » veut dire 20 − 8. Le premier nombre vient en premier. Somme veut dire plus, différence moins, produit fois, quotient divisé.'],
+ ['sum','difference','product','quotient'],
+ lv=>{const g=GRW[ri(0,3)];const o=GRA[['+','−','·',':'].indexOf(g.z)];
+  const max=lv===1?50:(lv===2?200:1000);
+  const [a,b]=graZahlen(o,max);const r=g.f(a,b);
+  const wort=graW(g.w);
+  if(lv>=3){
+   /* Zwei Schritte: erst der benannte Ausdruck, dann noch eine Zahl dazu. */
+   const c=ri(2,20);const gesamt=r+c;
+   return steps(numItem(X('Addiere ','Add ','Ajoute ')+c+X(' zu'+(g.z===':'?'m':'r')+' ','  to the ',' au/à la ')+wort+X(' von ',' of ',' de ')+a+X(' und ',' and ',' et ')+b+'.',gesamt),
+    [wort+X(' von ',' of ',' de ')+a+X(' und ',' and ',' et ')+b+' = '+a+' '+g.z+' '+b,
+     a+' '+g.z+' '+b+' = '+fmtN(r),
+     fmtN(r)+' + '+c+' = '+fmtN(gesamt)]);}
+  return steps(numItem(X('Bilde '+(g.z===':'?'den':(g.z==='·'?'das':'die'))+' ','Form the ','Forme ')+wort+X(' von ',' of ',' de ')+a+X(' und ',' and ',' et ')+b+'.',r),
+   [wort+' = '+a+' '+g.z+' '+b,
+    a+' '+g.z+' '+b+' = '+fmtN(r)]);});
+
+/* ---------- Rechenregeln, die noch fehlten ---------- */
+topic('m3-vertauschen',3,1,['Vertauschen: was geht und was nicht','Swapping: when it works','Échanger : quand c’est permis'],
+ ['Bei Plus und Mal darf man die beiden Zahlen vertauschen: 7 + 8 = 8 + 7 und 3 · 4 = 4 · 3. Bei Minus und Geteilt geht das nicht: 12 − 5 ist nicht dasselbe wie 5 − 12.',
+  'With plus and times you may swap the two numbers: 7 + 8 = 8 + 7 and 3 · 4 = 4 · 3. With minus and divided you may not: 12 − 5 is not 5 − 12.',
+  'Avec plus et fois, on peut échanger les deux nombres : 7 + 8 = 8 + 7 et 3 · 4 = 4 · 3. Avec moins et divisé, non : 12 − 5 n’est pas 5 − 12.'],
+ ['summand','factor'],
+ lv=>{const vertauschbar=Math.random()<.5;
+  const o=vertauschbar?GRA[Math.random()<.5?0:2]:GRA[Math.random()<.5?1:3];
+  const max=lv===1?20:(lv===2?100:1000);
+  const [a,b]=graZahlen(o,max);
+  if(Math.random()<.5){
+   const gleich=o.f(a,b)===o.f(b,a);
+   return steps(choiceItem(X('Gilt ','Is ','Est-ce que ')+a+' '+o.z+' '+b+' = '+b+' '+o.z+' '+a+'?',
+     gleich?X('Ja','Yes','Oui'):X('Nein','No','Non'),[gleich?X('Nein','No','Non'):X('Ja','Yes','Oui')]),
+    [X('Rechne beide Seiten aus.','Work out both sides.','Calcule les deux côtés.'),
+     a+' '+o.z+' '+b+' = '+fmtN(o.f(a,b))+X(', und ',', and ',', et ')+b+' '+o.z+' '+a+' = '+fmtN(o.f(b,a)),
+     gleich?X('Bei Plus und Mal darf man vertauschen.','With plus and times you may swap.','Avec plus et fois, on peut échanger.')
+           :X('Bei Minus und Geteilt darf man nicht vertauschen.','With minus and divided you may not swap.','Avec moins et divisé, on ne peut pas échanger.')]);}
+  const plus=GRA[Math.random()<.5?0:2];
+  const [c,d]=graZahlen(plus,max);
+  return steps(choiceItem(X('Welche Rechnung hat dasselbe Ergebnis wie ','Which calculation gives the same result as ','Quel calcul donne le même résultat que ')+c+' '+plus.z+' '+d+'?',
+    d+' '+plus.z+' '+c,[c+' '+(plus.z==='+'?'−':':')+' '+d,d+' '+(plus.z==='+'?'−':':')+' '+c,c+' '+plus.z+' '+(d+1)]),
+   [X('Vertauschen ist bei Plus und Mal erlaubt.','Swapping is allowed with plus and times.','Échanger est permis avec plus et fois.'),
+    c+' '+plus.z+' '+d+' = '+d+' '+plus.z+' '+c+' = '+fmtN(plus.f(c,d))]);});
+
+topic('m4-verbinden',4,1,['Geschickt zusammenfassen','Grouping cleverly','Regrouper astucieusement'],
+ ['Bei Plus und Mal darf man auch anders zusammenfassen: (2 + 8) + 7 = 2 + (8 + 7). Nimm die Zahlen zuerst, die einen glatten Zehner geben, dann wird das Rechnen leichter.',
+  'With plus and times you may also group differently: (2 + 8) + 7 = 2 + (8 + 7). Take the numbers that make a round ten first.',
+  'Avec plus et fois, on peut aussi regrouper : (2 + 8) + 7 = 2 + (8 + 7). Prends d’abord les nombres qui font une dizaine ronde.'],
+ ['summand','factor'],
+ lv=>{
+  /* Drei Summanden, von denen zwei einen glatten Zehner ergeben. */
+  const a=ri(2,9),b=10-a,c=lv===1?ri(2,9):ri(11,lv===2?49:99);
+  const reihen=[[a,b,c],[a,c,b],[c,a,b]];const rr=reihen[ri(0,2)];
+  const summe=a+b+c;
+  if(Math.random()<.5)
+   return steps(numItem(rr[0]+' + '+rr[1]+' + '+rr[2]+' = ?',summe),
+    [X('Suche die beiden Zahlen, die zusammen einen glatten Zehner geben.',
+       'Find the two numbers that make a round ten together.',
+       'Cherche les deux nombres qui font une dizaine ronde ensemble.'),
+     a+' + '+b+' = 10',
+     '10 + '+c+' = '+fmtN(summe)]);
+  return steps(choiceItem(X('Welche zwei Zahlen fasst du in ','Which two numbers would you group in ','Quels deux nombres regrouperais-tu dans ')+rr[0]+' + '+rr[1]+' + '+rr[2]+X(' zuerst zusammen?',' first?',' en premier ?'),
+    a+' + '+b,[a+' + '+c,b+' + '+c,X('Die Reihenfolge ist egal.','The order makes no difference.','L’ordre ne change rien.')]),
+   [X('Gesucht ist das Paar, das einen glatten Zehner gibt.',
+      'Look for the pair that makes a round ten.',
+      'Cherche la paire qui fait une dizaine ronde.'),
+    a+' + '+b+' = 10, '+X('dann ','then ','puis ')+'10 + '+c+' = '+fmtN(summe)]);});
+
 topic('m3-placevalue',3,1,['Zahlen bis 1000: Stellenwerte','Numbers to 1000: place value','Nombres jusqu’à 1000 : valeur de position'],
  ['Eine dreistellige Zahl hat Hunderter, Zehner und Einer: 358 = 3 H + 5 Z + 8 E.','A three-digit number has hundreds, tens and ones: 358 = 3 H + 5 T + 8 O.','Un nombre à trois chiffres a des centaines, des dizaines et des unités : 358 = 3 c + 5 d + 8 u.'],['hundreds','tens','ones','placevalue'],
  lv=>{const H1=ri(1,9),Z=ri(0,9),E=ri(0,9),n=100*H1+10*Z+E;const r=Math.random();
@@ -7027,6 +7177,51 @@ topic('m7-potenz-woerter',7,1,['Potenzen in Worten','Powers in words','Puissance
      (A>B?t1:t2)+X(' ist gr\u00f6sser.',' is larger.',' est plus grand.')]);}
   return steps(numItem(X('Bestimme die dritte Potenz von 4.','Work out the third power of 4.','D\u00e9termine la troisi\u00e8me puissance de 4.'),64),
    ['4\u00b3 = 4 \u00b7 4 \u00b7 4 = 64.']);});
+/* ---------- Die Namen bei Potenz und Wurzel ----------
+   Dieselbe Frageform wie bei den Grundrechenarten, eine Stufe hoeher.
+   4³ = 64: Basis, Exponent, Potenzwert. √49 = 7: Radikand, Wurzelwert.
+   Die ganze Schreibweise 4³ heisst die Potenz; 64 ist ihr Wert.      */
+const POTT=[['Basis','base','base','die','la'],['Exponent','exponent','exposant','der','l’'],
+ ['Potenzwert','value of the power','valeur de la puissance','der','la']];
+const WURT=[['Radikand','radicand','radicande','der','le'],
+ ['Wurzelwert','value of the root','valeur de la racine','der','la']];
+topic('m7-wortpotenzwurzel',7,1,['Potenz und Wurzel: die Namen','Powers and roots: the names','Puissances et racines : les noms'],
+ ['4³ = 64: Die 4 ist die Basis, die 3 der Exponent, die 64 der Potenzwert. Die ganze Schreibweise 4³ heisst die Potenz. √49 = 7: Die 49 ist der Radikand, die 7 der Wurzelwert. Die Wurzel kehrt das Quadrieren um.',
+  '4³ = 64: 4 is the base, 3 the exponent, 64 the value of the power. The whole notation 4³ is called the power. √49 = 7: 49 is the radicand, 7 the value of the root. The root reverses squaring.',
+  '4³ = 64 : 4 est la base, 3 l’exposant, 64 la valeur de la puissance. L’écriture entière 4³ s’appelle la puissance. √49 = 7 : 49 est le radicande, 7 la valeur de la racine. La racine est l’inverse du carré.'],
+ ['power','base','exponent','root','radicand'],
+ lv=>{
+  const wurzel=Math.random()<.4;
+  const namen=()=>POTT.concat(WURT).map(t=>X(t[0],t[1],t[2]));
+  if(wurzel){
+   const w=ri(2,lv===1?10:(lv===2?15:25));const rad=w*w;
+   const term='√'+rad+' = '+w;const rolle=ri(0,1);
+   const zahlen=[rad,w];const wort=X(WURT[rolle][0],WURT[rolle][1],WURT[rolle][2]);
+   if(Math.random()<.6){
+    const ablenker=namen().filter(x=>x!==wort);const drei=[];
+    while(drei.length<3&&ablenker.length)drei.push(ablenker.splice(ri(0,ablenker.length-1),1)[0]);
+    return steps(choiceItem(X('In ','In ','Dans ')+term+X(': Wie heisst die ',': what is ',' : comment s’appelle ')+zahlen[rolle]+'?',wort,drei),
+     [X('Unter dem Wurzelzeichen steht der Radikand.','The radicand sits under the root sign.','Le radicande est sous le signe radical.'),
+      X('Radikand','Radicand','Radicande')+' '+rad+', '+X('Wurzelwert','value of the root','valeur de la racine')+' '+w]);}
+   return steps(numItem(X('Welche Zahl ist ','Which number is ','Quel nombre est ')+X(WURT[rolle][3]+' ','the ',WURT[rolle][4]+' ')+wort+X(' in ',' in ',' dans ')+term+'?',zahlen[rolle]),
+    ['√'+rad+' = '+w+X(', weil ',', because ',', car ')+w+'² = '+rad]);}
+  const e=ri(2,lv===1?4:6);let b=ri(2,lv===1?6:12);
+  /* b hoch e und e hoch b duerfen nicht denselben Wert haben, sonst
+     waere die Frage nach der Basis nicht eindeutig zu pruefen. */
+  for(let t=0;t<12&&Math.pow(b,e)===Math.pow(e,b);t++)b=ri(2,lv===1?6:12);
+  if(Math.pow(b,e)===Math.pow(e,b))b=e+3;
+  const v=Math.pow(b,e);const term=potS(b,e)+' = '+fmtN(v);
+  const rolle=ri(0,2);const zahlen=[b,e,v];
+  const wort=X(POTT[rolle][0],POTT[rolle][1],POTT[rolle][2]);
+  if(Math.random()<.6){
+   const ablenker=namen().filter(x=>x!==wort);const drei=[];
+   while(drei.length<3&&ablenker.length)drei.push(ablenker.splice(ri(0,ablenker.length-1),1)[0]);
+   return steps(choiceItem(X('In ','In ','Dans ')+term+X(': Wie heisst die ',': what is ',' : comment s’appelle ')+fmtN(zahlen[rolle])+'?',wort,drei),
+    [X('Unten die Basis, oben der Exponent.','The base is below, the exponent above.','La base en bas, l’exposant en haut.'),
+     X('Basis','Base','Base')+' '+b+', '+X('Exponent','exponent','exposant')+' '+e+', '+X('Potenzwert','value','valeur')+' '+fmtN(v)]);}
+  return steps(numItem(X('Welche Zahl ist ','Which number is ','Quel nombre est ')+X(POTT[rolle][3]+' ','the ',POTT[rolle][4]+' ')+wort+X(' in ',' in ',' dans ')+term+'?',zahlen[rolle]),
+   [potS(b,e)+' = '+Array(e).fill(b).join(' · ')+' = '+fmtN(v)]);});
+
 topic('m7-parallelangles',7,2,['Winkel an Parallelen','Angles at parallel lines','Angles et droites parallèles'],
  ['Schneidet eine Gerade zwei Parallelen, sind Stufenwinkel und Wechselwinkel gleich gross. Nebenwinkel ergeben zusammen 180°.','When a line crosses two parallels, corresponding and alternate angles are equal. Adjacent angles add up to 180°.','Quand une droite coupe deux parallèles, les angles correspondants et alternes-internes sont égaux. Les angles adjacents font 180°.'],['angle','parallel'],
  lv=>{const a=ri(35,80);const cases=[[{p:2,dx:28,dy:-8},a,X('Stufenwinkel','corresponding angle','angle correspondant')],[{p:1,dx:-28,dy:-8},180-a,X('Nebenwinkel','adjacent angle','angle adjacent')],[{p:2,dx:-28,dy:24},a,''],[{p:1,dx:-26,dy:24},a,X('Scheitelwinkel','vertically opposite angle','angle opposé par le sommet')]];
@@ -10027,6 +10222,10 @@ const GLOSS={tenframe:['Zehnerfeld','ten-frame','grille de dix','Ein Feld mit 2 
  numberline:['Zahlenstrahl','number line','droite numérique','Eine Linie, auf der die Zahlen der Grösse nach geordnet sind, nach rechts immer grösser.','A line on which numbers are placed in order, getting bigger to the right.','Une ligne sur laquelle les nombres sont rangés dans l’ordre, de plus en plus grands vers la droite.'],
  summand:['Summand','addend','terme','Eine der Zahlen, die addiert werden. In 3 + 4 sind 3 und 4 die Summanden.','One of the numbers being added. In 3 + 4, 3 and 4 are the addends.','Un des nombres qu’on additionne. Dans 3 + 4, 3 et 4 sont les termes.'],
  sum:['Summe','sum','somme','Das Ergebnis einer Addition. 3 + 4 = 7: Die Summe ist 7.','The result of an addition. 3 + 4 = 7: the sum is 7.','Le résultat d’une addition. 3 + 4 = 7 : la somme est 7.'],
+ minuend:['Minuend','minuend','premier terme','Die Zahl, von der abgezogen wird. In 9 − 4 ist 9 der Minuend.','The number you subtract from. In 9 − 4, 9 is the minuend.','Le nombre dont on retranche. Dans 9 − 4, 9 est le premier terme.'],
+ subtrahend:['Subtrahend','subtrahend','second terme','Die Zahl, die abgezogen wird. In 9 − 4 ist 4 der Subtrahend.','The number being subtracted. In 9 − 4, 4 is the subtrahend.','Le nombre qu’on retranche. Dans 9 − 4, 4 est le second terme.'],
+ radicand:['Radikand','radicand','radicande','Die Zahl unter dem Wurzelzeichen. In √49 ist 49 der Radikand.','The number under the root sign. In √49, 49 is the radicand.','Le nombre sous le signe radical. Dans √49, 49 est le radicande.'],
+ dividend:['Dividend','dividend','dividende','Die Zahl, die geteilt wird. In 20 : 4 ist 20 der Dividend.','The number being divided. In 20 : 4, 20 is the dividend.','Le nombre qu’on divise. Dans 20 : 4, 20 est le dividende.'],
  difference:['Differenz','difference','différence','Das Ergebnis einer Subtraktion. 9 − 4 = 5: Die Differenz ist 5.','The result of a subtraction. 9 − 4 = 5: the difference is 5.','Le résultat d’une soustraction. 9 − 4 = 5 : la différence est 5.'],
  bridge10:['Zehnerübergang','bridging ten','passage de la dizaine','Wenn eine Rechnung über einen Zehner hinausgeht, zum Beispiel 8 + 5 über die 10.','When a calculation goes past a ten, for example 8 + 5 goes past 10.','Quand un calcul dépasse une dizaine, par exemple 8 + 5 dépasse 10.'],
  double:['verdoppeln','double','doubler','Eine Zahl zweimal nehmen: das Doppelte von 6 ist 12.','Take a number twice: double 6 is 12.','Prendre un nombre deux fois : le double de 6 est 12.'],
@@ -10282,6 +10481,89 @@ detopic('de-stamm-rueck',7,1,['Vom Partizip zum Infinitiv','From participle to i
    answer:v[0]};
   return steps(it,[D('Der Infinitiv endet auf -en oder -n.','The infinitive ends in -en or -n.','L’infinitif se termine par -en ou -n.'),
    form+' → '+v[0]]);});
+
+/* ---------- Verben mit zwei Bedeutungen ----------
+   Acht Verben aus der zweiten Tabelle von Teil 2 tragen je zwei
+   Bedeutungen, und erst die Bedeutung entscheidet ueber die Formen:
+   «er haengte das Bild auf», aber «das Bild hing an der Wand».
+   waegen steht allein; der Sache nach gehoert es zu wiegen. Die
+   Bedeutungstexte stehen wortgleich so in der Liste des Lehrers.     */
+const DEZB=[
+ ['bewegen','die Lage verändern','bewegte','bewegt','bewegst'],
+ ['bewegen','veranlassen','bewog','bewogen','bewegst'],
+ ['erschrecken','in Schrecken geraten','erschrak','erschrocken','erschrickst'],
+ ['erschrecken','in Schrecken versetzen','erschreckte','erschreckt','erschreckst'],
+ ['hängen','aufgehängt sein','hing','gehangen','hängst'],
+ ['hängen','etwas aufhängen','hängte','gehängt','hängst'],
+ ['quellen','im Wasser weich werden lassen','quellte','gequellt','quellst'],
+ ['quellen','hervordringen, aufschwellen, dicker werden','quoll','gequollen','quillst'],
+ ['schaffen','arbeiten','schaffte','geschafft','schaffst'],
+ ['schaffen','gestaltend hervorbringen, z.B. ein Kunstwerk','schuf','geschaffen','schaffst'],
+ ['schleifen','schärfen, z.B. ein Messer','schliff','geschliffen','schleifst'],
+ ['schleifen','über den Boden ziehen','schleifte','geschleift','schleifst'],
+ ['wachsen','grösser werden','wuchs','gewachsen','wächst'],
+ ['wachsen','mit Wachs glätten','wachste','gewachst','wachst'],
+ ['wägen','Gewicht bestimmen','wog','gewogen','wägst'],
+ ['wiegen','das Gewicht bestimmen/haben','wog','gewogen','wiegst'],
+ ['wiegen','schaukeln','wiegte','gewiegt','wiegst']
+];
+/* Der Partner ist der Eintrag mit demselben Infinitiv und anderer
+   Bedeutung. waegen hat keinen und kommt darum in der Auswahlaufgabe
+   nicht vor, wohl aber beim Schreiben. */
+function zbPartner(e){return DEZB.find(x=>x[0]===e[0]&&x[1]!==e[1])||null;}
+function zbPick(nurMitPartner){
+ const l=nurMitPartner?DEZB.filter(zbPartner):DEZB;
+ return l[ri(0,l.length-1)];}
+const zbName=e=>e[0]+' ('+e[1]+')';
+
+detopic('de-zweibedeutung',7,2,['Verben mit zwei Bedeutungen','Verbs with two meanings','Verbes à deux sens'],
+ ['Einige Verben tragen zwei Bedeutungen, und jede hat eigene Formen: «Das Bild hing an der Wand», aber «Er hängte das Bild auf». Lies zuerst die Bedeutung in der Klammer, dann erst die Formen. Bei erschrecken, quellen und wachsen unterscheiden sich schon die Du-Formen.',
+  'Some verbs carry two meanings, and each has its own forms. Read the meaning in brackets first, then give the forms. For erschrecken, quellen and wachsen even the you-form differs.',
+  'Certains verbes ont deux sens, chacun avec ses propres formes. Lis d’abord le sens entre parenthèses, puis donne les formes. Pour erschrecken, quellen et wachsen, même la forme en tu diffère.'],
+ ['Stammformen','Bedeutung','Präteritum'],
+ lv=>{
+  if(lv===1){
+   const e=zbPick(true),a=zbPartner(e);
+   /* Die drei Ablenker sind die Partnerform und die beiden Partizipien.
+      Sie sind bei allen acht Paaren voneinander verschieden. */
+   return steps(choiceItem(D('Wie heisst das Präteritum von «'+zbName(e)+'»?',
+     'What is the past tense of «'+zbName(e)+'»?',
+     'Quel est le prétérit de « '+zbName(e)+' » ?'),
+    e[2],[a[2],e[3],a[3]]),
+    [D('Die Bedeutung in der Klammer entscheidet.','The meaning in brackets decides.','Le sens entre parenthèses décide.'),
+     D('Gesucht ist das Präteritum, nicht das Partizip.','The past tense is wanted, not the participle.','On cherche le prétérit, pas le participe.'),
+     zbName(e)+' – '+e[2]+' – '+e[3]]);}
+  if(lv===2){
+   const e=zbPick(true),a=zbPartner(e);
+   /* Wo sich schon die Du-Formen unterscheiden, ist das die schaerfere
+      Frage; sonst wird das Praeteritum verlangt. */
+   if(e[4]!==a[4]&&Math.random()<.5){
+    const it={type:'input',tippen:true,
+     prompt:D('Wie heisst die 2. Person Singular von «'+zbName(e)+'»? (du …)',
+      'What is the you-form of «'+zbName(e)+'»?',
+      'Quelle est la forme en tu de « '+zbName(e)+' » ?'),
+     answer:e[4]};
+    return steps(it,[D('Der Stammvokal wechselt nur bei einer der beiden Bedeutungen.',
+      'The stem vowel changes in only one of the two meanings.',
+      'La voyelle du radical change dans un seul des deux sens.'),
+     'du '+e[4]+' – '+zbName(e)]);}
+   const it={type:'input',tippen:true,
+    prompt:D('Wie heisst das Präteritum von «'+zbName(e)+'»?',
+     'What is the past tense of «'+zbName(e)+'»?',
+     'Quel est le prétérit de « '+zbName(e)+' » ?'),
+    answer:e[2]};
+   return steps(it,[D('Die Bedeutung in der Klammer entscheidet.','The meaning in brackets decides.','Le sens entre parenthèses décide.'),
+    zbName(e)+' – '+e[2]+' – '+e[3]]);}
+  const e=zbPick(false);
+  const it={type:'input',tippen:true,
+   prompt:D('Nenne Präteritum und Partizip Perfekt von «'+zbName(e)+'».',
+    'Give the past tense and past participle of «'+zbName(e)+'».',
+    'Donne le prétérit et le participe passé de « '+zbName(e)+' ».'),
+   answer:e[2]+' – '+e[3],
+   accept:[e[2]+' - '+e[3],e[2]+' '+e[3],e[2]+', '+e[3],e[2]+'/'+e[3]]};
+  return steps(it,[D('Zuerst die Bedeutung lesen, dann die Formen.','Read the meaning first, then the forms.','Lis le sens d’abord, puis les formes.'),
+   D('Das Partizip Perfekt beginnt meist mit ge-.','The participle usually starts with ge-.','Le participe commence souvent par ge-.'),
+   zbName(e)+' – '+e[2]+' – '+e[3]]);});
 
 /* ---------- Praesens, 2. Person Singular ---------- */
 detopic('de-praesens',7,1,['Präsens: die Du-Form','Present: the you-form','Présent : la forme en tu'],

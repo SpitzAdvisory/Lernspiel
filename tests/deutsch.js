@@ -60,8 +60,10 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   pruef('Stichproben stimmen mit der Liste überein',ab.length===0,ab.join(' | '));
 
   /* ---- Themen ---- */
-  pruef('Dreizehn Themen',DET.length===13,DET.length);
-  pruef('Das Modul ist eine eingebaute Kachel',DE_GAME.builtin===true&&DE_GAME.gen.topics.length===13,DE_GAME.gen.topics.length);
+  pruef('Vierzehn Themen',DET.length===14,DET.length);
+  pruef('Das Modul ist eine eingebaute Kachel',DE_GAME.builtin===true&&DE_GAME.gen.topics.length===14,DE_GAME.gen.topics.length);
+  pruef('Die Verben mit zwei Bedeutungen sind dabei',
+   DET.some(t=>t.id==='de-zweibedeutung'),DET.map(t=>t.id).join(' '));
   const fehlend=DET.filter(tp=>!mtopic(tp.id));
   pruef('Jedes Thema ist auffindbar',fehlend.length===0,fehlend.map(x=>x.id).join(' | '));
 
