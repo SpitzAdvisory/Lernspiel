@@ -1687,7 +1687,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V109';
+const APPVER='V110';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -2342,15 +2342,55 @@ function altersStufe(p){
 /* Ohne Geburtstag weiss die App nichts ueber das Kind. Dann gilt die volle
    Leiter, wie vor der Altersstaffelung. */
 function spielBoden(p){return alterJahre(p)===null?1:Math.max(1,altersStufe(p)-1);}
-function spielStufe(p){
- const v=p&&p.spielStufe;
- const gelernt=(typeof v==='number'&&isFinite(v))?Math.round(v):altersStufe(p);
+/* Eine Stufe je Spiel, nicht eine fuer alle.
+   Vorher stand eine einzige Zahl fuer saemtliche Minispiele. Wer im
+   Kopfrechnen gewann, fand das Geschicklichkeitsspiel eine Stufe
+   schwerer vor. Felix stand mit sieben Jahren auf Stufe 3 und damit vor
+   14 Geistern statt vor sechs; gemeldet am 12.11.2026. Die alte Zahl
+   bleibt als Startwert jedes einzelnen Spiels erhalten. */
+function spielStufe(p,id){
+ const je=p&&p.spielStufen;
+ const eigen=(id&&je&&typeof je[id]==='number'&&isFinite(je[id]))?je[id]:null;
+ const alt=(p&&typeof p.spielStufe==='number'&&isFinite(p.spielStufe))?p.spielStufe:null;
+ const gelernt=Math.round(eigen!=null?eigen:(alt!=null?alt:altersStufe(p)));
  return Math.max(spielBoden(p),Math.min(SPIELSTUFEN,gelernt));}
-async function spielStufeSetz(p,wert){
- if(!p||p.builtin)return;
+async function spielStufeSetz(p,id,wert){
+ if(!p||p.builtin||!id)return;
  const neu=Math.max(spielBoden(p),Math.min(SPIELSTUFEN,wert));
- if(neu===spielStufe(p))return;
- p.spielStufe=neu;
+ if(neu===spielStufe(p,id))return;
+ if(!p.spielStufen||typeof p.spielStufen!=='object')p.spielStufen={};
+ p.spielStufen[id]=neu;
+ try{await saveProfiles();}catch(_){}}
+/* Wer in einem Spiel schon einmal verloren hat, springt dort nicht mehr
+   zwei Stufen auf einmal. Der Doppelsprung ist fuer den, dem das Spiel
+   von Anfang an leichtfaellt, nicht fuer den, der sich hochkaempft. */
+/* In der Verwaltung steht nicht mehr eine Zahl, sondern die Spanne ueber
+   alle Spiele - sonst sagte die Anzeige etwas, was es nicht mehr gibt. */
+function spielStufenSpanne(p){
+ const alle=SPIELE.map(sp=>spielStufe(p,sp.id));
+ if(!alle.length)return String(spielStufe(p,null));
+ const tief=Math.min.apply(null,alle),hoch=Math.max.apply(null,alle);
+ return tief===hoch?String(tief):(tief+'–'+hoch);}
+/* Die Regel, wie sich die Stufe nach einem Durchgang bewegt, steht als
+   eigene Funktion da und nicht im Bildschirm verstreut: so laesst sie
+   sich pruefen. Rueckgabe ist die neue Stufe oder null, wenn sie bleibt.
+   verloren zaehlt die Niederlagen VOR diesem Durchgang. */
+function spielStufeNachLauf(a){
+ if(a.gewonnen){
+  if(a.verloren>0)return null;                 /* nur der erste Anlauf zaehlt */
+  return a.stufe+((a.schnell&&!a.schonGepatzt)?2:1);}
+ /* Ueber der Alterstufe genuegt eine Niederlage, auf oder unter ihr
+    braucht es zwei. Eine zu hoch geratene Stufe faellt damit nach einem
+    Durchgang zurueck, ohne dass ein Kind auf seiner eigenen Stufe beim
+    ersten Patzer abrutscht. */
+ const noetig=a.stufe>a.altersStufe?1:2;
+ if(a.verloren+1<noetig)return null;
+ return a.stufe>1?a.stufe-1:null;}
+function spielPatzer(p,id){return !!(p&&p.spielPatzer&&p.spielPatzer[id]);}
+async function spielPatzerSetz(p,id){
+ if(!p||p.builtin||!id||spielPatzer(p,id))return;
+ if(!p.spielPatzer||typeof p.spielPatzer!=='object')p.spielPatzer={};
+ p.spielPatzer[id]=true;
  try{await saveProfiles();}catch(_){}}
 function spielNach(id){return SPIELE.find(s=>s.id===id)||null;}
 
@@ -2803,8 +2843,14 @@ spiel('geister',
      Prozent. Johannes sah sie auch nach der ersten Korrektur nicht, darum
      jetzt durchgehend heller UND der Rand weniger schwarz. Auf Stufe 1 sind
      es rund 22 Prozent statt 11. */
-  const grund=[0.88,0.80,0.72,0.64,0.56][st-1];   /* Deckkraft ohne Licht */
-  const dunkel=[0.60,0.66,0.72,0.78,0.84][st-1];  /* Schwaerze am Rand */
+  const grund=[0.92,0.88,0.84,0.80,0.76][st-1];   /* Deckkraft ohne Licht */
+  const dunkel=[0.52,0.56,0.60,0.64,0.68][st-1];  /* Schwaerze am Rand */
+  /* Dritter Anlauf an der Sichtbarkeit. Zweimal wurde die Deckkraft
+     erhoeht, zweimal blieb die Klage. Eine blasse Gestalt auf fast
+     Schwarz hat keine Kante, und ohne Kante findet das Auge sie nicht.
+     Darum jetzt ein Schein hinter jedem Geist; gemessen wird das
+     Ergebnis in tests/geister.js, Mindestverhaeltnis 3 zu 1. */
+  const schein=[0.60,0.56,0.52,0.48,0.44][st-1];
   const bossVoll=4+st*2;
   let lx=0,ly=0,geloest=0,herz=3,naechster=0,boss=null,bossHp=0,puls=0,naechsterSchlag=0;
   let ersterDa=false;
@@ -2855,8 +2901,14 @@ spiel('geister',
     if(g.licht>=halten){geister.splice(i,1);geloest++;FX.treffer();continue;}
     if(g.y>laterne-14){geister.splice(i,1);herz--;puls=jetzt+700;FX.schreck();continue;}
     const schwanken=Math.sin(jetzt/260+g.wackel)*5;
+    const gx=g.x+schwanken;
+    const sg=c.createRadialGradient(gx,g.y,2,gx,g.y,32);
+    sg.addColorStop(0,'rgba(198,230,255,'+schein+')');
+    sg.addColorStop(0.55,'rgba(198,230,255,'+(schein*0.45).toFixed(3)+')');
+    sg.addColorStop(1,'rgba(198,230,255,0)');
+    c.fillStyle=sg;c.beginPath();c.arc(gx,g.y,32,0,Math.PI*2);c.fill();
     c.globalAlpha=grund+(1-grund)*Math.min(1,g.licht/halten);
-    emoji(c,g.hetzt?'💀':'👻',g.x+schwanken,g.y,g.hetzt?40:44);
+    emoji(c,g.hetzt?'💀':'👻',gx,g.y,g.hetzt?40:44);
     c.globalAlpha=1;
     if(g.licht>0){
      c.strokeStyle='#FFD166';c.lineWidth=3;
@@ -2899,7 +2951,7 @@ function spielSchirm(R){
  const sp=SPIELE[Math.floor(Math.random()*SPIELE.length)];
  const i=Math.max(0,LANGS.indexOf(S.lang));
  const wer=R.players&&R.players[0]||null;
- const stufe=spielStufe(wer);
+ const stufe=spielStufe(wer,sp.id);
  const z=sp.ziel(stufe);
  let versuch=0,F=null,begonnen=0;
  const platz=h('div',{class:'spielplatz',style:'margin-top:12px'});
@@ -2919,23 +2971,27 @@ function spielSchirm(R){
       in weniger als der halben erlaubten Zeit, und bei Spielen ohne Uhr
       unter 25 Sekunden -, dann gleich zwei. Sonst braeuchte ein
       Jugendlicher vier Durchgaenge, ehe es ihn fordert. */
-   if(versuch===0){
-    const gebraucht=begonnen?performance.now()-begonnen:Infinity;
+   {const gebraucht=begonnen?performance.now()-begonnen:Infinity;
     const grenze=z.zeit?z.zeit*1000*0.5:25000;
-    spielStufeSetz(wer,stufe+(gebraucht<grenze?2:1));}
+    const neu=spielStufeNachLauf({stufe,altersStufe:altersStufe(wer),gewonnen:true,
+     verloren:versuch,schnell:gebraucht<grenze,schonGepatzt:spielPatzer(wer,sp.id)});
+    if(neu!=null)spielStufeSetz(wer,sp.id,neu);}
    ergebnis.style.color='var(--green)';ergebnis.textContent=zufall(t('spielGut').split('|'));
    weiterB.style.display='';weiterB.focus();S.onEnter=weiter;return;}
+  const neuNach=spielStufeNachLauf({stufe,altersStufe:altersStufe(wer),gewonnen:false,
+   verloren:versuch,schnell:false,schonGepatzt:spielPatzer(wer,sp.id)});
   versuch++;
   FX.verloren();
-  if(versuch<2){stimme(t('spielRufNochmal'));
+  spielPatzerSetz(wer,sp.id);
+  if(neuNach==null&&versuch<2){stimme(t('spielRufNochmal'));
    ergebnis.style.color='var(--ink)';ergebnis.textContent=t('spielNochmal');
    knopfText(losB,'nochmal',t('spielWieder'));losB.style.display='';losB.focus();S.onEnter=()=>losB.click();return;}
   /* Zweimal verloren: die Stufe sinkt, und das ist die ganze Korrektur.
      Zusatzaufgaben gibt es keine mehr - auch nicht auf Stufe 1, wo sich
      nichts senken laesst. Eine Spielpause ist eine Pause; sie mit
      Mehrarbeit zu bestrafen, kehrt ihren Zweck um. */
-  const gesunken=stufe>1;
-  if(gesunken)spielStufeSetz(wer,stufe-1);
+  const gesunken=neuNach!=null&&neuNach<stufe;
+  if(gesunken)spielStufeSetz(wer,sp.id,neuNach);
   ergebnis.style.color='var(--red)';
   ergebnis.textContent=gesunken?t('spielLeichter'):t('spielEgal');
   weiterB.style.display='';weiterB.focus();S.onEnter=weiter;};
@@ -11617,7 +11673,7 @@ function adminPlayers(body){
  body.append(h('div',{class:'row',style:'margin-bottom:14px'},h('button',{class:'btn',onclick:()=>editPlayer(null)},'+ '+t('addPlayer'))),
   h('div',{class:'list'},S.profiles.map(p=>h('div',{class:'item'},h('span',{style:'font-size:2rem'},p.avatar),
    h('div',{class:'grow'},h('b',{},p.name),h('div',{class:'small muted'},t('level',{n:levelOf(st(p.id).xp)})+' · '+st(p.id).xp+' '+t('points')+' · '+st(p.id).badges.length+' 🏅'
-     +(alterJahre(p)!==null?' · '+t('yearsOld',{n:alterJahre(p)})+' · '+t('gameLevel',{n:spielStufe(p)}):'')
+     +(alterJahre(p)!==null?' · '+t('yearsOld',{n:alterJahre(p)})+' · '+t('gameLevel',{n:spielStufenSpanne(p)}):'')
      +(p.unlockAll?' · 🔓':'')+(penOn(p)?' · 🖊':''))),
    p.builtin?h('span',{class:'tag'},t('builtinPlayer')):h('button',{class:'btn ghost small',onclick:()=>editPlayer(p)},t('edit')),
    p.builtin?h('button',{class:'btn ghost small',onclick:()=>resetTest()},t('resetProgress'))

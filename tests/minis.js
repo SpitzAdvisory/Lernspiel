@@ -74,8 +74,8 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
 
  const eingebaut=await pg.evaluate(async()=>{
   const p={id:'t2',builtin:true};
-  await spielStufeSetz(p,3);
-  return p.spielStufe===undefined;});
+  await spielStufeSetz(p,SPIELE[0].id,3);
+  return p.spielStufe===undefined&&p.spielStufen===undefined;});
  pruef('Eingebaute Profile bekommen keine Stufe',eingebaut);
 
  /* ---------- Die Stufe folgt dem Spieler, nicht dem Lernniveau ---------- */
@@ -95,88 +95,87 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   koppel.txt.indexOf(String(koppel.z1))>=0&&koppel.txt.indexOf(String(koppel.z3))<0,
   koppel.txt.slice(0,60)+'  (Stufe1='+koppel.z1+', Stufe3='+koppel.z3+')');
 
- /* ---------- Sieg im ersten Anlauf hebt die Stufe ---------- */
- const sieg=await pg.evaluate(async()=>{
-  window.__P.spielStufe=1;const R=window.__R;R.q=5;R.spielAt=0;R.target=25;
-  const echt=SPIELE.map(s=>s.bau);
-  SPIELE.forEach(s=>{s.bau=(platz,o)=>{setTimeout(()=>o.fertig(true,9),20);return{ende(){}};};});
-  nextQuestion(R);
-  [...document.querySelectorAll('button')].find(b=>b.textContent.trim()===t('spielLos')).click();
-  await new Promise(r=>setTimeout(r,200));
-  SPIELE.forEach((s,i)=>{s.bau=echt[i];});
-  return {stufe:window.__P.spielStufe,target:R.target};});
- /* Das nachgebaute Spiel meldet nach 20 Millisekunden Sieg - das ist der
-    muehelose Fall, also zwei Stufen. Den knappen Sieg prueft weiter unten
-    ein eigener Durchgang mit vorgestellter Uhr. */
- pruef('Sieg im ersten Anlauf hebt die Stufe',sieg.stufe===3,sieg.stufe);
+ /* ---------- Sieg und Niederlage im echten Durchgang ----------
+    Seit V110 traegt jedes Spiel seine eigene Stufe, darum wird hier das
+    Spiel festgelegt, statt es dem Zufall zu lassen, und hinterher
+    nachgesehen, dass nur dieses eine Spiel sich bewegt hat. */
+ await pg.evaluate(()=>{
+  window.__lauf=async(o)=>{
+   const P=window.__P;
+   P.geb=o.geb||null;
+   P.spielStufen={}; SPIELE.forEach(s=>{P.spielStufen[s.id]=o.stufe;});
+   P.spielPatzer={};
+   delete P.spielStufe;
+   const R=window.__R;R.q=5;R.spielAt=0;R.target=25;
+   const echt=SPIELE.map(s=>s.bau);
+   SPIELE.forEach(s=>{s.bau=(platz,x)=>{setTimeout(()=>x.fertig(o.gewinnt,o.gewinnt?9:0),15);return{ende(){}};};});
+   const echteZeit=performance.now.bind(performance);
+   let versatz=0; performance.now=()=>echteZeit()+versatz;
+   const i=SPIELE.findIndex(s=>s.id===(o.spiel||'geister'));
+   const echtR=Math.random; Math.random=()=>i/SPIELE.length;
+   nextQuestion(R); Math.random=echtR;
+   const los=()=>[...document.querySelectorAll('button')]
+    .find(b=>(b.textContent.trim()===t('spielLos')||b.textContent.trim()===t('spielWieder'))
+      &&b.style.display!=='none');
+   const schritte=[];
+   for(let n=0;n<(o.anlaeufe||1);n++){
+    const knopf=los();
+    if(!knopf){schritte.push({kein:true});break;}
+    knopf.click();
+    if(o.langsam)versatz=120000;
+    await new Promise(r=>setTimeout(r,180));
+    schritte.push({stufe:spielStufe(P,o.spiel||'geister'),target:R.target,
+     txt:(document.querySelector('main .hand')||{}).textContent||'',
+     nochmal:!!los()});}
+   performance.now=echteZeit;
+   SPIELE.forEach((s,k)=>{s.bau=echt[k];});
+   return {schritte,
+    stufe:spielStufe(P,o.spiel||'geister'),
+    andere:SPIELE.filter(s=>s.id!==(o.spiel||'geister')).map(s=>spielStufe(P,s.id)),
+    target:R.target,
+    leichter:t('spielLeichter'),egal:t('spielEgal'),nochmalTxt:t('spielNochmal')};};});
+
+ /* Muehelos im ersten Anlauf gewonnen: zwei Stufen, und nur hier. */
+ const sieg=await pg.evaluate(()=>window.__lauf({stufe:1,gewinnt:true}));
+ pruef('Mühelos gewonnen hebt gleich zwei Stufen',sieg.stufe===3,sieg.stufe);
  pruef('Sieg kostet keine Zusatzaufgaben',sieg.target===25,sieg.target);
+ pruef('Die anderen Spiele bleiben stehen',
+  sieg.andere.every(s=>s===1),JSON.stringify(sieg.andere));
 
- /* ---------- Muehelos gewonnen: zwei Stufen auf einmal ---------- */
- const schnell=await pg.evaluate(async()=>{
-  window.__P.spielStufe=1;const R=window.__R;R.q=5;R.spielAt=0;R.target=25;
-  const echt=SPIELE.map(s=>s.bau);
-  SPIELE.forEach(s=>{s.bau=(platz,o)=>{setTimeout(()=>o.fertig(true,9),20);return{ende(){}};};});
-  nextQuestion(R);
-  [...document.querySelectorAll('button')].find(b=>b.textContent.trim()===t('spielLos')).click();
-  await new Promise(r=>setTimeout(r,200));
-  SPIELE.forEach((s,i)=>{s.bau=echt[i];});
-  return window.__P.spielStufe;});
- pruef('Mühelos gewonnen hebt gleich zwei Stufen',schnell===3,schnell);
+ /* Knapp gewonnen: eine Stufe. Die Uhr wird vorgestellt, statt zu warten. */
+ const gemaechlich=await pg.evaluate(()=>window.__lauf({stufe:1,gewinnt:true,langsam:true}));
+ pruef('Knapp gewonnen hebt nur eine Stufe',gemaechlich.stufe===2,gemaechlich.stufe);
 
- const gemaechlich=await pg.evaluate(async()=>{
-  window.__P.spielStufe=1;const R=window.__R;R.q=5;R.spielAt=0;R.target=25;
-  const echt=SPIELE.map(s=>s.bau);
-  SPIELE.forEach(s=>{s.bau=(platz,o)=>{setTimeout(()=>o.fertig(true,9),20);return{ende(){}};};});
-  /* Statt wirklich zu warten wird die Uhr um zwei Minuten vorgestellt. */
-  const echteZeit=performance.now.bind(performance);
-  let versatz=0;
-  performance.now=()=>echteZeit()+versatz;
-  nextQuestion(R);
-  [...document.querySelectorAll('button')].find(b=>b.textContent.trim()===t('spielLos')).click();
-  versatz=120000;
-  await new Promise(r=>setTimeout(r,250));
-  performance.now=echteZeit;
-  SPIELE.forEach((s,i)=>{s.bau=echt[i];});
-  return window.__P.spielStufe;});
- pruef('Knapp gewonnen hebt nur eine Stufe',gemaechlich===2,gemaechlich);
+ /* Ueber der Alterstufe genuegt eine Niederlage. Das Probeprofil hat
+    keinen Geburtstag, seine Alterstufe ist also 1. */
+ const drueber=await pg.evaluate(()=>window.__lauf({stufe:3,gewinnt:false,anlaeufe:2}));
+ pruef('Über der Alterstufe senkt schon der erste Fehlversuch',
+  drueber.schritte[0].stufe===2,drueber.schritte[0].stufe);
+ pruef('Danach wird nicht zum zweiten Anlauf aufgefordert',
+  drueber.schritte[0].nochmal===false&&drueber.schritte[0].txt===drueber.leichter,
+  drueber.schritte[0].txt.slice(0,40));
+ pruef('Gesunkene Stufe ersetzt die Zusatzaufgaben',drueber.target===25,drueber.target);
 
- /* ---------- Zweimal verloren: Stufe sinkt, keine Strafe ---------- */
- const sinkt=await pg.evaluate(async()=>{
-  window.__P.spielStufe=2;const R=window.__R;R.q=5;R.spielAt=0;R.target=25;
-  const echt=SPIELE.map(s=>s.bau);
-  SPIELE.forEach(s=>{s.bau=(platz,o)=>{setTimeout(()=>o.fertig(false,0),15);return{ende(){}};};});
-  nextQuestion(R);
-  const los=()=>[...document.querySelectorAll('button')].find(b=>(b.textContent.trim()===t('spielLos')||b.textContent.trim()===t('spielWieder'))&&b.style.display!=='none');
-  los().click();await new Promise(r=>setTimeout(r,160));
-  const eins={target:R.target,stufe:window.__P.spielStufe};
-  los().click();await new Promise(r=>setTimeout(r,160));
-  const txt=document.querySelector('main .hand').textContent;
-  SPIELE.forEach((s,i)=>{s.bau=echt[i];});
-  return {eins,stufe:window.__P.spielStufe,target:R.target,txt,
-   leichter:t('spielLeichter'),strafe:t('spielStrafe')};});
- pruef('Erster Fehlversuch ändert nichts',sinkt.eins.target===25&&sinkt.eins.stufe===2,
-  JSON.stringify(sinkt.eins));
- pruef('Zweiter Fehlversuch senkt die Stufe auf 1',sinkt.stufe===1,sinkt.stufe);
- pruef('Gesunkene Stufe ersetzt die Zusatzaufgaben',sinkt.target===25,sinkt.target);
+ /* Auf der eigenen Alterstufe braucht es zwei. Ein Zwoelfjaehriger steht
+    auf Stufe 4; sein Boden liegt bei 3. */
+ const zwoelf='2014-03-14';
+ const drauf=await pg.evaluate(g=>window.__lauf({stufe:4,gewinnt:false,anlaeufe:2,geb:g}),zwoelf);
+ pruef('Auf der Alterstufe lässt der erste Fehlversuch die Stufe stehen',
+  drauf.schritte[0].stufe===4&&drauf.schritte[0].nochmal===true,
+  JSON.stringify(drauf.schritte[0]));
+ pruef('Der erste Fehlversuch lädt zum zweiten Anlauf ein',
+  drauf.schritte[0].txt===drauf.nochmalTxt,drauf.schritte[0].txt.slice(0,40));
+ pruef('Der zweite Fehlversuch senkt die Stufe',drauf.stufe===3,drauf.stufe);
  pruef('Der Hinweis spricht von «leichter», nicht von Strafe',
-  sinkt.txt===sinkt.leichter,sinkt.txt.slice(0,50));
+  drauf.schritte[1].txt===drauf.leichter,drauf.schritte[1].txt.slice(0,50));
 
  /* ---------- Auf Stufe 1 bleibt es beim Aufschlag ---------- */
- const unten=await pg.evaluate(async()=>{
-  window.__P.spielStufe=1;const R=window.__R;R.q=5;R.spielAt=0;R.target=25;
-  const echt=SPIELE.map(s=>s.bau);
-  SPIELE.forEach(s=>{s.bau=(platz,o)=>{setTimeout(()=>o.fertig(false,0),15);return{ende(){}};};});
-  nextQuestion(R);
-  const los=()=>[...document.querySelectorAll('button')].find(b=>(b.textContent.trim()===t('spielLos')||b.textContent.trim()===t('spielWieder'))&&b.style.display!=='none');
-  los().click();await new Promise(r=>setTimeout(r,160));
-  los().click();await new Promise(r=>setTimeout(r,160));
-  const txt=document.querySelector('main .hand').textContent;
-  SPIELE.forEach((s,i)=>{s.bau=echt[i];});
-  return {stufe:window.__P.spielStufe,target:R.target,txt,egal:t('spielEgal')};});
+ const unten=await pg.evaluate(()=>window.__lauf({stufe:1,gewinnt:false,anlaeufe:2}));
  pruef('Auf Stufe 1 bleibt die Stufe stehen',unten.stufe===1,unten.stufe);
  /* Seit V91: kein Aufschlag, auf keiner Stufe. */
  pruef('Auf Stufe 1 kosten zwei Fehlversuche nichts',unten.target===25,unten.target);
- pruef('Dort steht der freundliche Hinweis',unten.txt===unten.egal,unten.txt.slice(0,40));
+ pruef('Dort steht der freundliche Hinweis',
+  unten.schritte[1].txt===unten.egal,unten.schritte[1].txt.slice(0,40));
 
  /* ---------- Der Schalter auf dem Startschirm ---------- */
  const schirm=await pg.evaluate(()=>{

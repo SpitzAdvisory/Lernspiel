@@ -82,12 +82,15 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
  const ab=await pg.evaluate(async()=>{
   const p={id:'pA',name:'Probe',avatar:'🦊',geb:'2014-03-14',spielStufe:4};
   S.profiles=S.profiles.filter(x=>x.id!=='pA').concat([p]);
+  /* Seit V110 traegt jedes Spiel seine eigene Stufe, darum laeuft der
+     Abstieg hier in einem benannten Spiel. */
+  const id=SPIELE[0].id;
   /* Fuenfmal absteigen: der Boden muss halten */
-  for(let i=0;i<5;i++)await spielStufeSetz(p,spielStufe(p)-1);
-  const unten=spielStufe(p);
+  for(let i=0;i<5;i++)await spielStufeSetz(p,id,spielStufe(p,id)-1);
+  const unten=spielStufe(p,id);
   /* Und nach oben bleibt der Weg frei */
-  for(let i=0;i<9;i++)await spielStufeSetz(p,spielStufe(p)+1);
-  const oben=spielStufe(p);
+  for(let i=0;i<9;i++)await spielStufeSetz(p,id,spielStufe(p,id)+1);
+  const oben=spielStufe(p,id);
   return {unten,oben};});
  pruef('Wiederholtes Absteigen endet beim Boden',ab.unten===3,ab.unten);
  pruef('Nach oben bleibt Stufe 5 erreichbar',ab.oben===5,ab.oben);
