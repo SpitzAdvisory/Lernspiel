@@ -1695,7 +1695,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V111';
+const APPVER='V112';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -3553,7 +3553,7 @@ async function signierteAdresse(agent){
 
 /* Ein laufendes Gespraech. Nur eines zur Zeit. */
 let GESPRAECH=null;
-async function gespraechStarten(vars,melde){
+async function gespraechStarten(vars,melde,kennung){
  if(GESPRAECH)gespraechBeenden();
  const sage=(was,wert)=>{try{melde&&melde(was,wert);}catch(_){}};
  sage('zustand','verbinde');
@@ -3586,7 +3586,21 @@ async function gespraechStarten(vars,melde){
  ws=new WebSocket(adresse);
  GESPRAECH={schliesse};
  ws.onopen=()=>{
-  ws.send(JSON.stringify({type:'conversation_initiation_client_data',dynamic_variables:vars}));
+  /* Die Kennung sagt Emilia, mit wem sie spricht - ohne einen Namen zu
+     verraten. Sie ist die Profilkennung, ein Griff ohne Bedeutung, und
+     sie bleibt ueber die Geraete hinweg dieselbe. Daran haengt alles,
+     was Emilia von frueheren Gespraechen behaelt. */
+  const eroeffnung={type:'conversation_initiation_client_data',dynamic_variables:vars};
+  if(kennung)eroeffnung.user_id=kennung;
+  /* Die Sprache steuert nicht nur, was Emilia sagt, sondern auch, wie sie
+     zuhoert: Erkennung und Stimme haengen daran. Darum wird sie mit der
+     Eroeffnung gesetzt und nicht bloss im Auftrag erwaehnt. */
+  const spr=S.lang==='en'?'en':S.lang==='fr'?'fr':'de';
+  eroeffnung.conversation_config_override={agent:{language:spr,
+   first_message:X('Hoi '+(vars.vorname||'')+'. Erzähl mir, woran Du gerade bist.',
+                   'Hi '+(vars.vorname||'')+'. Tell me what you are working on.',
+                   'Salut '+(vars.vorname||'')+'. Raconte-moi ce que tu fais.')}};
+  ws.send(JSON.stringify(eroeffnung));
   quelle=ctx.createMediaStreamSource(strom);
   knoten=ctx.createScriptProcessor?ctx.createScriptProcessor(4096,1,1)
         :(ctx.createJavaScriptNode?ctx.createJavaScriptNode(4096,1,1):null);
@@ -3663,6 +3677,54 @@ async function emiliaMeldung(R){
 function gespraechBeenden(){if(GESPRAECH)GESPRAECH.schliesse();}
 function gespraechLaeuft(){return !!GESPRAECH;}
 
+/* Was Emilia ueber den Stand wissen darf. Alles steht schon im Geraet:
+   der laufende Durchgang, seine Antworten und die Protokolle frueherer
+   Laeufe. Gesammelt wird es hier, einmal je Gespraech, damit der Knopf
+   unter der Aufgabe nicht rechnet. Leere Felder sind erlaubt - Emilia
+   muss damit umgehen, dass ein Kind zum ersten Mal spielt. */
+function themaName(id){const tp=id?mtopic(id):null;return tp?tName(tp):'';}
+function lernstand(R,p){
+ const leer={stand:'',fehler:'',schwach:'',zuletzt:'',stufe:''};
+ if(!R||!p)return leer;
+ const meine=(R.answers||[]).filter(a=>a&&a.player===p.id);
+ const richtig=meine.filter(a=>a.correct).length;
+ const ziel=isFinite(R.target)?R.target:null;
+ const stand=meine.length
+  ?X(meine.length+' Aufgaben'+(ziel?' von '+ziel:'')+', '+richtig+' richtig',
+     meine.length+' questions'+(ziel?' of '+ziel:'')+', '+richtig+' correct',
+     meine.length+' exercices'+(ziel?' sur '+ziel:'')+', '+richtig+' justes')
+  :X('gerade erst angefangen','just started','vient de commencer');
+ /* Woran es heute haperte - die Themen der falschen Antworten, nicht die
+    Aufgaben selbst. Ein Thema zaehlt einmal, auch bei drei Fehlern. */
+ const falsch=[];
+ for(const a of meine)if(!a.correct&&a.topic){const n=themaName(a.topic);
+  if(n&&falsch.indexOf(n)<0)falsch.push(n);}
+ /* Woran es laenger hapert: ueber alle Protokolle dieses Spielers und
+    Spiels, je Thema. Erst ab vier Versuchen, sonst ist eine Quote Zufall.
+    Aeltere Protokolle fuehren kein Thema je Antwort und fehlen hier. */
+ const zaehler={};
+ for(const l of uniqLogs()){
+  if(!l||!l.game||!R.game||l.game.id!==R.game.id)continue;
+  for(const a of (l.answers||[])){
+   if(!a||a.player!==p.id||!a.topic)continue;
+   const z=zaehler[a.topic]||(zaehler[a.topic]={n:0,r:0});
+   z.n++;if(a.correct)z.r++;}}
+ const schwach=Object.keys(zaehler).filter(id=>zaehler[id].n>=4)
+  .map(id=>({id,q:zaehler[id].r/zaehler[id].n}))
+  .filter(x=>x.q<0.7).sort((a,b)=>a.q-b.q).slice(0,2)
+  .map(x=>themaName(x.id)+' ('+Math.round(x.q*100)+' %)').filter(Boolean);
+ /* Was beim letzten Mal lief - damit Emilia anknuepfen kann. */
+ let zuletzt='';
+ const l=letzterLauf(p,R.game);
+ if(l&&l.started){
+  const tage=Math.round((Date.now()-new Date(l.started).getTime())/86400000);
+  const wann=tage<=0?X('heute','today','aujourd\u2019hui')
+   :tage===1?X('gestern','yesterday','hier')
+   :X('vor '+tage+' Tagen',tage+' days ago','il y a '+tage+' jours');
+  zuletzt=wann+', '+t('m_'+l.mode)+', '+t('d_'+l.difficulty);}
+ return {stand,fehler:falsch.slice(0,3).join(', '),schwach:schwach.join(', '),
+  zuletzt,stufe:String(R.level||'')};}
+
 /* Der Knopf unter der Aufgabe. Ohne Vermittler gibt es ihn nicht:
    ohne ihn muesste der Schluessel im Geraet stehen. */
 function fragestelleBox(kontext){
@@ -3692,14 +3754,24 @@ function fragestelleBox(kontext){
   knopf.disabled=true;
   try{
    const p=S.profiles&&S.profiles[0];
+   const wer=kontext.spieler||p||null;
+   const ls=lernstand(kontext.lauf,wer);
    await gespraechStarten({
-    vorname:String((kontext.vorname||(p&&p.name)||'')).slice(0,40)||'du',
+    vorname:String((kontext.vorname||(wer&&wer.name)||'')).slice(0,40)||'du',
     alter:String(kontext.alter||''),
     fach:String(kontext.fach||'').slice(0,60),
     thema:String(kontext.thema||'').slice(0,120),
     aufgabe:String(kontext.aufgabe||'').slice(0,600),
     schritte:String(kontext.schritte||'').slice(0,800),
-    loesung:String(kontext.loesung||'').slice(0,200)},melde);
+    loesung:String(kontext.loesung||'').slice(0,200),
+    stand:String(ls.stand||'').slice(0,120),
+    fehler_heute:String(ls.fehler||'').slice(0,200),
+    schwach:String(ls.schwach||'').slice(0,200),
+    zuletzt:String(ls.zuletzt||'').slice(0,120),
+    stufe:String(ls.stufe||''),
+    sprache:S.lang==='en'?'en':S.lang==='fr'?'fr':'de',
+    tutorname:TUTORNAME[S.lang]||TUTORNAME.de},melde,
+    (wer&&wer.id&&!wer.builtin)?('spitz-'+wer.id):null);
   }catch(e){
    const f=String((e&&e.message)||e);
    melde('zustand','aus');              /* sonst bliebe der Knopf auf Beenden stehen */
@@ -5181,7 +5253,7 @@ function renderQuestion(R,Q){
    it.satz?h('p',{class:'beispiel'},it.satz):null,
    h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre,it.spr||'fr')):null,
    it.nat?sndBtn(it.nat,true,it.natSpr||'de'):null,
-   it.type==='speak'?null:leseBtn(R,Q,it)),figEl,h('div',{class:'hint'},t(hinweisSchluessel(it))),area,helpEl,fragEl,fragestelleBox({fach:R.game.title,thema:it.topic||'',aufgabe:plain(Q.prompt||it.prompt||''),schritte:(it.steps||[]).join(' '),loesung:answerText(it),vorname:(R.players[curIdx(R)]||{}).name,alter:alterJahre(R.players[curIdx(R)])}),retryMsg,fb),padBox));
+   it.type==='speak'?null:leseBtn(R,Q,it)),figEl,h('div',{class:'hint'},t(hinweisSchluessel(it))),area,helpEl,fragEl,fragestelleBox({fach:R.game.title,thema:themaName(it.topic)||it.topic||'',aufgabe:plain(Q.prompt||it.prompt||''),schritte:(it.steps||[]).join(' '),loesung:answerText(it),vorname:(R.players[curIdx(R)]||{}).name,alter:alterJahre(R.players[curIdx(R)]),lauf:R,spieler:R.players[curIdx(R)]}),retryMsg,fb),padBox));
  if(pen)area.querySelectorAll('input[type=text],input[type=number]').forEach(i=>{i.classList.add('penfield');
   i.setAttribute('autocomplete','off');i.setAttribute('autocorrect','off');i.setAttribute('autocapitalize','off');i.setAttribute('spellcheck','false');
   const ph=i.getAttribute('placeholder');if(ph)i.addEventListener('input',()=>{if(i.value)i.removeAttribute('placeholder');else i.setAttribute('placeholder',ph);});});
@@ -5304,7 +5376,7 @@ function onAnswer(R,Q,given,correct,fb){
  if(!joke){const gm=(R.masteries[p.id][R.game.id]=R.masteries[p.id][R.game.id]||{});const ms2=gm[it.id]||{box:0,seen:0,right:0};
   ms2.seen++;if(correct&&!Q.second){ms2.right++;ms2.box=Math.min(5,ms2.box+1);}else if(!correct)ms2.box=Math.max(0,ms2.box-2);ms2.last=new Date().toISOString();gm[it.id]=ms2;}
  const note=Q.pad?Q.pad.data():null;const noteOk=note&&JSON.stringify(note).length<9000&&(R.noteBytes=(R.noteBytes||0)+JSON.stringify(note).length)<140000;
- R.answers.push({itemId:it.id,type:it.type,lv:it.difficulty||undefined,cons:(Q.board?JSON.stringify(Q.board.data()).slice(0,4000):undefined),prompt:plain(Q.prompt||it.prompt),hints:Q.hintsUsed||undefined,note:noteOk?note:undefined,expected:answerText(it),given,correct,ms,points:pts,player:p.id,
+ R.answers.push({itemId:it.id,type:it.type,topic:it.topic||undefined,lv:it.difficulty||undefined,cons:(Q.board?JSON.stringify(Q.board.data()).slice(0,4000):undefined),prompt:plain(Q.prompt||it.prompt),hints:Q.hintsUsed||undefined,note:noteOk?note:undefined,expected:answerText(it),given,correct,ms,points:pts,player:p.id,
   second:Q.second?Q.firstGiven:undefined,joke:joke||undefined,retry:Q.retry||undefined});
  R.q++;
  pauseSichernLokal(R);
