@@ -1695,7 +1695,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V112';
+const APPVER='V113';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -3551,15 +3551,49 @@ async function signierteAdresse(agent){
  if(!r.ok||!d||!d.signed_url)throw new Error(String((d&&d.error)||('HTTP '+r.status)).slice(0,120));
  return d.signed_url;}
 
+/* Das Gedaechtnis von Emilia - im Profil des Kindes, nicht beim Anbieter.
+   ElevenLabs bietet dafuer eine eigene Funktion an, die fuer diesen
+   Arbeitsbereich gesperrt ist (403 feature_not_available, geprueft am
+   15.11.2026). Die App hat aber ohnehin jede Zeile des Gespraechs, sie
+   hat sie bisher nur weggeworfen. Also wird hier behalten: die letzten
+   zwei Gespraeche, gekuerzt, im Profil, das wie jede andere Einstellung
+   ueber Dropbox mitwandert. Die Woerter der Kinder bleiben damit beim
+   Vater und nicht unbefristet beim Anbieter. */
+const ERINN_ZAHL=2;       /* so viele Gespraeche */
+const ERINN_ZEICHEN=420;  /* so lang je Gespraech */
+function erinnerungText(p){
+ const g=(p&&Array.isArray(p.gespraeche))?p.gespraeche:[];
+ if(!g.length)return '';
+ const heute=Date.now();
+ return g.slice(-ERINN_ZAHL).map(e=>{
+  const tage=Math.round((heute-new Date(e.d).getTime())/86400000);
+  const wann=tage<=0?X('heute','today','aujourd\u2019hui')
+   :tage===1?X('gestern','yesterday','hier')
+   :X('vor '+tage+' Tagen',tage+' days ago','il y a '+tage+' jours');
+  return wann+': '+String(e.t||'').slice(0,ERINN_ZEICHEN);
+ }).join('\n');}
+async function erinnerungSichern(p,zeilen){
+ if(!p||p.builtin||!zeilen||!zeilen.length)return;
+ /* Gespeichert wird der Wortlaut, gekuerzt - keine Deutung. Was Emilia
+    daraus macht, entscheidet sie beim naechsten Mal selbst. */
+ const txt=zeilen.map(z=>(z[0]==='k'?'Kind: ':'E: ')+String(z[1]||'').replace(/\s+/g,' ').trim())
+  .filter(z=>z.length>6).join(' | ').slice(0,ERINN_ZEICHEN);
+ if(txt.length<20)return;
+ if(!Array.isArray(p.gespraeche))p.gespraeche=[];
+ p.gespraeche.push({d:new Date().toISOString(),t:txt});
+ while(p.gespraeche.length>ERINN_ZAHL)p.gespraeche.shift();
+ try{await saveProfiles();}catch(_){}}
+
 /* Ein laufendes Gespraech. Nur eines zur Zeit. */
 let GESPRAECH=null;
-async function gespraechStarten(vars,melde,kennung){
+async function gespraechStarten(vars,melde,kennung,wer){
  if(GESPRAECH)gespraechBeenden();
  const sage=(was,wert)=>{try{melde&&melde(was,wert);}catch(_){}};
  sage('zustand','verbinde');
  const adresse=await signierteAdresse(LERNHILFE_AGENT);
  let strom=null,ctx=null,quelle=null,knoten=null,stumm=null,ws=null;
  let zu=false,naechste=0;const laufende=[];
+ const mitschrift=[];   /* fuer das Gedaechtnis, siehe erinnerungSichern */
  const schliesse=()=>{
   if(zu)return;zu=true;
   for(const q of laufende){try{q.stop();}catch(_){}}
@@ -3572,6 +3606,7 @@ async function gespraechStarten(vars,melde,kennung){
   try{if(ctx&&ctx.state!=='closed')ctx.close();}catch(_){}
   mikroAn(false);
   if(GESPRAECH&&GESPRAECH.schliesse===schliesse)GESPRAECH=null;
+  erinnerungSichern(wer,mitschrift).catch(()=>{});
   sage('zustand','aus');};
  try{
   strom=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,
@@ -3644,10 +3679,10 @@ async function gespraechStarten(vars,melde,kennung){
    laufende.length=0;naechste=0;return;}
   if(m.type==='user_transcript'){
    const s=m.user_transcription_event&&m.user_transcription_event.user_transcript;
-   if(s)sage('kind',String(s));return;}
+   if(s){mitschrift.push(['k',String(s)]);sage('kind',String(s));}return;}
   if(m.type==='agent_response'){
    const s=m.agent_response_event&&m.agent_response_event.agent_response;
-   if(s)sage('hilfe',String(s));return;}};
+   if(s){mitschrift.push(['e',String(s)]);sage('hilfe',String(s));}return;}};
  ws.onerror=()=>{sage('fehler','netz');schliesse();};
  ws.onclose=()=>{schliesse();};
  return {schliesse};}
@@ -3770,8 +3805,9 @@ function fragestelleBox(kontext){
     zuletzt:String(ls.zuletzt||'').slice(0,120),
     stufe:String(ls.stufe||''),
     sprache:S.lang==='en'?'en':S.lang==='fr'?'fr':'de',
-    tutorname:TUTORNAME[S.lang]||TUTORNAME.de},melde,
-    (wer&&wer.id&&!wer.builtin)?('spitz-'+wer.id):null);
+    tutorname:TUTORNAME[S.lang]||TUTORNAME.de,
+    erinnerung:erinnerungText(wer).slice(0,900)},melde,
+    (wer&&wer.id&&!wer.builtin)?('spitz-'+wer.id):null,wer);
   }catch(e){
    const f=String((e&&e.message)||e);
    melde('zustand','aus');              /* sonst bliebe der Knopf auf Beenden stehen */

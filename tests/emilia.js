@@ -130,6 +130,57 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   lang.fach<=60&&lang.thema<=120&&lang.aufgabe<=600&&lang.schritte<=800
   &&lang.loesung<=200&&lang.vorname<=40,JSON.stringify(lang));
 
+ /* ---------- Das Gedaechtnis ---------- */
+ const ged=await pg.evaluate(async()=>{
+  const p=S.profiles.find(x=>x.id==='eA');
+  delete p.gespraeche;
+  const leer=erinnerungText(p);
+  await erinnerungSichern(p,[['e','Woran bist Du?'],['k','Ich komme beim Zehner nicht weiter'],
+   ['e','Was hast Du schon versucht?'],['k','Ich habe sieben und acht zusammengezaehlt']]);
+  const eins=erinnerungText(p);
+  await erinnerungSichern(p,[['e','Wie ging es mit dem Zehner?'],['k','Besser']]);
+  await erinnerungSichern(p,[['e','Und heute?'],['k','Heute war Mal und Durch dran, das ging']]);
+  const drei=erinnerungText(p);
+  /* Zu kurzes wird nicht behalten - ein abgebrochenes Gespraech ist keine
+     Erinnerung. */
+  const vorher=p.gespraeche.length;
+  await erinnerungSichern(p,[['k','ja']]);
+  const nachKurz=p.gespraeche.length;
+  const gast={id:'g1',builtin:true};
+  await erinnerungSichern(gast,[['e','Hallo'],['k','Ich komme nicht weiter beim Rechnen']]);
+  return {leer,eins,drei,anzahl:p.gespraeche.length,vorher,nachKurz,
+   gast:gast.gespraeche===undefined,heute:X('heute','today','aujourd\u2019hui')};});
+ pruef('Ohne Vorgeschichte ist die Erinnerung leer',ged.leer==='',ged.leer);
+ pruef('Das Gespräch wird im Wortlaut behalten',
+  ged.eins.indexOf('Zehner')>=0&&ged.eins.indexOf('Kind:')>=0,ged.eins.slice(0,80));
+ pruef('Davor steht, wie lange es her ist',
+  ged.eins.indexOf(ged.heute)===0,ged.eins.slice(0,20));
+ pruef('Nur die letzten zwei Gespräche bleiben',ged.anzahl===2,ged.anzahl);
+ pruef('Das älteste fällt heraus',ged.drei.indexOf('Zehner nicht weiter')<0,ged.drei.slice(0,60));
+ pruef('Das jüngste ist dabei',ged.drei.indexOf('Mal und Durch')>=0,ged.drei.slice(-60));
+ pruef('Ein abgebrochenes Gespräch wird nicht behalten',
+  ged.nachKurz===ged.vorher,ged.vorher+'/'+ged.nachKurz);
+ pruef('Eingebaute Profile bekommen kein Gedächtnis',ged.gast===true,ged.gast);
+
+ /* Die Erinnerung geht mit und bleibt begrenzt. */
+ const mit=await pg.evaluate(async()=>{
+  S.lang='de';applyLang();
+  const p=S.profiles.find(x=>x.id==='eA');
+  p.gespraeche=[{d:new Date().toISOString(),t:'E: '+'x'.repeat(600)},
+                {d:new Date().toISOString(),t:'E: '+'y'.repeat(600)}];
+  let fang=null;const echt=window.gespraechStarten;
+  window.gespraechStarten=async(vars,melde,kennung,wer)=>{fang={vars,wer:!!wer};
+   melde&&melde('zustand','aus');return{schliesse(){}};};
+  const box=fragestelleBox({fach:'M',thema:'T',aufgabe:'7 + 8 = ?',schritte:'',
+   loesung:'15',vorname:p.name,alter:alterJahre(p),spieler:p});
+  document.body.appendChild(box);box.querySelector('button').click();
+  await new Promise(r=>setTimeout(r,120));
+  window.gespraechStarten=echt;box.remove();
+  return {len:String(fang.vars.erinnerung||'').length,wer:fang.wer};});
+ pruef('Die Erinnerung geht mit',mit.len>0,mit.len);
+ pruef('Sie bleibt unter 900 Zeichen',mit.len<=900,mit.len);
+ pruef('Das Profil wird ans Gespräch gereicht',mit.wer===true,mit.wer);
+
  await b.close();srv.close();
  if(perr.length)pruef('SEITENFEHLER',false,perr.slice(0,3).join(' | '));
  for(const [s,n,x] of aus)console.log(s+' '+n+(x?'  ['+x+']':''));
