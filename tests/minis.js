@@ -181,10 +181,12 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
  const schirm=await pg.evaluate(()=>{
   delete window.__P.minis;
   S.run=null;viewRunSetup(window.__P,MATH_GAME);
-  const h3=[...document.querySelectorAll('main h3')].map(x=>x.textContent);
-  const gruppe=[...document.querySelectorAll('main h3')].find(x=>x.textContent===t('minis'));
+  /* Seit V111 steht die Einstellung in einer Tabellenzeile, nicht mehr
+     unter einer Ueberschrift. */
+  const h3=[...document.querySelectorAll('main .wahltabelle .wl')].map(x=>x.textContent);
+  const gruppe=[...document.querySelectorAll('main .wahltabelle .wl')].find(x=>x.textContent===t('minis'));
   const knoepfe=gruppe?[...gruppe.nextElementSibling.querySelectorAll('button')]
-   .map(b=>({txt:b.querySelector('b').textContent,an:b.getAttribute('aria-pressed')})):[];
+   .map(b=>({txt:b.textContent,an:b.getAttribute('aria-pressed')})):[];
   return {h3,knoepfe,wort:t('minis')};});
  pruef('Die Gruppe «Minispiele» steht auf dem Startschirm',
   schirm.h3.indexOf(schirm.wort)>=0,schirm.h3.join(' / '));
@@ -195,11 +197,11 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
  /* Auf «Aus» tippen: der Knopf hält, und die Wahl bleibt am Profil */
  const abschalten=await pg.evaluate(async()=>{
   const vorher=window.__gespeichert;
-  const gruppe=[...document.querySelectorAll('main h3')].find(x=>x.textContent===t('minis'));
+  const gruppe=[...document.querySelectorAll('main .wahltabelle .wl')].find(x=>x.textContent===t('minis'));
   const aus=[...gruppe.nextElementSibling.querySelectorAll('button')][1];
   aus.click();
   await new Promise(r=>setTimeout(r,80));
-  const g2=[...document.querySelectorAll('main h3')].find(x=>x.textContent===t('minis'));
+  const g2=[...document.querySelectorAll('main .wahltabelle .wl')].find(x=>x.textContent===t('minis'));
   const stand=[...g2.nextElementSibling.querySelectorAll('button')].map(b=>b.getAttribute('aria-pressed'));
   /* Jetzt starten - dabei soll die Wahl ans Profil wandern. */
   let uebergeben=null;const echt=window.startRun;
@@ -240,7 +242,7 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   const zweiter={id:'pY',name:'Zweiter',avatar:'🐸',unlockAll:true};
   S.profiles=S.profiles.filter(p=>p.id!=='pY').concat([zweiter]);computeState();
   viewRunSetup(window.__P,MATH_GAME,{mode:'duel',diff:'easy',adaptive:true,opp:'pY',minis:true});
-  return {h3:[...document.querySelectorAll('main h3')].map(x=>x.textContent),wort:t('minis')};});
+  return {h3:[...document.querySelectorAll('main .wahltabelle .wl')].map(x=>x.textContent),wort:t('minis')};});
  pruef('Im Duell fehlt die Gruppe «Minispiele»',duell.h3.indexOf(duell.wort)<0,duell.h3.join(' / '));
 
 

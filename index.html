@@ -95,6 +95,13 @@ button.item{border-color:var(--ink)}
 .choice:disabled{opacity:.5;border-style:dashed}
 .choice b{display:block}
 .choice span{font-size:.85rem;color:var(--muted)}
+.wahltabelle{display:grid;grid-template-columns:max-content 1fr;gap:10px 14px;align-items:center}
+.wahltabelle>.wl{font-weight:700}
+.wahlzeile{display:flex;flex-wrap:wrap;gap:8px}
+.wahlzelle{border:2px solid var(--ink);border-radius:10px;background:var(--white);padding:8px 12px;font:inherit;font-weight:600;min-height:40px}
+.wahlzelle[aria-pressed="true"]{background:var(--mark)}
+.wahlzelle:disabled{opacity:.5;border-style:dashed}
+@media(max-width:560px){.wahltabelle{grid-template-columns:1fr;gap:2px 0}.wahltabelle>.wl{margin-top:12px}}
 .stickers{display:flex;flex-wrap:wrap;gap:10px}
 .sticker{display:flex;flex-direction:column;align-items:center;width:84px;text-align:center;font-size:.75rem;line-height:1.2}
 .sticker i{font-style:normal;font-size:1.7rem;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:var(--mark);box-shadow:0 0 0 3px var(--white),0 0 0 5px var(--ink);transform:rotate(-6deg);margin-bottom:6px}
@@ -330,6 +337,7 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
  .top .zurueck .wort{display:none}
  .top h1{font-size:1.05rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
  .years .choice,.choices .choice{min-height:44px}
+ .wahlzelle{min-height:44px}
  .hoerKnopf{width:62vw;height:62vw;max-width:230px;max-height:230px;font-size:1.2rem}
  .hoerWahl li{font-size:1.05rem;padding:8px 12px}
 }
@@ -1687,7 +1695,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V110';
+const APPVER='V111';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1818,10 +1826,49 @@ const SUBJ_ORDER=['math','lang','geo','hist','it','other'];
 function subjOf(g){return g.subject||{vocab:'lang',geo:'geo',hist:'hist',math:'math',it:'it'}[g.kind]||'other';}
 function isUnlocked(p,g,d){const u=st(p.id).unlocks[g.id];return d==='easy'||!!p.unlockAll||!!(u&&u[d]);}
 
+/* Die letzte Wahl eines Spielers steht schon im Lauf-Protokoll: Spielart,
+   Schwierigkeit, Anpassung, Themen und die Mitspieler. Ein zweiter
+   Speicher daneben wuerde davon abweichen, sobald einer von beiden
+   nachgefuehrt wird, darum wird hier gelesen statt geschrieben. Die
+   Minispiele haengen weiterhin am Profil, das Protokoll kennt sie nicht. */
+function letzterLauf(p,g){
+ if(!p||!g)return null;
+ let best=null;
+ for(const l of uniqLogs()){
+  if(!l||!l.game||l.game.id!==g.id)continue;
+  if(!(l.players||[]).some(x=>x&&x.id===p.id))continue;
+  if(!best||String(l.started||'')>String(best.started||''))best=l;}
+ return best;}
+/* Uebernommen wird nur, was heute noch gilt. Eine inzwischen gesperrte
+   Stufe, ein geloeschter Gegner oder ein weggefallenes Thema wuerden den
+   Schirm sonst in einen Zustand setzen, den es nicht mehr gibt. Jeder
+   Rueckfall ist still: die Tabelle zeigt, was wirklich steht. */
+function vorwahlAusLauf(p,g){
+ const l=letzterLauf(p,g);
+ if(!l)return null;
+ const v={};
+ if(l.mode)v.mode=l.mode;
+ if(l.difficulty)v.diff=l.difficulty;
+ if(typeof l.adaptive==='boolean')v.adaptive=l.adaptive;
+ if(l.mode==='duel'){
+  const anderer=(l.players||[]).map(x=>x&&x.id).find(id=>id&&id!==p.id);
+  if(anderer&&S.profiles.some(o=>o.id===anderer))v.opp=anderer;
+  else{v.mode='classic';v.opp=null;}}
+ if(g.gen&&Array.isArray(l.topics)&&l.topics.length){
+  const alle=new Set(genTopics(g).map(x=>x.id));
+  const bleibt=l.topics.filter(id=>alle.has(id));
+  if(bleibt.length){
+   v.topics=new Set(bleibt);
+   const jahre=[...new Set(bleibt.map(id=>{const tp=mtopic(id);return tp?tp.y:null;}).filter(y=>y))];
+   v.year=jahre.length===1?jahre[0]:null;}}
+ return v;}
 function viewRunSetup(p,g,prev){
  for(const it of g.items)if(it.image&&it.image.path)imgURL(it.image.path).catch(()=>{});
+ /* Reihenfolge: Vorgabe, dann die letzte Wahl, dann der Stand dieses
+    Schirms. Beim ersten Durchgang eines Spielers bleibt es bei der
+    Vorgabe. */
  const sel=Object.assign({mode:'classic',diff:'easy',adaptive:true,opp:null,
-  minis:p.minis!==false},prev||{});
+  minis:p.minis!==false},(prev?null:vorwahlAusLauf(p,g))||{},prev||{});
  if(!isUnlocked(p,g,sel.diff))sel.diff='easy';
  const re=()=>{S.keepScroll=true;viewRunSetup(p,g,sel);};
  const others=S.profiles.filter(x=>x.id!==p.id);
@@ -1843,19 +1890,43 @@ function viewRunSetup(p,g,prev){
  const modes=(g.gen?['learn']:[]).concat(['classic','timed','survival','duel'])
   .concat(hoerbarDa()?['hoeren']:[]);
  if(!modes.includes(sel.mode))sel.mode='classic';
+ /* Eine Tabelle statt vier Bloecke: jede Zeile eine Einstellung, jede
+    Zelle eine Wahl, alles auf einen Blick. Wer schon einmal gespielt hat,
+    findet alles gesetzt vor und tippt nur noch auf Los. */
+ const zelle=(key,it)=>h('button',{class:'wahlzelle','aria-pressed':String(sel[key]===it.v),
+  disabled:it.disabled||false,title:it.desc||'',
+  onclick:()=>{sel[key]=it.v;re();}},(it.disabled?'🔒 ':'')+it.label);
+ const zeile=(titel,key,items)=>[h('div',{class:'wl'},titel),
+  h('div',{class:'wahlzeile'},items.map(it=>zelle(key,it)))];
+ const wahlArt=modes.map(v=>({v,label:t('m_'+v),desc:t('md_'+v)}));
+ const wahlStufe=DIFFS.map(v=>{const lock=!isUnlocked(p,g,v);
+  return{v,label:t('d_'+v),desc:lock?t('lock_'+v):t('dd_'+v),disabled:lock};});
+ const wahlAnpass=[{v:true,label:t('adaptive'),desc:t('ad_adaptive')},
+                   {v:false,label:t('fixed'),desc:t('ad_fixed')}];
+ const wahlMinis=[{v:true,label:t('minisOn'),desc:t('mi_on')},
+                  {v:false,label:t('minisOff'),desc:t('mi_off')}];
+ const wahlTabelle=h('div',{class:'wahltabelle'},
+  zeile(t('mode'),'mode',wahlArt),
+  sel.mode==='duel'&&others.length
+   ?zeile(t('opponent'),'opp',others.map(o=>({v:o.id,label:o.avatar+' '+o.name}))):null,
+  zeile(t('difficulty'),'diff',wahlStufe),
+  zeile(t('adjust'),'adaptive',wahlAnpass),
+  sel.mode==='duel'?null:zeile(t('minis'),'minis',wahlMinis));
+ /* Der erklaerende Satz hat in der Zelle keinen Platz und wuerde dort
+    abgeschnitten, darum steht er unter der Tabelle - je Zeile einer, und
+    nur zur gewaehlten Zelle. */
+ const erklaert=(items,key)=>{const a=items.find(x=>x.v===sel[key]);
+  return a&&a.desc?h('div',{},h('b',{},a.label+': '),a.desc):null;};
+ const wahlErklaerung=h('div',{class:'small muted',style:'margin-top:10px;display:grid;gap:3px'},
+  erklaert(wahlArt,'mode'),erklaert(wahlStufe,'diff'),
+  erklaert(wahlAnpass,'adaptive'),sel.mode==='duel'?null:erklaert(wahlMinis,'minis'));
  screen(topbar(g.title,{back:()=>viewGames(p),rerender:re}),h('main',{class:'page stack'},
   !g.gen&&!g.items.length?h('p',{class:'muted'},t('noItems')):null,
   g.gen?topicChooser(p,g,sel,re):null,
   g.gen?sectionChooser(sel,re):null,
-  h('h3',{},t('mode')),choiceGroup(modes.map(v=>({v,label:t('m_'+v),desc:t('md_'+v)})),'mode'),
-  sel.mode==='duel'?h('div',{},h('h3',{},t('opponent')),others.length?h('div',{class:'players'},others.map(o=>h('button',{class:'player','aria-pressed':String(sel.opp===o.id),
-    style:sel.opp===o.id?'background:var(--mark)':'',onclick:()=>{sel.opp=o.id;re();}},h('div',{class:'av'},o.avatar),h('div',{class:'nm'},o.name))))
-   :h('p',{class:'muted'},t('needOpponent'))):null,
-  h('h3',{},t('difficulty')),choiceGroup(DIFFS.map(v=>{const lock=!isUnlocked(p,g,v);return{v,label:t('d_'+v),desc:lock?t('lock_'+v):t('dd_'+v),disabled:lock};}),'diff'),
-  h('h3',{},t('adjust')),choiceGroup([{v:true,label:t('adaptive'),desc:t('ad_adaptive')},{v:false,label:t('fixed'),desc:t('ad_fixed')}],'adaptive'),
-  sel.mode==='duel'?null:h('div',{},h('h3',{},t('minis')),
-   choiceGroup([{v:true,label:t('minisOn'),desc:t('mi_on')},
-                {v:false,label:t('minisOff'),desc:t('mi_off')}],'minis')),
+  wahlTabelle,
+  sel.mode==='duel'&&!others.length?h('p',{class:'muted'},t('needOpponent')):null,
+  wahlErklaerung,
   h('div',{style:'margin-top:24px'},h('button',{class:'btn big',disabled:!canStart,onclick:()=>{
    const players=[p];if(sel.mode==='duel')players.push(S.profiles.find(o=>o.id===sel.opp));
    /* Die Wahl bleibt beim Spieler, nicht am Geraet: wer sie abschaltet,
