@@ -857,6 +857,58 @@ T.fr.byHand="Écrire à la main";
 T.de.byHandNote="Schreibe die Antwort von Hand auf das Blatt unten, dann zeige die Lösung und vergleiche ehrlich. Deine Handschrift wird im Protokoll gespeichert. Auf dem iPad kannst du mit dem Apple Pencil auch direkt in das Antwortfeld schreiben.";
 T.en.byHandNote="Write the answer by hand on the sheet below, then show the solution and compare honestly. Your handwriting is saved in the log. On the iPad you can also write straight into the answer field with the Apple Pencil.";
 T.fr.byHandNote="Écris la réponse à la main sur la feuille ci-dessous, puis affiche la solution et compare honnêtement. Ton écriture est enregistrée. Sur l’iPad, tu peux aussi écrire directement dans le champ avec l’Apple Pencil.";
+/* ---------- Sprechen ---------- */
+T.de.spr_title="Sprechen: Französisch";
+T.en.spr_title="Speaking: French";
+T.fr.spr_title="Parler : français";
+T.de.m_sprechen="Gespräch";
+T.en.m_sprechen="Conversation";
+T.fr.m_sprechen="Conversation";
+T.de.md_sprechen="Drei Gespräche mit Luca in der Fremdsprache";
+T.en.md_sprechen="Three conversations with Luca in the foreign language";
+T.fr.md_sprechen="Trois conversations avec Luca dans la langue étrangère";
+T.de.hint_dialog="Antippen, reden, am Schluss nochmals antippen.";
+T.en.hint_dialog="Tap, talk, tap again at the end.";
+T.fr.hint_dialog="Touche, parle, touche encore à la fin.";
+T.de.t_dialog="Gespräch";
+T.en.t_dialog="Conversation";
+T.fr.t_dialog="Conversation";
+T.de.dlgStart="Gespräch beginnen";
+T.en.dlgStart="Start talking";
+T.fr.dlgStart="Commencer à parler";
+T.de.dlgStop="Beenden";
+T.en.dlgStop="Finish";
+T.fr.dlgStop="Terminer";
+T.de.dlgCount="Deine Beiträge: {n} von {m}";
+T.en.dlgCount="Your turns: {n} of {m}";
+T.fr.dlgCount="Tes prises de parole : {n} sur {m}";
+T.de.dlgConnecting="verbinde …";
+T.en.dlgConnecting="connecting …";
+T.fr.dlgConnecting="connexion …";
+T.de.dlgSpeak="Sprich einfach. Luca hört zu.";
+T.en.dlgSpeak="Just speak. Luca is listening.";
+T.fr.dlgSpeak="Parle simplement. Luca écoute.";
+T.de.dlgDone="{n} Beiträge – das zählt.";
+T.en.dlgDone="{n} turns – that counts.";
+T.fr.dlgDone="{n} prises de parole – ça compte.";
+T.de.dlgShort="{n} von {m} Beiträgen. Beim nächsten Mal etwas länger dranbleiben.";
+T.en.dlgShort="{n} of {m} turns. Stay with it a bit longer next time.";
+T.fr.dlgShort="{n} sur {m}. Tiens un peu plus longtemps la prochaine fois.";
+T.de.dlgTrouble="Es klappt gerade nicht.";
+T.en.dlgTrouble="It is not working just now.";
+T.fr.dlgTrouble="Cela ne marche pas pour l’instant.";
+T.de.dlgNoMic="Dieses Gerät hat kein Mikrofon für ein Gespräch.";
+T.en.dlgNoMic="This device has no microphone for a conversation.";
+T.fr.dlgNoMic="Cet appareil n’a pas de micro pour une conversation.";
+T.de.dlgSkip="Überspringen";
+T.en.dlgSkip="Skip";
+T.fr.dlgSkip="Passer";
+T.de.dlgLimit="Luca hat für heute genug geredet. Morgen geht es wieder.";
+T.en.dlgLimit="Luca has talked enough for today. Tomorrow it works again.";
+T.fr.dlgLimit="Luca a assez parlé pour aujourd’hui. Demain, cela remarchera.";
+T.de.dlgNoProxy="Dafür braucht es den Vermittler.";
+T.en.dlgNoProxy="This needs the gateway.";
+T.fr.dlgNoProxy="Il faut le relais pour cela.";
 T.de.frv_title="Französisch: Wortschatz";
 T.en.frv_title="French: vocabulary";
 T.fr.frv_title="Français : vocabulaire";
@@ -1672,7 +1724,7 @@ function viewConnect(){screen(topbar(t('appTitle'),{rerender:viewConnect}),h('ma
 async function disconnectDbx(){if(!confirm(t('confirmDisconnect')))return;await IDB.del('kv','dbxRefresh');DBX.token=null;viewConnect();}
 async function updateSyncStatus(){const el=$('#syncstatus');if(!el||!PLAY_ONLY)return;const n=(await IDB.keys('outbox')).length;el.textContent=n?t('pending',{n}):'';}
 async function loadGames(){const out=[];for(const n of(await S.store.list('games')).filter(n=>n.endsWith('.json'))){try{const g=await S.store.read('games/'+n);if(g&&Array.isArray(g.items))out.push(g);}catch(e){console.warn(n,e);}}
- out.sort((a,b)=>a.title.localeCompare(b.title));return[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,IT_GAME].concat(out);}
+ out.sort((a,b)=>a.title.localeCompare(b.title));return[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,SPR_GAME,IT_GAME].concat(out);}
 const TEST_PLAYER={id:'test',avatar:'🧪',unlockAll:true,pen:true,builtin:true};
 Object.defineProperty(TEST_PLAYER,'name',{get:()=>t('testPlayer'),enumerable:true});
 function withTest(list){return (list||[]).filter(p=>p.id!=='test').concat([TEST_PLAYER]);}
@@ -1695,7 +1747,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V114';
+const APPVER='V115';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1773,7 +1825,7 @@ function badgeSticker(id){return h('div',{class:'sticker'},h('i',{'aria-hidden':
    eine Pause darf nicht an einer Ladereihenfolge scheitern. */
 function spielAusId(id){
  return (S.games||[]).find(g=>g.id===id)
-  ||[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,IT_GAME].find(g=>g&&g.id===id)
+  ||[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,SPR_GAME,IT_GAME].find(g=>g&&g.id===id)
   ||null;}
 
 function pauseKarte(p,d,re){
@@ -1887,9 +1939,13 @@ function viewRunSetup(p,g,prev){
    for(let k=0;k<3;k++){let x=null;try{x=genItem(tp,DIFF_LEVEL[sel.diff]||2,g.gen);}catch(_){}
     if(hoerbarItem(x))return true;}}
   return false;};
- const modes=(g.gen?['learn']:[]).concat(['classic','timed','survival','duel'])
-  .concat(hoerbarDa()?['hoeren']:[]);
- if(!modes.includes(sel.mode))sel.mode='classic';
+ /* Zeitrennen, Survival und Duell ergeben bei einem Gespraech keinen
+    Sinn: es gibt keine Frage, die schneller beantwortet waere, und keinen
+    Zug, den ein Zweiter uebernehmen koennte. */
+ const modes=g.gespraech?['sprechen']
+  :(g.gen?['learn']:[]).concat(['classic','timed','survival','duel'])
+   .concat(hoerbarDa()?['hoeren']:[]);
+ if(!modes.includes(sel.mode))sel.mode=modes[0]||'classic';
  /* Eine Tabelle statt vier Bloecke: jede Zeile eine Einstellung, jede
     Zelle eine Wahl, alles auf einen Blick. Wer schon einmal gespielt hat,
     findet alles gesetzt vor und tippt nur noch auf Los. */
@@ -2138,7 +2194,7 @@ async function startRun(o){
   :poolFor(Object.assign({},o.game,{items:o.game.items.filter(okItem)}),o.diff);if(!pool.length)return toast(t(o.game.gen?'pickTopic':'noItems'),true);
  const R={id:uid(),players:o.players,game:o.game,mode:o.mode,diff:o.diff,adaptive:o.adaptive,sel:o.sel,started:new Date(),pool,used:new Set(),answers:[],
   score:o.players.map(()=>0),streak:o.players.map(()=>0),best:o.players.map(()=>0),lives:3,level:DIFF_LEVEL[o.diff],up:0,down:0,q:0,masteries,timer:null,ended:false};
- R.target=o.mode==='classic'?25:o.mode==='duel'?26:(o.mode==='learn'||o.mode==='hoeren')?12:Infinity;R.retry=[];R.extra=0;R.gen=!!o.game.gen;R.topics=o.topics;R.cards=new Set();R.sub=o.sub||null;R.wcur={};
+ R.target=o.mode==='classic'?25:o.mode==='duel'?26:o.mode==='sprechen'?3:(o.mode==='learn'||o.mode==='hoeren')?12:Infinity;R.retry=[];R.extra=0;R.gen=!!o.game.gen;R.topics=o.topics;R.cards=new Set();R.sub=o.sub||null;R.wcur={};
  /* Fortsetzen: der frisch gebaute Durchgang bekommt den abgelegten Stand
     uebergestuelpt. Die zuletzt offene Frage kehrt nicht zurueck - sie
     wird neu gezogen. */
@@ -2205,7 +2261,7 @@ function prepare(item,diff){
  return Q;
 }
 function answerText(it){switch(it.type){case'single':return it.options[it.correct[0]];case'multi':return it.correct.map(i=>it.options[i]).join(', ');
- case'order':return it.order.join(' → ');case'input':return it.answer;case'spot':return t('spotAnswer');case'num':case'numline':case'build':case'coins':case'clockset':case'grid':case'shade':case'coord':case'expr':case'tapfig':case'pairs':case'handwrite':case'construct':case'speak':return it.answer||'';case'map':{const P=PACKS[it.map&&it.map.pack];const f=P&&P.byId[it.map.target];return f?fname(f):(it.answer||it.map.target);}default:return'';}}
+ case'order':return it.order.join(' → ');case'input':return it.answer;case'spot':return t('spotAnswer');case'num':case'numline':case'build':case'coins':case'clockset':case'grid':case'shade':case'coord':case'expr':case'tapfig':case'pairs':case'handwrite':case'construct':case'speak':case'dialog':return it.answer||'';case'map':{const P=PACKS[it.map&&it.map.pack];const f=P&&P.byId[it.map.target];return f?fname(f):(it.answer||it.map.target);}default:return'';}}
 const IMG_URLS={};
 async function imgURL(path){if(IMG_URLS[path])return IMG_URLS[path];const b=await S.store.readBlob(path);if(!b)throw new Error(t('imgErr'));return(IMG_URLS[path]=URL.createObjectURL(b));}
 function lazyImg(path,attrs){const im=h('img',Object.assign({alt:''},attrs||{}));imgURL(path).then(u=>{im.src=u;}).catch(()=>{im.alt=t('imgErr');});return im;}
@@ -3125,7 +3181,7 @@ function hud(R){
   h('span',{title:t('streak')},'🔥 '+R.streak[i]),
   R.mode==='survival'?h('span',{'aria-label':t('lives')+': '+R.lives},'❤️'.repeat(R.lives)+'🤍'.repeat(3-R.lives)):null,
   R.mode==='timed'?h('span',{id:'timer'},'⏱ '+Math.max(0,Math.ceil((R.deadline-Date.now())/1000))+' s'):null,
-  (R.mode==='classic'||R.mode==='duel'||R.mode==='learn'||R.mode==='hoeren')?h('span',{},Math.min(R.q+1,R.target)+' / '+R.target):null,
+  (R.mode==='classic'||R.mode==='duel'||R.mode==='learn'||R.mode==='hoeren'||R.mode==='sprechen')?h('span',{},Math.min(R.q+1,R.target)+' / '+R.target):null,
   h('span',{class:'sp'}),
   R.answers.length?h('button',{class:'btn ghost small',onclick:async()=>{
    clearInterval(R.timer);R.timer=null;S.onEnter=null;wachAus();
@@ -3586,7 +3642,8 @@ async function erinnerungSichern(p,zeilen){
 
 /* Ein laufendes Gespraech. Nur eines zur Zeit. */
 let GESPRAECH=null;
-async function gespraechStarten(vars,melde,kennung,wer){
+async function gespraechStarten(vars,melde,kennung,wer,opt){
+ const o=opt||{};
  if(GESPRAECH)gespraechBeenden();
  const sage=(was,wert)=>{try{melde&&melde(was,wert);}catch(_){}};
  sage('zustand','verbinde');
@@ -3630,9 +3687,13 @@ async function gespraechStarten(vars,melde,kennung,wer){
   /* Die Sprache steuert nicht nur, was sie sagt, sondern auch, wie sie
      zuhoert: Erkennung und Stimme haengen daran. Darum wird sie mit der
      Eroeffnung gesetzt und nicht bloss im Auftrag erwaehnt. */
-  const spr=S.lang==='en'?'en':S.lang==='fr'?'fr':'de';
+  /* Beim Sprechen ist die Zielsprache eine andere als die der App: das
+     Kind soll Franzoesisch hoeren, auch wenn die Oberflaeche deutsch ist.
+     Darum darf der Aufrufer beides setzen. Ohne Angabe bleibt es wie
+     bisher bei der Sprache der App. */
+  const spr=o.spr||(S.lang==='en'?'en':S.lang==='fr'?'fr':'de');
   eroeffnung.conversation_config_override={agent:{language:spr,
-   first_message:X('Hoi '+(vars.vorname||'')+'. Erzähl mir, woran Du gerade bist.',
+   first_message:o.ersterSatz||X('Hoi '+(vars.vorname||'')+'. Erzähl mir, woran Du gerade bist.',
                    'Hi '+(vars.vorname||'')+'. Tell me what you are working on.',
                    'Salut '+(vars.vorname||'')+'. Raconte-moi ce que tu fais.')}};
   ws.send(JSON.stringify(eroeffnung));
@@ -3805,6 +3866,7 @@ function fragestelleBox(kontext){
     zuletzt:String(ls.zuletzt||'').slice(0,120),
     stufe:String(ls.stufe||''),
     sprache:S.lang==='en'?'en':S.lang==='fr'?'fr':'de',
+    modus:'hilfe',zielsprache:'',wortschatz:'',
     tutorname:TUTORNAME[S.lang]||TUTORNAME.de,
     erinnerung:erinnerungText(wer).slice(0,900)},melde,
     (wer&&wer.id&&!wer.builtin)?('spitz-'+wer.id):null,wer);
@@ -5197,6 +5259,85 @@ function renderQuestion(R,Q){
    area.append(
     h('div',{class:'row',style:'gap:10px;margin-top:6px'},btn,weiter),heard,pegel,dots,status,wegZeile);
   }
+ }else if(it.type==='dialog'){
+  /* Ein Gespraech ist keine Frage mit einer Antwort. Was sich hier ehrlich
+     messen laesst, ist die Beteiligung: wie oft das Kind etwas gesagt hat.
+     Eine Note auf freie Rede waere erfunden, und eine erfundene Note ist
+     schlechter als gar keine. Die Korrekturen gibt Luca im Gespraech. */
+  const wer=R.players[curIdx(R)]||null;
+  const min=Math.max(1,it.min||3);
+  let beitraege=0, fertig=false, laeuft=false;
+  const zaehler=h('p',{style:'margin:10px 0 0;font-weight:700','aria-live':'polite'});
+  const spur=h('div',{style:'margin:8px 0 0;padding:10px 12px;border-radius:10px;'
+   +'background:var(--paper);border:2px solid var(--grid);white-space:pre-wrap;'
+   +'min-height:4.2em;font-size:1.05rem','aria-live':'polite'});
+  const status=h('p',{class:'small muted',style:'margin-top:8px;min-height:1.4em','aria-live':'polite'});
+  const setzeZaehler=()=>{zaehler.textContent=t('dlgCount',{n:beitraege,m:min});
+   zaehler.style.color=beitraege>=min?'var(--green)':'var(--ink)';};
+  let zeilen=[];
+  const knopf=h('button',{class:'btn big'},'🎤 '+t('dlgStart'));
+  const schluss=()=>{
+   if(fertig||done||R.ended)return;
+   fertig=true;knopf.disabled=true;
+   const ok=beitraege>=min;
+   status.textContent=ok?t('dlgDone',{n:beitraege}):t('dlgShort',{n:beitraege,m:min});
+   submit(String(beitraege),ok,null);};
+  const melde=(was,wert)=>{
+   if(was==='zustand'){
+    laeuft=(wert==='laeuft');
+    knopf.textContent=(wert==='aus')?('🎤 '+t('dlgStart')):('■ '+t('dlgStop'));
+    if(wert==='verbinde')status.textContent=t('dlgConnecting');
+    if(wert==='laeuft')status.textContent=t('dlgSpeak');
+    if(wert==='aus')setTimeout(schluss,200);
+    return;}
+   if(was==='fehler'){status.textContent=t('dlgTrouble');return;}
+   if(was==='kind'&&String(wert||'').trim().length>1){beitraege++;setzeZaehler();}
+   zeilen.push((was==='kind'?'› ':'‹ ')+wert);
+   if(zeilen.length>5)zeilen=zeilen.slice(-5);
+   spur.textContent=zeilen.join('\n');};
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){
+   area.append(h('p',{class:'small muted'},t('dlgNoMic')),
+    h('div',{style:'margin-top:12px'},h('button',{class:'btn ghost',
+     onclick:()=>{if(!fertig&&!done&&!R.ended){fertig=true;submit('0',false,null);}}},t('dlgSkip'))));
+  }else{
+   knopf.onclick=async()=>{
+    if(fertig||done||R.ended)return;
+    if(gespraechLaeuft()){gespraechBeenden();return;}
+    knopf.disabled=true;
+    const ls=lernstand(R,wer);
+    const nam=String((wer&&wer.name)||'').trim();
+    const gruss=it.spr==='en'
+     ?('Hi '+nam+'! Ready to talk with me for a bit?')
+     :('Salut '+nam+' ! Tu es prêt à parler un peu avec moi ?');
+    try{
+     await gespraechStarten({
+      vorname:nam||'du',alter:String(alterJahre(wer)||''),
+      fach:String(R.game.title||'').slice(0,60),
+      thema:String(it.unite||themaName(it.topic)||'').slice(0,120),
+      aufgabe:String(plain(it.prompt||'')).slice(0,600),
+      schritte:'',loesung:'',
+      stand:String(ls.stand||'').slice(0,120),
+      fehler_heute:String(ls.fehler||'').slice(0,200),
+      schwach:String(ls.schwach||'').slice(0,200),
+      zuletzt:String(ls.zuletzt||'').slice(0,120),
+      stufe:String(ls.stufe||''),
+      sprache:S.lang==='en'?'en':S.lang==='fr'?'fr':'de',
+      modus:'sprechen',zielsprache:it.spr||'fr',
+      wortschatz:String(it.woerter||'').slice(0,1200),
+      tutorname:TUTORNAME[S.lang]||TUTORNAME.de,
+      erinnerung:erinnerungText(wer).slice(0,900)},melde,
+      (wer&&wer.id&&!wer.builtin)?('spitz-'+wer.id):null,wer,
+      {spr:it.spr||'fr',ersterSatz:gruss});
+    }catch(e){
+     const f=String((e&&e.message)||e);
+     melde('zustand','aus');
+     status.textContent=f==='kein-mikrofon'?t('speakNoMic')
+      :f==='tageslimit'?t('dlgLimit')
+      :f==='kein-vermittler'?t('dlgNoProxy'):t('dlgTrouble');
+    }finally{knopf.disabled=false;}};
+   setzeZaehler();
+   area.append(h('div',{class:'row',style:'gap:10px;margin-top:6px'},knopf),zaehler,spur,status);
+  }
  }else if(it.type==='construct'){
   const bd=kBoard(it.task);Q.board=bd;
   const verdict=h('p',{class:'small',style:'margin:8px 0 0','aria-live':'polite'});
@@ -5288,7 +5429,7 @@ function renderQuestion(R,Q){
   return false;};
  /* Bei 'speak' und 'handwrite' gehoert das Mikrofon schon der Aufgabe.
     Zwei Aufnahmen auf einem Schirm verwirren mehr, als sie helfen. */
- const fragEl=(it.type==='speak'||Q.joke||it.joke)?null:fragBox(R,Q,it,()=>R.ended,antwortNehmen);
+ const fragEl=(it.type==='speak'||it.type==='dialog'||Q.joke||it.joke)?null:fragBox(R,Q,it,()=>R.ended,antwortNehmen);
  const pen=penOn(R.players[curIdx(R)])&&it.type!=='handwrite'&&blattSpiel(R.game);
  const pad=pen?scratchPad({height:it.type==='map'?240:300}):null;if(pad)Q.pad=pad;
  const padBox=pad?h('details',{class:'padbox',open:true},h('summary',{},'🖊 '+t('padTitle')),pad.el):null;
@@ -5296,7 +5437,7 @@ function renderQuestion(R,Q){
    it.satz?h('p',{class:'beispiel'},it.satz):null,
    h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre,it.spr||'fr')):null,
    it.nat?sndBtn(it.nat,true,it.natSpr||'de'):null,
-   it.type==='speak'?null:leseBtn(R,Q,it)),figEl,h('div',{class:'hint'},t(hinweisSchluessel(it))),area,helpEl,fragEl,fragestelleBox({fach:R.game.title,thema:themaName(it.topic)||it.topic||'',aufgabe:plain(Q.prompt||it.prompt||''),schritte:(it.steps||[]).join(' '),loesung:answerText(it),vorname:(R.players[curIdx(R)]||{}).name,alter:alterJahre(R.players[curIdx(R)]),lauf:R,spieler:R.players[curIdx(R)]}),retryMsg,fb),padBox));
+   (it.type==='speak'||it.type==='dialog')?null:leseBtn(R,Q,it)),figEl,h('div',{class:'hint'},t(hinweisSchluessel(it))),area,helpEl,fragEl,it.type==='dialog'?null:fragestelleBox({fach:R.game.title,thema:themaName(it.topic)||it.topic||'',aufgabe:plain(Q.prompt||it.prompt||''),schritte:(it.steps||[]).join(' '),loesung:answerText(it),vorname:(R.players[curIdx(R)]||{}).name,alter:alterJahre(R.players[curIdx(R)]),lauf:R,spieler:R.players[curIdx(R)]}),retryMsg,fb),padBox));
  if(pen)area.querySelectorAll('input[type=text],input[type=number]').forEach(i=>{i.classList.add('penfield');
   i.setAttribute('autocomplete','off');i.setAttribute('autocorrect','off');i.setAttribute('autocapitalize','off');i.setAttribute('spellcheck','false');
   const ph=i.getAttribute('placeholder');if(ph)i.addEventListener('input',()=>{if(i.value)i.removeAttribute('placeholder');else i.setAttribute('placeholder',ph);});});
@@ -5423,7 +5564,7 @@ function onAnswer(R,Q,given,correct,fb){
   second:Q.second?Q.firstGiven:undefined,joke:joke||undefined,retry:Q.retry||undefined});
  R.q++;
  pauseSichernLokal(R);
- const over=()=>(R.mode==='classic'||R.mode==='duel'||R.mode==='learn'||R.mode==='hoeren')?R.q>=R.target:R.mode==='survival'?R.lives<=0:(R.mode==='timed'&&Date.now()>=R.deadline);
+ const over=()=>(R.mode==='classic'||R.mode==='duel'||R.mode==='learn'||R.mode==='hoeren'||R.mode==='sprechen')?R.q>=R.target:R.mode==='survival'?R.lives<=0:(R.mode==='timed'&&Date.now()>=R.deadline);
  const proceed=()=>{if(R.ended)return;if(over())finishRun(R,false);else nextQuestion(R);};
  fb.className='feedback';
  const stampTxt=joke?t('jokeTag'):correct?'✓ '+t('correct')+(Q.second?' '+t('secondOk'):''):'✗ '+t('wrong');
@@ -10307,6 +10448,57 @@ DDV.forEach(([id,vol,labDe,labFr,gram,ws])=>{
 const FRV_GAME={id:'fr-vocab',builtin:true,subject:'lang',kind:'lang',items:[],gen:{topics:FRTOPICS.map(x=>x.id)}};
 Object.defineProperty(FRV_GAME,'title',{get:()=>t('frv_title'),enumerable:true});
 
+/* ================= Sprechen: Gespraeche in der Fremdsprache =================
+   Die Unites liegen schon als Wortschatzthemen vor. Ein Thema traegt aber
+   genau einen Aufgabenbauer, und ein Gespraech ist keine Vokabelabfrage.
+   Darum ein zweiter Satz Themen mit eigener Kennung, der auf dieselbe
+   Wortliste zeigt - eine zweite Datenhaltung waere eine zweite Wahrheit.
+
+   Bewertet wird die Beteiligung, nicht die Korrektheit. Freie Rede laesst
+   sich hier nicht ehrlich benoten; was sich zaehlen laesst, ist, wie oft
+   das Kind den Mund aufgemacht hat. Die Korrekturen gibt Luca im
+   Gespraech. */
+const SPT=[];
+const SPRECH_MIN=[0,3,4,6,8,10];   /* Mindestbeitraege je Stufe 1 bis 5 */
+
+function sprechWortschatz(tp,hoechstens){
+ const ws=(tp.w||[]).slice(0,hoechstens||40);
+ return ws.map(d=>ddFr(d)).filter(Boolean).join(', ').slice(0,1200);}
+
+function sprechAufgabe(tp,lv){
+ const stufe=Math.max(1,Math.min(5,lv||2));
+ const min=SPRECH_MIN[stufe];
+ const ziel=tp.zielspr||'fr';
+ const zielName=ziel==='fr'?X('Französisch','French','français'):X('Englisch','English','anglais');
+ const it={type:'dialog',spr:ziel,min:min,woerter:sprechWortschatz(tp),
+  unite:tName(tp),
+  prompt:X('Sprich mit Luca auf '+zielName+'. Sie fragt, Du antwortest – mindestens '+min+' Mal.',
+           'Talk with Luca in '+zielName+'. She asks, you answer – at least '+min+' times.',
+           'Parle avec Luca en '+zielName+'. Elle demande, tu réponds – au moins '+min+' fois.'),
+  answer:''};
+ return steps(it,[
+  X('Antworte in ganzen Sätzen, auch kurzen. Ein Wort zählt auch, ist aber weniger wert für Dich.',
+    'Answer in whole sentences, short ones count too. A single word counts as well, but gets you less.',
+    'Réponds par des phrases entières, même courtes. Un seul mot compte aussi, mais t’apporte moins.'),
+  X('Wenn Du nicht weiterweisst, sag es ihr auf '+zielName+' – sie hilft Dir weiter.',
+    'If you get stuck, tell her so in '+zielName+' – she will help you on.',
+    'Si tu bloques, dis-le-lui en '+zielName+' – elle t’aidera.')]);}
+
+/* Nur die Unites aus «dis donc!» tragen einen Wortschatz, der ein
+   Gespraech traegt. Die selbstgeschriebenen Themen der Jahre 5 und 6
+   bleiben draussen, bis sie geprueft sind. */
+FRTOPICS.filter(tp=>tp.dd&&(tp.w||[]).length>=10).forEach(tp=>{
+ const sp={id:'sp-'+tp.id,y:tp.y,a:tp.a,w:tp.w,fr:true,sprechen:true,zielspr:'fr',
+  quelle:tp.id,band:tp.band,n:tp.n.slice(),terms:[],
+  c:[tp.n[0]+'. Ein Gespräch auf Französisch über das Thema dieser Unité, mit ihren Wörtern.',
+     tp.n[1]+'. A conversation in French about this unit’s subject, using its words.',
+     tp.n[2]+'. Une conversation en français sur le thème de cette unité, avec ses mots.']};
+ sp.g=lv=>sprechAufgabe(sp,lv);
+ SPT.push(sp);});
+
+const SPR_GAME={id:'sprechen',builtin:true,subject:'lang',kind:'lang',gespraech:true,items:[],gen:{topics:SPT.map(x=>x.id)}};
+Object.defineProperty(SPR_GAME,'title',{get:()=>t('spr_title'),enumerable:true});
+
 /* ================= Französisch: Grammatik ================= */
 const PRON=['je','tu','il','nous','vous','ils'];
 const PRONL={je:['ich','I','je'],tu:['du','you','tu'],il:['er','he','il'],nous:['wir','we','nous'],vous:['ihr','you','vous'],ils:['sie','they','ils']};
@@ -10599,7 +10791,7 @@ const FRG_GAME={id:'fr-gram',builtin:true,subject:'lang',kind:'lang',items:[],ge
 Object.defineProperty(FRG_GAME,'title',{get:()=>t('frg_title'),enumerable:true});
 
 const MATH_ARITH={id:'arith',y:0,a:1,n:['Freies Rechnen','Free arithmetic','Calcul libre'],c:['Rechnen mit den Zahlen und Rechenarten, die für dieses Spiel eingestellt sind.','Calculating with the numbers and operations set for this game.','Calculer avec les nombres et les opérations choisis pour ce jeu.'],terms:['sum','difference','product','quotient'],g:genArith};
-function mtopic(id){return id==='arith'?MATH_ARITH:(MT.find(x=>x.id===id)||ITT.find(x=>x.id===id)||FRTOPICS.find(x=>x.id===id)||FRG.find(x=>x.id===id)||(typeof DET!=='undefined'?DET.find(x=>x.id===id):null)||(typeof DPT!=='undefined'?DPT.find(x=>x.id===id):null)||(typeof OWT!=='undefined'?OWT.find(x=>x.id===id):null));}
+function mtopic(id){return id==='arith'?MATH_ARITH:(MT.find(x=>x.id===id)||ITT.find(x=>x.id===id)||FRTOPICS.find(x=>x.id===id)||(typeof SPT!=='undefined'?SPT.find(x=>x.id===id):null)||FRG.find(x=>x.id===id)||(typeof DET!=='undefined'?DET.find(x=>x.id===id):null)||(typeof DPT!=='undefined'?DPT.find(x=>x.id===id):null)||(typeof OWT!=='undefined'?OWT.find(x=>x.id===id):null));}
 function genItem(tp,lv,o){let it;for(let k=0;k<6;k++){try{it=tp.g(lv,o||{});break;}catch(e){console.warn(tp.id,e);}}if(!it)return null;
  it.id=tp.id;it.topic=tp.id;it.difficulty=lv;it.gen=true;return it;}
 /* ---------- glossary ---------- */
