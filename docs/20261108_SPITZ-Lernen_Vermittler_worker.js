@@ -22,14 +22,9 @@
 
 const ERLAUBT = ['https://spitzadvisory.github.io'];
 const SCRIBE = ['scribe_v2', 'scribe_v1'];
-/* Eine Stimme fuer alle drei Sprachen, seit dem 16.11.2026. Vorher lasen
-   drei verschiedene Stimmen vor, waehrend das Gespraech immer nur eine
-   hatte; dasselbe Kind hoerte damit zwei Begleiterinnen. Johannes hat
-   diese Stimme aus drei Entwuerfen ausgesucht. Die Form bleibt eine
-   Tabelle je Sprache, damit eine spaetere Abweichung keinen Umbau
-   braucht. */
-const LUCA = 'GJmjjfUnDAITsxAFqyDQ';
-const STIMMEN = { de: LUCA, en: LUCA, fr: LUCA };
+/* Eine Stimme fuer alle drei Sprachen, seit dem 16.11.2026. Johannes hat
+   sie aus drei Entwuerfen ausgesucht; vorher lasen drei Stimmen vor. */
+const STIMMEN = { de: 'GJmjjfUnDAITsxAFqyDQ', en: 'GJmjjfUnDAITsxAFqyDQ', fr: 'GJmjjfUnDAITsxAFqyDQ' };
 const TTS_MODELLE = ['eleven_v4', 'eleven_multilingual_v2'];
 /* Nur diese Agenten darf die App anfordern. Ohne diese Liste waere der
    Vermittler ein offener Zugang zu jedem Agenten des Kontos. */
