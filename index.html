@@ -254,6 +254,12 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
 .znach{padding-left:10px;white-space:nowrap}
 .zstelle{font:700 calc(var(--zb)*.44)/1 system-ui,sans-serif;letter-spacing:.04em;padding-bottom:3px;align-self:end}
 .zcell{display:flex;align-items:flex-end;justify-content:center}
+/* Das Minuszeichen der Divisionstreppe steht nicht mittig in seiner
+   Spalte, sondern rechts am Rand, dicht an der Zahl, die es abzieht -
+   so wie von Hand. Mittig sass es je nach Spaltenbreite mal nah, mal
+   eine ganze Spalte entfernt, und dort genau unter einer
+   Kaestchenreihe. */
+.zcell.zminus{justify-self:stretch;justify-content:flex-end;padding-right:calc(var(--zb)*.16)}
 .zfix{font:700 calc(var(--zb)*.78)/1.1 ui-monospace,monospace,system-ui;color:var(--ink);padding:2px 0}
 /* Das Rechenzeichen steht allein und muss nicht in der Zifferbreite
    sitzen. Manche Monospace-Schriften zeichnen fuer den Malpunkt ein
@@ -1747,7 +1753,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V115';
+const APPVER='V116';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -4959,7 +4965,8 @@ function renderQuestion(R,Q){
     if(zeile.fix&&zeile.fix[i]!=null&&zeile.fix[i]!==''){
      const t=String(zeile.fix[i]);
      const f=/^[0-9]$/.test(t)?farbeVon(i,zeile):INK;
-     zellen.push(h('div',{class:'zcell zfix',style:'grid-row:'+r+';grid-column:'+(i+2)+';color:'+f},t));
+     zellen.push(h('div',{class:'zcell zfix'+(t==='−'?' zminus':''),
+      style:'grid-row:'+r+';grid-column:'+(i+2)+';color:'+f},t));
      continue;}
     if(zeile.art==='fest'){
      const txt=v==null?'':String(v);
@@ -5722,9 +5729,21 @@ const INK='#0A2D56',RED='#C46060',GRN='#3A8F6C',MARK='#DCEEEC',GRID='#DDE5EE';
    von rechts: 0 = Einer, 1 = Zehner, 2 = Hunderter, 3 = Tausender (wieder
    wie Einer). null heisst: diese Spalte traegt keinen Stellenwert. */
 const STELLENFARBE=['#4FB8B0','#3D6A9A','#D99A3C'];
-const STELLENNAME=['E','Z','H','T','ZT','HT','M','ZM','HM'];
+/* Die Kuerzel ueber den Spalten sind Schulkonvention und in jeder Sprache
+   eine andere. Deutsch E/Z/H, englisch O/T/H (ones, tens, hundreds),
+   franzoesisch u/d/c (unites, dizaines, centaines) - so steht es auch
+   schon im Erklaertext zum Thema Stellenwert. Die franzoesische Schule
+   wiederholt c/d/u in jeder Klasse; damit eine Spaltenreihe ohne
+   Klassenueberschrift eindeutig bleibt, tragen die Tausender hier um/dm/cm.
+   Belegt sind E/Z/H, O/T/H und u/d/c; die Formen fuer Tausender und
+   Millionen sind daraus fortgeschrieben. */
+const STELLENNAMEN={
+ de:['E','Z','H','T','ZT','HT','M','ZM','HM'],
+ en:['O','T','H','Th','TTh','HTh','M','TM','HM'],
+ fr:['u','d','c','um','dm','cm','M','dM','cM']};
 function stelleFarbe(k){return k==null?INK:STELLENFARBE[k%3];}
-function stelleName(k){return k==null?'':(STELLENNAME[k]||'');}
+function stelleName(k){if(k==null)return '';
+ const l=STELLENNAMEN[S.lang]||STELLENNAMEN.de;return l[k]||'';}
 function figDots(n,scatter){const s=svgBox(420,scatter?180:110);
  if(scatter){const pts=[];let g=0;while(pts.length<n&&g++<4000){const x=ri(20,400),y=ri(20,160);if(pts.every(p=>Math.hypot(p[0]-x,p[1]-y)>30))pts.push([x,y]);}
   pts.forEach(p=>s.append(sv('circle',{cx:p[0],cy:p[1],r:11,fill:RED})));return s;}
@@ -6476,7 +6495,7 @@ topic('m4-verbinden',4,1,['Geschickt zusammenfassen','Grouping cleverly','Regrou
 topic('m3-placevalue',3,1,['Zahlen bis 1000: Stellenwerte','Numbers to 1000: place value','Nombres jusqu’à 1000 : valeur de position'],
  ['Eine dreistellige Zahl hat Hunderter, Zehner und Einer: 358 = 3 H + 5 Z + 8 E.','A three-digit number has hundreds, tens and ones: 358 = 3 H + 5 T + 8 O.','Un nombre à trois chiffres a des centaines, des dizaines et des unités : 358 = 3 c + 5 d + 8 u.'],['hundreds','tens','ones','placevalue'],
  lv=>{const H1=ri(1,9),Z=ri(0,9),E=ri(0,9),n=100*H1+10*Z+E;const r=Math.random();
-  if(r<.33){const it={type:'build',prompt:X('Lege die Zahl ','Build the number ','Construis le nombre ')+n+'.',target:n,places:3,answer:String(n)};return steps(it,[X('Beginne mit den Hundertern: ','Start with the hundreds: ','Commence par les centaines : ')+H1+'.',X('Dann ','Then ','Puis ')+Z+X(' Zehner und ',' tens and ',' dizaines et ')+E+X(' Einer.',' ones.',' unités.'),H1+' H '+Z+' Z '+E+' E']);}
+  if(r<.33){const it={type:'build',prompt:X('Lege die Zahl ','Build the number ','Construis le nombre ')+n+'.',target:n,places:3,answer:String(n)};return steps(it,[X('Beginne mit den Hundertern: ','Start with the hundreds: ','Commence par les centaines : ')+H1+'.',X('Dann ','Then ','Puis ')+Z+X(' Zehner und ',' tens and ',' dizaines et ')+E+X(' Einer.',' ones.',' unités.'),H1+' '+stelleName(2)+' '+Z+' '+stelleName(1)+' '+E+' '+stelleName(0)]);}
   if(r<.66){const it=numItem(H1+X(' Hunderter, ',' hundreds, ',' centaines, ')+Z+X(' Zehner und ',' tens and ',' dizaines et ')+E+X(' Einer = ?',' ones = ?',' unités = ?'),n);return steps(it,[H1+X(' Hunderter = ',' hundreds = ',' centaines = ')+100*H1+'.',Z+X(' Zehner = ',' tens = ',' dizaines = ')+10*Z+'.',100*H1+' + '+10*Z+' + '+E+' = '+n]);}
   const place=pick([['Hunderter','hundreds','centaines',H1],['Zehner','tens','dizaines',Z],['Einer','ones','unités',E]]);const it=numItem(X('Wie viele '+place[0]+' hat '+n+'?','How many '+place[1]+' does '+n+' have?','Combien de '+place[2]+' le nombre '+n+' a-t-il ?'),place[3]);
   return steps(it,[X('Von links: Hunderter, Zehner, Einer.','From the left: hundreds, tens, ones.','De gauche à droite : centaines, dizaines, unités.'),X('Suche die richtige Stelle in ','Find the right place in ','Trouve la bonne position dans ')+n+'.',String(place[3])]);});
