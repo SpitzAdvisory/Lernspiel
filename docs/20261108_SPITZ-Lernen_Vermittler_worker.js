@@ -22,9 +22,14 @@
 
 const ERLAUBT = ['https://spitzadvisory.github.io'];
 const SCRIBE = ['scribe_v2', 'scribe_v1'];
-/* Stimmen je Sprache. Emilie liest die Vokabelkarten vor; Emilia und Kate
-   sind nach gemessener Tonhoehe ausgewaehlt: jung, hell, klar. */
-const STIMMEN = { de: 'ghgFyr7gmpr57xyTgX9q', en: 'LmBeiuCEOHOsilCkLod0', fr: 'i6ke7jvmGEVUyV4zjSaT' };
+/* Eine Stimme fuer alle drei Sprachen, seit dem 16.11.2026. Vorher lasen
+   drei verschiedene Stimmen vor, waehrend das Gespraech immer nur eine
+   hatte; dasselbe Kind hoerte damit zwei Begleiterinnen. Johannes hat
+   diese Stimme aus drei Entwuerfen ausgesucht. Die Form bleibt eine
+   Tabelle je Sprache, damit eine spaetere Abweichung keinen Umbau
+   braucht. */
+const LUCA = 'GJmjjfUnDAITsxAFqyDQ';
+const STIMMEN = { de: LUCA, en: LUCA, fr: LUCA };
 const TTS_MODELLE = ['eleven_v4', 'eleven_multilingual_v2'];
 /* Nur diese Agenten darf die App anfordern. Ohne diese Liste waere der
    Vermittler ein offener Zugang zu jedem Agenten des Kontos. */
