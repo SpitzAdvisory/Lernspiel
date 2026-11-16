@@ -78,7 +78,7 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   document.body.append(box);
   pruef('Knopf erscheint mit Vermittler',await warteAuf(()=>box.style.display===''),box.style.display);
   const knopf=box.querySelector('button');
-  pruef('Knopf lädt zum Sprechen ein',/mit Emilia sprechen/.test(knopf.textContent),knopf.textContent.trim());
+  pruef('Knopf lädt zum Sprechen ein',new RegExp('mit '+TUTORNAME[S.lang]+' sprechen').test(knopf.textContent),knopf.textContent.trim());
 
   knopf.click();
   pruef('Aufnahme laeuft an',await warteAuf(()=>rufe.some(x=>x.weg==='stt')));
@@ -131,7 +131,7 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
 
   /* ---------- 8. Andere Sprachen ---------- */
   box.remove();
-  for(const [sp,name,code] of [['en','Kate','eng'],['fr','Emilie','fra']]){
+  for(const [sp,name,code] of [['en',TUTORNAME.en,'eng'],['fr',TUTORNAME.fr,'fra']]){
    S.lang=sp;rufe=[];
    const bx=fragBox({},{},{type:'input',prompt:'p'},()=>false);
    document.body.append(bx);
@@ -173,7 +173,7 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    await warteAuf(()=>/Als Antwort genommen/.test(bx2.textContent)),bx2.textContent.slice(0,90));
   pruef('Dann geht nichts an die Begleitung',!rufe.some(x=>x.weg==='frage'));
 
-  /* Eine echte Frage geht weiterhin an Emilia */
+  /* Eine echte Frage geht weiterhin an die Begleiterin */
   rufe=[];genommen.length=0;
   gehoert='Wie finde ich das heraus?';
   kn2.click();
@@ -181,7 +181,7 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    await warteAuf(()=>rufe.some(x=>x.weg==='frage')),JSON.stringify(rufe.map(x=>x.weg)));
   pruef('Und wird nicht als Antwort angeboten',genommen.length===0,JSON.stringify(genommen));
 
-  /* Passt die Antwort nicht zur Auswahl, hilft Emilia */
+  /* Passt die Antwort nicht zur Auswahl, hilft die Begleiterin */
   rufe=[];genommen.length=0;
   gehoert='blau';
   kn2.click();
@@ -200,7 +200,7 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   pruef('Ein Wort ist keine Frage',!wirktWieFrage('intransitiv'));
   pruef('Ich weiss nicht ist eine Frage',wirktWieFrage('ich weiss nicht wie das geht'));
   /* Daran ist die erste Fassung gescheitert: ein ausformulierter
-     Antwortsatz wurde seiner Laenge wegen zu Emilia geschickt. */
+     Antwortsatz wurde seiner Laenge wegen zur Begleiterin geschickt. */
   pruef('Ein langer Antwortsatz ist keine Frage',
    !wirktWieFrage('Es hat ein Akkusativobjekt und es ist transitiv'));
   pruef('Zahlwort gleich roemische Ziffer',antwortGleich('Konjunktiv zwei','Konjunktiv II'));
@@ -241,20 +241,20 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    const ziel=QD.opts.find(o=>o.ok);
    if(!ziel)continue;
    const kn=[...document.querySelectorAll('.page button')]
-    .find(x=>/mit Emilia sprechen/.test(x.textContent));
+    .find(x=>new RegExp('mit '+TUTORNAME[S.lang]+' sprechen').test(x.textContent));
    if(!kn)continue;
    rufe=[];
    gehoert='Also ich finde es ist '+ziel.text+' weil man danach fragen kann';
    kn.click();
    const traf=await warteAuf(()=>[...document.querySelectorAll('.page button')]
     .some(x=>x.textContent.trim()===ziel.text&&x.disabled),2000);
-   gewaehlt={ziel:ziel.text,traf:traf,anEmilia:rufe.some(x=>x.weg==='frage')};
+   gewaehlt={ziel:ziel.text,traf:traf,anBegleiterin:rufe.some(x=>x.weg==='frage')};
   }
   pruef('Eine Aufgabe mit Auswahl war erreichbar',!!gewaehlt,'Versuche: '+versuche);
   pruef('Der gesprochene Satz waehlt die Antwort',gewaehlt&&gewaehlt.traf,
    gewaehlt?JSON.stringify(gewaehlt):'keine Aufgabe');
-  pruef('Dabei geht nichts an Emilia',gewaehlt&&!gewaehlt.anEmilia,
-   gewaehlt?JSON.stringify(gewaehlt.anEmilia):'');
+  pruef('Dabei geht nichts an die Begleiterin',gewaehlt&&!gewaehlt.anBegleiterin,
+   gewaehlt?JSON.stringify(gewaehlt.anBegleiterin):'');
 
   /* ---------- 9e. Nebengeraeusche und getippte Antworten ---------- */
   pruef('Klammermarke wird entfernt',sauberGehoert('[stöhnt]')==='',
@@ -283,10 +283,10 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    const QQ=prepare(it,'medium');QQ.t0=performance.now();R9.ended=false;R9.cur=QQ;
    renderQuestion(R9,QQ);
    await warteAuf(()=>[...document.querySelectorAll('.page button')]
-    .some(x=>/mit Emilia sprechen/.test(x.textContent)),3000);
+    .some(x=>new RegExp('mit '+TUTORNAME[S.lang]+' sprechen').test(x.textContent)),3000);
    return {feld:document.querySelector('input.answerbox'),
     knopf:[...document.querySelectorAll('.page button')]
-     .find(x=>/mit Emilia sprechen/.test(x.textContent))};};
+     .find(x=>new RegExp('mit '+TUTORNAME[S.lang]+' sprechen').test(x.textContent))};};
 
   /* Gesprochenes kennt keine Grossschreibung: «Rufen» muss «rufen» treffen */
   let a1=await tippAufgabe(1);
@@ -331,10 +331,10 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
    /Hier bitte tippen/.test(seite()),seite().slice(0,70));
   pruef('Schreibaufgabe fragt dafuer nicht die Begleitung',!rufe.some(x=>x.weg==='frage'));
 
-  /* Eine echte Frage geht auch dort an Emilia */
+  /* Eine echte Frage geht auch dort an die Begleiterin */
   rufe=[];gehoert='Wie finde ich den Infinitiv?';
   a4.knopf.click();
-  pruef('Bei Schreibaufgaben hilft Emilia weiterhin',
+  pruef('Bei Schreibaufgaben hilft die Begleiterin weiterhin',
    await warteAuf(()=>rufe.some(x=>x.weg==='frage'),2500),JSON.stringify(rufe.map(x=>x.weg)));
 
   /* ---------- 9f. Vorsteuerung der Erkennung ---------- */
@@ -382,14 +382,15 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   const itQ=genItem(tp,2,{});const QQ=prepare(itQ,'medium');QQ.t0=performance.now();
   R.cur=QQ;renderQuestion(R,QQ);
   const dran=await warteAuf(()=>[...document.querySelectorAll('.page button')]
-   .some(x=>/Emilia/.test(x.textContent)));
+   .some(x=>new RegExp(TUTORNAME[S.lang]).test(x.textContent)));
   pruef('Der Knopf steht im Fragenschirm',dran);
 
   renderQuestion(R,prepare({type:'speak',prompt:'Sprich nach',answer:'la cloche',
    id:'x',difficulty:1,rounds:1},'medium'));
   await warte(200);
   pruef('Bei Sprechaufgaben kein zweites Mikrofon',
-   ![...document.querySelectorAll('.page button')].some(x=>/Emilia|Ask Kate/.test(x.textContent)));
+   ![...document.querySelectorAll('.page button')]
+    .some(x=>new RegExp(TUTORNAME[S.lang]).test(x.textContent)));
 
   window.fetch=echtesFetch;window.hoerFrei=echtesHoer;window.sag=echtesSag;
   await IDB.set('kv','proxyUrl','aus');

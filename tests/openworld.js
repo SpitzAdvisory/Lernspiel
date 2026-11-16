@@ -83,7 +83,7 @@ const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'..','ow_audio_man
   const si=genItem(mtopic('ow-verbs-sprechen'),1,{});
   pruef('Sprechaufgabe auf Englisch',si.type==='speak'&&si.spr==='en',si.type+'/'+si.spr);
   pruef('Drei Formen werden verlangt',si.formen&&si.formen.length===3,JSON.stringify(si.formen));
-  pruef('Kate bekommt einen Satz zum Vorlesen',/^The three forms of /.test(si.sound),si.sound);
+  pruef('Die Begleiterin bekommt einen Satz zum Vorlesen',/^The three forms of /.test(si.sound),si.sound);
   pruef('Englische Formen werden nach Wörtern beurteilt',
    hoerUrteilDe(['begin began begun'],['begin','began','begun']).ok===true&&
    hoerUrteilDe(['begin began'],['begin','began','begun']).ok===false);

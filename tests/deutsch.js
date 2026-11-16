@@ -151,7 +151,7 @@ const srv=http.createServer((q,s)=>{const f=path.join(D,q.url==='/'?'app.html':d
   pruef('Vier Formen werden verlangt, drei ohne eigene Du-Form',
    si.formen&&(si.formen.length===4||(si.formen.length===3&&/ /.test(DEV.find(v=>v[0]===si.formen[0])[3]))),
    JSON.stringify(si.formen));
-  pruef('Emilia bekommt einen Satz zum Vorlesen',/^Die Stammformen von /.test(si.sound),si.sound);
+  pruef('Die Begleiterin bekommt einen Satz zum Vorlesen',/^Die Stammformen von /.test(si.sound),si.sound);
   pruef('Die Frage wird von selbst gesprochen',si.autoSound===true&&si.soundPre===true);
   const v=DEV.find(x=>x[0]===si.formen[0]);
   pruef('Die verlangten Formen stammen aus der Liste',

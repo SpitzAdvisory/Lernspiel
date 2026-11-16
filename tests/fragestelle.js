@@ -144,39 +144,44 @@ const srv=http.createServer((q,s)=>{
   /Fragen|Ask|Demander/.test(grenze.knopf),grenze.knopf);
  LIMIT=false;
 
- /* ---------- Emilia meldet sich beim Beginn einer Stunde ---------- */
+ /* ---------- Die Begleiterin meldet sich beim Beginn der Stunde ---------- */
  const gruss=await pg.evaluate(async()=>{
   const gesagt=[];
   const echt=window.sprich;
   window.sprich=async(txt,spr)=>{gesagt.push([String(txt),String(spr)]);return true;};
   window.vermittler=async()=>'http://127.0.0.1:8890';
   S.lang='de';
-  await emiliaMeldung({players:[{id:'a',name:'Johannes'}]});
+  await tutorMeldung({players:[{id:'a',name:'Johannes'}]});
   const einer=gesagt.length;
-  await emiliaMeldung({players:[{id:'a',name:'Johannes'},{id:'b',name:'Valentin'}]});
+  await tutorMeldung({players:[{id:'a',name:'Johannes'},{id:'b',name:'Valentin'}]});
   const zwei=gesagt[gesagt.length-1];
   S.lang='fr';
-  await emiliaMeldung({players:[{id:'a',name:'Felix'}]});
+  await tutorMeldung({players:[{id:'a',name:'Felix'}]});
   const franz=gesagt[gesagt.length-1];
   S.lang='de';
   window.vermittler=async()=>null;
   const vorher=gesagt.length;
-  await emiliaMeldung({players:[{id:'a',name:'Johannes'}]});
+  await tutorMeldung({players:[{id:'a',name:'Johannes'}]});
   const ohneVermittler=gesagt.length===vorher;
-  await emiliaMeldung({players:[]});
+  await tutorMeldung({players:[]});
   const ohneSpieler=gesagt.length===vorher;
   window.sprich=echt;
   return {einer,erster:gesagt[0],zwei,franz,ohneVermittler,ohneSpieler};});
- pruef('Emilia meldet sich genau einmal pro Durchgang',gruss.einer===1,gruss.einer);
+ pruef('Sie meldet sich genau einmal pro Durchgang',gruss.einer===1,gruss.einer);
  pruef('Sie spricht das Kind mit dem Namen an',
   /^Hoi Johannes\./.test(gruss.erster[0]),gruss.erster[0]);
- pruef('Sie nennt sich Emilia',/Ich bin Emilia/.test(gruss.erster[0]),gruss.erster[0]);
+ /* Der Name kommt aus TUTORNAME; der Test haelt fest, dass sie sich
+    nennt, nicht wie sie heisst. */
+ const NAME=await pg.evaluate(()=>({de:TUTORNAME.de,en:TUTORNAME.en,fr:TUTORNAME.fr}));
+ pruef('Sie nennt sich beim Namen',
+  new RegExp('Ich bin '+NAME.de).test(gruss.erster[0]),gruss.erster[0]);
  pruef('Sie sagt, wozu der Knopf da ist',/Fragen/.test(gruss.erster[0]),gruss.erster[0]);
  pruef('Der Gruss geht in der Sprache der Stunde hinaus',gruss.erster[1]==='de',gruss.erster[1]);
- pruef('Im Duell bleibt der Name weg',
-  !/Hoi /.test(gruss.zwei[0])&&/Ich bin Emilia/.test(gruss.zwei[0]),gruss.zwei[0]);
- pruef('Auf Französisch heisst sie Emilie',
-  /^Salut Felix\./.test(gruss.franz[0])&&/Je suis Emilie/.test(gruss.franz[0]),gruss.franz[0]);
+ pruef('Im Duell bleibt der Name des Kindes weg',
+  !/Hoi /.test(gruss.zwei[0])&&new RegExp('Ich bin '+NAME.de).test(gruss.zwei[0]),gruss.zwei[0]);
+ pruef('Auf Französisch grüsst sie französisch',
+  /^Salut Felix\./.test(gruss.franz[0])
+  &&new RegExp('Je suis '+NAME.fr).test(gruss.franz[0]),gruss.franz[0]);
  pruef('Der Gruss geht auf Französisch hinaus',gruss.franz[1]==='fr',gruss.franz[1]);
  pruef('Ohne Vermittler schweigt sie',gruss.ohneVermittler===true);
  pruef('Ohne Spieler schweigt sie',gruss.ohneSpieler===true);

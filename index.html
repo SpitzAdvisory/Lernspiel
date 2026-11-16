@@ -1695,7 +1695,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V113';
+const APPVER='V114';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -2173,7 +2173,7 @@ async function startRun(o){
  /* Die Begruessung laeuft vor der ersten Frage, sonst reden sie
     uebereinander. Haengt die Leitung, geht es nach acht Sekunden ohne
     sie weiter. */
- try{ await Promise.race([emiliaMeldung(R),new Promise(f=>setTimeout(f,8000))]); }catch(_){}
+ try{ await Promise.race([tutorMeldung(R),new Promise(f=>setTimeout(f,8000))]); }catch(_){}
  nextQuestion(R);
 }
 function curIdx(R){return R.mode==='duel'?R.q%2:0;}
@@ -3244,7 +3244,7 @@ function sndBtn(fr,pre,spr){const k=pre?'listen':'listenAfter';
  const b=h('button',{class:'btn ghost small sndb',type:'button','aria-label':t(k),title:t(k),
   onclick:ev=>{ev.preventDefault();ev.stopPropagation();if(b.disabled)return;
    /* Fuer Deutsch und Englisch gibt es keine vorgefertigte Aufnahme der
-      Fragesaetze - Emilia und Kate sprechen sie ueber den Vermittler. */
+      Fragesaetze - die Begleiterin spricht sie ueber den Vermittler. */
    if(spr&&spr!=='fr')tutorSprich(fr,spr);else sag(fr,spr||'fr');}},'🔊');
  if(!pre)b.disabled=true;
  return b;}
@@ -3551,7 +3551,7 @@ async function signierteAdresse(agent){
  if(!r.ok||!d||!d.signed_url)throw new Error(String((d&&d.error)||('HTTP '+r.status)).slice(0,120));
  return d.signed_url;}
 
-/* Das Gedaechtnis von Emilia - im Profil des Kindes, nicht beim Anbieter.
+/* Das Gedaechtnis der Begleiterin - im Profil des Kindes, nicht beim Anbieter.
    ElevenLabs bietet dafuer eine eigene Funktion an, die fuer diesen
    Arbeitsbereich gesperrt ist (403 feature_not_available, geprueft am
    15.11.2026). Die App hat aber ohnehin jede Zeile des Gespraechs, sie
@@ -3574,8 +3574,8 @@ function erinnerungText(p){
  }).join('\n');}
 async function erinnerungSichern(p,zeilen){
  if(!p||p.builtin||!zeilen||!zeilen.length)return;
- /* Gespeichert wird der Wortlaut, gekuerzt - keine Deutung. Was Emilia
-    daraus macht, entscheidet sie beim naechsten Mal selbst. */
+ /* Gespeichert wird der Wortlaut, gekuerzt - keine Deutung. Was die
+    Begleiterin daraus macht, entscheidet sie beim naechsten Mal selbst. */
  const txt=zeilen.map(z=>(z[0]==='k'?'Kind: ':'E: ')+String(z[1]||'').replace(/\s+/g,' ').trim())
   .filter(z=>z.length>6).join(' | ').slice(0,ERINN_ZEICHEN);
  if(txt.length<20)return;
@@ -3621,13 +3621,13 @@ async function gespraechStarten(vars,melde,kennung,wer){
  ws=new WebSocket(adresse);
  GESPRAECH={schliesse};
  ws.onopen=()=>{
-  /* Die Kennung sagt Emilia, mit wem sie spricht - ohne einen Namen zu
+  /* Die Kennung sagt der Begleiterin, mit wem sie spricht - ohne einen Namen zu
      verraten. Sie ist die Profilkennung, ein Griff ohne Bedeutung, und
      sie bleibt ueber die Geraete hinweg dieselbe. Daran haengt alles,
-     was Emilia von frueheren Gespraechen behaelt. */
+     was sie von frueheren Gespraechen behaelt. */
   const eroeffnung={type:'conversation_initiation_client_data',dynamic_variables:vars};
   if(kennung)eroeffnung.user_id=kennung;
-  /* Die Sprache steuert nicht nur, was Emilia sagt, sondern auch, wie sie
+  /* Die Sprache steuert nicht nur, was sie sagt, sondern auch, wie sie
      zuhoert: Erkennung und Stimme haengen daran. Darum wird sie mit der
      Eroeffnung gesetzt und nicht bloss im Auftrag erwaehnt. */
   const spr=S.lang==='en'?'en':S.lang==='fr'?'fr':'de';
@@ -3686,11 +3686,11 @@ async function gespraechStarten(vars,melde,kennung,wer){
  ws.onerror=()=>{sage('fehler','netz');schliesse();};
  ws.onclose=()=>{schliesse();};
  return {schliesse};}
-/* Emilia sagt beim Beginn einer Stunde Hallo, damit das Kind weiss, dass
+/* Die Begleiterin sagt beim Beginn einer Stunde Hallo, damit das Kind weiss, dass
    es fragen darf - und nicht erst sucht, wenn es schon steckt. Der Satz
    kommt aus demselben Ablagespeicher wie alles Vorgelesene: nach dem
    ersten Mal kostet er keine Umwandlung mehr. */
-async function emiliaMeldung(R){
+async function tutorMeldung(R){
  if(!R||!Array.isArray(R.players)||!R.players.length)return;
  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia))return;
  let prox=null;
@@ -3712,10 +3712,10 @@ async function emiliaMeldung(R){
 function gespraechBeenden(){if(GESPRAECH)GESPRAECH.schliesse();}
 function gespraechLaeuft(){return !!GESPRAECH;}
 
-/* Was Emilia ueber den Stand wissen darf. Alles steht schon im Geraet:
+/* Was die Begleiterin ueber den Stand wissen darf. Alles steht schon im Geraet:
    der laufende Durchgang, seine Antworten und die Protokolle frueherer
    Laeufe. Gesammelt wird es hier, einmal je Gespraech, damit der Knopf
-   unter der Aufgabe nicht rechnet. Leere Felder sind erlaubt - Emilia
+   unter der Aufgabe nicht rechnet. Leere Felder sind erlaubt - sie
    muss damit umgehen, dass ein Kind zum ersten Mal spielt. */
 function themaName(id){const tp=id?mtopic(id):null;return tp?tName(tp):'';}
 function lernstand(R,p){
@@ -3748,7 +3748,7 @@ function lernstand(R,p){
   .map(id=>({id,q:zaehler[id].r/zaehler[id].n}))
   .filter(x=>x.q<0.7).sort((a,b)=>a.q-b.q).slice(0,2)
   .map(x=>themaName(x.id)+' ('+Math.round(x.q*100)+' %)').filter(Boolean);
- /* Was beim letzten Mal lief - damit Emilia anknuepfen kann. */
+ /* Was beim letzten Mal lief - damit sie anknuepfen kann. */
  let zuletzt='';
  const l=letzterLauf(p,R.game);
  if(l&&l.started){
@@ -3812,7 +3812,7 @@ function fragestelleBox(kontext){
    const f=String((e&&e.message)||e);
    melde('zustand','aus');              /* sonst bliebe der Knopf auf Beenden stehen */
    lauf.textContent=f==='kein-mikrofon'?t('speakNoMic')
-    :f==='tageslimit'?X('Emilia hat für heute genug geredet. Morgen geht es wieder.','Emilia has talked enough for today. Tomorrow it works again.','Emilia a assez parlé pour aujourd’hui. Demain, cela remarchera.')
+    :f==='tageslimit'?X(TUTORNAME.de+' hat für heute genug geredet. Morgen geht es wieder.',TUTORNAME.en+' has talked enough for today. Tomorrow it works again.',TUTORNAME.fr+' a assez parlé pour aujourd’hui. Demain, cela remarchera.')
     :f==='kein-vermittler'?X('Dafür braucht es den Vermittler.','This needs the gateway.','Il faut le relais pour cela.')
     :X('Es klappt gerade nicht.','It is not working just now.','Cela ne marche pas pour l’instant.');
   }finally{knopf.disabled=false;}};
@@ -4327,7 +4327,14 @@ function noteFig(note){const s=svgBox(note.w,note.h);
    angewiesen, sie nie zu nennen. Sie zeigt den naechsten Schritt.
    Ohne eingetragene Vermittleradresse bleibt der Knopf verborgen: ohne ihn
    gibt es keinen Weg zu Stimme und Begleitung. */
-const TUTORNAME={de:'Emilia',en:'Kate',fr:'Emilie'};
+/* Ein Name fuer alle drei Sprachen, seit dem 16.11.2026. Vorher hiess sie
+   Emilia, Kate und Emilie - drei Namen fuer dieselbe Begleiterin, und seit
+   sie eine einzige Stimme hat, passte das nicht mehr zusammen. «Luca»
+   klingt in allen drei Sprachen gleich und legt sich auf kein Geschlecht
+   fest; die Stimme hat Johannes ausgesucht, nicht der Name. Die Form
+   bleibt eine Tabelle, damit ein spaeterer Wunsch nach Sprachvarianten
+   keinen Umbau braucht. */
+const TUTORNAME={de:'Luca',en:'Luca',fr:'Luca'};
 const STTCODE={de:'deu',en:'eng',fr:'fra'};
 const SRLANG={de:'de-CH',en:'en-GB',fr:'fr-FR'};
 
@@ -5259,7 +5266,7 @@ function renderQuestion(R,Q){
    return false;}
   /* Bei den Schreibaufgaben ist die Schreibweise selbst die Uebung.
      Ein gesprochenes Wort nimmt sie dem Kind ab, darum zaehlt es dort
-     nicht als Antwort - fragen darf es Emilia weiterhin. */
+     nicht als Antwort - fragen darf es die Begleiterin weiterhin. */
   if(it.tippen)return 'tippen';
   if(it.type==='input'||it.type==='num'){
    const felder=area.querySelectorAll('input.answerbox');
@@ -10870,13 +10877,13 @@ detopic('de-stamm-teil2',7,1,['Stammformen Teil 2','Principal parts, part 2','Fo
  lv=>stammAufgabe(lv,dv2Pick()));
 
 /* ---------- Stammformen sprechen ----------
-   Emilia fragt, das Kind antwortet laut. Beurteilt wird, ob alle
+   Die Begleiterin fragt, das Kind antwortet laut. Beurteilt wird, ob alle
    Formen gefallen sind - nicht, in welcher Reihenfolge. Die Du-Form
    gehoert dazu, ausser bei Verben wie gelingen, die keine haben. */
 detopic('de-stamm-sprechen',7,1,['Stammformen sprechen','Principal parts - aloud','Formes de base - à l’oral'],
-  ['Emilia nennt das Verb, du sagst die Stammformen laut: Infinitiv, Präteritum, Partizip Perfekt und die Du-Form. Die Reihenfolge ist frei, es müssen nur alle kommen.',
-  'Emilia names the verb and you say the principal parts aloud: infinitive, past tense, participle and the you-form. The order is free; all of them must be there.',
-  'Emilia nomme le verbe et tu dis les formes à voix haute : infinitif, prétérit, participe et la forme en tu. L’ordre est libre, toutes doivent y être.'],
+  [TUTORNAME.de+' nennt das Verb, du sagst die Stammformen laut: Infinitiv, Präteritum, Partizip Perfekt und die Du-Form. Die Reihenfolge ist frei, es müssen nur alle kommen.',
+  TUTORNAME.en+' names the verb and you say the principal parts aloud: infinitive, past tense, participle and the you-form. The order is free; all of them must be there.',
+  TUTORNAME.fr+' nomme le verbe et tu dis les formes à voix haute : infinitif, prétérit, participe et la forme en tu. L’ordre est libre, toutes doivent y être.'],
  ['Stammformen','Präteritum','Partizip Perfekt','Präsens'],
  lv=>{const v=dvPick();const du=(v[3]&&v[3].indexOf(' ')<0)?v[3]:null;
   const frage=D('Die Stammformen von '+v[0]+'.','The principal parts of '+v[0]+'.','Les formes de base de '+v[0]+'.');
@@ -11790,9 +11797,9 @@ owtopic('ow-verbs',7,2,['Open World · Irregular verbs','Open World · Irregular
 
 /* ---------- Unregelmaessige Verben, gesprochen ---------- */
 owtopic('ow-verbs-sprechen',7,2,['Irregular verbs - aloud','Irregular verbs - aloud','Verbes irréguliers - à l’oral'],
- ['Kate nennt das Verb, du sagst die drei Formen laut. Die Reihenfolge ist frei, alle drei müssen kommen.',
-  'Kate names the verb and you say the three forms aloud. The order is free; all three must be there.',
-  'Kate nomme le verbe et tu dis les trois formes à voix haute.'],
+ [TUTORNAME.de+' nennt das Verb, du sagst die drei Formen laut. Die Reihenfolge ist frei, alle drei müssen kommen.',
+  TUTORNAME.en+' names the verb and you say the three forms aloud. The order is free; all three must be there.',
+  TUTORNAME.fr+' nomme le verbe et tu dis les trois formes à voix haute.'],
  ['irregular verb','simple past','past participle'],
  lv=>{const v=OWV[Math.floor(Math.random()*OWV.length)];
   const formen=[v[0]].concat(String(v[1]).split('/')[0]).concat(String(v[2]).split('/')[0]);

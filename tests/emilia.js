@@ -1,4 +1,4 @@
-/* Was Emilia beim Start eines Gespraechs mitbekommt.
+/* Was die Begleiterin beim Start eines Gespraechs mitbekommt.
    Urs wollte am 15.11.2026 eine neugierige Begleiterin, die sich erinnert,
    den Stand kennt und in allen drei Sprachen auf der Stufe des Kindes
    spricht. Dieser Test haelt fest, was die App dafuer hinausreicht. */
@@ -72,6 +72,7 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
   window.gespraechStarten=echt;box.remove();
   return fang;},lang);
 
+ const NAME=await pg.evaluate(()=>({de:TUTORNAME.de,en:TUTORNAME.en,fr:TUTORNAME.fr}));
  const de=await start('de');
  pruef('Die Box erscheint',de&&de.vars,de&&de.fehlt);
  pruef('Die Kennung ist das Profil, nicht der Name',
@@ -82,18 +83,23 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
  pruef('Die Lösung geht mit',de.vars.loesung==='15',de.vars.loesung);
  pruef('Der Stand geht mit',typeof de.vars.stand==='string',de.vars.stand);
  pruef('Die Stufe des Laufs geht mit',de.vars.stufe==='3',de.vars.stufe);
- pruef('Auf Deutsch heisst sie Emilia',
-  de.vars.sprache==='de'&&de.vars.tutorname==='Emilia',
+ /* Seit dem 16.11.2026 ein Name fuer alle drei Sprachen. Der Test haelt
+    fest, dass es derselbe ist, nicht welcher. */
+ pruef('Auf Deutsch kommt der Name aus der Tabelle',
+  de.vars.sprache==='de'&&de.vars.tutorname===NAME.de,
   de.vars.sprache+'/'+de.vars.tutorname);
 
  const en=await start('en');
- pruef('Auf Englisch heisst sie Kate',
-  en.vars.sprache==='en'&&en.vars.tutorname==='Kate',
+ pruef('Auf Englisch kommt der Name aus der Tabelle',
+  en.vars.sprache==='en'&&en.vars.tutorname===NAME.en,
   en.vars.sprache+'/'+en.vars.tutorname);
  const fr=await start('fr');
- pruef('Auf Französisch heisst sie Emilie',
-  fr.vars.sprache==='fr'&&fr.vars.tutorname==='Emilie',
+ pruef('Auf Französisch kommt der Name aus der Tabelle',
+  fr.vars.sprache==='fr'&&fr.vars.tutorname===NAME.fr,
   fr.vars.sprache+'/'+fr.vars.tutorname);
+ pruef('Es ist in allen drei Sprachen derselbe Name',
+  de.vars.tutorname===en.vars.tutorname&&en.vars.tutorname===fr.vars.tutorname,
+  [de.vars.tutorname,en.vars.tutorname,fr.vars.tutorname].join('/'));
 
  /* ---------- Eingebaute Profile bekommen keine Kennung ---------- */
  const gast=await pg.evaluate(async()=>{
@@ -180,6 +186,17 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
  pruef('Die Erinnerung geht mit',mit.len>0,mit.len);
  pruef('Sie bleibt unter 900 Zeichen',mit.len<=900,mit.len);
  pruef('Das Profil wird ans Gespräch gereicht',mit.wer===true,mit.wer);
+
+ /* ---------- Kein alter Name mehr im Code ----------
+    Am 16.11.2026 blieb bei der Umbenennung eine Spielbeschreibung stehen,
+    und zwar auf Deutsch. Diese Pruefung liest die Quelle ohne Kommentare
+    und haelt fest, dass die drei alten Namen nur noch in der Chronik
+    stehen, nicht in einer Zeichenkette fuer das Kind. */
+ const quelle=fs.readFileSync(path.join(D,'app.html'),'utf-8')
+  .replace(/\/\*[\s\S]*?\*\//g,' ').replace(/<!--[\s\S]*?-->/g,' ');
+ for(const alt of ['Emilia','Emilie','Kate']){
+  const n=(quelle.match(new RegExp('\\b'+alt+'\\b','g'))||[]).length;
+  pruef('Der Name '+alt+' kommt im Code nicht mehr vor',n===0,n);}
 
  await b.close();srv.close();
  if(perr.length)pruef('SEITENFEHLER',false,perr.slice(0,3).join(' | '));
