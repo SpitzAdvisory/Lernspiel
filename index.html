@@ -915,6 +915,31 @@ T.fr.dlgLimit="Luca a assez parlé pour aujourd’hui. Demain, cela remarchera."
 T.de.dlgNoProxy="Dafür braucht es den Vermittler.";
 T.en.dlgNoProxy="This needs the gateway.";
 T.fr.dlgNoProxy="Il faut le relais pour cela.";
+/* ---------- Stift am Geraet ---------- */
+T.de.stiftTitel="Stift auf diesem Gerät";
+T.en.stiftTitel="Pen on this device";
+T.fr.stiftTitel="Stylo sur cet appareil";
+T.de.stiftNote="Kästchenaufgaben und Schreiben von Hand brauchen einen Stift. Auf einem Telefon erscheinen sie darum nicht. Hat dieses Gerät trotzdem einen Stift, lässt sich das hier umstellen.";
+T.en.stiftNote="Box arithmetic and writing by hand need a pen, so they do not appear on a phone. If this device does have a pen, change it here.";
+T.fr.stiftNote="Le calcul en cases et l’écriture à la main demandent un stylo ; ils n’apparaissent donc pas sur un téléphone. Si cet appareil a un stylo, change-le ici.";
+T.de.stiftFrage="Stiftaufgaben";
+T.en.stiftFrage="Pen exercises";
+T.fr.stiftFrage="Exercices au stylo";
+T.de.stiftAuto="Nach Bildschirmgrösse";
+T.en.stiftAuto="By screen size";
+T.fr.stiftAuto="Selon la taille de l’écran";
+T.de.stiftJa="Immer zeigen";
+T.en.stiftJa="Always show";
+T.fr.stiftJa="Toujours afficher";
+T.de.stiftNein="Nie zeigen";
+T.en.stiftNein="Never show";
+T.fr.stiftNein="Ne jamais afficher";
+T.de.stiftJetztJa="Dieses Gerät zeigt Stiftaufgaben.";
+T.en.stiftJetztJa="This device shows pen exercises.";
+T.fr.stiftJetztJa="Cet appareil affiche les exercices au stylo.";
+T.de.stiftJetztNein="Dieses Gerät zeigt keine Stiftaufgaben.";
+T.en.stiftJetztNein="This device shows no pen exercises.";
+T.fr.stiftJetztNein="Cet appareil n’affiche pas d’exercices au stylo.";
 T.de.frv_title="Französisch: Wortschatz";
 T.en.frv_title="French: vocabulary";
 T.fr.frv_title="Français : vocabulaire";
@@ -1463,7 +1488,12 @@ function sym(name){
 function knopfText(b,name,text){
  b.replaceChildren(...(name?[sym(name)]:[]),document.createTextNode(text));}
 
-function screen(...kids){const keep=S.keepScroll?window.scrollY:0;S.keepScroll=false;S.sid=(S.sid||0)+1;$('#app').replaceChildren(...kids);
+/* Hiess bis zum 17.11.2026 screen(). Eine Funktion dieses Namens auf
+   oberster Ebene ueberschreibt window.screen, den Bildschirm des
+   Geraets - und zwar still. Die Stifterkennung las darum die
+   Fenstergroesse statt der Bildschirmgroesse. Der Name ist frei
+   gemacht, damit das keinem mehr passiert. */
+function zeigeSeite(...kids){const keep=S.keepScroll?window.scrollY:0;S.keepScroll=false;S.sid=(S.sid||0)+1;$('#app').replaceChildren(...kids);
  window.scrollTo(0,keep);if(keep)requestAnimationFrame(()=>{if(Math.abs(window.scrollY-keep)>2)window.scrollTo(0,keep);});S.onEnter=null;}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -1631,7 +1661,7 @@ function viewMathGame(g){
   const ng=Object.assign({},g||{id:uid(),createdAt:new Date().toISOString()},{title:title.value.trim(),subject:'math',kind:'math',items:[],
    gen:{topics,range:[+lo.value||0,+hi.value||100],sets:setsC.map(l=>l.querySelector('input')).filter(c=>c.checked).map(c=>c.value),ops:opsC.map(l=>l.querySelector('input')).filter(c=>c.checked).map(c=>c.value)}});
   await saveGame(ng);toast(t('saved'));viewAdmin('games');};
- screen(topbar(g?t('editMathGame'):t('newMathGame'),{back:()=>viewAdmin('games')}),h('main',{class:'page stack',style:'max-width:760px'},
+ zeigeSeite(topbar(g?t('editMathGame'):t('newMathGame'),{back:()=>viewAdmin('games')}),h('main',{class:'page stack',style:'max-width:760px'},
   h('div',{},h('label',{class:'f'},t('gameTitle')),title),
   h('h3',{},t('mg_topics')),years.map(y=>h('details',{},h('summary',{},h('b',{},t('yearN',{n:y}))),
    h('div',{class:'stack',style:'margin:8px 0 12px'},MT.filter(x=>x.y===y).map(tp=>{const c=h('input',{type:'checkbox'});c.checked=tsel.has(tp.id);c.addEventListener('change',()=>c.checked?tsel.add(tp.id):tsel.delete(tp.id));
@@ -1718,14 +1748,14 @@ async function initPlay(){
   catch(e){toast(t('connectErr',{e:e.message}),true);}history.replaceState(null,'',DBX.redirect());}
  if(!await IDB.get('kv','dbxRefresh'))return viewConnect();
  S.store=new DbxStore();
- screen(topbar(t('appTitle')),h('main',{class:'page'},h('p',{class:'muted'},t('loading'))));
+ zeigeSeite(topbar(t('appTitle')),h('main',{class:'page'},h('p',{class:'muted'},t('loading'))));
  try{await flushOutbox();await loadAll();}
  catch(e){if(!await IDB.get('kv','dbxRefresh'))return viewConnect();toast(t('err',{e:e.message}),true);
   S.profiles=S.profiles||[];S.games=S.games||[];S.logMap=S.logMap||{};computeState();}
  window.addEventListener('online',()=>flushOutbox().then(updateSyncStatus));
  S.lastRefresh=Date.now();viewHome(true);
 }
-function viewConnect(){screen(topbar(t('appTitle'),{rerender:viewConnect}),h('main',{class:'page stack'},h('h2',{},t('connectTitle')),h('p',{},t('connectText')),
+function viewConnect(){zeigeSeite(topbar(t('appTitle'),{rerender:viewConnect}),h('main',{class:'page stack'},h('h2',{},t('connectTitle')),h('p',{},t('connectText')),
  h('button',{class:'btn big',onclick:()=>DBX.start().catch(e=>toast(t('connectErr',{e:e.message}),true))},t('connectBtn')),h('p',{class:'small muted'},t('homeTip')),brandFoot()));}
 async function disconnectDbx(){if(!confirm(t('confirmDisconnect')))return;await IDB.del('kv','dbxRefresh');DBX.token=null;viewConnect();}
 async function updateSyncStatus(){const el=$('#syncstatus');if(!el||!PLAY_ONLY)return;const n=(await IDB.keys('outbox')).length;el.textContent=n?t('pending',{n}):'';}
@@ -1739,7 +1769,7 @@ async function saveGame(g){g.updatedAt=new Date().toISOString();await S.store.wr
 
 /* ================= boot ================= */
 async function init(){
- try{await IDB.open();}catch(e){screen(h('div',{class:'page'},h('p',{},t('err',{e:e.message}))));return;}
+ try{await IDB.open();}catch(e){zeigeSeite(h('div',{class:'page'},h('p',{},t('err',{e:e.message}))));return;}
  S.lang=(await IDB.get('kv','lang'))||(LANGS.find(l=>(navigator.language||'de').startsWith(l))||'en');applyLang();
  nachrichtStarten();
  pauseWacht();
@@ -1753,7 +1783,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V116';
+const APPVER='V117';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1773,7 +1803,7 @@ async function pickFolder(){if(!('showDirectoryPicker'in window)){toast(t('noFsA
 
 function viewSetup(){
  const re=()=>viewSetup();
- screen(topbar(t('setupTitle'),{rerender:re}),h('main',{class:'page'},
+ zeigeSeite(topbar(t('setupTitle'),{rerender:re}),h('main',{class:'page'},
   h('h2',{},t('setupFolder')),
   !('showDirectoryPicker'in window)?h('p',{class:'muted'},t('noFsApi')):null,
   h('div',{class:'row'},
@@ -1783,7 +1813,7 @@ function viewSetup(){
 }
 function viewReconnect(hd){
  const re=()=>viewReconnect(hd);
- screen(topbar(t('reconnectTitle'),{rerender:re}),h('main',{class:'page'},
+ zeigeSeite(topbar(t('reconnectTitle'),{rerender:re}),h('main',{class:'page'},
   h('p',{},t('reconnectText',{name:hd.name})),
   h('div',{class:'row'},
    h('button',{class:'btn',onclick:async()=>{try{if(await hd.requestPermission({mode:'readwrite'})==='granted'){S.store=new FolderStore(hd);await afterStore();}}catch(e){toast(t('err',{e:e.message}),true);}}},t('reconnect')),
@@ -1794,7 +1824,7 @@ function viewSetPassword(){
  const go=async()=>{if(pw.value.length<4)return toast(t('pwShort'),true);const salt=uid()+uid();
   S.cfg={version:1,salt,pwHash:await sha(salt+pw.value),createdAt:new Date().toISOString()};
   try{await S.store.write('config.json',S.cfg);}catch(e){return toast(t('err',{e:e.message}),true);}S.admin=true;viewAdmin('players');};
- screen(topbar(t('setupTitle'),{rerender:re}),h('main',{class:'page stack'},
+ zeigeSeite(topbar(t('setupTitle'),{rerender:re}),h('main',{class:'page stack'},
   h('h2',{},t('setPw')),h('p',{class:'muted'},t('setPwNote')),
   h('div',{},h('label',{class:'f',for:'pw'},t('password')),pw),
   h('button',{class:'btn',onclick:go},t('finish'))));
@@ -1807,7 +1837,7 @@ function viewHome(noRefresh){
  setTimeout(nachrichtZeigen,0);        /* was waehrend des Spiels wartete */
  const re=()=>viewHome(true);
  const extra=PLAY_ONLY?h('button',{class:'btn ghost small',title:t('sync'),'aria-label':t('sync'),onclick:()=>{S.lastRefresh=0;viewHome();}},'↻'):null;
- screen(topbar(t('appTitle'),{rerender:re,extra}),
+ zeigeSeite(topbar(t('appTitle'),{rerender:re,extra}),
   h('main',{class:'page'},h('h2',{class:'hand'},t('whoPlays')),
    S.profiles.length?h('div',{class:'players'},S.profiles.map(p=>h('button',{class:'player',onclick:()=>viewGames(p)},
      h('div',{class:'av','aria-hidden':'true'},p.avatar),h('div',{class:'nm'},p.name),h('div',{class:'muted small'},t('level',{n:levelOf(st(p.id).xp)})))))
@@ -1865,7 +1895,7 @@ async function viewGames(p){
  const pausiert=await pauseLaden(p.id).catch(()=>null);
  const s=st(p.id);const m=s.mastery;const lv=levelOf(s.xp);const lo=xpFor(lv),hi=xpFor(lv+1);
  const re=()=>{S.keepScroll=true;viewGames(p);};
- screen(topbar(t('chooseGame'),{back:viewHome,rerender:re}),h('main',{class:'page stack'},
+ zeigeSeite(topbar(t('chooseGame'),{back:viewHome,rerender:re}),h('main',{class:'page stack'},
   pausiert?pauseKarte(p,pausiert,re):null,
   h('div',{class:'row'},h('span',{style:'font-size:3rem','aria-hidden':'true'},p.avatar),
    h('div',{class:'grow',style:'flex:1'},h('h2',{class:'hand',style:'margin:0'},t('hello',{name:p.name})),
@@ -1982,7 +2012,7 @@ function viewRunSetup(p,g,prev){
  const wahlErklaerung=h('div',{class:'small muted',style:'margin-top:10px;display:grid;gap:3px'},
   erklaert(wahlArt,'mode'),erklaert(wahlStufe,'diff'),
   erklaert(wahlAnpass,'adaptive'),sel.mode==='duel'?null:erklaert(wahlMinis,'minis'));
- screen(topbar(g.title,{back:()=>viewGames(p),rerender:re}),h('main',{class:'page stack'},
+ zeigeSeite(topbar(g.title,{back:()=>viewGames(p),rerender:re}),h('main',{class:'page stack'},
   !g.gen&&!g.items.length?h('p',{class:'muted'},t('noItems')):null,
   g.gen?topicChooser(p,g,sel,re):null,
   g.gen?sectionChooser(sel,re):null,
@@ -2092,7 +2122,7 @@ function viewTopicCard(tp,o){
  const more=h('button',{class:'btn ghost small'},t('showStep'));
  const show=()=>{if(k<it.steps.length)stepsL.append(h('li',{},it.steps[k++]));if(k>=it.steps.length)more.remove();};more.addEventListener('click',show);show();
  const terms=(tp.terms||[]).map(glossTerm).filter(Boolean);
- screen(topbar(nm3(tp.n),{back:o.back}),h('main',{class:'page stack'},
+ zeigeSeite(topbar(nm3(tp.n),{back:o.back}),h('main',{class:'page stack'},
   o.noCard?null:h('section',{class:'card stack'},h('p',{style:'font-size:1.15rem'},nm3(tp.c)),
    terms.length?h('dl',{class:'glos small'},terms.map(x=>[h('dt',{},x.t),h('dd',{},x.d)])):null),
   h('section',{class:'card stack'},h('h3',{style:'margin:0'},'✏️ '+t('example')),h('p',{class:'prompt'},rich(it.prompt)),exampleFig(it),
@@ -2104,7 +2134,7 @@ function viewGlossary(o){
  const q=h('input',{type:'search',placeholder:'🔎','aria-label':t('glossary')});const dl=h('dl',{class:'glos'});
  const draw=()=>{const f=q.value.trim().toLowerCase();dl.replaceChildren(...items.filter(x=>!f||x.t.toLowerCase().includes(f)||x.d.toLowerCase().includes(f)).flatMap(x=>[h('dt',{},x.t),h('dd',{},x.d)]));};
  q.addEventListener('input',draw);draw();
- screen(topbar(t('glossary'),{back:o.back}),h('main',{class:'page stack'},q,h('section',{class:'card'},dl)));
+ zeigeSeite(topbar(t('glossary'),{back:o.back}),h('main',{class:'page stack'},q,h('section',{class:'card'},dl)));
 }
 
 /* ================= run engine ================= */
@@ -3140,7 +3170,7 @@ function spielSchirm(R){
   stimme(sp.n[i]+'. '+t(z.art==='kloetze'?'spielZielKloetze':z.art==='leben'?'spielZielLeben':z.art==='tore'?'spielZielTore':'spielZielTreffer',{n:z.n}));
   F=sp.bau(platz,{stufe,fertig});});
  S.onEnter=()=>losB.click();
- screen(topbar(t('spielTitel'),{lock:false,back:()=>{droneAus();if(F&&F.ende)F.ende();finishRun(R,true);},rerender:()=>spielSchirm(R)}),
+ zeigeSeite(topbar(t('spielTitel'),{lock:false,back:()=>{droneAus();if(F&&F.ende)F.ende();finishRun(R,true);},rerender:()=>spielSchirm(R)}),
   h('main',{class:'page stack'},hud(R),
    h('div',{class:'card stack'},
     h('h2',{style:'margin:0'},'🎮 '+sp.n[i]),
@@ -4251,6 +4281,43 @@ function zboxGet(){try{const v=parseInt(localStorage.getItem('spitz.zbox'),10);i
 function zboxSet(v){try{localStorage.setItem('spitz.zbox',String(v));}catch(_){}}
 function zboxNext(v){const i=ZBOX_WAEHLBAR.indexOf(v);return ZBOX_WAEHLBAR[(i<0?2:i+1)%ZBOX_WAEHLBAR.length];}
 function padTouchDa(){try{return ('ontouchstart' in window)||navigator.maxTouchPoints>0;}catch(_){return false;}}
+/* ---------- Geraete mit Stift ----------
+   Die Kaestchenaufgaben und das Schreiben von Hand brauchen einen Stift.
+   Ein Telefon hat keinen, also sollen diese Aufgaben dort gar nicht erst
+   erscheinen - so hat es Urs am 17.11.2026 festgelegt.
+   Die Unterscheidung laeuft ueber die kuerzere Bildschirmkante und nicht
+   ueber eine Geraeteliste: Listen veralten, Bildschirme nicht. Ein
+   Telefon misst dort unter 600 Punkten, das kleinste iPad 744. Geraete,
+   die das Mass nicht trifft - ein Telefon, das einen Stift kennt -
+   bekommen den Schalter. Er liegt im Geraet und nicht im Profil, weil er
+   zum Geraet gehoert und nicht zum Kind: dasselbe Kind spielt am iPad mit
+   Stift und am Telefon ohne. */
+const STIFT_KANTE=600;
+function stiftGeraetGet(){try{const v=localStorage.getItem('spitz.stift');
+  if(v==='ja')return 'ja';if(v==='nein')return 'nein';}catch(_){}
+ return 'auto';}
+function stiftGeraetSet(v){try{if(v==='auto')localStorage.removeItem('spitz.stift');
+  else localStorage.setItem('spitz.stift',v);}catch(_){}}
+function stiftGeraet(){
+ const v=stiftGeraetGet();
+ if(v==='ja')return true;
+ if(v==='nein')return false;
+ /* Die App hat eine eigene Funktion zeigeSeite(); der blosse Name trifft
+    darum nicht den Bildschirm, sondern sie. Das Geraet wird ueber
+    window.screen geholt und in einer eigenen Variable festgehalten.
+    Ohne das fiel die Erkennung still auf die Fensterbreite zurueck, und
+    ein schmal gezogenes Fenster am Desktop haette die Aufgaben
+    verschwinden lassen. */
+ let w=0,hh=0;
+ try{const sc=window.screen||null;
+     w=(sc&&sc.width)||0; hh=(sc&&sc.height)||0;
+     if(!w||!hh){w=window.innerWidth||0;hh=window.innerHeight||0;}}catch(_){}
+ const kurz=Math.min(w,hh);
+ return !kurz||kurz>=STIFT_KANTE;}
+/* Diese drei Themen bestehen ganz aus Kaestchenaufgaben. Ohne Stift
+   faellt das Thema weg; schriftlich addieren und subtrahieren bleibt als
+   getipptes Thema (m3-written) erhalten. */
+const STIFTTHEMEN=['m3-stellen','m4-malschriftlich','m4-geteiltschriftlich'];
 function padVisGet(d){try{const v=parseInt(localStorage.getItem('spitz.padvis'),10);if(PADVIS.indexOf(v)>=0)return v;}catch(_){}
  return PADVIS[1];}
 function padVisSet(v){try{localStorage.setItem('spitz.padvis',String(v));}catch(_){}}
@@ -4813,7 +4880,7 @@ function renderHoeren(R,Q){
   if(laeuft)return;
   laeuft=true;await vorlesen();knopfSetzen('',t('hoerStart'));laeuft=false;});
 
- screen(topbar(R.game.title,{back:()=>{weg=true;vorlesenHalt();wachAus();finishRun(R,true);}}),
+ zeigeSeite(topbar(R.game.title,{back:()=>{weg=true;vorlesenHalt();wachAus();finishRun(R,true);}}),
   h('main',{class:'page'},hud(R),
    h('div',{class:'card'},h('div',{class:'hoerBox'},
     satzEl,frage,wahl,knopf,stand,gehoertEl,
@@ -5440,7 +5507,7 @@ function renderQuestion(R,Q){
  const pen=penOn(R.players[curIdx(R)])&&it.type!=='handwrite'&&blattSpiel(R.game);
  const pad=pen?scratchPad({height:it.type==='map'?240:300}):null;if(pad)Q.pad=pad;
  const padBox=pad?h('details',{class:'padbox',open:true},h('summary',{},'🖊 '+t('padTitle')),pad.el):null;
- screen(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},
+ zeigeSeite(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},
    it.satz?h('p',{class:'beispiel'},it.satz):null,
    h('p',{class:'prompt'},rich(Q.prompt||it.prompt),it.sound?(sndEl=sndBtn(it.sound,!!it.soundPre,it.spr||'fr')):null,
    it.nat?sndBtn(it.nat,true,it.natSpr||'de'):null,
@@ -5682,7 +5749,7 @@ function progressChart(runs,o={}){const W=640,H=270,L=46,Rr=52,T=18,B=38;
   h('p',{class:'small muted',style:'margin-top:4px'},t('chartExplain')));}
 function viewResult(R,results,winner,draw){
  const p0=R.players[0];
- screen(topbar(t('resultTitle')),h('main',{class:'page stack'},
+ zeigeSeite(topbar(t('resultTitle')),h('main',{class:'page stack'},
   R.mode==='duel'?h('h2',{class:'hand',style:'font-size:2rem'},draw?t('draw'):'🏆 '+t('winner',{name:R.players[winner].name})):null,
   results.map(r=>h('section',{class:'card stack',style:'margin-bottom:14px'},
    h('div',{class:'row'},h('span',{style:'font-size:2.4rem'},r.p.avatar),h('b',{style:'font-size:1.2rem'},r.p.name)),
@@ -9981,7 +10048,10 @@ Promise.all([IDB.get('kv','apiKey'),IDB.get('kv','proxyUrl')])
  .then(([k,p])=>{SCHRIFTOK=!!k||/^https:\/\//.test(String(p||'').trim());}).catch(()=>{});
 function blattSpiel(g){return !!g && (SPRACHSPIEL.indexOf(g.id)<0 || SCHRIFTOK);}
 function penNow(){const R=S.run;
- return !!(R&&R.players&&penOn(R.players[curIdx(R)])&&blattSpiel(R.game));}
+ /* stiftGeraet() steht vornean: ohne Stift am Geraet nuetzt die
+    Einstellung im Profil nichts. Hier haengen alle Aufgaben, die von
+    Hand geschrieben werden. */
+ return !!(R&&R.players&&stiftGeraet()&&penOn(R.players[curIdx(R)])&&blattSpiel(R.game));}
 /* ================= Französisch: Wortschatz ================= */
 /* Entry: [fr, de, en, gender]  gender: m | f | mv | fv | pl | '' (not a noun)
    mv/fv = noun beginning with a vowel or mute h -> article l'  */
@@ -10237,7 +10307,7 @@ function frPairs(tp){const es=shuffle(tp.w).slice(0,5);
    es.map(e=>frWord(e)+' = '+natPlain(e)).join('   ')]);}
 /* Von Hand schreiben ohne Erkennung heisst: selbst urteilen. Das bringt
    beim Vokabellernen nichts, darum wird getippt. */
-function frWrite(tp){return SCHRIFTOK?frWriteAlt(tp):frType(tp);}
+function frWrite(tp){return (SCHRIFTOK&&stiftGeraet())?frWriteAlt(tp):frType(tp);}
 function frWriteAlt(tp){const nouns=tp.w.filter(x=>x[3]);const es=shuffle(nouns.length?nouns:tp.w).slice(0,1);const withArt=es.every(e=>e[3]);
  return steps({type:'handwrite',prompt:(withArt?X('Schreibe von Hand auf Französisch, mit Artikel:','Write by hand in French, with the article:','Écris à la main en français, avec l’article :')
    :X('Schreibe von Hand auf Französisch:','Write by hand in French:','Écris à la main en français :'))+'\n'+es.map(e=>'• '+natPlain(e)).join('\n'),
@@ -10412,7 +10482,7 @@ function ddPairs(tp){
   [X('Fang mit den Wörtern an, die du sicher weisst.','Start with the words you are sure about.','Commence par les mots que tu connais bien.'),
    es.map(d=>ddFr(d)+' = '+ddDe(d)).join('   ')]);}
 
-function ddWrite(tp){return SCHRIFTOK?ddWriteAlt(tp):ddType(tp);}
+function ddWrite(tp){return (SCHRIFTOK&&stiftGeraet())?ddWriteAlt(tp):ddType(tp);}
 function ddWriteAlt(tp){
  const es=ddTake(tp,1);
  if(!es.length)return ddType(tp);
@@ -12046,21 +12116,25 @@ Object.defineProperty(OW_GAME,'title',{get:()=>t('ow_title'),enumerable:true});
 
 const MATH_GAME={id:'math-lp21',builtin:true,subject:'math',kind:'math',items:[],gen:{topics:null}};
 Object.defineProperty(MATH_GAME,'title',{get:()=>t('math_title'),enumerable:true});
-function genTopics(g){return g.gen.topics?g.gen.topics.map(mtopic).filter(Boolean):(g.gen.pool==='it'?ITT:MT);}
+function genTopics(g){
+ const alle=g.gen.topics?g.gen.topics.map(mtopic).filter(Boolean):(g.gen.pool==='it'?ITT:MT);
+ /* Eine einzige Stelle, weil sowohl der Vorrat eines Durchgangs als auch
+    die Auswahltabelle hierdurch gehen. */
+ return stiftGeraet()?alle:alle.filter(x=>STIFTTHEMEN.indexOf(x.id)<0);}
 function gameUnits(g){return g.gen?genTopics(g).map(x=>x.id):g.items.map(i=>i.id);}
 
 /* ================= admin ================= */
 function viewAdminLogin(){
  const pw=h('input',{type:'password',id:'pw',autocomplete:'current-password'});
  const go=async()=>{if(await sha(S.cfg.salt+pw.value)===S.cfg.pwHash){S.admin=true;viewAdmin('players');}else{toast(t('pwWrong'),true);pw.value='';pw.focus();}};
- screen(topbar(t('pwTitle'),{lock:false,back:viewHome,rerender:viewAdminLogin}),h('main',{class:'page stack'},
+ zeigeSeite(topbar(t('pwTitle'),{lock:false,back:viewHome,rerender:viewAdminLogin}),h('main',{class:'page stack'},
   h('div',{},h('label',{class:'f',for:'pw'},t('password')),pw),h('button',{class:'btn',onclick:go},t('unlock'))));
  S.onEnter=go;pw.focus();
 }
 function viewAdmin(tab){
  if(!S.admin)return viewAdminLogin();
  const body=h('div',{});
- screen(topbar(t('admin'),{lock:false,rerender:()=>viewAdmin(tab),extra:h('button',{class:'btn ghost small',onclick:()=>{S.admin=false;viewHome();}},t('lockAdmin'))}),
+ zeigeSeite(topbar(t('admin'),{lock:false,rerender:()=>viewAdmin(tab),extra:h('button',{class:'btn ghost small',onclick:()=>{S.admin=false;viewHome();}},t('lockAdmin'))}),
   h('main',{class:'page wide'},h('div',{class:'tabs',role:'tablist'},[['players','tabPlayers'],['games','tabGames'],['logs','tabLogs'],['maps','tabMaps'],['settings','tabSettings']].map(([k,l])=>
    h('button',{role:'tab','aria-selected':String(tab===k),onclick:()=>viewAdmin(k)},t(l)))),body));
  ({players:adminPlayers,games:adminGames,logs:adminLogs,maps:adminMaps,settings:adminSettings})[tab](body);
@@ -12188,7 +12262,7 @@ function jsonEdit(it,onSave){
 }
 async function viewItems(g){
  for(const pk of new Set(g.items.filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack)))await loadPack(pk).catch(()=>{});
- const draw=()=>{screen(topbar(t('questionsOf',{t:g.title}),{back:()=>viewAdmin('games'),rerender:draw}),h('main',{class:'page wide'},
+ const draw=()=>{zeigeSeite(topbar(t('questionsOf',{t:g.title}),{back:()=>viewAdmin('games'),rerender:draw}),h('main',{class:'page wide'},
   g.items.length?h('div',{class:'list'},g.items.map((it,k)=>itemRow(it,{
    thumb:it.image&&it.image.path?lazyImg(it.image.path,{class:'thumb'}):null,
    onImage:it.image&&it.image.path?()=>figEditor({sources:[()=>imgURL(it.image.path).then(loadImgEl)],spot:it.type==='spot',
@@ -12380,7 +12454,7 @@ async function viewGenerate(g){
   const sources=photos.map(ph=>{let pr=null;return()=>pr||(pr=loadImgEl(ph.url));});
   viewReview(g,{title:title.value.trim(),kind:kind.value,instructions:instr.value.trim(),files:f.files.map(x=>x.name),mapPacks:packs},out,dropped,sources);
  });
- const draw=()=>screen(topbar(g?t('addMaterial')+': '+g.title:t('newGame'),{back:()=>viewAdmin('games')}),h('main',{class:'page stack'},
+ const draw=()=>zeigeSeite(topbar(g?t('addMaterial')+': '+g.title:t('newGame'),{back:()=>viewAdmin('games')}),h('main',{class:'page stack'},
   !g?h('div',{},h('label',{class:'f',for:'gt'},t('gameTitle')),title):null,
   h('div',{},h('label',{class:'f',for:'gk'},t('kind')),kind),h('div',{},h('label',{class:'f',for:'gi'},t('instructions')),instr),
   h('div',{},h('label',{class:'f',for:'gc'},t('count')),cnt),h('div',{},h('label',{class:'f',for:'gf'},t('files')),fi,h('p',{class:'small muted',style:'margin-top:6px'},t('materialNote'))),
@@ -12392,7 +12466,7 @@ function viewReview(g,meta,items,dropped,sources){
  sources=sources||[];const keep=items.map(()=>true);const status=h('p',{class:'muted','aria-live':'polite'});
  const thumbFor=it=>{if(!it._fig)return null;const im=h('img',{class:'thumb',alt:''});const src=sources[it._fig.photo];
   if(src)src().then(img=>{im.src=bakeFigure(img,it._fig,240).toDataURL('image/jpeg',0.8);}).catch(()=>{});return im;};
- const draw=()=>screen(topbar(t('review'),{back:()=>viewAdmin('games')}),h('main',{class:'page wide stack'},
+ const draw=()=>zeigeSeite(topbar(t('review'),{back:()=>viewAdmin('games')}),h('main',{class:'page wide stack'},
   h('p',{},t('genDone',{n:items.length,d:dropped})),
   h('div',{class:'list'},items.map((it,k)=>{const cb=h('input',{type:'checkbox','aria-label':t('keep'),onchange:e=>{keep[k]=e.target.checked;}});cb.checked=keep[k];
    return itemRow(it,{check:cb,thumb:thumbFor(it),onMapChange:async()=>draw(),onEdit:()=>jsonEdit(it,async n=>{items[k]=n;draw();}),
@@ -12467,7 +12541,18 @@ async function adminSettings(body){
  const prox=h('input',{type:'url',id:'px',autocomplete:'off',placeholder:'https://….workers.dev'});prox.value=(await IDB.get('kv','proxyUrl'))||'';
  const model=h('input',{type:'text',id:'am'});model.value=(await IDB.get('kv','model'))||DEFAULT_MODEL;
  const npw=h('input',{type:'password',id:'np',autocomplete:'new-password'});
+ /* Der Stiftschalter gehoert zum Geraet und steht darum zuoberst,
+    getrennt von allem, was ins Profil oder in die Ablage geht. */
+ const stiftLage=h('p',{class:'small muted'},t(stiftGeraet()?'stiftJetztJa':'stiftJetztNein'));
+ const stiftWahl=h('select',{id:'sg',onchange:()=>{stiftGeraetSet(stiftWahl.value);
+   stiftLage.textContent=t(stiftGeraet()?'stiftJetztJa':'stiftJetztNein');}},
+  [['auto','stiftAuto'],['ja','stiftJa'],['nein','stiftNein']].map(([v,l])=>
+   h('option',{value:v,selected:stiftGeraetGet()===v},t(l))));
  body.append(h('div',{class:'stack',style:'max-width:620px'},
+  h('h3',{},t('stiftTitel')),
+  h('p',{class:'small muted'},t('stiftNote')),
+  h('div',{},h('label',{class:'f',for:'sg'},t('stiftFrage')),stiftWahl),
+  stiftLage,
   PLAY_ONLY?null:h('h3',{},t('dataFolder')),
   PLAY_ONLY?null:h('p',{},h('b',{},S.store.kind==='folder'?'📁 '+S.store.name:t('browserStorage'))),
   PLAY_ONLY?null:h('p',{class:'small muted'},t('folderHint')),
