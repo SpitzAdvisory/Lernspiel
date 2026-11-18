@@ -54,11 +54,13 @@ const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?''
  const leer=await pg.evaluate(()=>{window.__setzeLogs([]);
   viewRunSetup(window.__A,MATH_GAME);
   return {stand:window.__stand(),zeilen:window.__zeilen(),
-   woerter:{mode:t('mode'),diff:t('difficulty'),adjust:t('adjust'),minis:t('minis'),
+   woerter:{mode:t('mode'),rechenart:t('rechenart'),diff:t('difficulty'),adjust:t('adjust'),minis:t('minis'),
     klassisch:t('m_classic'),leicht:t('d_easy'),adaptiv:t('adaptive'),an:t('minisOn')}};});
- pruef('Vier Zeilen ohne Duell',
-  JSON.stringify(leer.zeilen)===JSON.stringify([leer.woerter.mode,leer.woerter.diff,
-   leer.woerter.adjust,leer.woerter.minis]),leer.zeilen.join(' / '));
+ /* Seit dem 18.11.2026 steht beim Rechnen die Rechenart dazwischen -
+    im Kopf, mit Notizen, schriftlich. */
+ pruef('Fuenf Zeilen ohne Duell',
+  JSON.stringify(leer.zeilen)===JSON.stringify([leer.woerter.mode,leer.woerter.rechenart,
+   leer.woerter.diff,leer.woerter.adjust,leer.woerter.minis]),leer.zeilen.join(' / '));
  pruef('Ohne Protokoll steht die Vorgabe',
   leer.stand[leer.woerter.mode]===leer.woerter.klassisch
   &&leer.stand[leer.woerter.diff]===leer.woerter.leicht

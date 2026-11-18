@@ -310,6 +310,13 @@ svg.map circle.tapdot{stroke:#fff;stroke-width:2;vector-effect:non-scaling-strok
 .zscroll.mehrLinks.mehrRechts{-webkit-mask-image:linear-gradient(to right,transparent,#000 26px,#000 calc(100% - 26px),transparent);
  mask-image:linear-gradient(to right,transparent,#000 26px,#000 calc(100% - 26px),transparent)}
 
+.kopfliste{display:grid;gap:10px;margin-top:4px}
+.kopfzeile{display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
+.kopffrage{font-weight:700;font-size:1.25rem;font-variant-numeric:tabular-nums;
+ min-width:0;flex:1 1 auto;overflow-wrap:anywhere}
+.kopfgleich{font-weight:700;font-size:1.25rem;color:var(--muted);flex:0 0 auto}
+.kopffeld{flex:0 0 5.5em;width:5.5em;text-align:center;font-variant-numeric:tabular-nums}
+@media(max-width:420px){.kopffrage{font-size:1.1rem}.kopffeld{flex-basis:4.2em;width:4.2em}}
 .notiz>summary{cursor:pointer;font-weight:700;font-size:.95rem;color:var(--muted);
  padding:8px 2px;min-height:44px;display:flex;align-items:center;gap:6px}
 .notiz[open]>summary{margin-bottom:2px}
@@ -864,6 +871,43 @@ T.de.byHandNote="Schreibe die Antwort von Hand auf das Blatt unten, dann zeige d
 T.en.byHandNote="Write the answer by hand on the sheet below, then show the solution and compare honestly. Your handwriting is saved in the log. On the iPad you can also write straight into the answer field with the Apple Pencil.";
 T.fr.byHandNote="Écris la réponse à la main sur la feuille ci-dessous, puis affiche la solution et compare honnêtement. Ton écriture est enregistrée. Sur l’iPad, tu peux aussi écrire directement dans le champ avec l’Apple Pencil.";
 /* ---------- Sprechen ---------- */
+/* ---------- Rechenart ---------- */
+T.de.rechenart="Rechenart";
+T.en.rechenart="How to calculate";
+T.fr.rechenart="Manière de calculer";
+T.de.r_kopf="Kopfrechnen";
+T.en.r_kopf="In your head";
+T.fr.r_kopf="De tête";
+T.de.r_notiz="Mit Notizen";
+T.en.r_notiz="With notes";
+T.fr.r_notiz="Avec brouillon";
+T.de.r_schriftlich="Schriftlich";
+T.en.r_schriftlich="In columns";
+T.fr.r_schriftlich="En colonnes";
+T.de.rd_kopf="Fünf Rechnungen in einer Frage, kein Notizblatt. Es geht um Tempo.";
+T.en.rd_kopf="Five sums in one question, no scratch pad. Speed is the point.";
+T.fr.rd_kopf="Cinq calculs par question, sans brouillon. C’est une question de vitesse.";
+T.de.rd_notiz="Eine Aufgabe je Frage, das Notizblatt liegt bereit.";
+T.en.rd_notiz="One exercise per question, with the scratch pad ready.";
+T.fr.rd_notiz="Un exercice par question, le brouillon est là.";
+T.de.rd_schriftlich="Jede Aufgabe als Kästchengitter, mit Stift oder Tasten.";
+T.en.rd_schriftlich="Every exercise as a box grid, with pen or keys.";
+T.fr.rd_schriftlich="Chaque exercice en grille de cases, au stylo ou au clavier.";
+T.de.rd_schriftlichOhne="Dieses Gerät hat keinen Stift. In den Einstellungen umstellbar.";
+T.en.rd_schriftlichOhne="This device has no pen. Change it in the settings.";
+T.fr.rd_schriftlichOhne="Cet appareil n’a pas de stylo. Modifiable dans les réglages.";
+T.de.hint_kopf="Alle fünf ausfüllen, dann prüfen.";
+T.en.hint_kopf="Fill in all five, then check.";
+T.fr.hint_kopf="Remplis les cinq, puis vérifie.";
+T.de.t_kopf="Kopfrechnen";
+T.en.t_kopf="Mental arithmetic";
+T.fr.t_kopf="Calcul mental";
+T.de.kopfOffen="Noch {n} offen.";
+T.en.kopfOffen="{n} still open.";
+T.fr.kopfOffen="Encore {n} à remplir.";
+T.de.kopfTeil="{n} von {m} richtig.";
+T.en.kopfTeil="{n} of {m} right.";
+T.fr.kopfTeil="{n} sur {m} juste.";
 T.de.spr_title="Sprechen: Französisch";
 T.en.spr_title="Speaking: French";
 T.fr.spr_title="Parler : français";
@@ -1783,7 +1827,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V118';
+const APPVER='V119';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1878,7 +1922,8 @@ function pauseKarte(p,d,re){
   const sel=Object.assign({},d.sel||{});
   if(Array.isArray(sel.topics))sel.topics=new Set(sel.topics);
   await startRun({players:spieler,game:g,mode:d.mode,diff:d.diff,adaptive:d.adaptive,
-   minis:d.spielAt!==null,sel,topics:d.topics,sub:d.sub,fort:d});};
+   minis:d.spielAt!==null,rechenart:(sel&&sel.rechenart)||d.rechenart,
+   sel,topics:d.topics,sub:d.sub,fort:d});};
  const verwerfen=async()=>{
   if(!confirm(t('pauseVerwerfenFrage')))return;
   await pauseWeg(p.id);re();};
@@ -1938,6 +1983,7 @@ function vorwahlAusLauf(p,g){
  if(l.mode)v.mode=l.mode;
  if(l.difficulty)v.diff=l.difficulty;
  if(typeof l.adaptive==='boolean')v.adaptive=l.adaptive;
+ if(RECHENARTEN.indexOf(l.rechenart)>=0)v.rechenart=l.rechenart;
  if(l.mode==='duel'){
   const anderer=(l.players||[]).map(x=>x&&x.id).find(id=>id&&id!==p.id);
   if(anderer&&S.profiles.some(o=>o.id===anderer))v.opp=anderer;
@@ -1956,7 +2002,8 @@ function viewRunSetup(p,g,prev){
     Schirms. Beim ersten Durchgang eines Spielers bleibt es bei der
     Vorgabe. */
  const sel=Object.assign({mode:'classic',diff:'easy',adaptive:true,opp:null,
-  minis:p.minis!==false},(prev?null:vorwahlAusLauf(p,g))||{},prev||{});
+  rechenart:'notiz',minis:p.minis!==false},(prev?null:vorwahlAusLauf(p,g))||{},prev||{});
+ if(RECHENARTEN.indexOf(sel.rechenart)<0)sel.rechenart='notiz';
  if(!isUnlocked(p,g,sel.diff))sel.diff='easy';
  const re=()=>{S.keepScroll=true;viewRunSetup(p,g,sel);};
  const others=S.profiles.filter(x=>x.id!==p.id);
@@ -1997,10 +2044,19 @@ function viewRunSetup(p,g,prev){
                    {v:false,label:t('fixed'),desc:t('ad_fixed')}];
  const wahlMinis=[{v:true,label:t('minisOn'),desc:t('mi_on')},
                   {v:false,label:t('minisOff'),desc:t('mi_off')}];
+ /* Drei Arten zu rechnen. Beim Kopfrechnen ohne Blatt und mit fuenf
+    Rechnungen in einer Frage, mit Notizen wie bisher, schriftlich als
+    Kaestchengitter. Die Zeile steht nur beim Rechnen. */
+ const wahlRechnen=[{v:'kopf',label:t('r_kopf'),desc:t('rd_kopf')},
+                    {v:'notiz',label:t('r_notiz'),desc:t('rd_notiz')},
+                    {v:'schriftlich',label:t('r_schriftlich'),desc:t('rd_schriftlich'),
+                     disabled:!stiftGeraet(),
+                     ...(stiftGeraet()?{}:{desc:t('rd_schriftlichOhne')})}];
  const wahlTabelle=h('div',{class:'wahltabelle'},
   zeile(t('mode'),'mode',wahlArt),
   sel.mode==='duel'&&others.length
    ?zeile(t('opponent'),'opp',others.map(o=>({v:o.id,label:o.avatar+' '+o.name}))):null,
+  rechenSpiel(g)?zeile(t('rechenart'),'rechenart',wahlRechnen):null,
   zeile(t('difficulty'),'diff',wahlStufe),
   zeile(t('adjust'),'adaptive',wahlAnpass),
   sel.mode==='duel'?null:zeile(t('minis'),'minis',wahlMinis));
@@ -2024,7 +2080,8 @@ function viewRunSetup(p,g,prev){
    /* Die Wahl bleibt beim Spieler, nicht am Geraet: wer sie abschaltet,
       findet sie beim naechsten Mal abgeschaltet vor, auch auf dem iPad. */
    if(!p.builtin&&(p.minis!==false)!==sel.minis){p.minis=sel.minis;saveProfiles().catch(()=>{});}
-   startRun({players,game:g,mode:sel.mode,diff:sel.diff,adaptive:sel.adaptive,minis:sel.minis,sel,topics:g.gen?[...sel.topics]:null,sub:subOf(sel)});}},t('start')))));
+   startRun({players,game:g,mode:sel.mode,diff:sel.diff,adaptive:sel.adaptive,minis:sel.minis,
+    rechenart:sel.rechenart,sel,topics:g.gen?[...sel.topics]:null,sub:subOf(sel)});}},t('start')))));
 }
 
 
@@ -2226,11 +2283,15 @@ async function startRun(o){
  const masteries={};for(const p of o.players)masteries[p.id]=JSON.parse(JSON.stringify(st(p.id).mastery));
  for(const pk of new Set(o.game.items.filter(i=>i.type==='map'&&i.map).map(i=>i.map.pack)))await loadPack(pk).catch(e=>toast(e.message,true));
  const okItem=i=>!i.joke&&(i.type!=='map'||(i.map&&PACKS[i.map.pack]&&PACKS[i.map.pack].byId[i.map.target]));
- const pool=o.game.gen?(o.topics||gameUnits(o.game)).map(id=>({id,topic:id,difficulty:2,slot:true}))
-  :poolFor(Object.assign({},o.game,{items:o.game.items.filter(okItem)}),o.diff);if(!pool.length)return toast(t(o.game.gen?'pickTopic':'noItems'),true);
+ const pool0=o.game.gen?(o.topics||gameUnits(o.game)).map(id=>({id,topic:id,difficulty:2,slot:true}))
+  :poolFor(Object.assign({},o.game,{items:o.game.items.filter(okItem)}),o.diff);
+ const pool=rechenVorrat(pool0,o.rechenart,o.game);if(!pool.length)return toast(t(o.game.gen?'pickTopic':'noItems'),true);
  const R={id:uid(),players:o.players,game:o.game,mode:o.mode,diff:o.diff,adaptive:o.adaptive,sel:o.sel,started:new Date(),pool,used:new Set(),answers:[],
-  score:o.players.map(()=>0),streak:o.players.map(()=>0),best:o.players.map(()=>0),lives:3,level:DIFF_LEVEL[o.diff],up:0,down:0,q:0,masteries,timer:null,ended:false};
- R.target=o.mode==='classic'?25:o.mode==='duel'?26:o.mode==='sprechen'?3:(o.mode==='learn'||o.mode==='hoeren')?12:Infinity;R.retry=[];R.extra=0;R.gen=!!o.game.gen;R.topics=o.topics;R.cards=new Set();R.sub=o.sub||null;R.wcur={};
+  score:o.players.map(()=>0),streak:o.players.map(()=>0),best:o.players.map(()=>0),lives:3,level:DIFF_LEVEL[o.diff],up:0,down:0,q:0,masteries,timer:null,ended:false,
+  rechenart:RECHENARTEN.indexOf(o.rechenart)>=0?o.rechenart:'notiz'};
+ R.target=o.mode==='classic'?25:o.mode==='duel'?26:o.mode==='sprechen'?3:(o.mode==='learn'||o.mode==='hoeren')?12:Infinity;
+ /* Fuenf Rechnungen je Frage: 25 Fragen waeren 125 Rechnungen. */
+ if(R.rechenart==='kopf'&&isFinite(R.target))R.target=Math.max(5,Math.round(R.target*0.4));R.retry=[];R.extra=0;R.gen=!!o.game.gen;R.topics=o.topics;R.cards=new Set();R.sub=o.sub||null;R.wcur={};
  /* Fortsetzen: der frisch gebaute Durchgang bekommt den abgelegten Stand
     uebergestuelpt. Die zuletzt offene Frage kehrt nicht zurueck - sie
     wird neu gezogen. */
@@ -2297,7 +2358,7 @@ function prepare(item,diff){
  return Q;
 }
 function answerText(it){switch(it.type){case'single':return it.options[it.correct[0]];case'multi':return it.correct.map(i=>it.options[i]).join(', ');
- case'order':return it.order.join(' → ');case'input':return it.answer;case'spot':return t('spotAnswer');case'num':case'numline':case'build':case'coins':case'clockset':case'grid':case'shade':case'coord':case'expr':case'tapfig':case'pairs':case'handwrite':case'construct':case'speak':case'dialog':return it.answer||'';case'map':{const P=PACKS[it.map&&it.map.pack];const f=P&&P.byId[it.map.target];return f?fname(f):(it.answer||it.map.target);}default:return'';}}
+ case'order':return it.order.join(' → ');case'input':return it.answer;case'spot':return t('spotAnswer');case'num':case'numline':case'build':case'coins':case'clockset':case'grid':case'shade':case'coord':case'expr':case'tapfig':case'pairs':case'handwrite':case'construct':case'speak':case'dialog':case'kopf':return it.answer||'';case'map':{const P=PACKS[it.map&&it.map.pack];const f=P&&P.byId[it.map.target];return f?fname(f):(it.answer||it.map.target);}default:return'';}}
 const IMG_URLS={};
 async function imgURL(path){if(IMG_URLS[path])return IMG_URLS[path];const b=await S.store.readBlob(path);if(!b)throw new Error(t('imgErr'));return(IMG_URLS[path]=URL.createObjectURL(b));}
 function lazyImg(path,attrs){const im=h('img',Object.assign({alt:''},attrs||{}));imgURL(path).then(u=>{im.src=u;}).catch(()=>{im.alt=t('imgErr');});return im;}
@@ -3199,7 +3260,18 @@ function nextQuestion(R){
  else{item=pickItem(R);if(!item)return finishRun(R,true);R.used.add(item.id);if(item.slot){const tp=mtopic(item.topic);const lv=R.adaptive?R.level:DIFF_LEVEL[R.diff];
    item=genItem(tp,lv,R.game.gen);if(!item)return nextQuestion(R);
    if(R.mode==='learn'&&(!R.cards.has(tp.id)||R.q===3||R.q===7)){const first=!R.cards.has(tp.id);R.cards.add(tp.id);const it0=item;
-    return viewTopicCard(tp,{lv,opts:R.game.gen,back:()=>finishRun(R,true),next:()=>{const Q=prepare(it0,R.diff);Q.t0=performance.now();renderQuestion(R,Q);},noCard:!first});}}}
+    return viewTopicCard(tp,{lv,opts:R.game.gen,back:()=>finishRun(R,true),next:()=>{const Q=prepare(it0,R.diff);Q.t0=performance.now();renderQuestion(R,Q);},noCard:!first});}}
+  /* Kopfrechnen: fuenf Rechnungen in einer Frage. Die Rechenthemen
+     liefern auch Auswahlfragen und Textaufgaben; die sind kein
+     Kopfrechnen. Darum wird gezogen, bis eine Rechnung kommt - wie es
+     der Hoermodus mit den Bildern haelt. Gibt die Themenwahl nach
+     vielen Zuegen nichts her, kommt die Aufgabe wie sie ist, statt den
+     Durchgang abzubrechen. */
+  if(rechenArt(R)==='kopf'&&rechenSpiel(R.game)){
+   if(!kopfTauglich(item)){
+    R.kopfLeer=(R.kopfLeer||0)+1;
+    if(R.kopfLeer<60)return nextQuestion(R);}
+   else{R.kopfLeer=0;item=kopfBlock(R,item);}}}
  /* Im Hoermodus wird so lange gezogen, bis eine Aufgabe ohne Bild kommt.
     Nach vielen vergeblichen Zuegen endet die Runde, statt haengen zu
     bleiben - die Themenwahl gab dann nichts her. */
@@ -5174,6 +5246,43 @@ function renderQuestion(R,Q){
     h('span',{class:'small muted'},t('stellenHinweis')),groesseB),
    gitterRahmen,status,tasten,h('div',{style:'margin-top:14px'},pruefB));
   S.onEnter=go;
+ }else if(it.type==='kopf'){
+  /* Fuenf Rechnungen untereinander, je ein Feld. Geprueft wird erst,
+     wenn alle fuenf dastehen: beim Kopfrechnen zaehlt die Zeit fuer den
+     ganzen Block, und ein halb gefuellter Block waere kein Ergebnis. */
+  const felder=[];
+  const liste=h('div',{class:'kopfliste'},(it.teile||[]).map(tl=>{
+   const inp=h('input',{type:'text',inputmode:'numeric',autocomplete:'off',
+    class:'answerbox kopffeld','aria-label':tl.prompt});
+   felder.push({inp,soll:String(tl.antwort)});
+   return h('div',{class:'kopfzeile'},
+    h('span',{class:'kopffrage'},tl.prompt),
+    h('span',{class:'kopfgleich'},'='),inp);}));
+  const status=h('p',{class:'small muted',style:'min-height:1.3em;margin:8px 0 0'});
+  const pruefB=h('button',{class:'btn big'},t('check'));
+  const go=()=>{
+   if(done||R.ended)return;
+   const leer=felder.filter(f=>!String(f.inp.value).trim()).length;
+   if(leer){status.textContent=t('kopfOffen',{n:leer});
+    const erste=felder.find(f=>!String(f.inp.value).trim());
+    if(erste)erste.inp.focus();
+    return;}
+   let richtig=0;
+   felder.forEach(f=>{
+    const gut=antwortGleich(f.soll,f.inp.value);
+    f.inp.classList.toggle('ok',gut);f.inp.classList.toggle('bad',!gut);
+    if(gut)richtig++;});
+   const ok=richtig===felder.length;
+   if(!ok)status.textContent=t('kopfTeil',{n:richtig,m:felder.length});
+   submit(felder.map(f=>String(f.inp.value).trim()).join(', '),ok,()=>{});};
+  pruefB.addEventListener('click',go);
+  /* Mit der Eingabetaste von Feld zu Feld, am Schluss pruefen - so
+     bleibt die Hand auf der Tastatur. */
+  felder.forEach((f,i)=>f.inp.addEventListener('keydown',e=>{
+   if(e.key==='Enter'){e.preventDefault();
+    const n=felder[i+1];if(n)n.inp.focus();else go();}}));
+  area.append(liste,status,h('div',{style:'margin-top:12px'},pruefB));
+  setTimeout(()=>{if(felder[0])felder[0].inp.focus();},40);
  }else if(it.type==='numline'){let nl;
   /* Bei gerastetem Strahl landet jeder Tipp auf einem Rasterpunkt. Eine
      Toleranz, die bis zum naechsten Rasterpunkt reicht, erklaert damit die
@@ -5511,7 +5620,9 @@ function renderQuestion(R,Q){
  /* Bei 'speak' und 'handwrite' gehoert das Mikrofon schon der Aufgabe.
     Zwei Aufnahmen auf einem Schirm verwirren mehr, als sie helfen. */
  const fragEl=(it.type==='speak'||it.type==='dialog'||Q.joke||it.joke)?null:fragBox(R,Q,it,()=>R.ended,antwortNehmen);
- const pen=penOn(R.players[curIdx(R)])&&it.type!=='handwrite'&&blattSpiel(R.game);
+ /* Kopfrechnen heisst ohne Blatt - sonst waere es Rechnen mit Notizen. */
+ const pen=penOn(R.players[curIdx(R)])&&it.type!=='handwrite'&&blattSpiel(R.game)
+  &&!(rechenArt(R)==='kopf'&&rechenSpiel(R.game));
  const pad=pen?scratchPad({height:it.type==='map'?240:300}):null;if(pad)Q.pad=pad;
  const padBox=pad?h('details',{class:'padbox',open:true},h('summary',{},'🖊 '+t('padTitle')),pad.el):null;
  zeigeSeite(topbar(R.game.title),h('main',{class:'page'},hud(R),turn,h('div',{class:'card'},
@@ -5696,7 +5807,7 @@ async function finishRun(R,aborted){
   return{p,i,answered:a.length,correct:c,acc:a.length?c/a.length:0,score:R.score[i],best:R.best[i],newBadges:[],unlocked:[],levelBefore:lv,levelAfter:lv};});
  let winner=null,draw=false;if(R.mode==='duel'){if(R.score[0]===R.score[1])draw=true;else winner=R.score[0]>R.score[1]?0:1;}
  const ended=new Date();
- const log={id:R.id,version:3,device:PLAY_ONLY?'web':'desktop',game:{id:R.game.id,title:R.game.title},mode:R.mode,difficulty:R.diff,adaptive:R.adaptive,aborted:!!aborted,
+ const log={id:R.id,version:3,device:PLAY_ONLY?'web':'desktop',game:{id:R.game.id,title:R.game.title},mode:R.mode,difficulty:R.diff,adaptive:R.adaptive,rechenart:R.rechenart,aborted:!!aborted,
   topics:R.topics||null,topicNames:(R.topics||[]).map(id=>{const tp=mtopic(id);return tp?tName(tp):id;}),years:[...new Set((R.topics||[]).map(id=>{const tp=mtopic(id);return tp?tp.y:null;}).filter(y=>y))].sort((a,b)=>a-b),
   target:isFinite(R.target)?R.target:null,hintsUsed:R.answers.reduce((a,x)=>a+(x.hints||0),0),durationSec:Math.round((ended-R.started)/1000),
   started:R.started.toISOString(),ended:ended.toISOString(),
@@ -5769,7 +5880,7 @@ function viewResult(R,results,winner,draw){
   results.map(r=>{const runs=runsFor(r.p.id,R.game.id);return h('section',{class:'card stack',style:'margin-bottom:14px'},
    h('h3',{},t('progressTitle',{name:r.p.name})),progressChart(runs));}),
   h('div',{class:'row'},
-   h('button',{class:'btn',onclick:()=>startRun({players:R.players,game:R.game,mode:R.mode,diff:R.diff,adaptive:R.adaptive,sel:R.sel,topics:R.topics,sub:R.sub})},t('again')),
+   h('button',{class:'btn',onclick:()=>startRun({players:R.players,game:R.game,mode:R.mode,diff:R.diff,adaptive:R.adaptive,rechenart:R.rechenart,sel:R.sel,topics:R.topics,sub:R.sub})},t('again')),
    h('button',{class:'btn ghost',onclick:()=>viewGames(p0)},t('otherGame')),
    h('button',{class:'btn ghost',onclick:viewHome},t('changePlayer')))));
 }
@@ -12129,6 +12240,67 @@ function genTopics(g){
     die Auswahltabelle hierdurch gehen. */
  return stiftGeraet()?alle:alle.filter(x=>STIFTTHEMEN.indexOf(x.id)<0);}
 function gameUnits(g){return g.gen?genTopics(g).map(x=>x.id):g.items.map(i=>i.id);}
+
+/* ---------- Rechenart ----------
+   Urs am 18.11.2026: es gibt grundsaetzlich drei Arten zu rechnen - im
+   Kopf, mit Notizen, schriftlich. Die Wahl gilt fuer den Durchgang und
+   steht in der Auswahltabelle.
+
+   Schriftlich heisst: die drei Themen mit Kaestchengitter, und nur sie.
+   Vorher waren sie je ein Thema unter zwanzig, das Gitter kam also nur
+   mit Glueck - genau die Klage.
+   Kopfrechnen heisst: diese drei fallen weg, das Notizblatt bleibt zu,
+   und fuenf Aufgaben stehen in einer Frage, weil es um Tempo geht.
+   Mit Notizen ist der bisherige Zustand und bleibt die Vorgabe. */
+const RECHENARTEN=['kopf','notiz','schriftlich'];
+function rechenSpiel(g){return !!g&&g.subject==='math';}
+function rechenArt(R){const a=R&&R.rechenart;return RECHENARTEN.indexOf(a)>=0?a:'notiz';}
+function rechenVorrat(pool,art,g){
+ if(!rechenSpiel(g)||art==='notiz'||RECHENARTEN.indexOf(art)<0)return pool;
+ const istGitter=x=>STIFTTHEMEN.indexOf(x.topic||x.id)>=0;
+ if(art==='schriftlich'){
+  const nur=pool.filter(istGitter);
+  /* Faellt nichts uebrig - etwa weil das Geraet keinen Stift hat -,
+     bleibt der Vorrat wie er war, statt den Durchgang leer zu lassen. */
+  return nur.length?nur:pool;}
+ return pool.filter(x=>!istGitter(x));}
+
+/* ---------- Kopfrechnen: fuenf Aufgaben in einer Frage ----------
+   Eine Aufgabe je Frage ist zu langsam, wenn es um Tempo geht. Taugen
+   muss eine Aufgabe dafuer: eine kurze Zeile, eine ganze Zahl als
+   Antwort, kein Bild. Alles andere bleibt eine Frage fuer sich. */
+const KOPF_ZAHL=5;
+function kopfTauglich(it){
+ if(!it||it.type!=='num')return false;
+ if(it.figure||it._fig||it.spot||it.sound)return false;
+ /* Nur ganze Zahlen ohne Trennzeichen. Ein erster Versuch liess
+    Kommazahlen zu und nahm damit auch «100,000» an - ein
+    Tausendertrennzeichen, keine Kommazahl. Fuer einen Tempoblock sind
+    ganze Zahlen ohnehin das Richtige. */
+ const a=String(it.answer==null?'':it.answer).trim();
+ if(!/^-?\d+$/.test(a))return false;
+ return plain(String(it.prompt||'')).length<=44;}
+function kopfBlock(R,erste){
+ if(!kopfTauglich(erste))return erste;
+ const teile=[erste];
+ for(let k=0;k<60&&teile.length<KOPF_ZAHL;k++){
+  let w=pickItem(R);
+  if(!w)break;
+  R.used.add(w.id);
+  if(w.slot){
+   const tp=mtopic(w.topic);
+   if(!tp)continue;
+   w=genItem(tp,R.adaptive?R.level:DIFF_LEVEL[R.diff],R.game.gen);}
+  if(!w||!kopfTauglich(w))continue;
+  if(teile.some(x=>plain(String(x.prompt||''))===plain(String(w.prompt||''))))continue;
+  teile.push(w);}
+ if(teile.length<2)return erste;
+ return {type:'kopf',id:'kopf-'+teile.map(x=>x.id).join('~'),
+  topic:erste.topic,difficulty:erste.difficulty,
+  prompt:X('Rechne im Kopf.','Work these out in your head.','Calcule de tête.'),
+  teile:teile.map(x=>({prompt:plain(String(x.prompt||'')),
+                       antwort:String(x.answer).trim()})),
+  answer:teile.map(x=>String(x.answer).trim()).join(', ')};}
 
 /* ================= admin ================= */
 function viewAdminLogin(){
