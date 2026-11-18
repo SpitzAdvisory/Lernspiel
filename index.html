@@ -1783,7 +1783,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V117';
+const APPVER='V118';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -5137,13 +5137,20 @@ function renderQuestion(R,Q){
     c.restore();});
    return oc.toDataURL('image/png');};
   const ziffernAus=txt=>String(txt||'').match(/\d/g)||[];
+  /* Nach dem Lesen: wo 1 oder 7 steht, entscheidet der Strichzug mit.
+     Nur bei klarer Lage, sonst bleibt die Erkennung stehen. */
+  const nachpruefen=z=>{
+   if(z.ziffer!==1&&z.ziffer!==7)return;
+   const g=siebenOderEins(z.striche);
+   if(g&&g!==z.ziffer)z.ziffer=g;};
   const erkenne=async liste=>{
-   const z1=ziffernAus(await leseHandschrift(streifen(liste)));
-   if(z1.length===liste.length){liste.forEach((z,k)=>{z.ziffer=+z1[k];malen(z);});return;}
+   const z1=ziffernAus(await leseHandschrift(streifen(liste),'ziffern'));
+   if(z1.length===liste.length){
+    liste.forEach((z,k)=>{z.ziffer=+z1[k];nachpruefen(z);malen(z);});return;}
    /* Zuordnung unsicher: jedes Kaestchen einzeln lesen */
    for(const z of liste){
-    const zz=ziffernAus(await leseHandschrift(streifen([z])));
-    z.ziffer=zz.length?+zz[0]:null;malen(z);}};
+    const zz=ziffernAus(await leseHandschrift(streifen([z]),'ziffern'));
+    z.ziffer=zz.length?+zz[0]:null;nachpruefen(z);malen(z);}};
   const pruefB=h('button',{class:'btn'},t('check'));
   const go=async()=>{
    if(done||R.ended||pruefB.disabled)return;
@@ -12339,10 +12346,59 @@ function attachFig(it,imgIdx){
     fig.box=[Math.min(fig.box[0],fig.spot.x-m),Math.min(fig.box[1],fig.spot.y-m),Math.max(fig.box[2],fig.spot.x+m),Math.max(fig.box[3],fig.spot.y+m)].map(clamp01);}
    it._fig=fig;}}
  delete it.figure;delete it.spot;}
+/* ---------- Sieben oder Eins ----------
+   Urs am 18.11.2026: «7 und 1 wird leicht verwechselt.» Beide bestehen
+   aus einem langen Abstrich, und als Bild sehen sie einander aehnlich.
+   Der Unterschied liegt oben: die Sieben traegt einen waagrechten Balken
+   ueber beinahe die ganze Breite, die Eins hoechstens einen kurzen
+   Aufstrich. Gemessen wird am Strichzug, den das Kaestchen ohnehin
+   fuehrt, und nicht am Bild - damit haengt der Entscheid an keinem
+   Modell und an keiner Auslieferung.
+
+   Gemessen wird die waagrechte Ausdehnung im obersten Fuenftel, geteilt
+   durch die Hoehe des ganzen Zuges. Die Hoehe ist der Massstab, nicht
+   die Breite: ein Kind schreibt gross oder klein, aber das Verhaeltnis
+   von Balken zu Hoehe bleibt.
+
+   Die beiden Schwellen sind bewusst weit auseinander. Dazwischen
+   entscheidet die Erkennung wie bisher - lieber nichts sagen als
+   falsch widersprechen. Sie stammen aus den Prototypen in
+   tests/sieben.js und sind an Strichen echter Kinder noch nicht
+   geeicht; das steht aus. */
+const SIEBEN_AB=0.55;   /* so lang mindestens der Balken der Sieben */
+const EINS_BIS=0.30;    /* so kurz hoechstens der Aufstrich der Eins */
+function siebenOderEins(striche){
+ const punkte=[];
+ for(const st of (striche||[]))for(const p of (st||[]))
+  if(p&&isFinite(p[0])&&isFinite(p[1]))punkte.push(p);
+ if(punkte.length<4)return null;
+ let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;
+ for(const p of punkte){
+  if(p[0]<x0)x0=p[0];if(p[0]>x1)x1=p[0];
+  if(p[1]<y0)y0=p[1];if(p[1]>y1)y1=p[1];}
+ const h=y1-y0, w=x1-x0;
+ if(!(h>0))return null;
+ /* Ein liegender Zug ist keine der beiden Ziffern. */
+ if(w/h>1.2)return null;
+ const grenze=y0+h*0.2;
+ let ox=Infinity,ux=-Infinity,n=0;
+ for(const p of punkte)if(p[1]<=grenze){n++;if(p[0]<ox)ox=p[0];if(p[0]>ux)ux=p[0];}
+ if(n<2)return null;
+ const q=(ux-ox)/h;
+ if(q>=SIEBEN_AB)return 7;
+ if(q<=EINS_BIS)return 1;
+ return null;}
+
 /* Handschrift lesen. Gibt genau zurueck, was dasteht - ohne Korrektur,
    ohne Erklaerung. Nur so kann der Vergleich ein Urteil faellen. */
 const OCR_SYSTEM='You read handwriting from an image. Reply with the handwritten text and nothing else: no quotes, no explanation, no correction of spelling or grammar. Keep accents exactly as written. If several lines are written, separate them with a single newline. If the image holds no readable handwriting, reply with the single word EMPTY.';
-async function leseHandschrift(dataUrl){
+/* Ziffern sind kein Text. Ein eigener Auftrag sagt, was im Bild steht -
+   Kaestchen nebeneinander, je eine Ziffer - und benennt den Unterschied
+   zwischen Eins und Sieben, der hier zu Fehlern fuehrt. Der Vermittler
+   kennt denselben Auftrag; dieser hier gilt nur, wenn die App ohne
+   Vermittler direkt beim Anbieter liest. */
+const OCR_ZIFFERN='You read handwritten digits from an image. The image shows one or more boxes side by side, each holding exactly one digit from 0 to 9. Reply with the digits in left-to-right order and nothing else: no spaces, no commas, no explanation. Swiss and German handwriting: a 1 is a single downstroke, often with a short upward serif at the top left and sometimes a base line, and it never has a long horizontal bar on top; a 7 always has a long horizontal bar across the top, often with a crossbar through the stem. Judge the top of the stroke before you decide between 1 and 7. For a box with no readable digit write a dash.';
+async function leseHandschrift(dataUrl,modus){
  const b64=String(dataUrl||'').split(',')[1];
  if(!b64)throw new Error('kein-bild');
  const model=(await IDB.get('kv','model'))||DEFAULT_MODEL;
@@ -12350,7 +12406,7 @@ async function leseHandschrift(dataUrl){
  if(prox){
   let r;
   try{ r=await fetch(prox+'/ocr',{method:'POST',headers:{'content-type':'application/json'},
-   body:JSON.stringify({image:b64,model})}); }
+   body:JSON.stringify({image:b64,model,modus:modus||'text'})}); }
   catch(e){ throw new Error('Netz: '+((e&&e.message)||'')); }
   const d=await r.json().catch(()=>null);
   if(!r.ok)throw new Error(String((d&&d.error)||('HTTP '+r.status)).slice(0,120));
@@ -12361,9 +12417,11 @@ async function leseHandschrift(dataUrl){
  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
   headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01',
    'anthropic-dangerous-direct-browser-access':'true'},
-  body:JSON.stringify({model,max_tokens:200,system:OCR_SYSTEM,messages:[{role:'user',content:[
+  body:JSON.stringify({model,max_tokens:200,
+   system:modus==='ziffern'?OCR_ZIFFERN:OCR_SYSTEM,
+   messages:[{role:'user',content:[
    {type:'image',source:{type:'base64',media_type:'image/png',data:b64}},
-   {type:'text',text:'Read the handwriting.'}]}]})});
+   {type:'text',text:modus==='ziffern'?'Read the digits.':'Read the handwriting.'}]}]})});
  const data=await r.json().catch(()=>null);
  if(!r.ok)throw new Error((data&&data.error&&data.error.message)||('HTTP '+r.status));
  const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
