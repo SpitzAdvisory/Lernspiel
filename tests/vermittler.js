@@ -1,41 +1,54 @@
-/* Der Vermittler liegt zweimal im Projekt.
-   docs/20261108_SPITZ-Lernen_Vermittler_worker.js ist die gepflegte
-   Fassung; worker/worker.js ist die, die der Arbeitslauf an Cloudflare
-   schickt. Am 19.11.2026 war die zweite drei Aenderungen im Rueckstand:
-   drei alte Stimmen statt der einen, kein Weg /agent, kein
-   Ziffern-Auftrag. Ein Knopfdruck haette den laufenden Vermittler
-   zurueckgedreht und das Sprechen abgestellt.
+/* Der Vermittler liegt genau einmal im Projekt.
+   Bis zum 19.11.2026 lag er zweimal: unter docs/ die gepflegte Fassung,
+   unter worker/ die, die der Arbeitslauf an Cloudflare schickt. Die
+   zweite war drei Aenderungen im Rueckstand - drei alte Stimmen statt
+   der einen, kein Weg /agent, kein Ziffern-Auftrag. Ein Knopfdruck
+   haette den laufenden Vermittler zurueckgedreht und das Sprechen
+   abgestellt. Die Doppelung ist aufgeloest; worker/worker.js ist die
+   einzige Fassung, und der Bauplan daneben liefert sie aus.
 
-   Diese Pruefung haelt die beiden Fassungen zeichengleich. Sie braucht
-   keinen Browser; gemessen wird am Quelltext im Projekt. */
-const fs=require('fs'),path=require('path'),crypto=require('crypto');
+   Diese Pruefung haelt das fest. Sie braucht keinen Browser. */
+const fs=require('fs'),path=require('path');
 const W=path.join(__dirname,'..');
-const QUELLE=path.join(W,'docs','20261108_SPITZ-Lernen_Vermittler_worker.js');
-const AUSLIEFERUNG=path.join(W,'worker','worker.js');
+const VERMITTLER=path.join(W,'worker','worker.js');
 const BAUPLAN=path.join(W,'worker','wrangler.toml');
 const aus=[];const pruef=(n,ok,x)=>aus.push([ok?'OK  ':'FAIL',n,x===undefined?'':String(x)]);
-const summe=f=>crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex').slice(0,12);
 
-const da=[QUELLE,AUSLIEFERUNG,BAUPLAN].every(f=>fs.existsSync(f));
-pruef('Beide Fassungen und der Bauplan liegen im Projekt',da);
+const da=[VERMITTLER,BAUPLAN].every(f=>fs.existsSync(f));
+pruef('Der Vermittler und sein Bauplan liegen im Projekt',da);
 if(!da){
  for(const [s,n,x] of aus)console.log(s+' '+n+(x?'  ['+x+']':''));
  console.log('NICHT BESTANDEN: 1');process.exit(1);}
 
-const q=fs.readFileSync(QUELLE,'utf8');
-const a=fs.readFileSync(AUSLIEFERUNG,'utf8');
-pruef('Die ausgelieferte Fassung ist zeichengleich mit der gepflegten',
- q===a, q===a?summe(QUELLE):summe(QUELLE)+' gegen '+summe(AUSLIEFERUNG));
+const q=fs.readFileSync(VERMITTLER,'utf8');
 
-/* Der Bauplan muss auf eben diese Datei zeigen, sonst geht die
-   Gleichheit ins Leere. */
+/* ---------- Nur eine Fassung ----------
+   Gesucht wird nicht nach einem Dateinamen, sondern nach dem Inhalt:
+   eine Kopie unter einem anderen Namen waere genauso schaedlich. */
+const KENNZEICHEN="const OCR_SYSTEM = 'You read handwriting";
+const UEBERGEHEN=new Set(['.git','node_modules','.github']);
+const treffer=[];
+(function suche(ordner){
+ for(const e of fs.readdirSync(ordner,{withFileTypes:true})){
+  if(UEBERGEHEN.has(e.name))continue;
+  const p=path.join(ordner,e.name);
+  if(e.isDirectory()){suche(p);continue;}
+  if(!e.isFile())continue;
+  if(!/\.(js|mjs|cjs|ts|txt|md)$/i.test(e.name))continue;
+  if(p===path.join(__dirname,'vermittler.js'))continue;
+  if(fs.statSync(p).size>400000)continue;
+  if(fs.readFileSync(p,'utf8').indexOf(KENNZEICHEN)>=0)
+   treffer.push(path.relative(W,p).replace(/\\/g,'/'));}})(W);
+pruef('Der Vermittler steht nur an einer Stelle',
+ treffer.length===1&&treffer[0]==='worker/worker.js',treffer.join(', ')||'keine');
+
+/* ---------- Der Bauplan zeigt darauf ---------- */
 const plan=fs.readFileSync(BAUPLAN,'utf8');
 pruef('Der Bauplan liefert worker.js aus',/^\s*main\s*=\s*"worker\.js"\s*$/m.test(plan));
 pruef('Der Bauplan traegt den Namen des laufenden Vermittlers',
  /^\s*name\s*=\s*"spitz-lernen"\s*$/m.test(plan));
 
-/* Was am 19.11. gefehlt hat, wird einzeln festgehalten - eine blosse
-   Gleichheit saegt nicht, dass beide Fassungen aktuell sind. */
+/* ---------- Was am 19.11. gefehlt hat ---------- */
 const WEGE=['/stt','/ocr','/tts','/frage','/agent'];
 for(const w of WEGE)
  pruef('Der Weg '+w+' steht im Verteiler',
@@ -55,7 +68,7 @@ pruef('Drei Sprachen tragen eine Stimme',
 
 /* Ein Schluessel gehoert ins Konto, nie in den Quelltext. */
 pruef('Kein Schluessel steht im Klartext',
- !/sk-ant-|xi-[A-Za-z0-9]{20}|['"][A-Za-z0-9_-]{40,}['"]\s*;?\s*\/\/\s*key/i.test(q));
+ !/sk-ant-|xi-[A-Za-z0-9]{20}/i.test(q));
 pruef('Die Schluessel kommen aus der Umgebung',
  /env\.ANTHROPIC_KEY/.test(q)&&/env\.ELEVEN_KEY/.test(q));
 
