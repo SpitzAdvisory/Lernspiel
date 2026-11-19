@@ -17,14 +17,21 @@
  * Optional:
  *   ZAEHLER        - KV-Namensraum fuer die Tagesgrenze
  *   TAGESGRENZE    - Zahl der erlaubten Anfragen je Tag (Standard 500)
+ *   AGENTGRENZE    - Zahl der erlaubten Sprechgespraeche je Tag (Standard 24)
  */
 
 const ERLAUBT = ['https://spitzadvisory.github.io'];
 const SCRIBE = ['scribe_v2', 'scribe_v1'];
-/* Stimmen je Sprache. Emilie liest die Vokabelkarten vor; Emilia und Kate
-   sind nach gemessener Tonhoehe ausgewaehlt: jung, hell, klar. */
-const STIMMEN = { de: 'ghgFyr7gmpr57xyTgX9q', en: 'LmBeiuCEOHOsilCkLod0', fr: 'i6ke7jvmGEVUyV4zjSaT' };
+/* Eine Stimme fuer alle drei Sprachen, seit dem 16.11.2026. Johannes hat
+   sie aus drei Entwuerfen ausgesucht; vorher lasen drei Stimmen vor. */
+const STIMMEN = { de: 'GJmjjfUnDAITsxAFqyDQ', en: 'GJmjjfUnDAITsxAFqyDQ', fr: 'GJmjjfUnDAITsxAFqyDQ' };
 const TTS_MODELLE = ['eleven_v4', 'eleven_multilingual_v2'];
+/* Nur diese Agenten darf die App anfordern. Ohne diese Liste waere der
+   Vermittler ein offener Zugang zu jedem Agenten des Kontos. */
+const AGENTEN = [
+  'agent_0701m6y49tf5ew4anpdqt6yy5b7e',   /* SPITZ Lernhilfe */
+  'agent_5501m68ya56peryrw7gyy7ryrsaj',   /* SPITZ Sprachpartnerin */
+];
 const TTS_FORMAT = 'mp3_44100_128';
 const SPRNAME = { de: 'German', en: 'English', fr: 'French' };
 
@@ -52,6 +59,11 @@ function zweiSaetze(s) {
 }
 
 const OCR_SYSTEM = 'You read handwriting from an image. Reply with the handwritten text and nothing else: no quotes, no explanation, no correction of spelling or grammar. Keep accents exactly as written. If several lines are written, separate them with a single newline. If the image holds no readable handwriting, reply with the single word EMPTY.';
+/* Ziffern sind kein Text. Die Kaestchenrechnung schickt modus:'ziffern'
+   und bekommt diesen Auftrag; alles andere bleibt beim bisherigen. Die
+   Eins und die Sieben werden verwechselt, darum steht der Unterschied
+   ausdruecklich da. */
+const OCR_ZIFFERN = 'You read handwritten digits from an image. The image shows one or more boxes side by side, each holding exactly one digit from 0 to 9. Reply with the digits in left-to-right order and nothing else: no spaces, no commas, no explanation. Swiss and German handwriting: a 1 is a single downstroke, often with a short upward serif at the top left and sometimes a base line, and it never has a long horizontal bar on top; a 7 always has a long horizontal bar across the top, often with a crossbar through the stem. Judge the top of the stroke before you decide between 1 and 7. For a box with no readable digit write a dash.';
 
 function kopf(origin) {
   return {
@@ -78,6 +90,40 @@ async function ueberGrenze(env) {
   const n = parseInt((await env.ZAEHLER.get('tag:' + tag)) || '0', 10) + 1;
   await env.ZAEHLER.put('tag:' + tag, String(n), { expirationTtl: 172800 });
   return n > grenze;
+}
+
+/* Die Sprechgespraeche kosten je Minute, nicht je Anfrage. Darum zaehlen
+   sie getrennt: 24 Gespraeche mal fuenf Minuten bleiben unter dem
+   Tagesbudget von zehn Dollar. Die Minutengrenze je Gespraech steht beim
+   Agenten selbst, nicht hier. */
+async function ueberAgentGrenze(env) {
+  if (!env.ZAEHLER) return false;
+  const grenze = parseInt(env.AGENTGRENZE || '24', 10);
+  const tag = new Date().toISOString().slice(0, 10);
+  const n = parseInt((await env.ZAEHLER.get('agent:' + tag)) || '0', 10) + 1;
+  await env.ZAEHLER.put('agent:' + tag, String(n), { expirationTtl: 172800 });
+  return n > grenze;
+}
+
+/* Die unterschriebene Adresse fuer ein Sprechgespraech. Der Schluessel
+   bleibt hier; die App bekommt nur eine Adresse, die von sich aus
+   ablaeuft. Das erreichte Tagesbudget gibt 429 mit error:'limit' zurueck -
+   die App sagt dem Kind dann, dass es heute genug war. */
+async function agentAdresse(request, env, origin) {
+  if (!env.ELEVEN_KEY) return antwort({ error: 'ELEVEN_KEY fehlt' }, 500, origin);
+  const ein = await request.json().catch(() => null);
+  const agent = String((ein && ein.agent_id) || '');
+  if (AGENTEN.indexOf(agent) < 0) return antwort({ error: 'unbekannter Agent' }, 403, origin);
+  if (await ueberAgentGrenze(env)) return antwort({ error: 'limit' }, 429, origin);
+  const r = await fetch(
+    'https://api.elevenlabs.io/v1/convai/conversation/get-signed-url?agent_id=' + encodeURIComponent(agent),
+    { headers: { 'xi-api-key': env.ELEVEN_KEY } });
+  const d = await r.json().catch(() => null);
+  if (r.ok && d && d.signed_url) return antwort({ signed_url: d.signed_url }, 200, origin);
+  let m = (d && d.detail && (d.detail.message || d.detail)) || ('HTTP ' + r.status);
+  if (typeof m !== 'string') m = JSON.stringify(m);
+  if (r.status === 429 || /limit|quota|exceed/i.test(m)) return antwort({ error: 'limit' }, 429, origin);
+  return antwort({ error: String(m).slice(0, 200) }, 502, origin);
 }
 
 /* Erwartete Woerter steuern die Erkennung vor. «fiel» und «viel» klingen
@@ -154,10 +200,10 @@ async function lesen(request, env, origin) {
     body: JSON.stringify({
       model,
       max_tokens: 200,
-      system: OCR_SYSTEM,
+      system: (ein && ein.modus === 'ziffern') ? OCR_ZIFFERN : OCR_SYSTEM,
       messages: [{ role: 'user', content: [
         { type: 'image', source: { type: 'base64', media_type: 'image/png', data: b64 } },
-        { type: 'text', text: 'Read the handwriting.' },
+        { type: 'text', text: (ein && ein.modus === 'ziffern') ? 'Read the digits.' : 'Read the handwriting.' },
       ] }],
     }),
   });
@@ -250,6 +296,7 @@ export default {
     if (url.pathname === '/ocr') return lesen(request, env, origin);
     if (url.pathname === '/tts') return sprechen(request, env, origin);
     if (url.pathname === '/frage') return begleiten(request, env, origin);
+    if (url.pathname === '/agent') return agentAdresse(request, env, origin);
     return antwort({ error: 'unbekannter Pfad' }, 404, origin);
   },
 };
