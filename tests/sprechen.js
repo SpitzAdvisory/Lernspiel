@@ -87,8 +87,16 @@ const warte=ms=>new Promise(r=>setTimeout(r,ms));
     davon aus, findet es die App an einer Stelle und an der anderen nicht
     - ein Fehler, der sich erst beim Fortsetzen zeigen wuerde. */
  const quelle=fs.readFileSync(path.join(D,'app.html'),'utf-8');
- const treffer=(quelle.match(/\[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,SPR_GAME,IT_GAME\]/g)||[]).length;
- pruef('Das Spiel steht in beiden Registraturen',treffer===2,treffer);
+ /* Nicht gegen eine eingefrorene Liste pruefen: die waechst mit jedem
+    neuen Spiel, und dann faellt diese Pruefung aus einem Grund, der mit
+    dem Sprechen nichts zu tun hat. Geprueft wird, dass die beiden
+    Registraturen einander gleichen. */
+ const listen=quelle.match(/\[MATH_GAME(?:,[A-Z_0-9]+_GAME)+\]/g)||[];
+ pruef('Es gibt genau zwei Registraturen',listen.length===2,listen.length);
+ pruef('Beide führen dieselbe Liste',
+  listen.length===2&&listen[0]===listen[1],listen.join('  gegen  '));
+ pruef('Das Spiel steht in beiden Registraturen',
+  listen.length===2&&listen.every(l=>l.indexOf('SPR_GAME')>=0),listen[0]||'keine');
 
  /* ---------- Die Spielart ---------- */
  const art=await pg.evaluate(async()=>{
