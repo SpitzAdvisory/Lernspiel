@@ -59,11 +59,10 @@ function zweiSaetze(s) {
 }
 
 const OCR_SYSTEM = 'You read handwriting from an image. Reply with the handwritten text and nothing else: no quotes, no explanation, no correction of spelling or grammar. Keep accents exactly as written. If several lines are written, separate them with a single newline. If the image holds no readable handwriting, reply with the single word EMPTY.';
-// Ziffern sind kein Text. Die Kaestchenrechnung schickt modus:'ziffern'
-// und bekommt diesen Auftrag; alles andere bleibt beim bisherigen. Die
-// Eins und die Sieben werden verwechselt, darum steht der Unterschied
-// ausdruecklich da. Zeilenkommentare, weil der Editor im Dashboard ein
-// /* selbsttaetig schliesst und den Block damit zerreissen wuerde.
+/* Ziffern sind kein Text. Die Kaestchenrechnung schickt modus:'ziffern'
+   und bekommt diesen Auftrag; alles andere bleibt beim bisherigen. Die
+   Eins und die Sieben werden verwechselt, darum steht der Unterschied
+   ausdruecklich da. */
 const OCR_ZIFFERN = 'You read handwritten digits from an image. The image shows one or more boxes side by side, each holding exactly one digit from 0 to 9. Reply with the digits in left-to-right order and nothing else: no spaces, no commas, no explanation. Swiss and German handwriting: a 1 is a single downstroke, often with a short upward serif at the top left and sometimes a base line, and it never has a long horizontal bar on top; a 7 always has a long horizontal bar across the top, often with a crossbar through the stem. Judge the top of the stroke before you decide between 1 and 7. For a box with no readable digit write a dash.';
 
 function kopf(origin) {
