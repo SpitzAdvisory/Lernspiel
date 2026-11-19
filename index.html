@@ -990,6 +990,9 @@ T.fr.frv_title="Français : vocabulaire";
 T.de.frg_title="Französisch: Grammatik";
 T.en.frg_title="French: grammar";
 T.fr.frg_title="Français : grammaire";
+T.de.pru_title="Unité 1: Training für die Prüfung";
+T.en.pru_title="Unité 1 final exam training";
+T.fr.pru_title="Unité 1 : entraînement à l’épreuve finale";
 T.de.frarea_1="Wortschatz nach Unité und Thema";
 T.en.frarea_1="Vocabulary by unit and theme";
 T.fr.frarea_1="Vocabulaire par unité et thème";
@@ -1804,7 +1807,7 @@ function viewConnect(){zeigeSeite(topbar(t('appTitle'),{rerender:viewConnect}),h
 async function disconnectDbx(){if(!confirm(t('confirmDisconnect')))return;await IDB.del('kv','dbxRefresh');DBX.token=null;viewConnect();}
 async function updateSyncStatus(){const el=$('#syncstatus');if(!el||!PLAY_ONLY)return;const n=(await IDB.keys('outbox')).length;el.textContent=n?t('pending',{n}):'';}
 async function loadGames(){const out=[];for(const n of(await S.store.list('games')).filter(n=>n.endsWith('.json'))){try{const g=await S.store.read('games/'+n);if(g&&Array.isArray(g.items))out.push(g);}catch(e){console.warn(n,e);}}
- out.sort((a,b)=>a.title.localeCompare(b.title));return[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,SPR_GAME,IT_GAME].concat(out);}
+ out.sort((a,b)=>a.title.localeCompare(b.title));return[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,PRU_GAME,SPR_GAME,IT_GAME].concat(out);}
 const TEST_PLAYER={id:'test',avatar:'🧪',unlockAll:true,pen:true,builtin:true};
 Object.defineProperty(TEST_PLAYER,'name',{get:()=>t('testPlayer'),enumerable:true});
 function withTest(list){return (list||[]).filter(p=>p.id!=='test').concat([TEST_PLAYER]);}
@@ -1827,7 +1830,7 @@ async function init(){
  await afterStore();
 }
 async function afterStore(){try{await loadAll();}catch(e){return toast(t('err',{e:e.message}),true);}if(!PLAY_ONLY&&!S.cfg)return viewSetPassword();S.lastRefresh=Date.now();viewHome(true);}
-const APPVER='V119';
+const APPVER='V120';
 function applyLang(){document.documentElement.lang=S.lang;document.title='SPITZ '+t('appTitle');}
 async function setLang(l){S.lang=l;await IDB.set('kv','lang',l);applyLang();}
 function langToggle(rerender){return h('div',{class:'lang',role:'group','aria-label':t('language')},
@@ -1905,7 +1908,7 @@ function badgeSticker(id){return h('div',{class:'sticker'},h('i',{'aria-hidden':
    eine Pause darf nicht an einer Ladereihenfolge scheitern. */
 function spielAusId(id){
  return (S.games||[]).find(g=>g.id===id)
-  ||[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,SPR_GAME,IT_GAME].find(g=>g&&g.id===id)
+  ||[MATH_GAME,DEP_GAME,DE_GAME,OW_GAME,GEO_GAME,FRV_GAME,FRG_GAME,PRU_GAME,SPR_GAME,IT_GAME].find(g=>g&&g.id===id)
   ||null;}
 
 function pauseKarte(p,d,re){
@@ -2129,7 +2132,7 @@ function notizBlock(hinweis,quellen){
 
 function topicChooser(p,g,sel,re){
  const gm=st(p.id).mastery[g.id]||{};const all=genTopics(g);const multiYear=new Set(all.map(x=>x.y)).size>1;const custom=!!g.gen.topics&&!multiYear;
- const isIT=g.gen.pool==='it';const isFR=g.id==='fr-vocab'||g.id==='fr-gram';const isDE=g.id==='de-verben';const isOW=g.id==='ow-english';
+ const isIT=g.gen.pool==='it';const isFR=g.id==='fr-vocab'||g.id==='fr-gram'||g.id==='fr-pruefung';const isDE=g.id==='de-verben';const isOW=g.id==='ow-english';
  const yearsWith=new Set((g.gen.topics?g.gen.topics.map(mtopic).filter(Boolean):(isIT?ITT:MT)).map(x=>x.y));
  const AP=isIT?'itarea_':isFR?'frarea_':'area_';
  const shown=custom?all:all.filter(x=>x.y===sel.year);
@@ -10157,7 +10160,7 @@ const GLOSS_CON=({
 const FRTOPICS=[];
 /* Sprachen ohne Schreibblatt: ohne Handschrifterkennung ist von Hand
    geschriebenes Franzoesisch eine Flaeche ohne Rueckmeldung. */
-const SPRACHSPIEL=['fr-vocab','fr-gram','it-lp21'];
+const SPRACHSPIEL=['fr-vocab','fr-gram','fr-pruefung','it-lp21'];
 /* Das Blatt gibt es bei den Sprachen nur mit Handschrifterkennung, also
    nur mit hinterlegtem Schluessel. Ohne Erkennung bliebe es eine Flaeche
    ohne Rueckmeldung. */
@@ -10997,8 +11000,247 @@ function condItem(lv){const V=[['parler','parler'],['manger','manger'],['finir',
 const FRG_GAME={id:'fr-gram',builtin:true,subject:'lang',kind:'lang',items:[],gen:{topics:FRG.map(x=>x.id)}};
 Object.defineProperty(FRG_GAME,'title',{get:()=>t('frg_title'),enumerable:true});
 
+/* ================= Unité 1: Training für die Prüfung =================
+   Johannes schreibt am 20.11.2026 die Prüfung zur Unité 1 von
+   «dis donc! 7». Urs hat am Abend davor vier Dinge verlangt: den
+   ganzen Wortschatz der Unité, alle Verben der Unité konjugiert,
+   besonderes Gewicht auf manger, commencer und s’appeler, und die
+   Verben in beide Richtungen übersetzt.
+
+   Der Wortschatz kommt aus den drei Lernzielen dd7-1-1 bis dd7-1-3.
+   Eine zweite Wortliste wäre eine zweite Wahrheit.
+
+   Die Verbliste dagegen steht so nirgends im Buch. Sie ist
+   zusammengetragen aus dem Wortschatz der Unité, aus den Seiten 30
+   bis 32 und aus den Arbeitsblättern zum verbe pronominal.
+   commencer und s’appeler stehen nicht im Wortschatz der Unité; sie
+   stehen hier, weil Urs sie ausdrücklich verlangt hat. */
+const PRU=[];
+function ptop(id,a,n,c,gen){PRU.push({id,y:7,a,n:n.split('|'),c:c.split('|'),terms:[],fr:true,g:gen});}
+
+/* ---------- Die Verben der Unité ---------- */
+/* Regelmässige Verben auf -er. */
+const U1ER=[
+ ['sonner','klingeln, läuten','to ring'],
+ ['casser','kaputt machen, zerbrechen','to break'],
+ ['glander','herumhängen, trödeln','to hang about'],
+ ['quitter','verlassen','to leave'],
+ ['arriver','ankommen','to arrive'],
+ ['rester','bleiben','to stay'],
+ ['préparer','vorbereiten, bereit machen','to prepare'],
+ ['chercher','suchen','to look for'],
+ ['trouver','finden','to find'],
+ ['oublier','vergessen','to forget'],
+ ['jouer','spielen','to play'],
+ ['rater','verpassen','to miss'],
+ ['manger','essen','to eat'],
+ ['commencer','anfangen, beginnen','to begin']];
+/* Reflexive Verben (verbes pronominaux). */
+const U1PR=[
+ ['se doucher','duschen','to have a shower'],
+ ['se laver','sich waschen','to wash'],
+ ['s’habiller','sich anziehen','to get dressed'],
+ ['se coiffer','sich frisieren','to do one’s hair'],
+ ['se brosser','sich putzen','to brush'],
+ ['se dépêcher','sich beeilen','to hurry'],
+ ['se réveiller','aufwachen','to wake up'],
+ ['se raser','sich rasieren','to shave'],
+ ['se maquiller','sich schminken','to put on make-up'],
+ ['se parfumer','sich parfümieren','to put on perfume'],
+ ['se disputer','sich streiten','to argue'],
+ ['s’excuser','sich entschuldigen','to apologise'],
+ ['s’amuser','sich amüsieren','to have fun'],
+ ['se lever','aufstehen','to get up'],
+ ['s’appeler','heissen','to be called']];
+/* Unregelmässige Verben, die in der Unité vorkommen. */
+const U1IR={
+ 'avoir':{de:'haben',en:'to have',f:['ai','as','a','avons','avez','ont']},
+ 'être':{de:'sein',en:'to be',f:['suis','es','est','sommes','êtes','sont']},
+ 'aller':{de:'gehen, fahren','en':'to go',f:['vais','vas','va','allons','allez','vont']},
+ 'prendre':{de:'nehmen',en:'to take',f:['prends','prends','prend','prenons','prenez','prennent']},
+ 'ouvrir':{de:'öffnen',en:'to open',f:['ouvre','ouvres','ouvre','ouvrons','ouvrez','ouvrent']}};
+/* Die Ausnahmen stehen Zeichen für Zeichen da, nicht erzeugt. */
+const U1ESOND={
+ 'manger':['mange','manges','mange','mangeons','mangez','mangent'],
+ 'commencer':['commence','commences','commence','commençons','commencez','commencent']};
+const U1PSOND={
+ 'se lever':['je me lève','tu te lèves','il se lève','nous nous levons','vous vous levez','ils se lèvent'],
+ 's’appeler':['je m’appelle','tu t’appelles','il s’appelle','nous nous appelons','vous vous appelez','ils s’appellent']};
+
+const U1RP=['me','te','se','nous','vous','se'];
+function u1ErVoll(inf,i){
+ const s=U1ESOND[inf];
+ const f=s?s[i]:inf.slice(0,-2)+['e','es','e','ons','ez','ent'][i];
+ return elide(PRON[i],f);}
+function u1PrVoll(inf,i){
+ const v=U1PSOND[inf];if(v)return v[i];
+ const rumpf=inf.replace(/^se /,'').replace(/^s’/,'');
+ const vokal=/^[aeiouéèêhy]/i.test(rumpf);
+ const f=rumpf.slice(0,-2)+['e','es','e','ons','ez','ent'][i];
+ const r=U1RP[i];
+ const rp=(vokal&&r.length===2)?r[0]+'’':r+' ';
+ return PRON[i]+' '+rp+f;}
+function u1Verben(){
+ return U1ER.map(v=>({inf:v[0],de:v[1],en:v[2],art:'er'}))
+  .concat(U1PR.map(v=>({inf:v[0],de:v[1],en:v[2],art:'pr'})))
+  .concat(Object.keys(U1IR).map(k=>({inf:k,de:U1IR[k].de,en:U1IR[k].en,art:'ir'})));}
+function u1Form(v,i){
+ return v.art==='pr'?u1PrVoll(v.inf,i)
+  :v.art==='ir'?elide(PRON[i],U1IR[v.inf].f[i])
+  :u1ErVoll(v.inf,i);}
+function u1Konj(v){return [0,1,2,3,4,5].map(i=>u1Form(v,i)).join('\n');}
+function u1Sinn(v){return S.lang==='en'?v.en:v.de;}
+function u1Endungen(){return X('Endungen auf -er: -e, -es, -e, -ons, -ez, -ent.',
+ 'Endings for -er verbs: -e, -es, -e, -ons, -ez, -ent.',
+ 'Terminaisons en -er : -e, -es, -e, -ons, -ez, -ent.');}
+
+/* ---------- 1. Wortschatz der Unité, in beide Richtungen ---------- */
+const U1LZ=['dd7-1-1','dd7-1-2','dd7-1-3'];
+function u1Wortschatz(){
+ const out=[];
+ for(const id of U1LZ){const tp=FRTOPICS.find(x=>x.id===id);if(tp)out.push.apply(out,tp.w||[]);}
+ return out;}
+function u1WortItem(lv){
+ const ws=u1Wortschatz();
+ const d=pick(ws);const r=Math.random();
+ const loesung=ddFr(d)+' = '+ddDeAll(d);
+ if(r<0.45)
+  return steps({type:'input',prompt:X('Schreibe auf Französisch:','Write in French:','Écris en français :')+'\n'+ddDe(d),
+   answer:ddFr(d),accept:ddAccept(d),fr:true,sound:ddFr(d),sprich:ddFr(d),sprichAccept:ddAccept(d)},
+   [X('Artikel und Akzente gehören dazu.','The article and the accents belong to it.','L’article et les accents en font partie.'),loesung]);
+ if(r<0.75){
+  const falsch=shuffle(ws.filter(x=>ddFr(x)!==ddFr(d))).slice(0,2).map(ddDe);
+  const it=choiceItem(X('Was heisst das auf Deutsch?','What does this mean in English?','Que veut dire cela en allemand ?')+'\n'+ddFr(d),ddDe(d),falsch,{sound:ddFr(d)});
+  return steps(it,[X('Sprich das Wort leise mit, dann hörst du es.','Say the word quietly to yourself, then you hear it.','Dis le mot à voix basse, tu l’entendras.'),loesung]);}
+ return steps({type:'input',prompt:X('Schreibe auf Deutsch:','Write in English:','Écris en allemand :')+'\n'+ddFr(d),
+  answer:ddDeList(d)[0],accept:ddDeList(d),sound:ddFr(d)},
+  [X('Ein Wort genügt.','One word is enough.','Un mot suffit.'),loesung]);}
+
+/* ---------- 2. Alle Verben der Unité konjugieren ---------- */
+function u1KonjItem(lv){
+ const v=pick(u1Verben());const i=ri(0,5);const voll=u1Form(v,i);
+ const r=Math.random();
+ if(penNow()&&r<0.14)
+  return hw(X('Schreibe die ganze Konjugation von ','Write out the full conjugation of ','Écris toute la conjugaison de ')+v.inf+X(' im Präsens von Hand auf.',' in the present tense by hand.',' au présent, à la main.'),
+   u1Konj(v),
+   X('Der Reihe nach: je, tu, il, nous, vous, ils.','In order: je, tu, il, nous, vous, ils.','Dans l’ordre : je, tu, il, nous, vous, ils.'),
+   X('Vergleiche Zeile für Zeile.','Compare line by line.','Compare ligne par ligne.'));
+ if(r<0.42){
+  const falsch=shuffle([0,1,2,3,4,5].filter(k=>u1Form(v,k)!==voll)).slice(0,2).map(k=>u1Form(v,k));
+  const it=choiceItem(X('Welche Form ist richtig?','Which form is correct?','Quelle forme est correcte ?')+'\n'+PRON[i]+' … ('+v.inf+' – '+u1Sinn(v)+')',voll,falsch);
+  return steps(it,[X('Welche Person ist gemeint?','Which person is meant?','Quelle personne est-ce ?')+' '+PRON[i],u1Konj(v).replace(/\n/g,'   ')]);}
+ if(r<0.85)
+  return fillItem(X('Setze die ganze Form ein:','Write the whole form:','Écris la forme complète :')+'\n'+PRON[i]+' … ('+v.inf+' – '+u1Sinn(v)+')',voll,[voll],
+   [v.art==='pr'?X('Zum Verb gehört auch das Pronomen: me, te, se, nous, vous, se.','The pronoun belongs to the verb: me, te, se, nous, vous, se.','Le pronom fait partie du verbe : me, te, se, nous, vous, se.')
+     :v.art==='ir'?X('Dieses Verb ist unregelmässig und wird auswendig gelernt.','This verb is irregular and is learnt by heart.','Ce verbe est irrégulier et s’apprend par cœur.')
+     :u1Endungen(),
+    u1Konj(v).replace(/\n/g,'   ')]);
+ const idx=shuffle([0,1,2,3,4,5]).slice(0,4).sort((a,b)=>a-b);
+ return steps({type:'order',prompt:v.inf+': '+X('Bringe die Formen in die Reihenfolge je, tu, il, nous, vous, ils.','Put the forms into the order je, tu, il, nous, vous, ils.','Mets les formes dans l’ordre je, tu, il, nous, vous, ils.'),
+  order:idx.map(k=>u1Form(v,k))},
+  [X('Die Reihenfolge ist immer dieselbe.','The order is always the same.','L’ordre est toujours le même.'),u1Konj(v).replace(/\n/g,'   ')]);}
+
+/* ---------- 3. Die verbes pronominaux ---------- */
+function u1PronItem(lv){
+ const v=pick(U1PR.map(x=>({inf:x[0],de:x[1],en:x[2],art:'pr'})));
+ const i=ri(0,5);const voll=u1PrVoll(v.inf,i);
+ const rest=voll.slice(PRON[i].length+1);
+ const r=Math.random();
+ if(r<0.40){
+  const kurz=/[’]/.test(rest)?rest.split('’')[0]+'’':rest.split(' ')[0];
+  /* Die Ablenker haben dieselbe Gestalt wie die Loesung. Sonst verraet
+     schon der Apostroph, welche Antwort gemeint ist. */
+  const menge=/’/.test(kurz)?['m’','t’','s’','nous','vous']:['me','te','se','nous','vous'];
+  const falsch=shuffle(menge.filter(x=>x!==kurz)).slice(0,2);
+  const it=choiceItem(X('Welches Pronomen gehört dazu?','Which pronoun belongs here?','Quel pronom faut-il ?')+'\n'+PRON[i]+' ______ '+X('(von ','(from ','(de ')+v.inf+')',kurz,falsch);
+  return steps(it,[X('Das Pronomen richtet sich nach der Person, nicht nach dem Verb.','The pronoun follows the person, not the verb.','Le pronom suit la personne, pas le verbe.'),voll]);}
+ if(r<0.80)
+  return fillItem(X('Ergänze Pronomen und Verb:','Add the pronoun and the verb:','Complète le pronom et le verbe :')+'\n'+PRON[i]+' ______ ('+v.inf+' – '+u1Sinn(v)+')',rest,[rest,voll],
+   [X('Zuerst das Pronomen, dann die Verbform.','The pronoun first, then the verb form.','D’abord le pronom, puis la forme du verbe.'),voll]);
+ return steps({type:'input',prompt:X('Schreibe den ganzen Ausdruck:','Write the whole expression:','Écris l’expression entière :')+'\n'+PRON[i]+' … ('+v.inf+')',
+  answer:voll,accept:[voll],fr:true},
+  [X('Person, Pronomen, Verbform – in dieser Reihenfolge.','Person, pronoun, verb form – in that order.','Personne, pronom, forme verbale – dans cet ordre.'),u1Konj(v).replace(/\n/g,'   ')]);}
+
+/* ---------- 4. Die drei Sonderfälle ---------- */
+const U1FOK=[
+ {inf:'manger',de:'essen',en:'to eat',art:'er',
+  regel:X('Bei manger bleibt das e vor -ons stehen: nous mangeons. Ohne e wäre das g hart.',
+   'In manger the e stays before -ons: nous mangeons. Without the e the g would be hard.',
+   'Dans manger, le e reste devant -ons : nous mangeons. Sans le e, le g serait dur.')},
+ {inf:'commencer',de:'anfangen, beginnen',en:'to begin',art:'er',
+  regel:X('Bei commencer wird das c vor -ons zu ç: nous commençons. Sonst spräche man ein k.',
+   'In commencer the c becomes ç before -ons: nous commençons. Otherwise it would sound like k.',
+   'Dans commencer, le c devient ç devant -ons : nous commençons. Sinon on dirait un k.')},
+ {inf:'s’appeler',de:'heissen',en:'to be called',art:'pr',
+  regel:X('s’appeler verdoppelt das l nur dort, wo die Endung stumm ist: je m’appelle, aber nous nous appelons mit einem l.',
+   's’appeler doubles the l only where the ending is silent: je m’appelle, but nous nous appelons with one l.',
+   's’appeler double le l seulement quand la terminaison est muette : je m’appelle, mais nous nous appelons avec un seul l.')}];
+function u1FokItem(lv){
+ const v=pick(U1FOK);const r=Math.random();
+ /* Die Stolperstelle ist die nous-Form; sie kommt öfter dran. */
+ const i=r<0.45?3:ri(0,5);
+ const voll=u1Form(v,i);
+ if(r<0.25){
+  const falsch=v.inf==='manger'?['nous mangons','nous manjons']
+    :v.inf==='commencer'?['nous commencons','nous commensons']
+    :['nous nous appellons','nous appelons'];
+  const it=choiceItem(v.inf+': '+X('Welche nous-Form ist richtig?','Which nous form is correct?','Quelle forme avec nous est correcte ?'),u1Form(v,3),falsch.slice(0,2));
+  return steps(it,[v.regel,u1Konj(v).replace(/\n/g,'   ')]);}
+ if(r<0.70)
+  return fillItem(v.inf+' – '+u1Sinn(v)+'\n'+X('Setze die ganze Form ein:','Write the whole form:','Écris la forme complète :')+'\n'+PRON[i]+' …',voll,[voll],
+   [v.regel,u1Konj(v).replace(/\n/g,'   ')]);
+ if(penNow()&&r<0.82)
+  return hw(X('Schreibe die ganze Konjugation von ','Write out the full conjugation of ','Écris toute la conjugaison de ')+v.inf+X(' von Hand auf.',' by hand.',' à la main.'),
+   u1Konj(v),v.regel,X('Vergleiche Zeile für Zeile.','Compare line by line.','Compare ligne par ligne.'));
+ return steps({type:'input',prompt:v.inf+': '+X('Schreibe die nous-Form.','Write the nous form.','Écris la forme avec nous.'),
+  answer:u1Form(v,3),accept:[u1Form(v,3)],fr:true},
+  [v.regel,u1Konj(v).replace(/\n/g,'   ')]);}
+
+/* ---------- 5. Verben übersetzen, in beide Richtungen ---------- */
+function u1VerbWortItem(lv){
+ const alle=u1Verben();const v=pick(alle);const r=Math.random();
+ const sinn=u1Sinn(v);
+ if(r<0.45)
+  return fillItem(X('Wie heisst dieses Verb auf Französisch?','What is this verb in French?','Comment dit-on ce verbe en français ?')+'\n'+sinn,
+   v.inf,[v.inf],
+   [v.art==='pr'?X('Es ist ein reflexives Verb; se gehört dazu.','It is a reflexive verb; se belongs to it.','C’est un verbe pronominal ; se en fait partie.')
+     :X('Achte auf die Endung -er und auf die Akzente.','Watch the -er ending and the accents.','Attention à la terminaison -er et aux accents.'),
+    v.inf+' = '+sinn]);
+ if(r<0.80){
+  const falsch=shuffle(alle.filter(x=>x.inf!==v.inf)).slice(0,2).map(u1Sinn);
+  const it=choiceItem(X('Was heisst das auf Deutsch?','What does this mean in English?','Que veut dire cela en allemand ?')+'\n'+v.inf,sinn,falsch);
+  return steps(it,[X('Denk an einen Satz, in dem das Verb vorkommt.','Think of a sentence with this verb in it.','Pense à une phrase avec ce verbe.'),v.inf+' = '+sinn]);}
+ return fillItem(X('Wie heisst dieses Verb auf Deutsch?','What is this verb in English?','Comment dit-on ce verbe en allemand ?')+'\n'+v.inf,
+  sinn,[sinn].concat(sinn.split(', ')),
+  [X('Ein Wort genügt.','One word is enough.','Un mot suffit.'),v.inf+' = '+sinn]);}
+
+/* ---------- Die fünf Themen ---------- */
+ptop('pru-u1-wort',1,
+ 'Unité 1 · Wortschatz in beide Richtungen|Unité 1 · vocabulary both ways|Unité 1 · vocabulaire dans les deux sens',
+ 'Der ganze Wortschatz der Unité 1 von «dis donc! 7», alle drei Lernziele zusammen. Gefragt wird in beide Richtungen: Deutsch nach Französisch und Französisch nach Deutsch. Bei den Hauptwörtern gehört der Artikel dazu.|The complete vocabulary of Unité 1 of «dis donc! 7», all three objectives together. Asked in both directions: German to French and French to German. Nouns come with their article.|Tout le vocabulaire de l’Unité 1 de «dis donc! 7», les trois objectifs ensemble. Dans les deux sens. Les noms vont avec leur article.',
+ lv=>u1WortItem(lv));
+ptop('pru-u1-verben',2,
+ 'Unité 1 · alle Verben konjugieren|Unité 1 · conjugate all verbs|Unité 1 · conjuguer tous les verbes',
+ 'Alle Verben der Unité 1 im Präsens, in allen sechs Personen: die regelmässigen auf -er, die reflexiven und die unregelmässigen avoir, être, aller, prendre und ouvrir.|All verbs of Unité 1 in the present tense, in all six persons: the regular -er verbs, the reflexive ones and the irregular avoir, être, aller, prendre and ouvrir.|Tous les verbes de l’Unité 1 au présent, aux six personnes : les verbes réguliers en -er, les verbes pronominaux et les irréguliers avoir, être, aller, prendre et ouvrir.',
+ lv=>u1KonjItem(lv));
+ptop('pru-u1-pron',2,
+ 'Unité 1 · die verbes pronominaux|Unité 1 · the reflexive verbs|Unité 1 · les verbes pronominaux',
+ 'Reflexive Verben tragen ein zweites Pronomen: je me lève, tu te lèves, il se lève, nous nous levons, vous vous levez, ils se lèvent. Vor einem Vokal wird me zu m’, te zu t’ und se zu s’.|Reflexive verbs carry a second pronoun: je me lève, tu te lèves, il se lève, nous nous levons, vous vous levez, ils se lèvent. Before a vowel me becomes m’, te becomes t’ and se becomes s’.|Les verbes pronominaux portent un second pronom : je me lève, tu te lèves, il se lève, nous nous levons, vous vous levez, ils se lèvent. Devant une voyelle, me devient m’, te devient t’ et se devient s’.',
+ lv=>u1PronItem(lv));
+ptop('pru-u1-fokus',2,
+ 'Unité 1 · manger, commencer, s’appeler|Unité 1 · manger, commencer, s’appeler|Unité 1 · manger, commencer, s’appeler',
+ 'Drei Verben mit einer Stolperstelle, und sie liegt jedes Mal bei nous. manger behält das e: nous mangeons. commencer schreibt ç: nous commençons. s’appeler verdoppelt das l nur, wo die Endung stumm ist: je m’appelle, aber nous nous appelons.|Three verbs with a trap, and every time it sits at nous. manger keeps the e: nous mangeons. commencer writes ç: nous commençons. s’appeler doubles the l only where the ending is silent: je m’appelle, but nous nous appelons.|Trois verbes avec un piège, toujours à la personne nous. manger garde le e : nous mangeons. commencer écrit ç : nous commençons. s’appeler double le l seulement quand la terminaison est muette : je m’appelle, mais nous nous appelons.',
+ lv=>u1FokItem(lv));
+ptop('pru-u1-verbwort',1,
+ 'Unité 1 · Verben übersetzen|Unité 1 · translate the verbs|Unité 1 · traduire les verbes',
+ 'Alle Verben der Unité 1 als Wortschatz, in beide Richtungen: Deutsch nach Französisch und Französisch nach Deutsch. Bei den reflexiven Verben gehört se zum Wort.|All verbs of Unité 1 as vocabulary, both ways: German to French and French to German. With reflexive verbs the se belongs to the word.|Tous les verbes de l’Unité 1 comme vocabulaire, dans les deux sens. Pour les verbes pronominaux, se fait partie du mot.',
+ lv=>u1VerbWortItem(lv));
+
+const PRU_GAME={id:'fr-pruefung',builtin:true,subject:'lang',kind:'lang',items:[],gen:{topics:PRU.map(x=>x.id)}};
+Object.defineProperty(PRU_GAME,'title',{get:()=>t('pru_title'),enumerable:true});
+
 const MATH_ARITH={id:'arith',y:0,a:1,n:['Freies Rechnen','Free arithmetic','Calcul libre'],c:['Rechnen mit den Zahlen und Rechenarten, die für dieses Spiel eingestellt sind.','Calculating with the numbers and operations set for this game.','Calculer avec les nombres et les opérations choisis pour ce jeu.'],terms:['sum','difference','product','quotient'],g:genArith};
-function mtopic(id){return id==='arith'?MATH_ARITH:(MT.find(x=>x.id===id)||ITT.find(x=>x.id===id)||FRTOPICS.find(x=>x.id===id)||(typeof SPT!=='undefined'?SPT.find(x=>x.id===id):null)||FRG.find(x=>x.id===id)||(typeof DET!=='undefined'?DET.find(x=>x.id===id):null)||(typeof DPT!=='undefined'?DPT.find(x=>x.id===id):null)||(typeof OWT!=='undefined'?OWT.find(x=>x.id===id):null));}
+function mtopic(id){return id==='arith'?MATH_ARITH:(MT.find(x=>x.id===id)||ITT.find(x=>x.id===id)||FRTOPICS.find(x=>x.id===id)||(typeof SPT!=='undefined'?SPT.find(x=>x.id===id):null)||FRG.find(x=>x.id===id)||(typeof PRU!=='undefined'?PRU.find(x=>x.id===id):null)||(typeof DET!=='undefined'?DET.find(x=>x.id===id):null)||(typeof DPT!=='undefined'?DPT.find(x=>x.id===id):null)||(typeof OWT!=='undefined'?OWT.find(x=>x.id===id):null));}
 function genItem(tp,lv,o){let it;for(let k=0;k<6;k++){try{it=tp.g(lv,o||{});break;}catch(e){console.warn(tp.id,e);}}if(!it)return null;
  it.id=tp.id;it.topic=tp.id;it.difficulty=lv;it.gen=true;return it;}
 /* ---------- glossary ---------- */
