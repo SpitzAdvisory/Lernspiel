@@ -34,9 +34,19 @@ console.log('Pruefe '+dateien.length+' Dateien gegen '+path.basename(quelle)+' (
 for(const f of dateien){
  let ausgabe='';
  try{ausgabe=execFileSync('node',[path.join(D,f)],{encoding:'utf8',timeout:240000,cwd:D});}
- catch(e){ausgabe=(e.stdout||'')+(e.stderr||'')+' [Abbruch]';}
+ catch(e){
+  /* Der Fehler selbst wurde frueher weggeworfen. Zwei Abbrueche am
+     20.11. meldeten darum nur "[Abbruch]" ohne ein Wort dazu, obwohl
+     beide Dateien einzeln in Sekunden durchliefen. Signal, Code und
+     Meldung gehoeren in die Zeile - sonst ist ein Abbruch nicht zu
+     untersuchen, und der Satz taugt nicht als Tor zur Auslieferung. */
+  const grund=[e.signal?'Signal '+e.signal:null,
+   (e.status!==undefined&&e.status!==null)?'Code '+e.status:null,
+   e.code?String(e.code):null,
+   (e.message||'').split('\n')[0].slice(0,80)||null].filter(Boolean).join(', ');
+  ausgabe=(e.stdout||'')+(e.stderr||'')+'\n[Abbruch] '+grund;}
  const zeilen=ausgabe.trim().split('\n');
- const fehler=zeilen.filter(z=>/^FAIL|NICHT BESTANDEN|SEITENFEHLER|Abbruch/.test(z));
+ const fehler=zeilen.filter(z=>/^FAIL|NICHT BESTANDEN|SEITENFEHLER|\[Abbruch\]/.test(z));
  const ok=!fehler.length;
  if(!ok)schlecht++;
  console.log((ok?'  bestanden  ':'  GEFALLEN   ')+f.padEnd(18)+
