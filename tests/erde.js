@@ -43,6 +43,29 @@ for(const [von,nach] of [[SPIEL,'g72.json'],[PACK,'world.json']])
 
  pruef('Das Spiel heisst Geography 7.2',g.title==='Geography 7.2',g.title);
  pruef('Es traegt genug Aufgaben',g.items.length>=100,g.items.length);
+
+ /* Zwei Rekorde, die sich beissen koennen: das laengste Gebirge an Land
+    (Kordilleren, rund 14 000 km, aus dem Arbeitsblatt und nachrecherchiert)
+    und das laengste unter Wasser (mittelozeanische Ruecken, ueber 60 000 km).
+    Nennt eine Aufgabe eines davon unqualifiziert "das laengste Gebirge der
+    Welt", gibt das Spiel zwei Antworten auf dieselbe Frage. */
+ {const alles=[];
+  for(const it of g.items)for(const L of ['de','en','fr']){
+   const tr=(it.tr||{})[L]||{};
+   alles.push(((tr.prompt||'')+' '+(tr.explanation||'')));}
+  const streit=alles.filter(x=>/längste Gebirge der Welt|longest mountain range in the world|plus longue chaîne du monde/.test(x));
+  pruef('Kein Rekord heisst unqualifiziert «das längste Gebirge der Welt»',
+   streit.length===0,streit.length?streit[0].slice(0,70):'');
+  const land=g.items.find(i=>/längste Gebirge an Land \(14 000 km\)/.test((i.tr&&i.tr.de&&i.tr.de.prompt)||''));
+  pruef('Der Rekord «längstes Gebirge an Land» ist da',!!land);
+  if(land){
+   pruef('Er nennt die Kordilleren als Lösung',
+    (land.options||[])[(land.correct||[0])[0]]==='Kordilleren',(land.options||[])[(land.correct||[0])[0]]);
+   pruef('Die Erklärung sagt, woraus die Kette besteht',
+    /Rocky Mountains/.test(land.tr.de.explanation||'')&&/Anden/.test(land.tr.de.explanation||''));
+   /* "Anden" taugt nicht als Falschantwort: sie sind der Suedteil der Kette. */
+   pruef('«Anden» steht nicht als falsche Antwort darunter',
+    (land.options||[]).indexOf('Anden')<0,(land.options||[]).join(', '));}}
  pruef('Die Kennungen sind eindeutig',new Set(g.items.map(i=>i.id)).size===g.items.length);
  pruef('Es nennt das Weltpaket',(g.mapPacks||[]).indexOf('world')>=0);
 

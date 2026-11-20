@@ -3,11 +3,11 @@
  "title": "Geography 7.2",
  "kind": "science",
  "instructions": "Die Erde: Gestalt und Orientierung, Teil 2. Alle Lernziele der RZ-Pruefung vom 27. November 2026.",
- "createdAt": "2026-11-20T14:40:06.000Z",
- "updatedAt": "2026-11-20T14:40:06.000Z",
+ "createdAt": "2026-11-20T15:36:30.000Z",
+ "updatedAt": "2026-11-20T15:36:30.000Z",
  "sources": [
   {
-   "date": "2026-11-20T14:40:06.000Z",
+   "date": "2026-11-20T15:36:30.000Z",
    "files": [
     "AB_1.pdf",
     "AB_2.pdf",
@@ -16,7 +16,7 @@
     "AB_5.pdf",
     "AB_6.pdf"
    ],
-   "added": 110
+   "added": 112
   }
  ],
  "mapPacks": [
@@ -2061,11 +2061,11 @@
    "correct": [
     0
    ],
-   "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge der Welt. Am Fuss erreichen sie bis zu 4000 km Breite, die Gipfel erheben sich 1000 bis 3000 m über den Meeresboden.",
+   "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge unter Wasser. Am Fuss erreichen sie bis zu 4000 km Breite, die Gipfel erheben sich 1000 bis 3000 m über den Meeresboden.",
    "tr": {
     "de": {
      "prompt": "Was sind mittelozeanische Rücken?",
-     "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge der Welt. Am Fuss erreichen sie bis zu 4000 km Breite, die Gipfel erheben sich 1000 bis 3000 m über den Meeresboden.",
+     "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge unter Wasser. Am Fuss erreichen sie bis zu 4000 km Breite, die Gipfel erheben sich 1000 bis 3000 m über den Meeresboden.",
      "options": [
       "Gebirge, die unter der Meeresoberfläche verlaufen",
       "Tiefe Gräben im Meer",
@@ -2075,7 +2075,7 @@
     },
     "en": {
      "prompt": "What are mid-ocean ridges?",
-     "explanation": "At over 60 000 km they are the longest mountain range in the world. At their foot they reach up to 4000 km wide; the peaks rise 1000 to 3000 m above the sea floor.",
+     "explanation": "At over 60 000 km they are the longest mountain range under water. At their foot they reach up to 4000 km wide; the peaks rise 1000 to 3000 m above the sea floor.",
      "options": [
       "Mountains running beneath the sea surface",
       "Deep trenches in the sea",
@@ -2085,7 +2085,7 @@
     },
     "fr": {
      "prompt": "Que sont les dorsales médio-océaniques ?",
-     "explanation": "Avec plus de 60 000 km, elles forment la plus longue chaîne du monde. Leur base atteint 4000 km de large, les sommets s’élèvent de 1000 à 3000 m au-dessus du fond.",
+     "explanation": "Avec plus de 60 000 km, elles forment la plus longue chaîne sous l’eau. Leur base atteint 4000 km de large, les sommets s’élèvent de 1000 à 3000 m au-dessus du fond.",
      "options": [
       "Des montagnes qui courent sous la surface de la mer",
       "Des fosses profondes",
@@ -2502,11 +2502,11 @@
    "correct": [
     0
    ],
-   "explanation": "Der höchste berg – Mount Everest: 8848 m.",
+   "explanation": "Der höchste Berg – Mount Everest: 8848 m.",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: der höchste Berg?",
-     "explanation": "Der höchste berg – Mount Everest: 8848 m.",
+     "explanation": "Der höchste Berg – Mount Everest: 8848 m.",
      "options": [
       "8848 m",
       "6671 km",
@@ -2598,11 +2598,11 @@
    "correct": [
     0
    ],
-   "explanation": "Der längste fluss – Nil: 6671 km.",
+   "explanation": "Der längste Fluss – Nil: 6671 km.",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: der längste Fluss?",
-     "explanation": "Der längste fluss – Nil: 6671 km.",
+     "explanation": "Der längste Fluss – Nil: 6671 km.",
      "options": [
       "6671 km",
       "8848 m",
@@ -2694,11 +2694,11 @@
    "correct": [
     0
    ],
-   "explanation": "Die grösste insel – Grönland: 2,17 Mio. km².",
+   "explanation": "Die grösste Insel – Grönland: 2,17 Mio. km².",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: die grösste Insel?",
-     "explanation": "Die grösste insel – Grönland: 2,17 Mio. km².",
+     "explanation": "Die grösste Insel – Grönland: 2,17 Mio. km².",
      "options": [
       "2,17 Mio. km²",
       "8848 m",
@@ -2790,11 +2790,11 @@
    "correct": [
     0
    ],
-   "explanation": "Der grösste kontinent – Asien: 44 Mio. km².",
+   "explanation": "Der grösste Kontinent – Asien: 44 Mio. km².",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: der grösste Kontinent?",
-     "explanation": "Der grösste kontinent – Asien: 44 Mio. km².",
+     "explanation": "Der grösste Kontinent – Asien: 44 Mio. km².",
      "options": [
       "44 Mio. km²",
       "8848 m",
@@ -2886,11 +2886,11 @@
    "correct": [
     0
    ],
-   "explanation": "Der grösste see – Kaspisches Meer: 386 500 km².",
+   "explanation": "Der grösste See – Kaspisches Meer: 386 500 km².",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: der grösste See?",
-     "explanation": "Der grösste see – Kaspisches Meer: 386 500 km².",
+     "explanation": "Der grösste See – Kaspisches Meer: 386 500 km².",
      "options": [
       "386 500 km²",
       "8848 m",
@@ -2982,11 +2982,11 @@
    "correct": [
     0
    ],
-   "explanation": "Der tiefste see – Baikalsee: -1637 m.",
+   "explanation": "Der tiefste See – Baikalsee: -1637 m.",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: der tiefste See?",
-     "explanation": "Der tiefste see – Baikalsee: -1637 m.",
+     "explanation": "Der tiefste See – Baikalsee: -1637 m.",
      "options": [
       "-1637 m",
       "8848 m",
@@ -3078,11 +3078,11 @@
    "correct": [
     0
    ],
-   "explanation": "Die tiefste stelle der landoberfläche – Totes Meer: -418 m.",
+   "explanation": "Die tiefste Stelle der Landoberfläche – Totes Meer: -418 m.",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: die tiefste Stelle der Landoberfläche?",
-     "explanation": "Die tiefste stelle der landoberfläche – Totes Meer: -418 m.",
+     "explanation": "Die tiefste Stelle der Landoberfläche – Totes Meer: -418 m.",
      "options": [
       "-418 m",
       "8848 m",
@@ -3174,11 +3174,11 @@
    "correct": [
     0
    ],
-   "explanation": "Der höchstgelegene schiffbare see – Titicacasee: 3810 m.",
+   "explanation": "Der höchstgelegene schiffbare See – Titicacasee: 3810 m.",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: der höchstgelegene schiffbare See?",
-     "explanation": "Der höchstgelegene schiffbare see – Titicacasee: 3810 m.",
+     "explanation": "Der höchstgelegene schiffbare See – Titicacasee: 3810 m.",
      "options": [
       "3810 m",
       "8848 m",
@@ -3270,11 +3270,11 @@
    "correct": [
     0
    ],
-   "explanation": "Die tiefste meeresstelle – Marianengraben: -11034 m.",
+   "explanation": "Die tiefste Meeresstelle – Marianengraben: -11034 m.",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: die tiefste Meeresstelle?",
-     "explanation": "Die tiefste meeresstelle – Marianengraben: -11034 m.",
+     "explanation": "Die tiefste Meeresstelle – Marianengraben: -11034 m.",
      "options": [
       "-11034 m",
       "8848 m",
@@ -3366,11 +3366,11 @@
    "correct": [
     0
    ],
-   "explanation": "Der höchste aktive vulkan – Cotopaxi: 5897 m.",
+   "explanation": "Der höchste aktive Vulkan – Cotopaxi: 5897 m.",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: der höchste aktive Vulkan?",
-     "explanation": "Der höchste aktive vulkan – Cotopaxi: 5897 m.",
+     "explanation": "Der höchste aktive Vulkan – Cotopaxi: 5897 m.",
      "options": [
       "5897 m",
       "8848 m",
@@ -3462,11 +3462,11 @@
    "correct": [
     0
    ],
-   "explanation": "Die grösste halbinsel – Arabische Halbinsel: 2,7 Mio. km².",
+   "explanation": "Die grösste Halbinsel – Arabische Halbinsel: 2,7 Mio. km².",
    "tr": {
     "de": {
      "prompt": "Welcher Wert gehört zu diesem Rekord: die grösste Halbinsel?",
-     "explanation": "Die grösste halbinsel – Arabische Halbinsel: 2,7 Mio. km².",
+     "explanation": "Die grösste Halbinsel – Arabische Halbinsel: 2,7 Mio. km².",
      "options": [
       "2,7 Mio. km²",
       "8848 m",
@@ -3498,6 +3498,102 @@
    "id": "g72-0094"
   },
   {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: das längste Gebirge an Land (14 000 km)?",
+   "difficulty": 2,
+   "options": [
+    "Kordilleren",
+    "Himalaja",
+    "Alpen",
+    "Ural"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Kordilleren: 14 000 km. Die Kordilleren sind eine einzige Kette von Alaska bis Feuerland: im Norden die Rocky Mountains, im Süden die Anden.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: das längste Gebirge an Land (14 000 km)?",
+     "explanation": "Kordilleren: 14 000 km. Die Kordilleren sind eine einzige Kette von Alaska bis Feuerland: im Norden die Rocky Mountains, im Süden die Anden.",
+     "options": [
+      "Kordilleren",
+      "Himalaja",
+      "Alpen",
+      "Ural"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the longest range on land (14 000 km)?",
+     "explanation": "the Cordilleras: 14 000 km. The Cordilleras are one single chain from Alaska to Tierra del Fuego: the Rocky Mountains in the north, the Andes in the south.",
+     "options": [
+      "the Cordilleras",
+      "the Himalayas",
+      "the Alps",
+      "the Urals"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : la plus longue chaîne sur terre (14 000 km) ?",
+     "explanation": "les Cordillères : 14 000 km. Les Cordillères forment une seule chaîne de l’Alaska à la Terre de Feu : les Rocheuses au nord, les Andes au sud.",
+     "options": [
+      "les Cordillères",
+      "l’Himalaya",
+      "les Alpes",
+      "l’Oural"
+     ]
+    }
+   },
+   "id": "g72-0095"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: das längste Gebirge an Land?",
+   "difficulty": 3,
+   "options": [
+    "14 000 km",
+    "8848 m",
+    "6671 km",
+    "2,17 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Das längste Gebirge an Land – Kordilleren: 14 000 km.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: das längste Gebirge an Land?",
+     "explanation": "Das längste Gebirge an Land – Kordilleren: 14 000 km.",
+     "options": [
+      "14 000 km",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the longest range on land?",
+     "explanation": "The longest range on land – the Cordilleras: 14 000 km.",
+     "options": [
+      "14 000 km",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : la plus longue chaîne sur terre ?",
+     "explanation": "La plus longue chaîne sur terre – les Cordillères : 14 000 km.",
+     "options": [
+      "14 000 km",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0096"
+  },
+  {
    "type": "map",
    "prompt": "Tippe auf die grösste Insel.",
    "difficulty": 2,
@@ -3517,7 +3613,7 @@
      "prompt": "Touche la plus grande île."
     }
    },
-   "id": "g72-0095"
+   "id": "g72-0097"
   },
   {
    "type": "map",
@@ -3539,7 +3635,7 @@
      "prompt": "Touche le plus grand lac."
     }
    },
-   "id": "g72-0096"
+   "id": "g72-0098"
   },
   {
    "type": "map",
@@ -3561,7 +3657,7 @@
      "prompt": "Touche le lac le plus profond."
     }
    },
-   "id": "g72-0097"
+   "id": "g72-0099"
   },
   {
    "type": "map",
@@ -3583,7 +3679,7 @@
      "prompt": "Touche le lac navigable le plus haut."
     }
    },
-   "id": "g72-0098"
+   "id": "g72-0100"
   },
   {
    "type": "map",
@@ -3605,7 +3701,7 @@
      "prompt": "Touche le plus grand continent."
     }
    },
-   "id": "g72-0099"
+   "id": "g72-0101"
   },
   {
    "type": "map",
@@ -3627,7 +3723,7 @@
      "prompt": "Touche la chaîne aux plus hauts sommets."
     }
    },
-   "id": "g72-0100"
+   "id": "g72-0102"
   },
   {
    "type": "input",
@@ -3639,11 +3735,11 @@
     "60000",
     "60 000"
    ],
-   "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge der Welt - länger als jedes Gebirge an Land.",
+   "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge unter Wasser - länger als jedes Gebirge an Land. An Land ist die längste Kette die der Kordilleren mit rund 14 000 km.",
    "tr": {
     "de": {
      "prompt": "Wie lang sind die mittelozeanischen Rücken zusammen?",
-     "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge der Welt - länger als jedes Gebirge an Land.",
+     "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge unter Wasser - länger als jedes Gebirge an Land. An Land ist die längste Kette die der Kordilleren mit rund 14 000 km.",
      "answer": "60000 km",
      "accept": [
       "60 000 km",
@@ -3653,7 +3749,7 @@
     },
     "en": {
      "prompt": "How long are the mid-ocean ridges altogether?",
-     "explanation": "At over 60 000 km they are the longest mountain range in the world, longer than any range on land.",
+     "explanation": "At over 60 000 km they are the longest mountain range under water, longer than any range on land. On land the longest chain is the Cordilleras, about 14 000 km.",
      "answer": "60000 km",
      "accept": [
       "60 000 km",
@@ -3663,7 +3759,7 @@
     },
     "fr": {
      "prompt": "Quelle est la longueur totale des dorsales médio-océaniques ?",
-     "explanation": "Avec plus de 60 000 km, elles forment la plus longue chaîne du monde.",
+     "explanation": "Avec plus de 60 000 km, elles forment la plus longue chaîne sous l’eau, plus longue que toute chaîne sur terre. Sur terre, la plus longue est celle des Cordillères, environ 14 000 km.",
      "answer": "60000 km",
      "accept": [
       "60 000 km",
@@ -3672,7 +3768,7 @@
      ]
     }
    },
-   "id": "g72-0101"
+   "id": "g72-0103"
   },
   {
    "type": "single",
@@ -3723,7 +3819,7 @@
      ]
     }
    },
-   "id": "g72-0102"
+   "id": "g72-0104"
   },
   {
    "type": "multi",
@@ -3777,7 +3873,7 @@
      ]
     }
    },
-   "id": "g72-0103"
+   "id": "g72-0105"
   },
   {
    "type": "single",
@@ -3828,7 +3924,7 @@
      ]
     }
    },
-   "id": "g72-0104"
+   "id": "g72-0106"
   },
   {
    "type": "single",
@@ -3879,7 +3975,7 @@
      ]
     }
    },
-   "id": "g72-0105"
+   "id": "g72-0107"
   },
   {
    "type": "single",
@@ -3930,7 +4026,7 @@
      ]
     }
    },
-   "id": "g72-0106"
+   "id": "g72-0108"
   },
   {
    "type": "input",
@@ -3977,7 +4073,7 @@
      ]
     }
    },
-   "id": "g72-0107"
+   "id": "g72-0109"
   },
   {
    "type": "input",
@@ -4024,7 +4120,7 @@
      ]
     }
    },
-   "id": "g72-0108"
+   "id": "g72-0110"
   },
   {
    "type": "input",
@@ -4071,7 +4167,7 @@
      ]
     }
    },
-   "id": "g72-0109"
+   "id": "g72-0111"
   },
   {
    "type": "input",
@@ -4118,7 +4214,7 @@
      ]
     }
    },
-   "id": "g72-0110"
+   "id": "g72-0112"
   }
  ]
 }
