@@ -1,0 +1,18 @@
+{
+ "id": "g72beide",
+ "title": "Geography 7.1 + 7.2",
+ "kind": "science",
+ "instructions": "Beide Geografiespiele zusammen: der Stoff von 7.1 und der von 7.2.",
+ "createdAt": "2026-11-20T14:40:06.000Z",
+ "updatedAt": "2026-11-20T14:40:06.000Z",
+ "sources": [],
+ "mapPacks": [
+  "world",
+  "europe"
+ ],
+ "include": [
+  "mu8tk6qj39653",
+  "g72erde"
+ ],
+ "items": []
+}

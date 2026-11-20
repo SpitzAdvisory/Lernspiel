@@ -1,0 +1,4124 @@
+{
+ "id": "g72erde",
+ "title": "Geography 7.2",
+ "kind": "science",
+ "instructions": "Die Erde: Gestalt und Orientierung, Teil 2. Alle Lernziele der RZ-Pruefung vom 27. November 2026.",
+ "createdAt": "2026-11-20T14:40:06.000Z",
+ "updatedAt": "2026-11-20T14:40:06.000Z",
+ "sources": [
+  {
+   "date": "2026-11-20T14:40:06.000Z",
+   "files": [
+    "AB_1.pdf",
+    "AB_2.pdf",
+    "AB_3.pdf",
+    "AB_4.pdf",
+    "AB_5.pdf",
+    "AB_6.pdf"
+   ],
+   "added": 110
+  }
+ ],
+ "mapPacks": [
+  "world"
+ ],
+ "items": [
+  {
+   "type": "map",
+   "prompt": "Tippe auf Europa.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "continents:EU"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Europa."
+    },
+    "en": {
+     "prompt": "Tap Europe."
+    },
+    "fr": {
+     "prompt": "Touche l’Europe."
+    }
+   },
+   "id": "g72-0001"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Asien.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "continents:AS"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Asien."
+    },
+    "en": {
+     "prompt": "Tap Asia."
+    },
+    "fr": {
+     "prompt": "Touche l’Asie."
+    }
+   },
+   "id": "g72-0002"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Afrika.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "continents:AF"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Afrika."
+    },
+    "en": {
+     "prompt": "Tap Africa."
+    },
+    "fr": {
+     "prompt": "Touche l’Afrique."
+    }
+   },
+   "id": "g72-0003"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Nordamerika.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "continents:NA"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Nordamerika."
+    },
+    "en": {
+     "prompt": "Tap North America."
+    },
+    "fr": {
+     "prompt": "Touche l’Amérique du Nord."
+    }
+   },
+   "id": "g72-0004"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Südamerika.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "continents:SA"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Südamerika."
+    },
+    "en": {
+     "prompt": "Tap South America."
+    },
+    "fr": {
+     "prompt": "Touche l’Amérique du Sud."
+    }
+   },
+   "id": "g72-0005"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Ozeanien.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "continents:OC"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Ozeanien."
+    },
+    "en": {
+     "prompt": "Tap Oceania."
+    },
+    "fr": {
+     "prompt": "Touche l’Océanie."
+    }
+   },
+   "id": "g72-0006"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Antarktis.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "continents:AN"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Antarktis."
+    },
+    "en": {
+     "prompt": "Tap Antarctica."
+    },
+    "fr": {
+     "prompt": "Touche l’Antarctique."
+    }
+   },
+   "id": "g72-0007"
+  },
+  {
+   "type": "map",
+   "prompt": "Wie heisst dieser Kontinent?",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "name",
+    "target": "continents:EU",
+    "answer": "Europa"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Wie heisst dieser Kontinent?",
+     "answer": "Europa"
+    },
+    "en": {
+     "prompt": "What is the name of this continent?",
+     "answer": "Europe"
+    },
+    "fr": {
+     "prompt": "Comment s’appelle ce continent ?",
+     "answer": "Europe"
+    }
+   },
+   "answer": "Europa",
+   "id": "g72-0008"
+  },
+  {
+   "type": "map",
+   "prompt": "Wie heisst dieser Kontinent?",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "name",
+    "target": "continents:AS",
+    "answer": "Asien"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Wie heisst dieser Kontinent?",
+     "answer": "Asien"
+    },
+    "en": {
+     "prompt": "What is the name of this continent?",
+     "answer": "Asia"
+    },
+    "fr": {
+     "prompt": "Comment s’appelle ce continent ?",
+     "answer": "Asie"
+    }
+   },
+   "answer": "Asien",
+   "id": "g72-0009"
+  },
+  {
+   "type": "map",
+   "prompt": "Wie heisst dieser Kontinent?",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "name",
+    "target": "continents:AF",
+    "answer": "Afrika"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Wie heisst dieser Kontinent?",
+     "answer": "Afrika"
+    },
+    "en": {
+     "prompt": "What is the name of this continent?",
+     "answer": "Africa"
+    },
+    "fr": {
+     "prompt": "Comment s’appelle ce continent ?",
+     "answer": "Afrique"
+    }
+   },
+   "answer": "Afrika",
+   "id": "g72-0010"
+  },
+  {
+   "type": "map",
+   "prompt": "Wie heisst dieser Kontinent?",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "name",
+    "target": "continents:NA",
+    "answer": "Nordamerika"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Wie heisst dieser Kontinent?",
+     "answer": "Nordamerika"
+    },
+    "en": {
+     "prompt": "What is the name of this continent?",
+     "answer": "North America"
+    },
+    "fr": {
+     "prompt": "Comment s’appelle ce continent ?",
+     "answer": "Amérique du Nord"
+    }
+   },
+   "answer": "Nordamerika",
+   "id": "g72-0011"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den Pazifischen Ozean.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:pacific-ocean"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den Pazifischen Ozean."
+    },
+    "en": {
+     "prompt": "Tap the Pacific Ocean."
+    },
+    "fr": {
+     "prompt": "Touche l’océan Pacifique."
+    }
+   },
+   "id": "g72-0012"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den Atlantischen Ozean.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:atlantic-ocean"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den Atlantischen Ozean."
+    },
+    "en": {
+     "prompt": "Tap the Atlantic Ocean."
+    },
+    "fr": {
+     "prompt": "Touche l’océan Atlantique."
+    }
+   },
+   "id": "g72-0013"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den Indischen Ozean.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:indian-ocean"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den Indischen Ozean."
+    },
+    "en": {
+     "prompt": "Tap the Indian Ocean."
+    },
+    "fr": {
+     "prompt": "Touche l’océan Indien."
+    }
+   },
+   "id": "g72-0014"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den Arktischen Ozean.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:arctic-ocean"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den Arktischen Ozean."
+    },
+    "en": {
+     "prompt": "Tap the Arctic Ocean."
+    },
+    "fr": {
+     "prompt": "Touche l’océan Arctique."
+    }
+   },
+   "id": "g72-0015"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den Südlichen Ozean.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:southern-ocean"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den Südlichen Ozean."
+    },
+    "en": {
+     "prompt": "Tap the Southern Ocean."
+    },
+    "fr": {
+     "prompt": "Touche l’océan Austral."
+    }
+   },
+   "id": "g72-0016"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf das Mittelmeer.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:mediterranean-sea"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf das Mittelmeer."
+    },
+    "en": {
+     "prompt": "Tap the Mediterranean Sea."
+    },
+    "fr": {
+     "prompt": "Touche la mer Méditerranée."
+    }
+   },
+   "id": "g72-0017"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf die Nordsee.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:north-sea"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf die Nordsee."
+    },
+    "en": {
+     "prompt": "Tap the North Sea."
+    },
+    "fr": {
+     "prompt": "Touche la mer du Nord."
+    }
+   },
+   "id": "g72-0018"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf die Ostsee.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:baltic-sea"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf die Ostsee."
+    },
+    "en": {
+     "prompt": "Tap the Baltic Sea."
+    },
+    "fr": {
+     "prompt": "Touche la mer Baltique."
+    }
+   },
+   "id": "g72-0019"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf das Rote Meer.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:red-sea"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf das Rote Meer."
+    },
+    "en": {
+     "prompt": "Tap the Red Sea."
+    },
+    "fr": {
+     "prompt": "Touche la mer Rouge."
+    }
+   },
+   "id": "g72-0020"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf das Schwarze Meer.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:black-sea"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf das Schwarze Meer."
+    },
+    "en": {
+     "prompt": "Tap the Black Sea."
+    },
+    "fr": {
+     "prompt": "Touche la mer Noire."
+    }
+   },
+   "id": "g72-0021"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf das Karibische Meer.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:caribbean-sea"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf das Karibische Meer."
+    },
+    "en": {
+     "prompt": "Tap the Caribbean Sea."
+    },
+    "fr": {
+     "prompt": "Touche la mer des Caraïbes."
+    }
+   },
+   "id": "g72-0022"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den Golf von Mexiko.",
+   "difficulty": 3,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:gulf-of-mexico"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den Golf von Mexiko."
+    },
+    "en": {
+     "prompt": "Tap the Gulf of Mexico."
+    },
+    "fr": {
+     "prompt": "Touche le golfe du Mexique."
+    }
+   },
+   "id": "g72-0023"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf das Kaspische Meer.",
+   "difficulty": 3,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:caspian-sea"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf das Kaspische Meer."
+    },
+    "en": {
+     "prompt": "Tap the Caspian Sea."
+    },
+    "fr": {
+     "prompt": "Touche la mer Caspienne."
+    }
+   },
+   "id": "g72-0024"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Grönland.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "countries:GL"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Grönland."
+    },
+    "en": {
+     "prompt": "Tap Greenland."
+    },
+    "fr": {
+     "prompt": "Touche le Groenland."
+    }
+   },
+   "id": "g72-0025"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Madagaskar.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "countries:MG"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Madagaskar."
+    },
+    "en": {
+     "prompt": "Tap Madagascar."
+    },
+    "fr": {
+     "prompt": "Touche Madagascar."
+    }
+   },
+   "id": "g72-0026"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Island.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "countries:IS"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Island."
+    },
+    "en": {
+     "prompt": "Tap Iceland."
+    },
+    "fr": {
+     "prompt": "Touche l’Islande."
+    }
+   },
+   "id": "g72-0027"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Indonesien.",
+   "difficulty": 3,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "countries:ID"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Indonesien."
+    },
+    "en": {
+     "prompt": "Tap Indonesia."
+    },
+    "fr": {
+     "prompt": "Touche l’Indonésie."
+    }
+   },
+   "id": "g72-0028"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Neuseeland.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "countries:NZ"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Neuseeland."
+    },
+    "en": {
+     "prompt": "Tap New Zealand."
+    },
+    "fr": {
+     "prompt": "Touche la Nouvelle-Zélande."
+    }
+   },
+   "id": "g72-0029"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf Sri Lanka.",
+   "difficulty": 3,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "countries:LK"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf Sri Lanka."
+    },
+    "en": {
+     "prompt": "Tap Sri Lanka."
+    },
+    "fr": {
+     "prompt": "Touche le Sri Lanka."
+    }
+   },
+   "id": "g72-0030"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf die Iberische Halbinsel.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:iberian-peninsula"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf die Iberische Halbinsel."
+    },
+    "en": {
+     "prompt": "Tap the Iberian Peninsula."
+    },
+    "fr": {
+     "prompt": "Touche la péninsule Ibérique."
+    }
+   },
+   "id": "g72-0031"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf die Antarktische Halbinsel.",
+   "difficulty": 3,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:antarctic-peninsula"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf die Antarktische Halbinsel."
+    },
+    "en": {
+     "prompt": "Tap the Antarctic Peninsula."
+    },
+    "fr": {
+     "prompt": "Touche la péninsule Antarctique."
+    }
+   },
+   "id": "g72-0032"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf die Alpen.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:alps"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf die Alpen."
+    },
+    "en": {
+     "prompt": "Tap the Alps."
+    },
+    "fr": {
+     "prompt": "Touche les Alpes."
+    }
+   },
+   "id": "g72-0033"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den Himalaya.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:himalayas"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den Himalaya."
+    },
+    "en": {
+     "prompt": "Tap the Himalayas."
+    },
+    "fr": {
+     "prompt": "Touche l’Himalaya."
+    }
+   },
+   "id": "g72-0034"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf die Anden.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:andes"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf die Anden."
+    },
+    "en": {
+     "prompt": "Tap the Andes."
+    },
+    "fr": {
+     "prompt": "Touche les Andes."
+    }
+   },
+   "id": "g72-0035"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf die Rocky Mountains.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:rocky-mountains"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf die Rocky Mountains."
+    },
+    "en": {
+     "prompt": "Tap the Rocky Mountains."
+    },
+    "fr": {
+     "prompt": "Touche les montagnes Rocheuses."
+    }
+   },
+   "id": "g72-0036"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den Ural.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:ural-mountains"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den Ural."
+    },
+    "en": {
+     "prompt": "Tap the Ural Mountains."
+    },
+    "fr": {
+     "prompt": "Touche l’Oural."
+    }
+   },
+   "id": "g72-0037"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den Atlas.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:atlas-mountains"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den Atlas."
+    },
+    "en": {
+     "prompt": "Tap the Atlas Mountains."
+    },
+    "fr": {
+     "prompt": "Touche l’Atlas."
+    }
+   },
+   "id": "g72-0038"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den Kaukasus.",
+   "difficulty": 3,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:caucasus-mountains"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den Kaukasus."
+    },
+    "en": {
+     "prompt": "Tap the Caucasus."
+    },
+    "fr": {
+     "prompt": "Touche le Caucase."
+    }
+   },
+   "id": "g72-0039"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf das Skandinavische Gebirge.",
+   "difficulty": 3,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:scandinavian-mountains"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf das Skandinavische Gebirge."
+    },
+    "en": {
+     "prompt": "Tap the Scandinavian Mountains."
+    },
+    "fr": {
+     "prompt": "Touche les Alpes scandinaves."
+    }
+   },
+   "id": "g72-0040"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf das Hochland von Tibet.",
+   "difficulty": 3,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:tibetan-plateau"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf das Hochland von Tibet."
+    },
+    "en": {
+     "prompt": "Tap the Tibetan Plateau."
+    },
+    "fr": {
+     "prompt": "Touche le plateau du Tibet."
+    }
+   },
+   "id": "g72-0041"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf die Sahara.",
+   "difficulty": 1,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:sahara"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf die Sahara."
+    },
+    "en": {
+     "prompt": "Tap the Sahara."
+    },
+    "fr": {
+     "prompt": "Touche le Sahara."
+    }
+   },
+   "id": "g72-0042"
+  },
+  {
+   "type": "single",
+   "prompt": "Wie viel der Erdoberfläche ist Wasser?",
+   "difficulty": 1,
+   "options": [
+    "71 Prozent",
+    "50 Prozent",
+    "29 Prozent",
+    "90 Prozent"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Knapp drei Viertel der Oberfläche sind Wasser, 29 Prozent sind Festland.",
+   "bild": {
+    "id": "erde-wasser-land"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Wie viel der Erdoberfläche ist Wasser?",
+     "explanation": "Knapp drei Viertel der Oberfläche sind Wasser, 29 Prozent sind Festland.",
+     "options": [
+      "71 Prozent",
+      "50 Prozent",
+      "29 Prozent",
+      "90 Prozent"
+     ]
+    },
+    "en": {
+     "prompt": "How much of the Earth’s surface is water?",
+     "explanation": "Almost three quarters of the surface is water; 29 per cent is land.",
+     "options": [
+      "71 per cent",
+      "50 per cent",
+      "29 per cent",
+      "90 per cent"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle part de la surface de la Terre est de l’eau ?",
+     "explanation": "Près des trois quarts de la surface sont de l’eau ; 29 pour cent sont des terres.",
+     "options": [
+      "71 pour cent",
+      "50 pour cent",
+      "29 pour cent",
+      "90 pour cent"
+     ]
+    }
+   },
+   "id": "g72-0043"
+  },
+  {
+   "type": "single",
+   "prompt": "Was ist grösser: alles Festland zusammen oder der Pazifik?",
+   "difficulty": 2,
+   "options": [
+    "Der Pazifik",
+    "Alles Festland zusammen",
+    "Beide sind gleich gross",
+    "Das lässt sich nicht vergleichen"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der Pazifik misst rund 166 Mio. km², alles Festland zusammen rund 149 Mio. km².",
+   "bild": {
+    "id": "erde-ozeane"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Was ist grösser: alles Festland zusammen oder der Pazifik?",
+     "explanation": "Der Pazifik misst rund 166 Mio. km², alles Festland zusammen rund 149 Mio. km².",
+     "options": [
+      "Der Pazifik",
+      "Alles Festland zusammen",
+      "Beide sind gleich gross",
+      "Das lässt sich nicht vergleichen"
+     ]
+    },
+    "en": {
+     "prompt": "Which is larger: all the land together or the Pacific?",
+     "explanation": "The Pacific covers about 166 m km², all the land together about 149 m km².",
+     "options": [
+      "The Pacific",
+      "All the land together",
+      "Both are the same",
+      "They cannot be compared"
+     ]
+    },
+    "fr": {
+     "prompt": "Lequel est plus grand : toutes les terres réunies ou le Pacifique ?",
+     "explanation": "Le Pacifique mesure environ 166 M km², toutes les terres environ 149 M km².",
+     "options": [
+      "Le Pacifique",
+      "Toutes les terres réunies",
+      "Les deux sont égaux",
+      "On ne peut pas comparer"
+     ]
+    }
+   },
+   "id": "g72-0044"
+  },
+  {
+   "type": "single",
+   "prompt": "Wie heissen die drei grossen Weltmeere?",
+   "difficulty": 1,
+   "options": [
+    "Pazifik, Atlantik, Indik",
+    "Pazifik, Atlantik, Mittelmeer",
+    "Atlantik, Indik, Nordsee",
+    "Pazifik, Indik, Karibik"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Die drei grossen Weltmeere sind der Pazifik, der Atlantik und der Indik.",
+   "tr": {
+    "de": {
+     "prompt": "Wie heissen die drei grossen Weltmeere?",
+     "explanation": "Die drei grossen Weltmeere sind der Pazifik, der Atlantik und der Indik.",
+     "options": [
+      "Pazifik, Atlantik, Indik",
+      "Pazifik, Atlantik, Mittelmeer",
+      "Atlantik, Indik, Nordsee",
+      "Pazifik, Indik, Karibik"
+     ]
+    },
+    "en": {
+     "prompt": "What are the three great oceans called?",
+     "explanation": "The three great oceans are the Pacific, the Atlantic and the Indian Ocean.",
+     "options": [
+      "Pacific, Atlantic, Indian",
+      "Pacific, Atlantic, Mediterranean",
+      "Atlantic, Indian, North Sea",
+      "Pacific, Indian, Caribbean"
+     ]
+    },
+    "fr": {
+     "prompt": "Comment s’appellent les trois grands océans ?",
+     "explanation": "Les trois grands océans sont le Pacifique, l’Atlantique et l’océan Indien.",
+     "options": [
+      "Pacifique, Atlantique, Indien",
+      "Pacifique, Atlantique, Méditerranée",
+      "Atlantique, Indien, mer du Nord",
+      "Pacifique, Indien, Caraïbes"
+     ]
+    }
+   },
+   "id": "g72-0045"
+  },
+  {
+   "type": "input",
+   "prompt": "Wie viele Kontinente hat die Erde?",
+   "difficulty": 1,
+   "answer": "7",
+   "accept": [
+    "sieben"
+   ],
+   "explanation": "Nordamerika, Südamerika, Europa, Afrika, Asien, Australien und Antarktis.",
+   "tr": {
+    "de": {
+     "prompt": "Wie viele Kontinente hat die Erde?",
+     "explanation": "Nordamerika, Südamerika, Europa, Afrika, Asien, Australien und Antarktis.",
+     "answer": "7",
+     "accept": [
+      "sieben"
+     ]
+    },
+    "en": {
+     "prompt": "How many continents does the Earth have?",
+     "explanation": "North America, South America, Europe, Africa, Asia, Australia and Antarctica.",
+     "answer": "7",
+     "accept": [
+      "seven"
+     ]
+    },
+    "fr": {
+     "prompt": "Combien de continents la Terre compte-t-elle ?",
+     "explanation": "Amérique du Nord, Amérique du Sud, Europe, Afrique, Asie, Australie et Antarctique.",
+     "answer": "7",
+     "accept": [
+      "sept"
+     ]
+    }
+   },
+   "id": "g72-0046"
+  },
+  {
+   "type": "single",
+   "prompt": "Wo verläuft die Grenze zwischen Europa und Asien?",
+   "difficulty": 2,
+   "options": [
+    "Entlang des Uralgebirges und des Uralflusses",
+    "Entlang der Donau",
+    "Entlang des Schwarzen Meeres",
+    "Entlang des Kaukasus allein"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Europa und Asien bilden zusammen Eurasien. Da kein Meer sie trennt, wurde die Grenze entlang des Uralgebirges und des Uralflusses festgelegt.",
+   "tr": {
+    "de": {
+     "prompt": "Wo verläuft die Grenze zwischen Europa und Asien?",
+     "explanation": "Europa und Asien bilden zusammen Eurasien. Da kein Meer sie trennt, wurde die Grenze entlang des Uralgebirges und des Uralflusses festgelegt.",
+     "options": [
+      "Entlang des Uralgebirges und des Uralflusses",
+      "Entlang der Donau",
+      "Entlang des Schwarzen Meeres",
+      "Entlang des Kaukasus allein"
+     ]
+    },
+    "en": {
+     "prompt": "Where does the boundary between Europe and Asia run?",
+     "explanation": "Europe and Asia together form Eurasia. As no sea separates them, the boundary was set along the Ural Mountains and the Ural river.",
+     "options": [
+      "Along the Ural Mountains and the Ural river",
+      "Along the Danube",
+      "Along the Black Sea",
+      "Along the Caucasus alone"
+     ]
+    },
+    "fr": {
+     "prompt": "Où passe la frontière entre l’Europe et l’Asie ?",
+     "explanation": "L’Europe et l’Asie forment ensemble l’Eurasie. Aucune mer ne les sépare, la frontière suit donc l’Oural et le fleuve Oural.",
+     "options": [
+      "Le long de l’Oural et du fleuve Oural",
+      "Le long du Danube",
+      "Le long de la mer Noire",
+      "Le long du Caucase seulement"
+     ]
+    }
+   },
+   "id": "g72-0047"
+  },
+  {
+   "type": "single",
+   "prompt": "Warum ist die Arktis kein Kontinent?",
+   "difficulty": 2,
+   "options": [
+    "Das Eis schwimmt auf dem Wasser, darunter liegt keine Landmasse",
+    "Sie ist zu klein",
+    "Dort wohnt niemand",
+    "Sie gehört zu Europa"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Das Eis liegt rund um den Nordpol nicht auf einer Landmasse, sondern schwimmt auf dem Wasser.",
+   "tr": {
+    "de": {
+     "prompt": "Warum ist die Arktis kein Kontinent?",
+     "explanation": "Das Eis liegt rund um den Nordpol nicht auf einer Landmasse, sondern schwimmt auf dem Wasser.",
+     "options": [
+      "Das Eis schwimmt auf dem Wasser, darunter liegt keine Landmasse",
+      "Sie ist zu klein",
+      "Dort wohnt niemand",
+      "Sie gehört zu Europa"
+     ]
+    },
+    "en": {
+     "prompt": "Why is the Arctic not a continent?",
+     "explanation": "Around the North Pole the ice does not lie on a landmass; it floats on water.",
+     "options": [
+      "The ice floats on water, with no landmass beneath",
+      "It is too small",
+      "Nobody lives there",
+      "It belongs to Europe"
+     ]
+    },
+    "fr": {
+     "prompt": "Pourquoi l’Arctique n’est-il pas un continent ?",
+     "explanation": "Autour du pôle Nord, la glace ne repose pas sur une masse continentale : elle flotte sur l’eau.",
+     "options": [
+      "La glace flotte sur l’eau, sans masse continentale dessous",
+      "Il est trop petit",
+      "Personne n’y habite",
+      "Il appartient à l’Europe"
+     ]
+    }
+   },
+   "id": "g72-0048"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Kontinent hat keine ständigen Bewohner?",
+   "difficulty": 1,
+   "options": [
+    "Antarktis",
+    "Australien",
+    "Südamerika",
+    "Afrika"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Über der Antarktis liegt wegen der geringen Temperaturen das ganze Jahr über eine dicke Eisschicht. Dauerhaft lebt dort niemand.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Kontinent hat keine ständigen Bewohner?",
+     "explanation": "Über der Antarktis liegt wegen der geringen Temperaturen das ganze Jahr über eine dicke Eisschicht. Dauerhaft lebt dort niemand.",
+     "options": [
+      "Antarktis",
+      "Australien",
+      "Südamerika",
+      "Afrika"
+     ]
+    },
+    "en": {
+     "prompt": "Which continent has no permanent inhabitants?",
+     "explanation": "A thick layer of ice covers Antarctica all year because of the low temperatures. Nobody lives there permanently.",
+     "options": [
+      "Antarctica",
+      "Australia",
+      "South America",
+      "Africa"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel continent n’a pas d’habitants permanents ?",
+     "explanation": "Une épaisse couche de glace couvre l’Antarctique toute l’année. Personne n’y vit en permanence.",
+     "options": [
+      "L’Antarctique",
+      "L’Australie",
+      "L’Amérique du Sud",
+      "L’Afrique"
+     ]
+    }
+   },
+   "id": "g72-0049"
+  },
+  {
+   "type": "multi",
+   "prompt": "Welche Kontinente liegen vollständig auf der Südhalbkugel?",
+   "difficulty": 3,
+   "options": [
+    "Australien",
+    "Antarktis",
+    "Afrika",
+    "Südamerika",
+    "Europa"
+   ],
+   "correct": [
+    0,
+    1
+   ],
+   "explanation": "Afrika und Südamerika reichen über den Äquator hinweg; Australien und die Antarktis liegen ganz im Süden.",
+   "tr": {
+    "de": {
+     "prompt": "Welche Kontinente liegen vollständig auf der Südhalbkugel?",
+     "explanation": "Afrika und Südamerika reichen über den Äquator hinweg; Australien und die Antarktis liegen ganz im Süden.",
+     "options": [
+      "Australien",
+      "Antarktis",
+      "Afrika",
+      "Südamerika",
+      "Europa"
+     ]
+    },
+    "en": {
+     "prompt": "Which continents lie entirely in the southern hemisphere?",
+     "explanation": "Africa and South America reach across the equator; Australia and Antarctica lie wholly in the south.",
+     "options": [
+      "Australia",
+      "Antarctica",
+      "Africa",
+      "South America",
+      "Europe"
+     ]
+    },
+    "fr": {
+     "prompt": "Quels continents se trouvent entièrement dans l’hémisphère sud ?",
+     "explanation": "L’Afrique et l’Amérique du Sud franchissent l’équateur ; l’Australie et l’Antarctique sont entièrement au sud.",
+     "options": [
+      "L’Australie",
+      "L’Antarctique",
+      "L’Afrique",
+      "L’Amérique du Sud",
+      "L’Europe"
+     ]
+    }
+   },
+   "id": "g72-0050"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Kanal trennt Nord- und Südamerika?",
+   "difficulty": 2,
+   "options": [
+    "Panamakanal",
+    "Suezkanal",
+    "Nord-Ostsee-Kanal",
+    "Kanal von Korinth"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der Panamakanal durchschneidet die Landenge zwischen Nord- und Südamerika; der Suezkanal trennt Afrika von Asien.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Kanal trennt Nord- und Südamerika?",
+     "explanation": "Der Panamakanal durchschneidet die Landenge zwischen Nord- und Südamerika; der Suezkanal trennt Afrika von Asien.",
+     "options": [
+      "Panamakanal",
+      "Suezkanal",
+      "Nord-Ostsee-Kanal",
+      "Kanal von Korinth"
+     ]
+    },
+    "en": {
+     "prompt": "Which canal separates North and South America?",
+     "explanation": "The Panama Canal cuts through the isthmus between North and South America; the Suez Canal separates Africa from Asia.",
+     "options": [
+      "Panama Canal",
+      "Suez Canal",
+      "Kiel Canal",
+      "Corinth Canal"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel canal sépare l’Amérique du Nord et du Sud ?",
+     "explanation": "Le canal de Panama coupe l’isthme entre les deux Amériques ; le canal de Suez sépare l’Afrique de l’Asie.",
+     "options": [
+      "Le canal de Panama",
+      "Le canal de Suez",
+      "Le canal de Kiel",
+      "Le canal de Corinthe"
+     ]
+    }
+   },
+   "id": "g72-0051"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Kanal trennt Afrika von Asien?",
+   "difficulty": 2,
+   "options": [
+    "Suezkanal",
+    "Panamakanal",
+    "Ärmelkanal",
+    "Kanal von Mosambik"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der Suezkanal verbindet das Mittelmeer mit dem Roten Meer und trennt dabei Afrika von Asien.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Kanal trennt Afrika von Asien?",
+     "explanation": "Der Suezkanal verbindet das Mittelmeer mit dem Roten Meer und trennt dabei Afrika von Asien.",
+     "options": [
+      "Suezkanal",
+      "Panamakanal",
+      "Ärmelkanal",
+      "Kanal von Mosambik"
+     ]
+    },
+    "en": {
+     "prompt": "Which canal separates Africa from Asia?",
+     "explanation": "The Suez Canal links the Mediterranean with the Red Sea and separates Africa from Asia.",
+     "options": [
+      "Suez Canal",
+      "Panama Canal",
+      "English Channel",
+      "Mozambique Channel"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel canal sépare l’Afrique de l’Asie ?",
+     "explanation": "Le canal de Suez relie la Méditerranée à la mer Rouge et sépare l’Afrique de l’Asie.",
+     "options": [
+      "Le canal de Suez",
+      "Le canal de Panama",
+      "La Manche",
+      "Le canal du Mozambique"
+     ]
+    }
+   },
+   "id": "g72-0052"
+  },
+  {
+   "type": "multi",
+   "prompt": "Welche Länder erstrecken sich über zwei Kontinente?",
+   "difficulty": 3,
+   "options": [
+    "Türkei",
+    "Russland",
+    "Ägypten",
+    "Brasilien",
+    "Japan"
+   ],
+   "correct": [
+    0,
+    1,
+    2
+   ],
+   "explanation": "Die Türkei und Russland liegen in Europa und Asien, Ägypten mit der Sinai-Halbinsel in Afrika und Asien.",
+   "tr": {
+    "de": {
+     "prompt": "Welche Länder erstrecken sich über zwei Kontinente?",
+     "explanation": "Die Türkei und Russland liegen in Europa und Asien, Ägypten mit der Sinai-Halbinsel in Afrika und Asien.",
+     "options": [
+      "Türkei",
+      "Russland",
+      "Ägypten",
+      "Brasilien",
+      "Japan"
+     ]
+    },
+    "en": {
+     "prompt": "Which countries stretch across two continents?",
+     "explanation": "Turkey and Russia lie in Europe and Asia; Egypt, with the Sinai Peninsula, lies in Africa and Asia.",
+     "options": [
+      "Turkey",
+      "Russia",
+      "Egypt",
+      "Brazil",
+      "Japan"
+     ]
+    },
+    "fr": {
+     "prompt": "Quels pays s’étendent sur deux continents ?",
+     "explanation": "La Turquie et la Russie sont en Europe et en Asie ; l’Égypte, avec le Sinaï, en Afrique et en Asie.",
+     "options": [
+      "La Turquie",
+      "La Russie",
+      "L’Égypte",
+      "Le Brésil",
+      "Le Japon"
+     ]
+    }
+   },
+   "id": "g72-0053"
+  },
+  {
+   "type": "multi",
+   "prompt": "An welche Kontinente grenzt der Atlantische Ozean?",
+   "difficulty": 3,
+   "options": [
+    "Europa",
+    "Afrika",
+    "Nordamerika",
+    "Südamerika",
+    "Australien"
+   ],
+   "correct": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "explanation": "Der Atlantik liegt zwischen Amerika im Westen und Europa und Afrika im Osten. Australien grenzt nicht an ihn.",
+   "tr": {
+    "de": {
+     "prompt": "An welche Kontinente grenzt der Atlantische Ozean?",
+     "explanation": "Der Atlantik liegt zwischen Amerika im Westen und Europa und Afrika im Osten. Australien grenzt nicht an ihn.",
+     "options": [
+      "Europa",
+      "Afrika",
+      "Nordamerika",
+      "Südamerika",
+      "Australien"
+     ]
+    },
+    "en": {
+     "prompt": "Which continents border the Atlantic Ocean?",
+     "explanation": "The Atlantic lies between the Americas in the west and Europe and Africa in the east. Australia does not border it.",
+     "options": [
+      "Europe",
+      "Africa",
+      "North America",
+      "South America",
+      "Australia"
+     ]
+    },
+    "fr": {
+     "prompt": "Quels continents bordent l’océan Atlantique ?",
+     "explanation": "L’Atlantique s’étend entre les Amériques à l’ouest et l’Europe et l’Afrique à l’est. L’Australie ne le borde pas.",
+     "options": [
+      "L’Europe",
+      "L’Afrique",
+      "L’Amérique du Nord",
+      "L’Amérique du Sud",
+      "L’Australie"
+     ]
+    }
+   },
+   "id": "g72-0054"
+  },
+  {
+   "type": "single",
+   "prompt": "Woher kommt der Name Amerika?",
+   "difficulty": 3,
+   "options": [
+    "Vom Seefahrer Amerigo Vespucci",
+    "Von einem Volk in Tunesien",
+    "Vom lateinischen Wort für südlich",
+    "Von einem Sternbild"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Amerigo Vespucci erkannte Ende des 15. Jahrhunderts, dass die neu entdeckten Landmassen nicht zu Asien gehören.",
+   "tr": {
+    "de": {
+     "prompt": "Woher kommt der Name Amerika?",
+     "explanation": "Amerigo Vespucci erkannte Ende des 15. Jahrhunderts, dass die neu entdeckten Landmassen nicht zu Asien gehören.",
+     "options": [
+      "Vom Seefahrer Amerigo Vespucci",
+      "Von einem Volk in Tunesien",
+      "Vom lateinischen Wort für südlich",
+      "Von einem Sternbild"
+     ]
+    },
+    "en": {
+     "prompt": "Where does the name America come from?",
+     "explanation": "At the end of the 15th century Amerigo Vespucci realised that the newly discovered lands did not belong to Asia.",
+     "options": [
+      "From the navigator Amerigo Vespucci",
+      "From a people in Tunisia",
+      "From the Latin word for southern",
+      "From a constellation"
+     ]
+    },
+    "fr": {
+     "prompt": "D’où vient le nom Amérique ?",
+     "explanation": "À la fin du 15e siècle, Amerigo Vespucci comprit que les terres découvertes n’appartenaient pas à l’Asie.",
+     "options": [
+      "Du navigateur Amerigo Vespucci",
+      "D’un peuple de Tunisie",
+      "Du mot latin pour méridional",
+      "D’une constellation"
+     ]
+    }
+   },
+   "id": "g72-0055"
+  },
+  {
+   "type": "single",
+   "prompt": "Woher kommt der Name Australien?",
+   "difficulty": 3,
+   "options": [
+    "Vom lateinischen australis für südlich",
+    "Von einem Forscher",
+    "Von einem Sternbild",
+    "Von einem Volk"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Australien ist der südlichste Kontinent. Südlich heisst auf Lateinisch australis.",
+   "tr": {
+    "de": {
+     "prompt": "Woher kommt der Name Australien?",
+     "explanation": "Australien ist der südlichste Kontinent. Südlich heisst auf Lateinisch australis.",
+     "options": [
+      "Vom lateinischen australis für südlich",
+      "Von einem Forscher",
+      "Von einem Sternbild",
+      "Von einem Volk"
+     ]
+    },
+    "en": {
+     "prompt": "Where does the name Australia come from?",
+     "explanation": "Australia is the southernmost continent. Southern in Latin is australis.",
+     "options": [
+      "From the Latin australis, southern",
+      "From an explorer",
+      "From a constellation",
+      "From a people"
+     ]
+    },
+    "fr": {
+     "prompt": "D’où vient le nom Australie ?",
+     "explanation": "L’Australie est le continent le plus au sud. Méridional se dit australis en latin.",
+     "options": [
+      "Du latin australis, méridional",
+      "D’un explorateur",
+      "D’une constellation",
+      "D’un peuple"
+     ]
+    }
+   },
+   "id": "g72-0056"
+  },
+  {
+   "type": "single",
+   "prompt": "Woher kommt der Name Antarktis?",
+   "difficulty": 3,
+   "options": [
+    "Vom Sternbild des grossen Bären über der Arktis, Antarktis heisst Gegen-Arktis",
+    "Von einem Forscher",
+    "Vom Wort für Eis",
+    "Vom Namen eines Schiffs"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Bär heisst auf Griechisch arctos. Der Kontinent gegenüber der Arktis erhielt den Namen Antarktis, also Gegen-Arktis.",
+   "tr": {
+    "de": {
+     "prompt": "Woher kommt der Name Antarktis?",
+     "explanation": "Bär heisst auf Griechisch arctos. Der Kontinent gegenüber der Arktis erhielt den Namen Antarktis, also Gegen-Arktis.",
+     "options": [
+      "Vom Sternbild des grossen Bären über der Arktis, Antarktis heisst Gegen-Arktis",
+      "Von einem Forscher",
+      "Vom Wort für Eis",
+      "Vom Namen eines Schiffs"
+     ]
+    },
+    "en": {
+     "prompt": "Where does the name Antarctica come from?",
+     "explanation": "Bear in Greek is arctos. The continent opposite the Arctic was named Antarctica, the opposite of the Arctic.",
+     "options": [
+      "From the Great Bear constellation over the Arctic; Antarctic means opposite the Arctic",
+      "From an explorer",
+      "From the word for ice",
+      "From the name of a ship"
+     ]
+    },
+    "fr": {
+     "prompt": "D’où vient le nom Antarctique ?",
+     "explanation": "Ours se dit arctos en grec. Le continent opposé à l’Arctique fut nommé Antarctique.",
+     "options": [
+      "De la constellation de la Grande Ourse au-dessus de l’Arctique ; Antarctique signifie opposé à l’Arctique",
+      "D’un explorateur",
+      "Du mot pour glace",
+      "Du nom d’un navire"
+     ]
+    }
+   },
+   "id": "g72-0057"
+  },
+  {
+   "type": "single",
+   "prompt": "Welche Form beschreibt die Erde am genauesten?",
+   "difficulty": 2,
+   "options": [
+    "Geoid",
+    "Ellipsoid",
+    "Kugel",
+    "Würfel"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Das Geoid ist die wahre Form mit Beulen und Dellen. Das Ellipsoid ist das glatte Rechenmodell, die Kugel die Vorstellung vom Globus.",
+   "bild": {
+    "id": "erde-formen"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Welche Form beschreibt die Erde am genauesten?",
+     "explanation": "Das Geoid ist die wahre Form mit Beulen und Dellen. Das Ellipsoid ist das glatte Rechenmodell, die Kugel die Vorstellung vom Globus.",
+     "options": [
+      "Geoid",
+      "Ellipsoid",
+      "Kugel",
+      "Würfel"
+     ]
+    },
+    "en": {
+     "prompt": "Which shape describes the Earth most accurately?",
+     "explanation": "The geoid is the true shape with its bumps and dips. The ellipsoid is the smooth model for calculation, the sphere the idea from a globe.",
+     "options": [
+      "Geoid",
+      "Ellipsoid",
+      "Sphere",
+      "Cube"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle forme décrit le mieux la Terre ?",
+     "explanation": "Le géoïde est la forme réelle, avec ses bosses et ses creux. L’ellipsoïde est le modèle lisse de calcul.",
+     "options": [
+      "Le géoïde",
+      "L’ellipsoïde",
+      "La sphère",
+      "Le cube"
+     ]
+    }
+   },
+   "id": "g72-0058"
+  },
+  {
+   "type": "single",
+   "prompt": "Warum ist die Erde an den Polen abgeplattet?",
+   "difficulty": 2,
+   "options": [
+    "Weil sie sich um sich selber dreht",
+    "Weil dort das Eis drückt",
+    "Weil dort weniger Land liegt",
+    "Weil die Sonne dort schwächer scheint"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Die Drehung um die eigene Achse plattet die Erde an den Polen ab und macht sie am Äquator etwas breiter.",
+   "bild": {
+    "id": "erde-formen"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Warum ist die Erde an den Polen abgeplattet?",
+     "explanation": "Die Drehung um die eigene Achse plattet die Erde an den Polen ab und macht sie am Äquator etwas breiter.",
+     "options": [
+      "Weil sie sich um sich selber dreht",
+      "Weil dort das Eis drückt",
+      "Weil dort weniger Land liegt",
+      "Weil die Sonne dort schwächer scheint"
+     ]
+    },
+    "en": {
+     "prompt": "Why is the Earth flattened at the poles?",
+     "explanation": "The spin on its own axis flattens the Earth at the poles and makes it wider at the equator.",
+     "options": [
+      "Because it spins on its own axis",
+      "Because the ice presses down",
+      "Because there is less land there",
+      "Because the sun is weaker there"
+     ]
+    },
+    "fr": {
+     "prompt": "Pourquoi la Terre est-elle aplatie aux pôles ?",
+     "explanation": "La rotation sur son axe aplatit la Terre aux pôles et l’élargit à l’équateur.",
+     "options": [
+      "Parce qu’elle tourne sur elle-même",
+      "Parce que la glace appuie",
+      "Parce qu’il y a moins de terres",
+      "Parce que le soleil y est plus faible"
+     ]
+    }
+   },
+   "id": "g72-0059"
+  },
+  {
+   "type": "single",
+   "prompt": "Was ist das Ellipsoid?",
+   "difficulty": 2,
+   "options": [
+    "Ein mathematisches Modell der Erde: gleichmässig, glatt, berechenbar",
+    "Die wahre Form mit Beulen und Dellen",
+    "Ein Gebirge unter dem Meer",
+    "Eine Art Weltkarte"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Das Ellipsoid beschreibt die Abplattung durch die Drehung und dient als Referenzfläche für GPS- und Kartendaten.",
+   "tr": {
+    "de": {
+     "prompt": "Was ist das Ellipsoid?",
+     "explanation": "Das Ellipsoid beschreibt die Abplattung durch die Drehung und dient als Referenzfläche für GPS- und Kartendaten.",
+     "options": [
+      "Ein mathematisches Modell der Erde: gleichmässig, glatt, berechenbar",
+      "Die wahre Form mit Beulen und Dellen",
+      "Ein Gebirge unter dem Meer",
+      "Eine Art Weltkarte"
+     ]
+    },
+    "en": {
+     "prompt": "What is the ellipsoid?",
+     "explanation": "The ellipsoid describes the flattening caused by the spin and serves as the reference surface for GPS and map data.",
+     "options": [
+      "A mathematical model of the Earth: even, smooth, calculable",
+      "The true shape with bumps and dips",
+      "A mountain range under the sea",
+      "A kind of world map"
+     ]
+    },
+    "fr": {
+     "prompt": "Qu’est-ce que l’ellipsoïde ?",
+     "explanation": "L’ellipsoïde décrit l’aplatissement dû à la rotation et sert de surface de référence pour le GPS et les cartes.",
+     "options": [
+      "Un modèle mathématique de la Terre : régulier, lisse, calculable",
+      "La forme réelle avec bosses et creux",
+      "Une chaîne de montagnes sous la mer",
+      "Une sorte de carte du monde"
+     ]
+    }
+   },
+   "id": "g72-0060"
+  },
+  {
+   "type": "single",
+   "prompt": "Was ist das Geoid?",
+   "difficulty": 2,
+   "options": [
+    "Die physikalische Form der Erde, bestimmt durch die Schwerkraft",
+    "Ein glattes Rechenmodell",
+    "Der tiefste Punkt der Erde",
+    "Ein Kartennetzentwurf"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Das Geoid ist unregelmässig und wellig. Es zeigt, wie hoch oder tief der Meeresspiegel läge, wenn nur die Schwerkraft wirkte.",
+   "tr": {
+    "de": {
+     "prompt": "Was ist das Geoid?",
+     "explanation": "Das Geoid ist unregelmässig und wellig. Es zeigt, wie hoch oder tief der Meeresspiegel läge, wenn nur die Schwerkraft wirkte.",
+     "options": [
+      "Die physikalische Form der Erde, bestimmt durch die Schwerkraft",
+      "Ein glattes Rechenmodell",
+      "Der tiefste Punkt der Erde",
+      "Ein Kartennetzentwurf"
+     ]
+    },
+    "en": {
+     "prompt": "What is the geoid?",
+     "explanation": "The geoid is irregular and wavy. It shows how high or low sea level would be if only gravity acted.",
+     "options": [
+      "The physical shape of the Earth, set by gravity",
+      "A smooth model for calculation",
+      "The deepest point on Earth",
+      "A map projection"
+     ]
+    },
+    "fr": {
+     "prompt": "Qu’est-ce que le géoïde ?",
+     "explanation": "Le géoïde est irrégulier et ondulé. Il montre le niveau de la mer si seule la gravité agissait.",
+     "options": [
+      "La forme physique de la Terre, déterminée par la gravité",
+      "Un modèle lisse de calcul",
+      "Le point le plus profond de la Terre",
+      "Une projection cartographique"
+     ]
+    }
+   },
+   "id": "g72-0061"
+  },
+  {
+   "type": "single",
+   "prompt": "Südlich von Indien bildet die Meeresoberfläche ein 110 m tiefes Tal. Was bedeutet das?",
+   "difficulty": 3,
+   "options": [
+    "Dort ist die Schwerkraft grösser",
+    "Dort ist das Wasser kälter",
+    "Dort ist das Meer besonders tief",
+    "Dort weht ein starker Wind"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Beulen und Dellen der Meeresoberfläche entstehen, weil die Schwerkraft nicht überall gleich ist. Südlich von Indien ist sie grösser als nördlich von Papua-Neuguinea, wo ein 85 m hoher Hügel liegt.",
+   "tr": {
+    "de": {
+     "prompt": "Südlich von Indien bildet die Meeresoberfläche ein 110 m tiefes Tal. Was bedeutet das?",
+     "explanation": "Beulen und Dellen der Meeresoberfläche entstehen, weil die Schwerkraft nicht überall gleich ist. Südlich von Indien ist sie grösser als nördlich von Papua-Neuguinea, wo ein 85 m hoher Hügel liegt.",
+     "options": [
+      "Dort ist die Schwerkraft grösser",
+      "Dort ist das Wasser kälter",
+      "Dort ist das Meer besonders tief",
+      "Dort weht ein starker Wind"
+     ]
+    },
+    "en": {
+     "prompt": "South of India the sea surface forms a valley 110 m deep. What does that mean?",
+     "explanation": "Bumps and dips of the sea surface arise because gravity is not the same everywhere. South of India it is stronger than north of Papua New Guinea, where there is a hill 85 m high.",
+     "options": [
+      "Gravity is stronger there",
+      "The water is colder there",
+      "The sea is especially deep there",
+      "A strong wind blows there"
+     ]
+    },
+    "fr": {
+     "prompt": "Au sud de l’Inde, la surface de la mer forme un creux de 110 m. Qu’est-ce que cela signifie ?",
+     "explanation": "Les bosses et creux viennent de ce que la gravité n’est pas partout la même. Au sud de l’Inde elle est plus forte qu’au nord de la Papouasie-Nouvelle-Guinée, où se trouve une bosse de 85 m.",
+     "options": [
+      "La gravité y est plus forte",
+      "L’eau y est plus froide",
+      "La mer y est très profonde",
+      "Un vent fort y souffle"
+     ]
+    }
+   },
+   "id": "g72-0062"
+  },
+  {
+   "type": "single",
+   "prompt": "Wie nennt man Land, das nur bis 200 m über dem Meeresspiegel liegt?",
+   "difficulty": 2,
+   "options": [
+    "Tiefland",
+    "Hügelland",
+    "Mittelgebirge",
+    "Hochgebirge"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Grosse Teile der Landmassen liegen nur bis 200 m über dem Meer. Bis etwa 1500 m spricht man von Hügelland und Mittelgebirgen, darüber vom Hochgebirge.",
+   "bild": {
+    "id": "erde-hoehenstufen"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Wie nennt man Land, das nur bis 200 m über dem Meeresspiegel liegt?",
+     "explanation": "Grosse Teile der Landmassen liegen nur bis 200 m über dem Meer. Bis etwa 1500 m spricht man von Hügelland und Mittelgebirgen, darüber vom Hochgebirge.",
+     "options": [
+      "Tiefland",
+      "Hügelland",
+      "Mittelgebirge",
+      "Hochgebirge"
+     ]
+    },
+    "en": {
+     "prompt": "What is land called that lies only up to 200 m above sea level?",
+     "explanation": "Large parts of the land lie only up to 200 m above the sea. Up to about 1500 m one speaks of hills and uplands, above that of high mountains.",
+     "options": [
+      "Lowland",
+      "Hill country",
+      "Uplands",
+      "High mountains"
+     ]
+    },
+    "fr": {
+     "prompt": "Comment appelle-t-on les terres situées à moins de 200 m au-dessus de la mer ?",
+     "explanation": "De vastes parties des terres ne dépassent pas 200 m. Jusqu’à 1500 m environ on parle de collines et de moyennes montagnes, au-dessus de haute montagne.",
+     "options": [
+      "La plaine",
+      "Les collines",
+      "La moyenne montagne",
+      "La haute montagne"
+     ]
+    }
+   },
+   "id": "g72-0063"
+  },
+  {
+   "type": "single",
+   "prompt": "Ab wo spricht man von Hochgebirge?",
+   "difficulty": 2,
+   "options": [
+    "Oberhalb der Waldgrenze",
+    "Ab 200 m",
+    "Ab 500 m",
+    "Ab 5000 m"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Die Landmassen oberhalb der Waldgrenze nennt man Hochgebirge. In den Gebirgen entspringen die grossen Flüsse.",
+   "bild": {
+    "id": "erde-hoehenstufen"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Ab wo spricht man von Hochgebirge?",
+     "explanation": "Die Landmassen oberhalb der Waldgrenze nennt man Hochgebirge. In den Gebirgen entspringen die grossen Flüsse.",
+     "options": [
+      "Oberhalb der Waldgrenze",
+      "Ab 200 m",
+      "Ab 500 m",
+      "Ab 5000 m"
+     ]
+    },
+    "en": {
+     "prompt": "From where does one speak of high mountains?",
+     "explanation": "The land above the tree line is called high mountains. The great rivers rise in the mountains.",
+     "options": [
+      "Above the tree line",
+      "From 200 m",
+      "From 500 m",
+      "From 5000 m"
+     ]
+    },
+    "fr": {
+     "prompt": "À partir de quand parle-t-on de haute montagne ?",
+     "explanation": "Les terres au-dessus de la limite des arbres sont la haute montagne. Les grands fleuves y prennent leur source.",
+     "options": [
+      "Au-dessus de la limite des arbres",
+      "À partir de 200 m",
+      "À partir de 500 m",
+      "À partir de 5000 m"
+     ]
+    }
+   },
+   "id": "g72-0064"
+  },
+  {
+   "type": "single",
+   "prompt": "Was sind mittelozeanische Rücken?",
+   "difficulty": 3,
+   "options": [
+    "Gebirge, die unter der Meeresoberfläche verlaufen",
+    "Tiefe Gräben im Meer",
+    "Inseln aus Korallen",
+    "Strömungen im Meer"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge der Welt. Am Fuss erreichen sie bis zu 4000 km Breite, die Gipfel erheben sich 1000 bis 3000 m über den Meeresboden.",
+   "tr": {
+    "de": {
+     "prompt": "Was sind mittelozeanische Rücken?",
+     "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge der Welt. Am Fuss erreichen sie bis zu 4000 km Breite, die Gipfel erheben sich 1000 bis 3000 m über den Meeresboden.",
+     "options": [
+      "Gebirge, die unter der Meeresoberfläche verlaufen",
+      "Tiefe Gräben im Meer",
+      "Inseln aus Korallen",
+      "Strömungen im Meer"
+     ]
+    },
+    "en": {
+     "prompt": "What are mid-ocean ridges?",
+     "explanation": "At over 60 000 km they are the longest mountain range in the world. At their foot they reach up to 4000 km wide; the peaks rise 1000 to 3000 m above the sea floor.",
+     "options": [
+      "Mountains running beneath the sea surface",
+      "Deep trenches in the sea",
+      "Islands made of coral",
+      "Currents in the sea"
+     ]
+    },
+    "fr": {
+     "prompt": "Que sont les dorsales médio-océaniques ?",
+     "explanation": "Avec plus de 60 000 km, elles forment la plus longue chaîne du monde. Leur base atteint 4000 km de large, les sommets s’élèvent de 1000 à 3000 m au-dessus du fond.",
+     "options": [
+      "Des montagnes qui courent sous la surface de la mer",
+      "Des fosses profondes",
+      "Des îles de corail",
+      "Des courants marins"
+     ]
+    }
+   },
+   "id": "g72-0065"
+  },
+  {
+   "type": "single",
+   "prompt": "Welche Inseln sind Teile des mittelozeanischen Rückens, die die Meeresoberfläche durchstossen?",
+   "difficulty": 3,
+   "options": [
+    "Island und die Azoren",
+    "Madagaskar und Sri Lanka",
+    "Grönland und Island",
+    "Die Kanaren und Kuba"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Teilweise durchstossen die Rücken die Meeresoberfläche und bilden Inseln, so zum Beispiel Island oder die Azoren.",
+   "tr": {
+    "de": {
+     "prompt": "Welche Inseln sind Teile des mittelozeanischen Rückens, die die Meeresoberfläche durchstossen?",
+     "explanation": "Teilweise durchstossen die Rücken die Meeresoberfläche und bilden Inseln, so zum Beispiel Island oder die Azoren.",
+     "options": [
+      "Island und die Azoren",
+      "Madagaskar und Sri Lanka",
+      "Grönland und Island",
+      "Die Kanaren und Kuba"
+     ]
+    },
+    "en": {
+     "prompt": "Which islands are parts of the mid-ocean ridge breaking through the sea surface?",
+     "explanation": "In places the ridges break through the sea surface and form islands, for example Iceland or the Azores.",
+     "options": [
+      "Iceland and the Azores",
+      "Madagascar and Sri Lanka",
+      "Greenland and Iceland",
+      "The Canaries and Cuba"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelles îles sont des parties de la dorsale qui percent la surface ?",
+     "explanation": "Par endroits les dorsales percent la surface et forment des îles, par exemple l’Islande ou les Açores.",
+     "options": [
+      "L’Islande et les Açores",
+      "Madagascar et le Sri Lanka",
+      "Le Groenland et l’Islande",
+      "Les Canaries et Cuba"
+     ]
+    }
+   },
+   "id": "g72-0066"
+  },
+  {
+   "type": "single",
+   "prompt": "Welche Weltkarte zeigt die Erde ganz richtig?",
+   "difficulty": 1,
+   "options": [
+    "Keine. Jede Weltkarte verzerrt.",
+    "Die Mercator-Karte",
+    "Die Gall-Peters-Karte",
+    "Die Equal-Earth-Karte"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Die kugelförmige Erdoberfläche lässt sich nicht ohne Verzerrung auf eine platte Karte bringen. Man kann sie nur annähernd darstellen; etwas wird immer gestreckt, gestaucht oder gebogen.",
+   "tr": {
+    "de": {
+     "prompt": "Welche Weltkarte zeigt die Erde ganz richtig?",
+     "explanation": "Die kugelförmige Erdoberfläche lässt sich nicht ohne Verzerrung auf eine platte Karte bringen. Man kann sie nur annähernd darstellen; etwas wird immer gestreckt, gestaucht oder gebogen.",
+     "options": [
+      "Keine. Jede Weltkarte verzerrt.",
+      "Die Mercator-Karte",
+      "Die Gall-Peters-Karte",
+      "Die Equal-Earth-Karte"
+     ]
+    },
+    "en": {
+     "prompt": "Which world map shows the Earth entirely correctly?",
+     "explanation": "The curved surface of the Earth cannot be laid flat without distortion. Something is always stretched, squeezed or bent.",
+     "options": [
+      "None. Every world map distorts.",
+      "The Mercator map",
+      "The Gall-Peters map",
+      "The Equal Earth map"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle carte du monde montre la Terre tout à fait correctement ?",
+     "explanation": "La surface courbe de la Terre ne peut pas être mise à plat sans déformation. Quelque chose est toujours étiré ou comprimé.",
+     "options": [
+      "Aucune. Toute carte déforme.",
+      "La carte de Mercator",
+      "La carte de Gall-Peters",
+      "La carte Equal Earth"
+     ]
+    }
+   },
+   "id": "g72-0067"
+  },
+  {
+   "type": "single",
+   "prompt": "Welche Eigenschaft hat die Mercator-Projektion?",
+   "difficulty": 2,
+   "options": [
+    "Winkeltreu, aber die Flächen wachsen zu den Polen hin stark",
+    "Flächentreu",
+    "Längentreu in alle Richtungen",
+    "Sie verzerrt überhaupt nicht"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Die Gradfelder sind auf der Erde alle gleich gross. Auf der Mercator-Karte werden sie zu den Polen hin immer grösser - deshalb wirkt Grönland so riesig.",
+   "bild": {
+    "id": "netz-mercator"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Welche Eigenschaft hat die Mercator-Projektion?",
+     "explanation": "Die Gradfelder sind auf der Erde alle gleich gross. Auf der Mercator-Karte werden sie zu den Polen hin immer grösser - deshalb wirkt Grönland so riesig.",
+     "options": [
+      "Winkeltreu, aber die Flächen wachsen zu den Polen hin stark",
+      "Flächentreu",
+      "Längentreu in alle Richtungen",
+      "Sie verzerrt überhaupt nicht"
+     ]
+    },
+    "en": {
+     "prompt": "What property does the Mercator projection have?",
+     "explanation": "On the Earth all these grid cells are the same size. On the Mercator map they grow towards the poles - which is why Greenland looks so huge.",
+     "options": [
+      "Conformal, but areas grow strongly towards the poles",
+      "Equal-area",
+      "True to length in every direction",
+      "It does not distort at all"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle est la propriété de la projection de Mercator ?",
+     "explanation": "Sur la Terre, toutes ces cases sont de même taille. Sur la carte de Mercator elles grandissent vers les pôles : le Groenland paraît énorme.",
+     "options": [
+      "Conforme, mais les aires grandissent vers les pôles",
+      "Équivalente",
+      "Fidèle aux longueurs dans toutes les directions",
+      "Elle ne déforme pas du tout"
+     ]
+    }
+   },
+   "id": "g72-0068"
+  },
+  {
+   "type": "single",
+   "prompt": "Welche Eigenschaft hat die Gall-Peters-Projektion?",
+   "difficulty": 2,
+   "options": [
+    "Flächentreu, dafür sind die Formen in die Länge gezogen",
+    "Winkeltreu",
+    "Sie zeigt die Erde ohne jede Verzerrung",
+    "Sie ist nur für Europa brauchbar"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Bei Gall-Peters stimmen die Flächenverhältnisse: Afrika ist so viel grösser als Grönland, wie es wirklich ist. Dafür sehen die Umrisse in die Länge gezogen aus.",
+   "bild": {
+    "id": "netz-peters"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Welche Eigenschaft hat die Gall-Peters-Projektion?",
+     "explanation": "Bei Gall-Peters stimmen die Flächenverhältnisse: Afrika ist so viel grösser als Grönland, wie es wirklich ist. Dafür sehen die Umrisse in die Länge gezogen aus.",
+     "options": [
+      "Flächentreu, dafür sind die Formen in die Länge gezogen",
+      "Winkeltreu",
+      "Sie zeigt die Erde ohne jede Verzerrung",
+      "Sie ist nur für Europa brauchbar"
+     ]
+    },
+    "en": {
+     "prompt": "What property does the Gall-Peters projection have?",
+     "explanation": "In Gall-Peters the area ratios are right: Africa is as much larger than Greenland as it really is. In exchange the outlines look stretched.",
+     "options": [
+      "Equal-area, but the shapes are stretched lengthwise",
+      "Conformal",
+      "It shows the Earth without any distortion",
+      "It is useful only for Europe"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle est la propriété de la projection de Gall-Peters ?",
+     "explanation": "Chez Gall-Peters les rapports de surface sont justes : l’Afrique est bien plus grande que le Groenland. En échange les contours paraissent étirés.",
+     "options": [
+      "Équivalente, mais les formes sont étirées en longueur",
+      "Conforme",
+      "Elle montre la Terre sans aucune déformation",
+      "Elle ne sert que pour l’Europe"
+     ]
+    }
+   },
+   "id": "g72-0069"
+  },
+  {
+   "type": "single",
+   "prompt": "Wie viel grösser als Grönland ist Afrika in Wirklichkeit?",
+   "difficulty": 2,
+   "options": [
+    "Etwa vierzehnmal so gross",
+    "Etwa gleich gross",
+    "Etwa doppelt so gross",
+    "Etwa hundertmal so gross"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Grönland misst 2,17 Mio. km², Afrika rund 30 Mio. km². Auf der Mercator-Karte wirken beide ähnlich gross.",
+   "bild": {
+    "id": "groenland-afrika"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Wie viel grösser als Grönland ist Afrika in Wirklichkeit?",
+     "explanation": "Grönland misst 2,17 Mio. km², Afrika rund 30 Mio. km². Auf der Mercator-Karte wirken beide ähnlich gross.",
+     "options": [
+      "Etwa vierzehnmal so gross",
+      "Etwa gleich gross",
+      "Etwa doppelt so gross",
+      "Etwa hundertmal so gross"
+     ]
+    },
+    "en": {
+     "prompt": "How much larger than Greenland is Africa in reality?",
+     "explanation": "Greenland covers 2.17 m km², Africa about 30 m km². On the Mercator map the two look similar in size.",
+     "options": [
+      "About fourteen times as large",
+      "About the same size",
+      "About twice as large",
+      "About a hundred times as large"
+     ]
+    },
+    "fr": {
+     "prompt": "Combien de fois l’Afrique est-elle plus grande que le Groenland en réalité ?",
+     "explanation": "Le Groenland mesure 2,17 M km², l’Afrique environ 30 M km². Sur la carte de Mercator les deux paraissent semblables.",
+     "options": [
+      "Environ quatorze fois",
+      "À peu près autant",
+      "Environ deux fois",
+      "Environ cent fois"
+     ]
+    }
+   },
+   "id": "g72-0070"
+  },
+  {
+   "type": "single",
+   "prompt": "Warum empfiehlt die UNO die Equal-Earth-Karte?",
+   "difficulty": 3,
+   "options": [
+    "Sie zeigt die Flächen richtig und die Umrisse bleiben gut erkennbar",
+    "Sie ist die einzige Karte ohne Verzerrung",
+    "Sie zeigt Europa in der Mitte",
+    "Sie ist am einfachsten zu zeichnen"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Die Equal-Earth-Karte ist flächentreu und sieht dabei weniger verzerrt aus als Gall-Peters. Kein Land erscheint unangemessen gross oder klein.",
+   "tr": {
+    "de": {
+     "prompt": "Warum empfiehlt die UNO die Equal-Earth-Karte?",
+     "explanation": "Die Equal-Earth-Karte ist flächentreu und sieht dabei weniger verzerrt aus als Gall-Peters. Kein Land erscheint unangemessen gross oder klein.",
+     "options": [
+      "Sie zeigt die Flächen richtig und die Umrisse bleiben gut erkennbar",
+      "Sie ist die einzige Karte ohne Verzerrung",
+      "Sie zeigt Europa in der Mitte",
+      "Sie ist am einfachsten zu zeichnen"
+     ]
+    },
+    "en": {
+     "prompt": "Why does the UN recommend the Equal Earth map?",
+     "explanation": "The Equal Earth map is equal-area and still looks less distorted than Gall-Peters. No country appears unfairly large or small.",
+     "options": [
+      "It shows areas correctly while the outlines stay recognisable",
+      "It is the only map without distortion",
+      "It puts Europe in the middle",
+      "It is the easiest to draw"
+     ]
+    },
+    "fr": {
+     "prompt": "Pourquoi l’ONU recommande-t-elle la carte Equal Earth ?",
+     "explanation": "La carte Equal Earth est équivalente et paraît moins déformée que Gall-Peters. Aucun pays n’y paraît trop grand ou trop petit.",
+     "options": [
+      "Elle rend les aires justes tout en gardant des contours reconnaissables",
+      "C’est la seule carte sans déformation",
+      "Elle met l’Europe au centre",
+      "Elle est la plus simple à dessiner"
+     ]
+    }
+   },
+   "id": "g72-0071"
+  },
+  {
+   "type": "single",
+   "prompt": "Was ist eine Kartenprojektion?",
+   "difficulty": 3,
+   "options": [
+    "Eine Art, die gewölbte Erdoberfläche auf eine platte Karte zu bringen",
+    "Ein Bild der Erde aus dem Weltall",
+    "Ein Massstab",
+    "Ein Gerät zum Zeichnen"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Man stellt sich vor, ein Licht werfe das Bild der durchscheinenden Erde auf ein Blatt Papier. Je nachdem, wo das Licht steht und wie das Papier liegt, entsteht ein anderes Bild. Die meisten Netzentwürfe werden aber gerechnet, nicht projiziert.",
+   "tr": {
+    "de": {
+     "prompt": "Was ist eine Kartenprojektion?",
+     "explanation": "Man stellt sich vor, ein Licht werfe das Bild der durchscheinenden Erde auf ein Blatt Papier. Je nachdem, wo das Licht steht und wie das Papier liegt, entsteht ein anderes Bild. Die meisten Netzentwürfe werden aber gerechnet, nicht projiziert.",
+     "options": [
+      "Eine Art, die gewölbte Erdoberfläche auf eine platte Karte zu bringen",
+      "Ein Bild der Erde aus dem Weltall",
+      "Ein Massstab",
+      "Ein Gerät zum Zeichnen"
+     ]
+    },
+    "en": {
+     "prompt": "What is a map projection?",
+     "explanation": "Imagine a light casting the image of a translucent Earth onto paper. Where the light stands and how the paper lies changes the picture. Most graticules, though, are calculated rather than projected.",
+     "options": [
+      "A way of bringing the curved surface of the Earth onto a flat map",
+      "A picture of the Earth from space",
+      "A scale",
+      "A drawing instrument"
+     ]
+    },
+    "fr": {
+     "prompt": "Qu’est-ce qu’une projection cartographique ?",
+     "explanation": "Imaginez une lumière projetant l’image d’une Terre translucide sur du papier. La position de la lumière change l’image. La plupart des canevas sont pourtant calculés, non projetés.",
+     "options": [
+      "Une façon de mettre la surface courbe de la Terre sur une carte plate",
+      "Une image de la Terre depuis l’espace",
+      "Une échelle",
+      "Un instrument de dessin"
+     ]
+    }
+   },
+   "id": "g72-0072"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: der höchste Berg (8848 m)?",
+   "difficulty": 2,
+   "options": [
+    "Mount Everest",
+    "Nil",
+    "Grönland",
+    "Asien"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Mount Everest: 8848 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: der höchste Berg (8848 m)?",
+     "explanation": "Mount Everest: 8848 m.",
+     "options": [
+      "Mount Everest",
+      "Nil",
+      "Grönland",
+      "Asien"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the highest mountain (8848 m)?",
+     "explanation": "Mount Everest: 8848 m.",
+     "options": [
+      "Mount Everest",
+      "the Nile",
+      "Greenland",
+      "Asia"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : la plus haute montagne (8848 m) ?",
+     "explanation": "le mont Everest : 8848 m.",
+     "options": [
+      "le mont Everest",
+      "le Nil",
+      "le Groenland",
+      "l’Asie"
+     ]
+    }
+   },
+   "id": "g72-0073"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: der höchste Berg?",
+   "difficulty": 3,
+   "options": [
+    "8848 m",
+    "6671 km",
+    "2,17 Mio. km²",
+    "44 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der höchste berg – Mount Everest: 8848 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: der höchste Berg?",
+     "explanation": "Der höchste berg – Mount Everest: 8848 m.",
+     "options": [
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²",
+      "44 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the highest mountain?",
+     "explanation": "The highest mountain – Mount Everest: 8848 m.",
+     "options": [
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²",
+      "44 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : la plus haute montagne ?",
+     "explanation": "La plus haute montagne – le mont Everest : 8848 m.",
+     "options": [
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²",
+      "44 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0074"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: der längste Fluss (6671 km)?",
+   "difficulty": 2,
+   "options": [
+    "Nil",
+    "Mount Everest",
+    "Grönland",
+    "Asien"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Nil: 6671 km.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: der längste Fluss (6671 km)?",
+     "explanation": "Nil: 6671 km.",
+     "options": [
+      "Nil",
+      "Mount Everest",
+      "Grönland",
+      "Asien"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the longest river (6671 km)?",
+     "explanation": "the Nile: 6671 km.",
+     "options": [
+      "the Nile",
+      "Mount Everest",
+      "Greenland",
+      "Asia"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : le plus long fleuve (6671 km) ?",
+     "explanation": "le Nil : 6671 km.",
+     "options": [
+      "le Nil",
+      "le mont Everest",
+      "le Groenland",
+      "l’Asie"
+     ]
+    }
+   },
+   "id": "g72-0075"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: der längste Fluss?",
+   "difficulty": 3,
+   "options": [
+    "6671 km",
+    "8848 m",
+    "2,17 Mio. km²",
+    "44 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der längste fluss – Nil: 6671 km.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: der längste Fluss?",
+     "explanation": "Der längste fluss – Nil: 6671 km.",
+     "options": [
+      "6671 km",
+      "8848 m",
+      "2,17 Mio. km²",
+      "44 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the longest river?",
+     "explanation": "The longest river – the Nile: 6671 km.",
+     "options": [
+      "6671 km",
+      "8848 m",
+      "2,17 Mio. km²",
+      "44 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : le plus long fleuve ?",
+     "explanation": "Le plus long fleuve – le Nil : 6671 km.",
+     "options": [
+      "6671 km",
+      "8848 m",
+      "2,17 Mio. km²",
+      "44 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0076"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: die grösste Insel (2,17 Mio. km²)?",
+   "difficulty": 2,
+   "options": [
+    "Grönland",
+    "Mount Everest",
+    "Nil",
+    "Asien"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Grönland: 2,17 Mio. km².",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: die grösste Insel (2,17 Mio. km²)?",
+     "explanation": "Grönland: 2,17 Mio. km².",
+     "options": [
+      "Grönland",
+      "Mount Everest",
+      "Nil",
+      "Asien"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the largest island (2,17 Mio. km²)?",
+     "explanation": "Greenland: 2,17 Mio. km².",
+     "options": [
+      "Greenland",
+      "Mount Everest",
+      "the Nile",
+      "Asia"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : la plus grande île (2,17 Mio. km²) ?",
+     "explanation": "le Groenland : 2,17 Mio. km².",
+     "options": [
+      "le Groenland",
+      "le mont Everest",
+      "le Nil",
+      "l’Asie"
+     ]
+    }
+   },
+   "id": "g72-0077"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: die grösste Insel?",
+   "difficulty": 3,
+   "options": [
+    "2,17 Mio. km²",
+    "8848 m",
+    "6671 km",
+    "44 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Die grösste insel – Grönland: 2,17 Mio. km².",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: die grösste Insel?",
+     "explanation": "Die grösste insel – Grönland: 2,17 Mio. km².",
+     "options": [
+      "2,17 Mio. km²",
+      "8848 m",
+      "6671 km",
+      "44 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the largest island?",
+     "explanation": "The largest island – Greenland: 2,17 Mio. km².",
+     "options": [
+      "2,17 Mio. km²",
+      "8848 m",
+      "6671 km",
+      "44 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : la plus grande île ?",
+     "explanation": "La plus grande île – le Groenland : 2,17 Mio. km².",
+     "options": [
+      "2,17 Mio. km²",
+      "8848 m",
+      "6671 km",
+      "44 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0078"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: der grösste Kontinent (44 Mio. km²)?",
+   "difficulty": 2,
+   "options": [
+    "Asien",
+    "Mount Everest",
+    "Nil",
+    "Grönland"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Asien: 44 Mio. km².",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: der grösste Kontinent (44 Mio. km²)?",
+     "explanation": "Asien: 44 Mio. km².",
+     "options": [
+      "Asien",
+      "Mount Everest",
+      "Nil",
+      "Grönland"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the largest continent (44 Mio. km²)?",
+     "explanation": "Asia: 44 Mio. km².",
+     "options": [
+      "Asia",
+      "Mount Everest",
+      "the Nile",
+      "Greenland"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : le plus grand continent (44 Mio. km²) ?",
+     "explanation": "l’Asie : 44 Mio. km².",
+     "options": [
+      "l’Asie",
+      "le mont Everest",
+      "le Nil",
+      "le Groenland"
+     ]
+    }
+   },
+   "id": "g72-0079"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: der grösste Kontinent?",
+   "difficulty": 3,
+   "options": [
+    "44 Mio. km²",
+    "8848 m",
+    "6671 km",
+    "2,17 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der grösste kontinent – Asien: 44 Mio. km².",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: der grösste Kontinent?",
+     "explanation": "Der grösste kontinent – Asien: 44 Mio. km².",
+     "options": [
+      "44 Mio. km²",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the largest continent?",
+     "explanation": "The largest continent – Asia: 44 Mio. km².",
+     "options": [
+      "44 Mio. km²",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : le plus grand continent ?",
+     "explanation": "Le plus grand continent – l’Asie : 44 Mio. km².",
+     "options": [
+      "44 Mio. km²",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0080"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: der grösste See (386 500 km²)?",
+   "difficulty": 2,
+   "options": [
+    "Kaspisches Meer",
+    "Mount Everest",
+    "Nil",
+    "Grönland"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Kaspisches Meer: 386 500 km².",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: der grösste See (386 500 km²)?",
+     "explanation": "Kaspisches Meer: 386 500 km².",
+     "options": [
+      "Kaspisches Meer",
+      "Mount Everest",
+      "Nil",
+      "Grönland"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the largest lake (386 500 km²)?",
+     "explanation": "the Caspian Sea: 386 500 km².",
+     "options": [
+      "the Caspian Sea",
+      "Mount Everest",
+      "the Nile",
+      "Greenland"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : le plus grand lac (386 500 km²) ?",
+     "explanation": "la mer Caspienne : 386 500 km².",
+     "options": [
+      "la mer Caspienne",
+      "le mont Everest",
+      "le Nil",
+      "le Groenland"
+     ]
+    }
+   },
+   "id": "g72-0081"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: der grösste See?",
+   "difficulty": 3,
+   "options": [
+    "386 500 km²",
+    "8848 m",
+    "6671 km",
+    "2,17 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der grösste see – Kaspisches Meer: 386 500 km².",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: der grösste See?",
+     "explanation": "Der grösste see – Kaspisches Meer: 386 500 km².",
+     "options": [
+      "386 500 km²",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the largest lake?",
+     "explanation": "The largest lake – the Caspian Sea: 386 500 km².",
+     "options": [
+      "386 500 km²",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : le plus grand lac ?",
+     "explanation": "Le plus grand lac – la mer Caspienne : 386 500 km².",
+     "options": [
+      "386 500 km²",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0082"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: der tiefste See (-1637 m)?",
+   "difficulty": 2,
+   "options": [
+    "Baikalsee",
+    "Mount Everest",
+    "Nil",
+    "Grönland"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Baikalsee: -1637 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: der tiefste See (-1637 m)?",
+     "explanation": "Baikalsee: -1637 m.",
+     "options": [
+      "Baikalsee",
+      "Mount Everest",
+      "Nil",
+      "Grönland"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the deepest lake (-1637 m)?",
+     "explanation": "Lake Baikal: -1637 m.",
+     "options": [
+      "Lake Baikal",
+      "Mount Everest",
+      "the Nile",
+      "Greenland"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : le lac le plus profond (-1637 m) ?",
+     "explanation": "le lac Baïkal : -1637 m.",
+     "options": [
+      "le lac Baïkal",
+      "le mont Everest",
+      "le Nil",
+      "le Groenland"
+     ]
+    }
+   },
+   "id": "g72-0083"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: der tiefste See?",
+   "difficulty": 3,
+   "options": [
+    "-1637 m",
+    "8848 m",
+    "6671 km",
+    "2,17 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der tiefste see – Baikalsee: -1637 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: der tiefste See?",
+     "explanation": "Der tiefste see – Baikalsee: -1637 m.",
+     "options": [
+      "-1637 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the deepest lake?",
+     "explanation": "The deepest lake – Lake Baikal: -1637 m.",
+     "options": [
+      "-1637 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : le lac le plus profond ?",
+     "explanation": "Le lac le plus profond – le lac Baïkal : -1637 m.",
+     "options": [
+      "-1637 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0084"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: die tiefste Stelle der Landoberfläche (-418 m)?",
+   "difficulty": 2,
+   "options": [
+    "Totes Meer",
+    "Mount Everest",
+    "Nil",
+    "Grönland"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Totes Meer: -418 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: die tiefste Stelle der Landoberfläche (-418 m)?",
+     "explanation": "Totes Meer: -418 m.",
+     "options": [
+      "Totes Meer",
+      "Mount Everest",
+      "Nil",
+      "Grönland"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the lowest point on land (-418 m)?",
+     "explanation": "the Dead Sea: -418 m.",
+     "options": [
+      "the Dead Sea",
+      "Mount Everest",
+      "the Nile",
+      "Greenland"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : le point le plus bas des terres (-418 m) ?",
+     "explanation": "la mer Morte : -418 m.",
+     "options": [
+      "la mer Morte",
+      "le mont Everest",
+      "le Nil",
+      "le Groenland"
+     ]
+    }
+   },
+   "id": "g72-0085"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: die tiefste Stelle der Landoberfläche?",
+   "difficulty": 3,
+   "options": [
+    "-418 m",
+    "8848 m",
+    "6671 km",
+    "2,17 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Die tiefste stelle der landoberfläche – Totes Meer: -418 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: die tiefste Stelle der Landoberfläche?",
+     "explanation": "Die tiefste stelle der landoberfläche – Totes Meer: -418 m.",
+     "options": [
+      "-418 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the lowest point on land?",
+     "explanation": "The lowest point on land – the Dead Sea: -418 m.",
+     "options": [
+      "-418 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : le point le plus bas des terres ?",
+     "explanation": "Le point le plus bas des terres – la mer Morte : -418 m.",
+     "options": [
+      "-418 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0086"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: der höchstgelegene schiffbare See (3810 m)?",
+   "difficulty": 2,
+   "options": [
+    "Titicacasee",
+    "Mount Everest",
+    "Nil",
+    "Grönland"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Titicacasee: 3810 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: der höchstgelegene schiffbare See (3810 m)?",
+     "explanation": "Titicacasee: 3810 m.",
+     "options": [
+      "Titicacasee",
+      "Mount Everest",
+      "Nil",
+      "Grönland"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the highest navigable lake (3810 m)?",
+     "explanation": "Lake Titicaca: 3810 m.",
+     "options": [
+      "Lake Titicaca",
+      "Mount Everest",
+      "the Nile",
+      "Greenland"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : le lac navigable le plus haut (3810 m) ?",
+     "explanation": "le lac Titicaca : 3810 m.",
+     "options": [
+      "le lac Titicaca",
+      "le mont Everest",
+      "le Nil",
+      "le Groenland"
+     ]
+    }
+   },
+   "id": "g72-0087"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: der höchstgelegene schiffbare See?",
+   "difficulty": 3,
+   "options": [
+    "3810 m",
+    "8848 m",
+    "6671 km",
+    "2,17 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der höchstgelegene schiffbare see – Titicacasee: 3810 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: der höchstgelegene schiffbare See?",
+     "explanation": "Der höchstgelegene schiffbare see – Titicacasee: 3810 m.",
+     "options": [
+      "3810 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the highest navigable lake?",
+     "explanation": "The highest navigable lake – Lake Titicaca: 3810 m.",
+     "options": [
+      "3810 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : le lac navigable le plus haut ?",
+     "explanation": "Le lac navigable le plus haut – le lac Titicaca : 3810 m.",
+     "options": [
+      "3810 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0088"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: die tiefste Meeresstelle (-11034 m)?",
+   "difficulty": 2,
+   "options": [
+    "Marianengraben",
+    "Mount Everest",
+    "Nil",
+    "Grönland"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Marianengraben: -11034 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: die tiefste Meeresstelle (-11034 m)?",
+     "explanation": "Marianengraben: -11034 m.",
+     "options": [
+      "Marianengraben",
+      "Mount Everest",
+      "Nil",
+      "Grönland"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the deepest point in the sea (-11034 m)?",
+     "explanation": "the Mariana Trench: -11034 m.",
+     "options": [
+      "the Mariana Trench",
+      "Mount Everest",
+      "the Nile",
+      "Greenland"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : le point le plus profond des mers (-11034 m) ?",
+     "explanation": "la fosse des Mariannes : -11034 m.",
+     "options": [
+      "la fosse des Mariannes",
+      "le mont Everest",
+      "le Nil",
+      "le Groenland"
+     ]
+    }
+   },
+   "id": "g72-0089"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: die tiefste Meeresstelle?",
+   "difficulty": 3,
+   "options": [
+    "-11034 m",
+    "8848 m",
+    "6671 km",
+    "2,17 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Die tiefste meeresstelle – Marianengraben: -11034 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: die tiefste Meeresstelle?",
+     "explanation": "Die tiefste meeresstelle – Marianengraben: -11034 m.",
+     "options": [
+      "-11034 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the deepest point in the sea?",
+     "explanation": "The deepest point in the sea – the Mariana Trench: -11034 m.",
+     "options": [
+      "-11034 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : le point le plus profond des mers ?",
+     "explanation": "Le point le plus profond des mers – la fosse des Mariannes : -11034 m.",
+     "options": [
+      "-11034 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0090"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: der höchste aktive Vulkan (5897 m)?",
+   "difficulty": 2,
+   "options": [
+    "Cotopaxi",
+    "Mount Everest",
+    "Nil",
+    "Grönland"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Cotopaxi: 5897 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: der höchste aktive Vulkan (5897 m)?",
+     "explanation": "Cotopaxi: 5897 m.",
+     "options": [
+      "Cotopaxi",
+      "Mount Everest",
+      "Nil",
+      "Grönland"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the highest active volcano (5897 m)?",
+     "explanation": "Cotopaxi: 5897 m.",
+     "options": [
+      "Cotopaxi",
+      "Mount Everest",
+      "the Nile",
+      "Greenland"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : le plus haut volcan actif (5897 m) ?",
+     "explanation": "le Cotopaxi : 5897 m.",
+     "options": [
+      "le Cotopaxi",
+      "le mont Everest",
+      "le Nil",
+      "le Groenland"
+     ]
+    }
+   },
+   "id": "g72-0091"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: der höchste aktive Vulkan?",
+   "difficulty": 3,
+   "options": [
+    "5897 m",
+    "8848 m",
+    "6671 km",
+    "2,17 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der höchste aktive vulkan – Cotopaxi: 5897 m.",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: der höchste aktive Vulkan?",
+     "explanation": "Der höchste aktive vulkan – Cotopaxi: 5897 m.",
+     "options": [
+      "5897 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the highest active volcano?",
+     "explanation": "The highest active volcano – Cotopaxi: 5897 m.",
+     "options": [
+      "5897 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : le plus haut volcan actif ?",
+     "explanation": "Le plus haut volcan actif – le Cotopaxi : 5897 m.",
+     "options": [
+      "5897 m",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0092"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Ort trägt den Rekord: die grösste Halbinsel (2,7 Mio. km²)?",
+   "difficulty": 2,
+   "options": [
+    "Arabische Halbinsel",
+    "Mount Everest",
+    "Nil",
+    "Grönland"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Arabische Halbinsel: 2,7 Mio. km².",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Ort trägt den Rekord: die grösste Halbinsel (2,7 Mio. km²)?",
+     "explanation": "Arabische Halbinsel: 2,7 Mio. km².",
+     "options": [
+      "Arabische Halbinsel",
+      "Mount Everest",
+      "Nil",
+      "Grönland"
+     ]
+    },
+    "en": {
+     "prompt": "Which place holds the record: the largest peninsula (2,7 Mio. km²)?",
+     "explanation": "the Arabian Peninsula: 2,7 Mio. km².",
+     "options": [
+      "the Arabian Peninsula",
+      "Mount Everest",
+      "the Nile",
+      "Greenland"
+     ]
+    },
+    "fr": {
+     "prompt": "Quel lieu détient le record : la plus grande péninsule (2,7 Mio. km²) ?",
+     "explanation": "la péninsule Arabique : 2,7 Mio. km².",
+     "options": [
+      "la péninsule Arabique",
+      "le mont Everest",
+      "le Nil",
+      "le Groenland"
+     ]
+    }
+   },
+   "id": "g72-0093"
+  },
+  {
+   "type": "single",
+   "prompt": "Welcher Wert gehört zu diesem Rekord: die grösste Halbinsel?",
+   "difficulty": 3,
+   "options": [
+    "2,7 Mio. km²",
+    "8848 m",
+    "6671 km",
+    "2,17 Mio. km²"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Die grösste halbinsel – Arabische Halbinsel: 2,7 Mio. km².",
+   "tr": {
+    "de": {
+     "prompt": "Welcher Wert gehört zu diesem Rekord: die grösste Halbinsel?",
+     "explanation": "Die grösste halbinsel – Arabische Halbinsel: 2,7 Mio. km².",
+     "options": [
+      "2,7 Mio. km²",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "en": {
+     "prompt": "Which value belongs to this record: the largest peninsula?",
+     "explanation": "The largest peninsula – the Arabian Peninsula: 2,7 Mio. km².",
+     "options": [
+      "2,7 Mio. km²",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle valeur correspond à ce record : la plus grande péninsule ?",
+     "explanation": "La plus grande péninsule – la péninsule Arabique : 2,7 Mio. km².",
+     "options": [
+      "2,7 Mio. km²",
+      "8848 m",
+      "6671 km",
+      "2,17 Mio. km²"
+     ]
+    }
+   },
+   "id": "g72-0094"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf die grösste Insel.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "countries:GL"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf die grösste Insel."
+    },
+    "en": {
+     "prompt": "Tap the largest island."
+    },
+    "fr": {
+     "prompt": "Touche la plus grande île."
+    }
+   },
+   "id": "g72-0095"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den grössten See.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "seas:caspian-sea"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den grössten See."
+    },
+    "en": {
+     "prompt": "Tap the largest lake."
+    },
+    "fr": {
+     "prompt": "Touche le plus grand lac."
+    }
+   },
+   "id": "g72-0096"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den tiefsten See.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "lakes:baikal"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den tiefsten See."
+    },
+    "en": {
+     "prompt": "Tap the deepest lake."
+    },
+    "fr": {
+     "prompt": "Touche le lac le plus profond."
+    }
+   },
+   "id": "g72-0097"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den höchstgelegenen schiffbaren See.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "lakes:titicaca"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den höchstgelegenen schiffbaren See."
+    },
+    "en": {
+     "prompt": "Tap the highest navigable lake."
+    },
+    "fr": {
+     "prompt": "Touche le lac navigable le plus haut."
+    }
+   },
+   "id": "g72-0098"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf den grössten Kontinent.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "continents:AS"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf den grössten Kontinent."
+    },
+    "en": {
+     "prompt": "Tap the largest continent."
+    },
+    "fr": {
+     "prompt": "Touche le plus grand continent."
+    }
+   },
+   "id": "g72-0099"
+  },
+  {
+   "type": "map",
+   "prompt": "Tippe auf das Gebirge mit den höchsten Bergen.",
+   "difficulty": 2,
+   "map": {
+    "pack": "world",
+    "task": "tap",
+    "target": "landscapes:himalayas"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Tippe auf das Gebirge mit den höchsten Bergen."
+    },
+    "en": {
+     "prompt": "Tap the range with the highest mountains."
+    },
+    "fr": {
+     "prompt": "Touche la chaîne aux plus hauts sommets."
+    }
+   },
+   "id": "g72-0100"
+  },
+  {
+   "type": "input",
+   "prompt": "Wie lang sind die mittelozeanischen Rücken zusammen?",
+   "difficulty": 3,
+   "answer": "60000 km",
+   "accept": [
+    "60 000 km",
+    "60000",
+    "60 000"
+   ],
+   "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge der Welt - länger als jedes Gebirge an Land.",
+   "tr": {
+    "de": {
+     "prompt": "Wie lang sind die mittelozeanischen Rücken zusammen?",
+     "explanation": "Mit über 60 000 km Länge sind sie das längste Gebirge der Welt - länger als jedes Gebirge an Land.",
+     "answer": "60000 km",
+     "accept": [
+      "60 000 km",
+      "60000",
+      "60 000"
+     ]
+    },
+    "en": {
+     "prompt": "How long are the mid-ocean ridges altogether?",
+     "explanation": "At over 60 000 km they are the longest mountain range in the world, longer than any range on land.",
+     "answer": "60000 km",
+     "accept": [
+      "60 000 km",
+      "60000",
+      "60 000"
+     ]
+    },
+    "fr": {
+     "prompt": "Quelle est la longueur totale des dorsales médio-océaniques ?",
+     "explanation": "Avec plus de 60 000 km, elles forment la plus longue chaîne du monde.",
+     "answer": "60000 km",
+     "accept": [
+      "60 000 km",
+      "60000",
+      "60 000"
+     ]
+    }
+   },
+   "id": "g72-0101"
+  },
+  {
+   "type": "single",
+   "prompt": "Was unterscheidet eine Karte von einem Luftbild?",
+   "difficulty": 1,
+   "options": [
+    "Die Karte zeigt ausgewählte Dinge als Zeichen, das Luftbild zeigt alles",
+    "Die Karte ist immer farbig, das Luftbild schwarzweiss",
+    "Das Luftbild hat einen Massstab, die Karte nicht",
+    "Es gibt keinen Unterschied"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Ein Luftbild bildet ab, was da ist, samt Schatten und Autos. Eine Karte wählt aus, vereinfacht und erklärt mit Zeichen, Farben und Beschriftung.",
+   "bild": {
+    "id": "luftbild-karte"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Was unterscheidet eine Karte von einem Luftbild?",
+     "explanation": "Ein Luftbild bildet ab, was da ist, samt Schatten und Autos. Eine Karte wählt aus, vereinfacht und erklärt mit Zeichen, Farben und Beschriftung.",
+     "options": [
+      "Die Karte zeigt ausgewählte Dinge als Zeichen, das Luftbild zeigt alles",
+      "Die Karte ist immer farbig, das Luftbild schwarzweiss",
+      "Das Luftbild hat einen Massstab, die Karte nicht",
+      "Es gibt keinen Unterschied"
+     ]
+    },
+    "en": {
+     "prompt": "What distinguishes a map from an aerial photo?",
+     "explanation": "An aerial photo depicts what is there, shadows and cars included. A map selects, simplifies and explains with symbols, colours and labels.",
+     "options": [
+      "The map shows selected things as symbols, the photo shows everything",
+      "The map is always in colour, the photo black and white",
+      "The photo has a scale, the map does not",
+      "There is no difference"
+     ]
+    },
+    "fr": {
+     "prompt": "Qu’est-ce qui distingue une carte d’une photo aérienne ?",
+     "explanation": "Une photo aérienne montre ce qui est là, ombres et voitures comprises. Une carte choisit, simplifie et explique.",
+     "options": [
+      "La carte montre certaines choses par des signes, la photo montre tout",
+      "La carte est toujours en couleur, la photo en noir et blanc",
+      "La photo a une échelle, la carte non",
+      "Il n’y a pas de différence"
+     ]
+    }
+   },
+   "id": "g72-0102"
+  },
+  {
+   "type": "multi",
+   "prompt": "Was findet man auf einer Karte, aber nicht auf einem Luftbild?",
+   "difficulty": 2,
+   "options": [
+    "Namen von Orten",
+    "Einen Massstab",
+    "Grenzen als Linien",
+    "Schatten von Häusern",
+    "Parkierte Autos"
+   ],
+   "correct": [
+    0,
+    1,
+    2
+   ],
+   "explanation": "Namen, Massstab und Grenzen sind Zutaten der Karte. Schatten und Autos erscheinen nur im Luftbild.",
+   "tr": {
+    "de": {
+     "prompt": "Was findet man auf einer Karte, aber nicht auf einem Luftbild?",
+     "explanation": "Namen, Massstab und Grenzen sind Zutaten der Karte. Schatten und Autos erscheinen nur im Luftbild.",
+     "options": [
+      "Namen von Orten",
+      "Einen Massstab",
+      "Grenzen als Linien",
+      "Schatten von Häusern",
+      "Parkierte Autos"
+     ]
+    },
+    "en": {
+     "prompt": "What do you find on a map but not on an aerial photo?",
+     "explanation": "Names, scale and borders belong to the map. Shadows and cars appear only in the photo.",
+     "options": [
+      "Place names",
+      "A scale",
+      "Borders as lines",
+      "Shadows of houses",
+      "Parked cars"
+     ]
+    },
+    "fr": {
+     "prompt": "Que trouve-t-on sur une carte mais pas sur une photo aérienne ?",
+     "explanation": "Noms, échelle et frontières appartiennent à la carte. Ombres et voitures n’apparaissent que sur la photo.",
+     "options": [
+      "Des noms de lieux",
+      "Une échelle",
+      "Des frontières en traits",
+      "Des ombres de maisons",
+      "Des voitures garées"
+     ]
+    }
+   },
+   "id": "g72-0103"
+  },
+  {
+   "type": "single",
+   "prompt": "Wie heisst der Breitenkreis bei 0°?",
+   "difficulty": 1,
+   "options": [
+    "Äquator",
+    "Nullmeridian",
+    "Wendekreis",
+    "Polarkreis"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Der Äquator teilt die Erde in Nord- und Südhalbkugel. Der Nullmeridian ist dagegen ein Längenhalbkreis.",
+   "bild": {
+    "id": "gradnetz"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Wie heisst der Breitenkreis bei 0°?",
+     "explanation": "Der Äquator teilt die Erde in Nord- und Südhalbkugel. Der Nullmeridian ist dagegen ein Längenhalbkreis.",
+     "options": [
+      "Äquator",
+      "Nullmeridian",
+      "Wendekreis",
+      "Polarkreis"
+     ]
+    },
+    "en": {
+     "prompt": "What is the parallel at 0° called?",
+     "explanation": "The equator divides the Earth into northern and southern hemispheres. The prime meridian, by contrast, is a line of longitude.",
+     "options": [
+      "Equator",
+      "Prime meridian",
+      "Tropic",
+      "Polar circle"
+     ]
+    },
+    "fr": {
+     "prompt": "Comment s’appelle le parallèle à 0° ?",
+     "explanation": "L’équateur partage la Terre en hémisphères nord et sud. Le méridien d’origine est une ligne de longitude.",
+     "options": [
+      "L’équateur",
+      "Le méridien d’origine",
+      "Le tropique",
+      "Le cercle polaire"
+     ]
+    }
+   },
+   "id": "g72-0104"
+  },
+  {
+   "type": "single",
+   "prompt": "Was gilt für die Breitenkreise?",
+   "difficulty": 2,
+   "options": [
+    "Sie laufen parallel und werden zu den Polen hin kürzer",
+    "Sie treffen sich an den Polen",
+    "Sie sind alle gleich lang",
+    "Es gibt nur zwei davon"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Breitenkreise laufen parallel zum Äquator. Der Äquator ist der längste; zu den Polen hin werden sie kürzer. Die Meridiane dagegen treffen sich an den Polen und sind alle gleich lang.",
+   "bild": {
+    "id": "gradnetz"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Was gilt für die Breitenkreise?",
+     "explanation": "Breitenkreise laufen parallel zum Äquator. Der Äquator ist der längste; zu den Polen hin werden sie kürzer. Die Meridiane dagegen treffen sich an den Polen und sind alle gleich lang.",
+     "options": [
+      "Sie laufen parallel und werden zu den Polen hin kürzer",
+      "Sie treffen sich an den Polen",
+      "Sie sind alle gleich lang",
+      "Es gibt nur zwei davon"
+     ]
+    },
+    "en": {
+     "prompt": "What is true of the parallels?",
+     "explanation": "Parallels run parallel to the equator. The equator is the longest; towards the poles they get shorter. Meridians, by contrast, meet at the poles and are all the same length.",
+     "options": [
+      "They run parallel and get shorter towards the poles",
+      "They meet at the poles",
+      "They are all the same length",
+      "There are only two of them"
+     ]
+    },
+    "fr": {
+     "prompt": "Qu’est-ce qui est vrai des parallèles ?",
+     "explanation": "Les parallèles suivent l’équateur. L’équateur est le plus long ; ils raccourcissent vers les pôles. Les méridiens, eux, se rejoignent aux pôles.",
+     "options": [
+      "Ils sont parallèles et raccourcissent vers les pôles",
+      "Ils se rejoignent aux pôles",
+      "Ils ont tous la même longueur",
+      "Il n’y en a que deux"
+     ]
+    }
+   },
+   "id": "g72-0105"
+  },
+  {
+   "type": "single",
+   "prompt": "Was gilt für die Längenhalbkreise, die Meridiane?",
+   "difficulty": 2,
+   "options": [
+    "Sie treffen sich an beiden Polen und sind alle gleich lang",
+    "Sie laufen parallel",
+    "Sie werden zum Äquator hin kürzer",
+    "Es gibt genau zwölf davon"
+   ],
+   "correct": [
+    0
+   ],
+   "explanation": "Alle Meridiane verlaufen von Pol zu Pol und sind gleich lang. Der Nullmeridian läuft durch Greenwich.",
+   "bild": {
+    "id": "gradnetz"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Was gilt für die Längenhalbkreise, die Meridiane?",
+     "explanation": "Alle Meridiane verlaufen von Pol zu Pol und sind gleich lang. Der Nullmeridian läuft durch Greenwich.",
+     "options": [
+      "Sie treffen sich an beiden Polen und sind alle gleich lang",
+      "Sie laufen parallel",
+      "Sie werden zum Äquator hin kürzer",
+      "Es gibt genau zwölf davon"
+     ]
+    },
+    "en": {
+     "prompt": "What is true of the meridians?",
+     "explanation": "All meridians run from pole to pole and are the same length. The prime meridian runs through Greenwich.",
+     "options": [
+      "They meet at both poles and are all the same length",
+      "They run parallel",
+      "They get shorter towards the equator",
+      "There are exactly twelve of them"
+     ]
+    },
+    "fr": {
+     "prompt": "Qu’est-ce qui est vrai des méridiens ?",
+     "explanation": "Tous les méridiens vont d’un pôle à l’autre et ont la même longueur. Le méridien d’origine passe par Greenwich.",
+     "options": [
+      "Ils se rejoignent aux deux pôles et ont la même longueur",
+      "Ils sont parallèles",
+      "Ils raccourcissent vers l’équateur",
+      "Il y en a exactement douze"
+     ]
+    }
+   },
+   "id": "g72-0106"
+  },
+  {
+   "type": "input",
+   "prompt": "Lies die Koordinaten von Punkt A ab. Schreibe zuerst die Breite, dann die Länge.",
+   "difficulty": 2,
+   "answer": "40° N, 20° E",
+   "accept": [
+    "40°N, 20°E",
+    "40° N 20° E"
+   ],
+   "explanation": "Punkt A liegt bei 40° N, 20° E. Immer zuerst die Breite (N oder S), dann die Länge (E oder W).",
+   "bild": {
+    "id": "gradnetz-ablesen",
+    "br": 40,
+    "la": 20,
+    "name": "A"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Lies die Koordinaten von Punkt A ab. Schreibe zuerst die Breite, dann die Länge.",
+     "explanation": "Punkt A liegt bei 40° N, 20° E. Immer zuerst die Breite (N oder S), dann die Länge (E oder W).",
+     "answer": "40° N, 20° E",
+     "accept": [
+      "40°N, 20°E",
+      "40° N 20° E"
+     ]
+    },
+    "en": {
+     "prompt": "Read off the coordinates of point A. Latitude first, then longitude.",
+     "explanation": "Point A lies at 40° N, 20° E. Always latitude first (N or S), then longitude (E or W).",
+     "answer": "40° N, 20° E",
+     "accept": [
+      "40°N, 20°E",
+      "40° N 20° E"
+     ]
+    },
+    "fr": {
+     "prompt": "Lis les coordonnées du point A. D’abord la latitude, puis la longitude.",
+     "explanation": "Le point A se trouve à 40° N, 20° E. Toujours la latitude d’abord, puis la longitude.",
+     "answer": "40° N, 20° E",
+     "accept": [
+      "40°N, 20°E",
+      "40° N 20° E"
+     ]
+    }
+   },
+   "id": "g72-0107"
+  },
+  {
+   "type": "input",
+   "prompt": "Lies die Koordinaten von Punkt B ab. Schreibe zuerst die Breite, dann die Länge.",
+   "difficulty": 3,
+   "answer": "20° S, 60° W",
+   "accept": [
+    "20°S, 60°W",
+    "20° S 60° W"
+   ],
+   "explanation": "Punkt B liegt bei 20° S, 60° W. Immer zuerst die Breite (N oder S), dann die Länge (E oder W).",
+   "bild": {
+    "id": "gradnetz-ablesen",
+    "br": -20,
+    "la": -60,
+    "name": "B"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Lies die Koordinaten von Punkt B ab. Schreibe zuerst die Breite, dann die Länge.",
+     "explanation": "Punkt B liegt bei 20° S, 60° W. Immer zuerst die Breite (N oder S), dann die Länge (E oder W).",
+     "answer": "20° S, 60° W",
+     "accept": [
+      "20°S, 60°W",
+      "20° S 60° W"
+     ]
+    },
+    "en": {
+     "prompt": "Read off the coordinates of point B. Latitude first, then longitude.",
+     "explanation": "Point B lies at 20° S, 60° W. Always latitude first (N or S), then longitude (E or W).",
+     "answer": "20° S, 60° W",
+     "accept": [
+      "20°S, 60°W",
+      "20° S 60° W"
+     ]
+    },
+    "fr": {
+     "prompt": "Lis les coordonnées du point B. D’abord la latitude, puis la longitude.",
+     "explanation": "Le point B se trouve à 20° S, 60° W. Toujours la latitude d’abord, puis la longitude.",
+     "answer": "20° S, 60° W",
+     "accept": [
+      "20°S, 60°W",
+      "20° S 60° W"
+     ]
+    }
+   },
+   "id": "g72-0108"
+  },
+  {
+   "type": "input",
+   "prompt": "Lies die Koordinaten von Punkt C ab. Schreibe zuerst die Breite, dann die Länge.",
+   "difficulty": 3,
+   "answer": "60° N, 100° E",
+   "accept": [
+    "60°N, 100°E",
+    "60° N 100° E"
+   ],
+   "explanation": "Punkt C liegt bei 60° N, 100° E. Immer zuerst die Breite (N oder S), dann die Länge (E oder W).",
+   "bild": {
+    "id": "gradnetz-ablesen",
+    "br": 60,
+    "la": 100,
+    "name": "C"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Lies die Koordinaten von Punkt C ab. Schreibe zuerst die Breite, dann die Länge.",
+     "explanation": "Punkt C liegt bei 60° N, 100° E. Immer zuerst die Breite (N oder S), dann die Länge (E oder W).",
+     "answer": "60° N, 100° E",
+     "accept": [
+      "60°N, 100°E",
+      "60° N 100° E"
+     ]
+    },
+    "en": {
+     "prompt": "Read off the coordinates of point C. Latitude first, then longitude.",
+     "explanation": "Point C lies at 60° N, 100° E. Always latitude first (N or S), then longitude (E or W).",
+     "answer": "60° N, 100° E",
+     "accept": [
+      "60°N, 100°E",
+      "60° N 100° E"
+     ]
+    },
+    "fr": {
+     "prompt": "Lis les coordonnées du point C. D’abord la latitude, puis la longitude.",
+     "explanation": "Le point C se trouve à 60° N, 100° E. Toujours la latitude d’abord, puis la longitude.",
+     "answer": "60° N, 100° E",
+     "accept": [
+      "60°N, 100°E",
+      "60° N 100° E"
+     ]
+    }
+   },
+   "id": "g72-0109"
+  },
+  {
+   "type": "input",
+   "prompt": "Lies die Koordinaten von Punkt D ab. Schreibe zuerst die Breite, dann die Länge.",
+   "difficulty": 3,
+   "answer": "40° S, 140° E",
+   "accept": [
+    "40°S, 140°E",
+    "40° S 140° E"
+   ],
+   "explanation": "Punkt D liegt bei 40° S, 140° E. Immer zuerst die Breite (N oder S), dann die Länge (E oder W).",
+   "bild": {
+    "id": "gradnetz-ablesen",
+    "br": -40,
+    "la": 140,
+    "name": "D"
+   },
+   "tr": {
+    "de": {
+     "prompt": "Lies die Koordinaten von Punkt D ab. Schreibe zuerst die Breite, dann die Länge.",
+     "explanation": "Punkt D liegt bei 40° S, 140° E. Immer zuerst die Breite (N oder S), dann die Länge (E oder W).",
+     "answer": "40° S, 140° E",
+     "accept": [
+      "40°S, 140°E",
+      "40° S 140° E"
+     ]
+    },
+    "en": {
+     "prompt": "Read off the coordinates of point D. Latitude first, then longitude.",
+     "explanation": "Point D lies at 40° S, 140° E. Always latitude first (N or S), then longitude (E or W).",
+     "answer": "40° S, 140° E",
+     "accept": [
+      "40°S, 140°E",
+      "40° S 140° E"
+     ]
+    },
+    "fr": {
+     "prompt": "Lis les coordonnées du point D. D’abord la latitude, puis la longitude.",
+     "explanation": "Le point D se trouve à 40° S, 140° E. Toujours la latitude d’abord, puis la longitude.",
+     "answer": "40° S, 140° E",
+     "accept": [
+      "40°S, 140°E",
+      "40° S 140° E"
+     ]
+    }
+   },
+   "id": "g72-0110"
+  }
+ ]
+}

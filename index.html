@@ -6017,8 +6017,13 @@ BILDER['erde-wasser-land']=()=>{
   return sv('path',{d:`M${cx} ${cy} L${(cx+r*Math.cos(a1)).toFixed(1)} ${(cy+r*Math.sin(a1)).toFixed(1)} A${r} ${r} 0 ${bis-von>0.5?1:0} 1 ${(cx+r*Math.cos(a2)).toFixed(1)} ${(cy+r*Math.sin(a2)).toFixed(1)} Z`,
    fill:f,stroke:'#fff','stroke-width':2});};
  s.append(teil(0,0.71,'#3D6A9A'),teil(0.71,1,'#8AA86B'));
- s.append(bildText(cx-26,cy+34,'71 %',20,'#fff'));
- s.append(bildText(cx+36,cy-50,'29 %',15,'#fff'));
+ /* Die Beschriftung sitzt auf der Mitte ihres Stuecks, gerechnet und nicht
+    von Hand gesetzt: von Hand lagen beide Zahlen im blauen Stueck, womit
+    das Bild ablas, Wasser sei 29 Prozent. */
+ const zahl=(von,bis,txt,gr)=>{const m=(von+bis)/2*2*Math.PI-Math.PI/2,rr=r*0.58;
+  return bildText(cx+rr*Math.cos(m),cy+rr*Math.sin(m)+6,txt,gr,'#fff');};
+ s.append(zahl(0,0.71,'71 %',20));
+ s.append(zahl(0.71,1,'29 %',15));
  s.append(sv('rect',{x:262,y:84,width:18,height:18,fill:'#3D6A9A',rx:3}),bildText(290,99,X('Wasser','water','eau'),14,INK,'start'));
  s.append(sv('rect',{x:262,y:122,width:18,height:18,fill:'#8AA86B',rx:3}),bildText(290,137,X('Festland','land','terres'),14,INK,'start'));
  s.append(bildText(210,252,X('Die Oberfläche der Erde','The surface of the Earth','La surface de la Terre'),13,'#6B7B8E'));
